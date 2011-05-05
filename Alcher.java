@@ -63,6 +63,8 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 	@Override
 	public void onFinish() {
 		log("Thank you for using this script");
+		log("If you had any problems with the script please go to");
+		log("http://www.powerbot.org/vb/showthread.php?t=607582");
 		this.env.takeScreenshot(false);
 
 	}
