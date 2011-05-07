@@ -4,31 +4,25 @@ import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.methods.Environment;
+import org.rsbot.script.methods.Game;
 import org.rsbot.script.methods.Skills;
+import org.rsbot.script.util.PaintUtil;
 import org.rsbot.script.wrappers.RSInterface;
 import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.util.GlobalConfiguration;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
-import java.net.*;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.LinkedList;
-import java.util.StringTokenizer;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Properties;
 
-@ScriptManifest(authors = {"Fletch To 99"}, keywords = "Fletching", name = "UFletch", version = 2.21, description = "The best fletcher!")
+@ScriptManifest(authors = {"Fletch To 99"}, keywords = "Fletching", name = "UFletch", website = "http://www.universalscripts.org", version = 2.21, description = "The best fletcher!")
 /**
  * All-in-One Fletching script for RSBot 2.XX
  * @author Fletch To 99
@@ -47,19 +41,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				"Rune", "Dragon", "N/A"};
 		String[] optionColor = {"Black", "Red", "Orange", "Blue", "Green",
 				"Yellow", "Pink", "White", "Tan"};
-		final String UPDATER_FILE_NAME = "UFletch.java";
-		final String UPDATER_URL = "http://dl.dropbox.com/u/23938245/Scripts/UFletch/Script/UFletch.java";
-		final Pattern UPDATER_VERSION_PATTERN = Pattern
-				.compile("version\\s*=\\s*([0-9.]+)");
 		final Color TAN = new Color(220, 202, 169);
+		final int BOW_STRING_ID = 1777;
 		MenuItem item1 = new MenuItem("Stop");
 		MenuItem item2 = new MenuItem("Pause");
 		MenuItem item3 = new MenuItem("Resume");
 		MenuItem item4 = new MenuItem("Open Gui");
 		MenuItem item5 = new MenuItem("Help");
-		MenuItem item6 = new MenuItem("IRC");
-		static final String server = "irc.rizon.net";
-		static final String channel = "#ufletch";
 	}
 
 	private int amount = 0;
@@ -76,6 +64,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	private int minsTNL = 0;
 	private int fail = 0;
 	private int full = 0;
+	private PaintUtil paintUT = null;
 
 	private long startTime = System.currentTimeMillis();
 
@@ -84,15 +73,12 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	private Point z = null;
 
 	private Image invPaint = null;
-	private Image paint = null;
+	private Image paintp = null;
 	private Image hide = null;
 	private Image show = null;
 	private Image guiButton = null;
 	private Image watermark = null;
 	private Image icon = null;
-
-	private double version = 0.0;
-	private double newver = 0.0;
 
 	private boolean has99 = false;
 	private boolean fullPaint = true;
@@ -108,12 +94,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	private beeper beep;
 	private Thread b;
 
-	private Irc irc;
-	private Thread i;
-	private IRCGui IRCgui;
-	private ircNameGUI nameGUI;
-	private Document doc;
-	private Document users;
 	private RSTile[] path;
 
 	private final LinkedList<MousePathPoint> mousePath = new LinkedList<MousePathPoint>();
@@ -735,8 +715,9 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			if (bank.isOpen()) {
 				sleep(100, 250);
 				if (!inventory.contains(getKnifeId())) {
-					if (inventory.getCount() > 0)
+					if (inventory.getCount() > 0) {
 						bank.depositAll();
+					}
 					sleep(100, 150);
 					if (getMethod() != 3) {
 						if (bank.getItem(getKnifeId()) == null) {
@@ -806,46 +787,46 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 							}
 						}
 					}
-					if (!inventory.contains(getUnstrungId())) {
+					if (inventory.getCount(getUnstrungId()) != 14) {
+						if (inventory.getCount(getUnstrungId()) > 0) {
+							bank.deposit(getUnstrungId(), 0);
+						}
 						if (bank.getCount(getUnstrungId()) > 0) {
 							bank.withdraw(getUnstrungId(), 14);
 							sleep(100);
-							for (int i = 0; i < 50; i++) {
-								sleep(25);
+							for (int i = 0; i < 25; i++) {
+								sleep(75);
 								if (inventory.contains(getUnstrungId())) {
 									break;
 								}
 							}
-						} else {
-							log("No more bows (u) in bank.");
-							stopScript(true);
+						} else if (bank.isOpen()) {
+							if (bank.getCount(getUnstrungId()) == 0) {
+								log("No more bows (u) in bank.");
+								stopScript(true);
+							}
 						}
 					}
-					if (!inventory.contains(getUnstrungId())) {
-						withdrawStrings();
-					}
-					if (!inventory.contains(1777)) {
-						if (bank.getCount(1777) > 0) {
-							bank.withdraw(1777, 0);
+					sleep(100);
+					if (inventory.getCount(constants.BOW_STRING_ID) != 14) {
+						if (inventory.getCount(constants.BOW_STRING_ID) > 0) {
+							bank.deposit(getUnstrungId(), 0);
+						}
+						if (bank.getCount(constants.BOW_STRING_ID) > 0) {
+							bank.withdraw(constants.BOW_STRING_ID, 14);
 							sleep(100);
-							for (int i = 0; i < 50; i++) {
-								sleep(25);
-								if (inventory.contains(1777)) {
+							for (int i = 0; i < 25; i++) {
+								sleep(75);
+								if (inventory.contains(constants.BOW_STRING_ID)) {
 									break;
 								}
 							}
-						} else {
-							log("No more bowstring in bank.");
-							stopScript(true);
+						} else if (bank.isOpen()) {
+							if (bank.getCount(constants.BOW_STRING_ID) == 0) {
+								log("No more bows (u) in bank.");
+								stopScript(true);
+							}
 						}
-					}
-					if (inventory.getCount(1777) > 14
-							|| inventory.getCount(getUnstrungId()) > 14) {
-						withdrawStrings();
-					}
-					if (inventory.getCount(1777) < 14
-							|| inventory.getCount(getUnstrungId()) < 14) {
-						withdrawStrings();
 					}
 				}
 			}
@@ -1004,8 +985,9 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	private void fletchShafts() {
 		status = "Fletching: Shafts";
 		try {
-			if (bank.isOpen())
+			if (bank.isOpen()) {
 				bank.close();
+			}
 			sleep(50, 100);
 			if (!interfaces.get(905).isValid() && !isBusy()) {
 				if (random(1, 2) == 1) {
@@ -1038,8 +1020,9 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	private void fletchStocks() {
 		status = "Fletching: Stocks";
 		try {
-			if (bank.isOpen())
+			if (bank.isOpen()) {
 				bank.close();
+			}
 			sleep(50, 100);
 			if (!interfaces.get(905).isValid() && !isBusy()) {
 				if (random(1, 2) == 1) {
@@ -1133,7 +1116,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		}
 	}
 
-	@Override
 	public void messageReceived(MessageEvent e) {
 		try {
 			String m = e.getMessage().toLowerCase();
@@ -1187,12 +1169,12 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		}
 		if (r == 12) {
 			status = "Antiban: Stats";
-			if (game.getCurrentTab() != 1) {
-				game.openTab(1);
+			if (game.getCurrentTab() != Game.TAB_STATS) {
+				game.openTab(Game.TAB_STATS);
 				sleep(350, 500);
 				mouse.move(random(615, 665), random(350, 375));
 				sleep(1000, 1200);
-				if (game.getCurrentTab() != 4) {
+				if (game.getCurrentTab() != Game.TAB_INVENTORY) {
 					game.openTab(4);
 					sleep(random(100, 200));
 				}
@@ -1208,116 +1190,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			camera.setAngle(random(0, 300));
 			camera.setPitch(random(35, 85));
 			sleep(random(1750, 1950));
-		}
-	}
-
-	private boolean checkForUpdates() {
-		try {
-			JOptionPane.showMessageDialog(null, "Checking for updates!");
-			double currentVer = UFletch.class.getAnnotation(
-					ScriptManifest.class).version();
-			double newVer = -1;
-			URL url = new URL(constants.UPDATER_URL);
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					url.openStream()));
-			String line, lines = "";
-			Matcher m;
-			while ((line = in.readLine()) != null) {
-				lines += line + "\n";
-				if ((m = constants.UPDATER_VERSION_PATTERN.matcher(line))
-						.find()) {
-					newVer = Double.parseDouble(m.group(1));
-					break;
-				}
-			}
-			if (newVer < 0) {
-				in.close();
-				log("Unable to find the new version number. Update failed");
-				return false;
-			}
-			if (currentVer >= newVer) {
-				in.close();
-				log("You already have the latest version of the script.");
-				JOptionPane.showMessageDialog(null,
-						"You already have the latest version of the script.");
-				return false;
-			}
-			String pick = JOptionPane.showInputDialog(null,
-					"Update found! Type yes to download!");
-			if (pick.contains("yes")) {
-				log("Update found! Downloading version " + newVer);
-				String scriptFilePath = GlobalConfiguration.Paths
-						.getScriptsSourcesDirectory()
-						+ "\\"
-						+ constants.UPDATER_FILE_NAME;
-				PrintWriter out = new PrintWriter(scriptFilePath);
-				out.print(lines);
-				while ((line = in.readLine()) != null)
-					out.println(line);
-				out.close();
-				in.close();
-				JOptionPane
-						.showMessageDialog(null,
-								"Update Downloaded successfully! Attempting to compile!");
-				log("Successfully saved "
-						+ constants.UPDATER_FILE_NAME
-						+ " to "
-						+ GlobalConfiguration.Paths
-						.getScriptsSourcesDirectory());
-				log("Compiling...");
-				BufferedReader pathfile = new BufferedReader(new FileReader(
-						GlobalConfiguration.Paths.getSettingsDirectory() + "\\"
-								+ "path.txt"));
-				String path = pathfile.readLine();
-				try {
-					Runtime.getRuntime()
-							.exec(new String[]{"javac", "-cp", path,
-									scriptFilePath});
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null,
-							"Error Compiling, please manually compile!");
-					log("Could not compile the script. Please manually compile to finish the update.");
-					stopScript();
-					return false;
-				}
-				log("Update successful!");
-				log("The new version will appear near the bottom of the script selector.");
-				log("Stopping the script. restart to run the newer version.");
-				stopScript();
-				return true;
-			}
-		} catch (IOException e) {
-			log(e.toString());
-			log("Update failed.");
-		}
-		return false;
-	}
-
-	String urversion() {
-		return Double.toString(version);
-	}
-
-	String newversion() {
-		return Double.toString(newver);
-	}
-
-	private void getVersionNumbers() {
-		try {
-			version = getClass().getAnnotation(ScriptManifest.class).version();
-			URL url = new URL(constants.UPDATER_URL);
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					url.openStream()));
-			String line, lines = "";
-			Matcher m;
-			while ((line = in.readLine()) != null) {
-				lines += line + "\n";
-				if ((m = constants.UPDATER_VERSION_PATTERN.matcher(line))
-						.find()) {
-					newver = Double.parseDouble(m.group(1));
-					break;
-				}
-			}
-		} catch (Exception e) {
 		}
 	}
 
@@ -1344,15 +1216,12 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			return false;
 		}
 		JOptionPane.showMessageDialog(null, "Please wait while gui loads.");
-		getVersionNumbers();
-		nameGUI = new ircNameGUI();
 		gui = new gui();
+		gui.progressBar1.setValue(skills
+				.getPercentToNextLevel(Skills.FLETCHING));
 		gui.setVisible(true);
 		loadSettings();
 		gui.checkBox16.setSelected(false);
-		if (gui.checkBox7.isSelected()) {
-			checkForUpdates();
-		}
 		if (gui.textField2.getText().equals("All")) {
 			gui.textField2.setEnabled(true);
 			gui.button4.setEnabled(true);
@@ -1367,24 +1236,12 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		while (gui.isVisible()) {
 			sleep(random(200, 400));
 		}
-		nameGUI.setVisible(true);
-		while (nameGUI.isVisible()) {
-			sleep(random(200, 400));
-		}
-		if (nameGUI.checkBox1.isSelected()) {
-			IRCgui = new IRCGui();
-			doc = IRCgui.textArea1.getDocument();
-			users = IRCgui.textArea2.getDocument();
-			irc = new Irc();
-			i = new Thread(irc);
-			i.start();
-			IRCgui.setVisible(true);
-		}
 		if (gui.checkBox16.isSelected()) {
 			beep = new beeper();
 			b = new Thread(beep);
 			b.start();
 		}
+		paintUT = paint.createPaint();
 		getExtraInfo();
 		trayInfo = new trayInfo();
 		gui.checkBox16.setEnabled(false);
@@ -1393,13 +1250,27 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	}
 
 	private void getExtraInfo() {
-		invPaint = Images.getImage("ufletchpaint2.png");
-		paint = Images.getImage("ufletchpaint.png");
-		hide = Images.getImage("hidepaint.png");
-		show = Images.getImage("showpaint.png");
-		guiButton = Images.getImage("button.png");
-		watermark = Images.getImage("watermark.png");
-		icon = Images.getImage("icon.png");
+		invPaint = paintUT
+				.getImage("ufletchpaint2.png", true,
+						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/ufletchpaint2.png");
+		paintp = paintUT
+				.getImage("ufletchpaint.png", true,
+						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/ufletchpaint.png");
+		hide = paintUT
+				.getImage("hidepaint.png", true,
+						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/hidepaint.png");
+		show = paintUT
+				.getImage("showpaint.png", true,
+						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/showpaint.png");
+		guiButton = paintUT
+				.getImage("button.png", true,
+						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/button.png");
+		watermark = paintUT
+				.getImage("watermark.png", true,
+						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/watermark.png");
+		icon = paintUT
+				.getImage("icon.png", true,
+						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/icon.png");
 		sleep(random(400, 500));
 		startXP = skills.getCurrentExp(Skills.FLETCHING);
 		sleep(random(100, 250));
@@ -1411,16 +1282,16 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			URLConnection urlConn;
 			url = new URL("http://www.universalscripts.org/UFletch_submit.php");
 			urlConn = url.openConnection();
-			urlConn.setRequestProperty("User-Agent", "hax");
+			urlConn.setRequestProperty("User-Agent", "UFletchAgent");
 			urlConn.setDoInput(true);
 			urlConn.setDoOutput(true);
 			urlConn.setUseCaches(false);
 			urlConn.setRequestProperty("Content-Type",
 					"application/x-www-form-urlencoded");
 			String content = "";
-			String[] stats = {"auth", "secs", "mins", "hours", "fletched",
-					"strung", "expgained"};
-			Object[] data = {gui.textField2.getText(), 0, 0, 0, 0, 0, 0};
+			String[] stats = {"auth", "secs", "mins", "hours", "days",
+					"fletched", "strung", "expgained"};
+			Object[] data = {gui.textField2.getText(), 0, 0, 0, 0, 0, 0, 0};
 			for (int i = 0; i < stats.length; i++) {
 				content += stats[i] + "=" + data[i] + "&";
 			}
@@ -1433,9 +1304,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					urlConn.getInputStream()));
 			String line;
 			while ((line = rd.readLine()) != null) {
-				if (line.contains("success")) {
-					log(line);
-				}
+				log(Color.GREEN, line);
 			}
 			wr.close();
 			rd.close();
@@ -1447,6 +1316,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		try {
 			long xpGained = skills.getCurrentExp(Skills.FLETCHING) - startXP;
 			long millis = System.currentTimeMillis() - startTime;
+			long days = millis / (1000 * 60 * 60 * 24);
+			millis -= days * (1000 * 60 * 60);
 			long hours = millis / (1000 * 60 * 60);
 			millis -= hours * (1000 * 60 * 60);
 			long minutes = millis / (1000 * 60);
@@ -1456,17 +1327,17 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			URLConnection urlConn;
 			url = new URL("http://www.universalscripts.org/UFletch_submit.php");
 			urlConn = url.openConnection();
-			urlConn.setRequestProperty("User-Agent", "hax");
+			urlConn.setRequestProperty("User-Agent", "UFletchAgent");
 			urlConn.setDoInput(true);
 			urlConn.setDoOutput(true);
 			urlConn.setUseCaches(false);
 			urlConn.setRequestProperty("Content-Type",
 					"application/x-www-form-urlencoded");
 			String content = "";
-			String[] stats = {"auth", "secs", "mins", "hours", "fletched",
-					"strung", "expgained"};
+			String[] stats = {"auth", "secs", "mins", "hours", "days",
+					"fletched", "strung", "expgained"};
 			Object[] data = {gui.textField2.getText(), seconds, minutes,
-					hours, fletched, strung, xpGained};
+					hours, days, fletched, strung, xpGained};
 			for (int i = 0; i < stats.length; i++) {
 				content += stats[i] + "=" + data[i] + "&";
 			}
@@ -1489,6 +1360,209 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		}
 	}
 
+	public void loadSettings() {
+		Properties props = new Properties();
+		File f = new File(GlobalConfiguration.Paths.getCacheDirectory()
+				+ "UFletch.ini");
+		if (f.exists()) {
+			try {
+				props.load(new FileInputStream(f));
+			} catch (IOException e) {
+			}
+			if (props.getProperty("Method") != null) {
+				gui.comboBox1.setSelectedItem(props.getProperty("Method"));
+			}
+			if (props.getProperty("LogType") != null) {
+				gui.comboBox2.setSelectedItem(props.getProperty("LogType"));
+			}
+			if (props.getProperty("BowType") != null) {
+				gui.comboBox3.setSelectedItem(props.getProperty("BowType"));
+			}
+			if (props.getProperty("Knife") != null) {
+				gui.comboBox4.setSelectedItem(props.getProperty("Knife"));
+			}
+			if (props.getProperty("AxeType") != null) {
+				gui.comboBox5.setSelectedItem(props.getProperty("AxeType"));
+			}
+			if (props.getProperty("Color1") != null) {
+				gui.comboBox12.setSelectedItem(props.getProperty("Color1"));
+			}
+			if (props.getProperty("Color2") != null) {
+				gui.comboBox13.setSelectedItem(props.getProperty("Color2"));
+			}
+			if (props.getProperty("Color3") != null) {
+				gui.comboBox8.setSelectedItem(props.getProperty("Color3"));
+			}
+			if (props.getProperty("Color4") != null) {
+				gui.comboBox9.setSelectedItem(props.getProperty("Color4"));
+			}
+			if (props.getProperty("Color5") != null) {
+				gui.comboBox10.setSelectedItem(props.getProperty("Color5"));
+			}
+			if (props.getProperty("Color6") != null) {
+				gui.comboBox11.setSelectedItem(props.getProperty("Color6"));
+			}
+			if (props.getProperty("Color7") != null) {
+				gui.comboBox14.setSelectedItem(props.getProperty("Color7"));
+			}
+			if (props.getProperty("Color8") != null) {
+				gui.comboBox15.setSelectedItem(props.getProperty("Color8"));
+			}
+			if (props.getProperty("Amount") != null) {
+				gui.textField1.setText(props.getProperty("Amount"));
+			}
+			if (props.getProperty("Name") != null) {
+				gui.textField2.setText(props.getProperty("Name"));
+			}
+			if (props.getProperty("WhenDone") != null) {
+				if (props.getProperty("WhenDone").contains("true")) {
+					gui.checkBox1.setSelected(true);
+				}
+			}
+			if (props.getProperty("UponLvl") != null) {
+				if (props.getProperty("UponLvl").contains("true")) {
+					gui.checkBox2.setSelected(true);
+				}
+			}
+			if (props.getProperty("Getting99") != null) {
+				if (props.getProperty("Getting99").contains("true")) {
+					gui.checkBox3.setSelected(true);
+				}
+			}
+			if (props.getProperty("Before99") != null) {
+				if (props.getProperty("Before99").contains("true")) {
+					gui.checkBox5.setSelected(true);
+				}
+			}
+			if (props.getProperty("Save") != null) {
+				if (props.getProperty("Save").contains("true")) {
+					gui.checkBox6.setSelected(true);
+				}
+			}
+			if (props.getProperty("Load") != null) {
+				if (props.getProperty("Load").contains("true")) {
+					gui.checkBox7.setSelected(true);
+				}
+			}
+			if (props.getProperty("Paint") != null) {
+				if (props.getProperty("Paint").contains("true")) {
+					gui.checkBox4.setSelected(true);
+				}
+			}
+			if (props.getProperty("Chat") != null) {
+				if (props.getProperty("Chat").contains("true")) {
+					gui.checkBox8.setSelected(true);
+				}
+			}
+			if (props.getProperty("Inventory") != null) {
+				if (props.getProperty("Inventory").contains("true")) {
+					gui.checkBox9.setSelected(true);
+				}
+			}
+			if (props.getProperty("Bar") != null) {
+				if (props.getProperty("Bar").contains("true")) {
+					gui.checkBox10.setSelected(true);
+				}
+			}
+			if (props.getProperty("BotLine") != null) {
+				if (props.getProperty("BotLine").contains("true")) {
+					gui.checkBox11.setSelected(true);
+				}
+			}
+			if (props.getProperty("UserLine") != null) {
+				if (props.getProperty("UserLine").contains("true")) {
+					gui.checkBox13.setSelected(true);
+				}
+			}
+			if (props.getProperty("BotCross") != null) {
+				if (props.getProperty("BotCross").contains("true")) {
+					gui.checkBox12.setSelected(true);
+				}
+			}
+			if (props.getProperty("UserCross") != null) {
+				if (props.getProperty("UserCross").contains("true")) {
+					gui.checkBox14.setSelected(true);
+				}
+			}
+			if (props.getProperty("BotCircle") != null) {
+				if (props.getProperty("BotCircle").contains("true")) {
+					gui.checkBox17.setSelected(true);
+				}
+			}
+			if (props.getProperty("UserCircle") != null) {
+				if (props.getProperty("UserCircle").contains("true")) {
+					gui.checkBox18.setSelected(true);
+				}
+			}
+			if (props.getProperty("Message") != null) {
+				if (props.getProperty("Message").contains("true")) {
+					gui.checkBox15.setSelected(true);
+				}
+			}
+			if (props.getProperty("Beep") != null) {
+				if (props.getProperty("Beep").contains("true")) {
+					gui.checkBox16.setSelected(true);
+				}
+			}
+			if (props.getProperty("Speed") != null) {
+				if (props.getProperty("Speed").contains("true")) {
+					gui.slider1.setValue(Integer.parseInt(props
+							.getProperty("Speed")));
+				}
+			}
+		}
+	}
+
+	public void saveSettings() {
+		Properties p = new Properties();
+		p.setProperty("Method", (String) gui.comboBox1.getSelectedItem());
+		p.setProperty("LogType", (String) gui.comboBox2.getSelectedItem());
+		p.setProperty("BowType", (String) gui.comboBox3.getSelectedItem());
+		p.setProperty("Knife", (String) gui.comboBox4.getSelectedItem());
+		p.setProperty("AxeType", (String) gui.comboBox5.getSelectedItem());
+		p.setProperty("Color1", (String) gui.comboBox12.getSelectedItem());
+		p.setProperty("Color2", (String) gui.comboBox13.getSelectedItem());
+		p.setProperty("Color3", (String) gui.comboBox8.getSelectedItem());
+		p.setProperty("Color4", (String) gui.comboBox9.getSelectedItem());
+		p.setProperty("Color5", (String) gui.comboBox10.getSelectedItem());
+		p.setProperty("Color6", (String) gui.comboBox11.getSelectedItem());
+		p.setProperty("Color7", (String) gui.comboBox14.getSelectedItem());
+		p.setProperty("Color8", (String) gui.comboBox15.getSelectedItem());
+		p.setProperty("Amount", (String) gui.textField1.getText());
+		p.setProperty("Name", (String) gui.textField2.getText());
+		p.setProperty("WhenDone", getValue(gui.checkBox1.isSelected()));
+		p.setProperty("UponLvl", getValue(gui.checkBox2.isSelected()));
+		p.setProperty("Getting99", getValue(gui.checkBox3.isSelected()));
+		p.setProperty("Before99", getValue(gui.checkBox5.isSelected()));
+		p.setProperty("Save", getValue(gui.checkBox6.isSelected()));
+		p.setProperty("Load", getValue(gui.checkBox7.isSelected()));
+		p.setProperty("Paint", getValue(gui.checkBox4.isSelected()));
+		p.setProperty("Chat", getValue(gui.checkBox8.isSelected()));
+		p.setProperty("Inventory", getValue(gui.checkBox9.isSelected()));
+		p.setProperty("Bar", getValue(gui.checkBox10.isSelected()));
+		p.setProperty("BotLine", getValue(gui.checkBox11.isSelected()));
+		p.setProperty("BotCross", getValue(gui.checkBox12.isSelected()));
+		p.setProperty("UserLine", getValue(gui.checkBox13.isSelected()));
+		p.setProperty("UserCross", getValue(gui.checkBox14.isSelected()));
+		p.setProperty("BotCircle", getValue(gui.checkBox17.isSelected()));
+		p.setProperty("UserCircle", getValue(gui.checkBox18.isSelected()));
+		p.setProperty("Message", getValue(gui.checkBox15.isSelected()));
+		p.setProperty("Beep", getValue(gui.checkBox16.isSelected()));
+		p.setProperty("Speed", String.valueOf(gui.slider1.getValue()));
+		try {
+			p.store(new FileOutputStream(GlobalConfiguration.Paths
+					.getCacheDirectory() + "UFletch.ini"), "UFletch settings");
+		} catch (IOException e) {
+		}
+	}
+
+	private String getValue(boolean selected) {
+		if (selected) {
+			return "true";
+		}
+		return "false";
+	}
+
 	@SuppressWarnings("deprecation")
 	public void onFinish() {
 		updateSignature();
@@ -1497,57 +1571,10 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			env.saveScreenshot(true);
 		}
 		SystemTray.getSystemTray().remove(trayInfo.systray);
-		if (nameGUI.checkBox1.isSelected()) {
-			irc.leave();
-			i.interrupt();
-			i.suspend();
-			IRCgui.dispose();
-		}
 		if (gui.checkBox16.isSelected()) {
 			b.interrupt();
 			b.suspend();
 		}
-	}
-
-	private static class Images {
-		private static Logger log = Logger.getLogger(Images.class.getName());
-
-		public static Image getImage(String fileName) {
-			try {
-				File loc = new File(
-						GlobalConfiguration.Paths.getScriptsDirectory()
-								+ "/Paint_Images/");
-				File f = new File(
-						GlobalConfiguration.Paths.getScriptsDirectory()
-								+ "/Paint_Images/" + fileName);
-				BufferedImage img = ImageIO.read(new URL(
-						"http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/"
-								+ fileName));
-				if (!loc.exists()) {
-					loc.mkdir();
-				}
-				if (loc.exists()) {
-					if (f.exists()) {
-						log.info("Successfully loaded " + fileName
-								+ " from scripts folder.");
-						return ImageIO.read(f.toURI().toURL());
-					}
-				}
-				if (loc.exists()) {
-					if (img != null) {
-						log.info("Downlaoding images...");
-						ImageIO.write((RenderedImage) img, "PNG", f);
-						log.info("Saved " + fileName
-								+ " to Scripts folder successfully.");
-						return img;
-					}
-				}
-			} catch (IOException e) {
-				log.info("No Internet Connection or Broken Image Link, Check for Script Update.");
-			}
-			return null;
-		}
-
 	}
 
 	@SuppressWarnings("serial")
@@ -1683,7 +1710,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					&& gui.checkBox8.isSelected()) {
 				g2.setColor(getColorPaint());
 				g2.fillRect(6, 344, 507, 129);
-				g2.drawImage(paint, 6, 344, null);
+				g2.drawImage(paintp, 6, 344, null);
 				g2.drawImage(hide, 9, 347, null);
 				g2.drawImage(guiButton, 360, 440, null);
 				g2.drawImage(watermark, 305, 315, null);
@@ -1730,7 +1757,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				g2.setColor(new Color(getColorPaint().getRed(), getColorPaint()
 						.getGreen(), getColorPaint().getBlue(), 127));
 				g2.fillRect(6, 344, 507, 129);
-				g2.drawImage(paint, 6, 344, null);
+				g2.drawImage(paintp, 6, 344, null);
 				g2.drawImage(hide, 9, 347, null);
 				g2.drawImage(guiButton, 360, 440, null);
 				g2.drawImage(watermark, 305, 315, null);
@@ -1910,13 +1937,15 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			g2.fillRect(m.x - 5, m.y, 12, 2);
 			g2.fillRect(m.x, m.y - 5, 2, 12);
 			if (gui.checkBox11.isSelected() && !gui.checkBox17.isSelected()) {
-				while (!mousePath.isEmpty() && mousePath.peek().isUp())
+				while (!mousePath.isEmpty() && mousePath.peek().isUp()) {
 					mousePath.remove();
+				}
 				Point clientCursor = mouse.getLocation();
 				MousePathPoint mpp = new MousePathPoint(clientCursor.x,
 						clientCursor.y, 3000);
-				if (mousePath.isEmpty() || !mousePath.getLast().equals(mpp))
+				if (mousePath.isEmpty() || !mousePath.getLast().equals(mpp)) {
 					mousePath.add(mpp);
+				}
 				MousePathPoint lastPoint = null;
 				for (MousePathPoint a : mousePath) {
 					if (lastPoint != null) {
@@ -1928,13 +1957,15 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			} else if (gui.checkBox11.isSelected()
 					&& gui.checkBox17.isSelected()) {
 				while (!mouseCirclePath.isEmpty()
-						&& mouseCirclePath.peek().isUp())
+						&& mouseCirclePath.peek().isUp()) {
 					mouseCirclePath.remove();
+				}
 				MouseCirclePathPoint mp = new MouseCirclePathPoint(m.x, m.y,
 						3000);
 				if (mouseCirclePath.isEmpty()
-						|| !mouseCirclePath.getLast().equals(mp))
+						|| !mouseCirclePath.getLast().equals(mp)) {
 					mouseCirclePath.add(mp);
+				}
 				MouseCirclePathPoint lastPoint = null;
 				for (MouseCirclePathPoint a : mouseCirclePath) {
 					if (lastPoint != null) {
@@ -1978,11 +2009,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			}
 
 			if (gui.checkBox13.isSelected() && !gui.checkBox18.isSelected()) {
-				while (!mousePath2.isEmpty() && mousePath2.peek().isUp2())
+				while (!mousePath2.isEmpty() && mousePath2.peek().isUp2()) {
 					mousePath2.remove();
+				}
 				MousePathPoint2 mpp = new MousePathPoint2(z.x, z.y, 3000);
-				if (mousePath2.isEmpty() || !mousePath2.getLast().equals(mpp))
+				if (mousePath2.isEmpty() || !mousePath2.getLast().equals(mpp)) {
 					mousePath2.add(mpp);
+				}
 				MousePathPoint2 lastPoint = null;
 				for (MousePathPoint2 z : mousePath2) {
 					if (lastPoint != null) {
@@ -1994,13 +2027,15 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			} else if (gui.checkBox13.isSelected()
 					&& gui.checkBox18.isSelected()) {
 				while (!mouseCirclePath2.isEmpty()
-						&& mouseCirclePath2.peek().isUp())
+						&& mouseCirclePath2.peek().isUp()) {
 					mouseCirclePath2.remove();
+				}
 				MouseCirclePathPoint2 mp = new MouseCirclePathPoint2(z.x, z.y,
 						3000);
 				if (mouseCirclePath2.isEmpty()
-						|| !mouseCirclePath2.getLast().equals(mp))
+						|| !mouseCirclePath2.getLast().equals(mp)) {
 					mouseCirclePath2.add(mp);
+				}
 				MouseCirclePathPoint2 lastPoint = null;
 				for (MouseCirclePathPoint2 a : mouseCirclePath2) {
 					if (lastPoint != null) {
@@ -2068,6 +2103,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	private String getRuntime() {
 		try {
 			long millis = System.currentTimeMillis() - startTime;
+			long days = millis / (1000 * 60 * 60 * 24);
+			millis -= days * (1000 * 60 * 60);
 			long hours = millis / (1000 * 60 * 60);
 			millis -= hours * (1000 * 60 * 60);
 			long minutes = millis / (1000 * 60);
@@ -2078,275 +2115,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					+ (seconds < 10 ? "0" : "") + seconds + "");
 		} catch (Exception e) {
 			return "";
-		}
-	}
-
-	private int getValue(boolean b) {
-		if (b)
-			return 1;
-		return 0;
-	}
-
-	private void loadSettings() {
-		if (!new File(GlobalConfiguration.Paths.getHomeDirectory()
-				+ File.separator + "Settings" + File.separator + "UFletch.ini")
-				.exists()) {
-			return;
-		}
-		try {
-			DataInputStream in = new DataInputStream(new FileInputStream(
-					GlobalConfiguration.Paths.getHomeDirectory()
-							+ File.separator + "Settings" + File.separator
-							+ "UFletch.ini"));
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String line;
-			while ((line = br.readLine()) != null) {
-				try {
-					boolean checkWhat = false;
-					int w = -1;
-					String isDoing = "";
-					for (char c : line.toCharArray()) {
-						if (c == '<' || checkWhat) {
-							if (c == '<') {
-								isDoing = "";
-							}
-							checkWhat = true;
-							isDoing += c;
-							if (c == '>') {
-								if (isDoing.contains("<Method>")) {
-									w = 1;
-								} else if (isDoing.contains("<LogType>")) {
-									w = 2;
-								} else if (isDoing.contains("<BowType>")) {
-									w = 3;
-								} else if (isDoing.contains("<Knife>")) {
-									w = 4;
-								} else if (isDoing.contains("<AxeType>")) {
-									w = 5;
-								} else if (isDoing.contains("<Color1>")) {
-									w = 6;
-								} else if (isDoing.contains("<Color2>")) {
-									w = 7;
-								} else if (isDoing.contains("<Color3>")) {
-									w = 8;
-								} else if (isDoing.contains("<Color4>")) {
-									w = 9;
-								} else if (isDoing.contains("<Color5>")) {
-									w = 10;
-								} else if (isDoing.contains("<Color6>")) {
-									w = 11;
-								} else if (isDoing.contains("<Color7>")) {
-									w = 12;
-								} else if (isDoing.contains("<Color8>")) {
-									w = 13;
-								} else if (isDoing.contains("<Amount>")) {
-									w = 14;
-								} else if (isDoing.contains("<Name>")) {
-									w = 15;
-								} else if (isDoing.contains("<WhenDone>")) {
-									w = 16;
-								} else if (isDoing.contains("<UponLvl>")) {
-									w = 17;
-								} else if (isDoing.contains("<Hourly>")) {
-									w = 18;
-								} else if (isDoing.contains("<Before99>")) {
-									w = 19;
-								} else if (isDoing.contains("<Save>")) {
-									w = 20;
-								} else if (isDoing.contains("<Update>")) {
-									w = 21;
-								} else if (isDoing.contains("<Paint>")) {
-									w = 22;
-								} else if (isDoing.contains("<Chat>")) {
-									w = 23;
-								} else if (isDoing.contains("<Inventory>")) {
-									w = 24;
-								} else if (isDoing.contains("<Bar>")) {
-									w = 25;
-								} else if (isDoing.contains("<BotLine>")) {
-									w = 26;
-								} else if (isDoing.contains("<BotCross>")) {
-									w = 27;
-								} else if (isDoing.contains("<UserLine>")) {
-									w = 28;
-								} else if (isDoing.contains("<UserCross>")) {
-									w = 29;
-								} else if (isDoing.contains("<BotCircle>")) {
-									w = 30;
-								} else if (isDoing.contains("<UserCircle>")) {
-									w = 31;
-								} else if (isDoing.contains("<Message>")) {
-									w = 32;
-								} else if (isDoing.contains("<Beep>")) {
-									w = 33;
-								} else if (isDoing.contains("<IRCname>")) {
-									w = 34;
-								} else if (isDoing.contains("<Speed>")) {
-									w = 35;
-								}
-								checkWhat = false;
-								isDoing = "";
-							}
-							continue;
-						} else if (w == 1 || w == 2 || w == 3 || w == 4
-								|| w == 5 || w == 6 || w == 7 || w == 8
-								|| w == 9 || w == 10 || w == 11 || w == 12
-								|| w == 13 || w == 15 || w == 34) {
-							if (c == '(') {
-								isDoing = "";
-							} else if (c == ',' || c == ')') {
-								if (w == 1) {
-									gui.comboBox1.setSelectedItem(isDoing);
-								} else if (w == 2) {
-									gui.comboBox2.setSelectedItem(isDoing);
-								} else if (w == 3) {
-									gui.comboBox3.setSelectedItem(isDoing);
-								} else if (w == 4) {
-									gui.comboBox4.setSelectedItem(isDoing);
-								} else if (w == 5) {
-									gui.comboBox5.setSelectedItem(isDoing);
-								} else if (w == 6) {
-									gui.comboBox12.setSelectedItem(isDoing);
-								} else if (w == 7) {
-									gui.comboBox13.setSelectedItem(isDoing);
-								} else if (w == 8) {
-									gui.comboBox8.setSelectedItem(isDoing);
-								} else if (w == 9) {
-									gui.comboBox9.setSelectedItem(isDoing);
-								} else if (w == 10) {
-									gui.comboBox10.setSelectedItem(isDoing);
-								} else if (w == 11) {
-									gui.comboBox11.setSelectedItem(isDoing);
-								} else if (w == 12) {
-									gui.comboBox14.setSelectedItem(isDoing);
-								} else if (w == 13) {
-									gui.comboBox15.setSelectedItem(isDoing);
-								} else if (w == 15) {
-									gui.textField2.setText(isDoing);
-								} else if (w == 34) {
-									nameGUI.textField1.setText(isDoing);
-								}
-							} else {
-								isDoing += c;
-							}
-						} else {
-							if (c == '(') {
-								isDoing = "";
-							} else if (c == ',' || c == ')') {
-								int tempID = Integer.parseInt(isDoing);
-								boolean val = false;
-								if (tempID == 1) {
-									val = true;
-								}
-								if (w == 14) {
-									gui.textField1.setText(isDoing);
-								} else if (w == 16) {
-									gui.checkBox1.setSelected(val);
-								} else if (w == 17) {
-									gui.checkBox2.setSelected(val);
-								} else if (w == 18) {
-									gui.checkBox3.setSelected(val);
-								} else if (w == 19) {
-									gui.checkBox5.setSelected(val);
-								} else if (w == 20) {
-									gui.checkBox6.setSelected(val);
-								} else if (w == 21) {
-									gui.checkBox7.setSelected(val);
-								} else if (w == 22) {
-									gui.checkBox4.setSelected(val);
-								} else if (w == 23) {
-									gui.checkBox8.setSelected(val);
-								} else if (w == 24) {
-									gui.checkBox9.setSelected(val);
-								} else if (w == 25) {
-									gui.checkBox10.setSelected(val);
-								} else if (w == 26) {
-									gui.checkBox11.setSelected(val);
-								} else if (w == 27) {
-									gui.checkBox12.setSelected(val);
-								} else if (w == 28) {
-									gui.checkBox13.setSelected(val);
-								} else if (w == 29) {
-									gui.checkBox14.setSelected(val);
-								} else if (w == 30) {
-									gui.checkBox17.setSelected(val);
-								} else if (w == 31) {
-									gui.checkBox18.setSelected(val);
-								} else if (w == 32) {
-									gui.checkBox15.setSelected(val);
-								} else if (w == 33) {
-									gui.checkBox16.setSelected(val);
-								} else if (w == 35) {
-									gui.slider1.setValue(tempID);
-								}
-								isDoing = "";
-							} else if (c == '0' || c == '1' || c == '2'
-									|| c == '3' || c == '4' || c == '5'
-									|| c == '6' || c == '7' || c == '8'
-									|| c == '9') {
-								isDoing += c;
-							}
-						}
-					}
-				} catch (Exception e) {
-				}
-			}
-			in.close();
-		} catch (Exception e) {
-			return;
-		}
-	}
-
-	private void saveSettings() {
-		try {
-			ArrayList<String> s = new ArrayList<String>();
-			s.add("<Method>(" + (String) gui.comboBox1.getSelectedItem() + ")");
-			s.add("<LogType>(" + (String) gui.comboBox2.getSelectedItem() + ")");
-			s.add("<BowType>(" + (String) gui.comboBox3.getSelectedItem() + ")");
-			s.add("<Knife>(" + (String) gui.comboBox4.getSelectedItem() + ")");
-			s.add("<AxeType>(" + (String) gui.comboBox5.getSelectedItem() + ")");
-			s.add("<Color1>(" + (String) gui.comboBox12.getSelectedItem() + ")");
-			s.add("<Color2>(" + (String) gui.comboBox13.getSelectedItem() + ")");
-			s.add("<Color3>(" + (String) gui.comboBox8.getSelectedItem() + ")");
-			s.add("<Color4>(" + (String) gui.comboBox9.getSelectedItem() + ")");
-			s.add("<Color5>(" + (String) gui.comboBox10.getSelectedItem() + ")");
-			s.add("<Color6>(" + (String) gui.comboBox11.getSelectedItem() + ")");
-			s.add("<Color7>(" + (String) gui.comboBox14.getSelectedItem() + ")");
-			s.add("<Color8>(" + (String) gui.comboBox15.getSelectedItem() + ")");
-			s.add("<Amount>(" + (String) gui.textField1.getText() + ")");
-			s.add("<Name>(" + (String) gui.textField2.getText() + ")");
-			s.add("<WhenDone>(" + getValue(gui.checkBox1.isSelected()) + ")");
-			s.add("<UponLvl>(" + getValue(gui.checkBox2.isSelected()) + ")");
-			s.add("<Hourly>(" + getValue(gui.checkBox3.isSelected()) + ")");
-			s.add("<Before99>(" + getValue(gui.checkBox5.isSelected()) + ")");
-			s.add("<Save>(" + getValue(gui.checkBox6.isSelected()) + ")");
-			s.add("<Update>(" + getValue(gui.checkBox7.isSelected()) + ")");
-			s.add("<Paint>(" + getValue(gui.checkBox4.isSelected()) + ")");
-			s.add("<Chat>(" + getValue(gui.checkBox8.isSelected()) + ")");
-			s.add("<Inventory>(" + getValue(gui.checkBox9.isSelected()) + ")");
-			s.add("<Bar>(" + getValue(gui.checkBox10.isSelected()) + ")");
-			s.add("<BotLine>(" + getValue(gui.checkBox11.isSelected()) + ")");
-			s.add("<BotCross>(" + getValue(gui.checkBox12.isSelected()) + ")");
-			s.add("<UserLine>(" + getValue(gui.checkBox13.isSelected()) + ")");
-			s.add("<UserCross>(" + getValue(gui.checkBox14.isSelected()) + ")");
-			s.add("<BotCircle>(" + getValue(gui.checkBox17.isSelected()) + ")");
-			s.add("<UserCircle>(" + getValue(gui.checkBox18.isSelected()) + ")");
-			s.add("<Message>(" + getValue(gui.checkBox15.isSelected()) + ")");
-			s.add("<Beep>(" + getValue(gui.checkBox16.isSelected()) + ")");
-			s.add("<IRCname>(" + (String) nameGUI.textField1.getText() + ")");
-			s.add("<Speed>(" + (int) gui.slider1.getValue() + ")");
-
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(
-					GlobalConfiguration.Paths.getHomeDirectory()
-							+ File.separator + "Settings" + File.separator
-							+ "UFletch.ini"));
-			for (String str : s) {
-				writer.write(str);
-				writer.newLine();
-			}
-			writer.close();
-		} catch (Exception e) {
-
 		}
 	}
 
@@ -2386,13 +2154,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			gui.setVisible(true);
 		}
 
-		private void item6ActionPerformed(ActionEvent e) {
-			if (nameGUI.checkBox1.isSelected()) {
-				irc.connect();
-				IRCgui.setVisible(true);
-			}
-		}
-
 		private void initComponents() {
 			if (!SystemTray.isSupported()) {
 				JOptionPane.showMessageDialog(null, "SystemTray not supported");
@@ -2425,14 +2186,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				constants.item5.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						item5ActionPerformed(e);
-					}
-				});
-				if (nameGUI.checkBox1.isSelected()) {
-					menu.add(constants.item6);
-				}
-				constants.item6.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						item6ActionPerformed(e);
 					}
 				});
 				try {
@@ -2470,7 +2223,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			} catch (MalformedURLException e) {
 			} catch (IOException e) {
 			}
-			return "nothing new.";
+			return null;
 		}
 
 		private void button3ActionPerformed(ActionEvent e) {
@@ -2502,20 +2255,15 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					+ name + "> </html>");
 		}
 
-		private void button5ActionPerformed(ActionEvent e) {
+		private void button2ActionPerformed(ActionEvent e) {
 			try {
-				Desktop.getDesktop()
-						.browse(new URL(
-								"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WCYVXS8Z7X63C")
+				Desktop.getDesktop().browse(
+						new URL("http://universalscripts.org/highscores.php")
 								.toURI());
 			} catch (MalformedURLException e1) {
 			} catch (IOException e1) {
 			} catch (URISyntaxException e1) {
 			}
-		}
-
-		private void button2ActionPerformed(ActionEvent e) {
-			checkForUpdates();
 		}
 
 		private void button1ActionPerformed(ActionEvent e) {
@@ -2551,8 +2299,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			mouse.setSpeed(Mouse2);
 			button4.setEnabled(false);
 			button3.setEnabled(false);
-			button2.setEnabled(false);
 			textField2.setEnabled(false);
+			saveSettings();
 		}
 
 		private void initComponents() {
@@ -2629,21 +2377,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			panel3 = new JPanel();
 			slider1 = new JSlider();
 			label15 = new JLabel();
-			label26 = new JLabel();
-			checkBox7 = new JCheckBox();
 			label16 = new JLabel();
 			checkBox6 = new JCheckBox();
-			label19 = new JLabel();
-			label20 = new JLabel();
-			label21 = new JLabel();
-			label22 = new JLabel();
 			label23 = new JLabel();
 			checkBox5 = new JCheckBox();
 			label27 = new JLabel();
 			checkBox1 = new JCheckBox();
 			checkBox2 = new JCheckBox();
-			button5 = new JButton();
-			button2 = new JButton();
 			label28 = new JLabel();
 			checkBox3 = new JCheckBox();
 			label29 = new JLabel();
@@ -2652,26 +2392,14 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			checkBox15 = new JCheckBox();
 			label49 = new JLabel();
 			checkBox16 = new JCheckBox();
-
-			panel5 = new JPanel();
-			label50 = new JLabel();
-			label51 = new JLabel();
-			label52 = new JLabel();
-			label53 = new JLabel();
-			label54 = new JLabel();
-			label55 = new JLabel();
-			label56 = new JLabel();
-			label57 = new JLabel();
-			label58 = new JLabel();
-			label59 = new JLabel();
-			label60 = new JLabel();
-			label61 = new JLabel();
-			label62 = new JLabel();
-			label63 = new JLabel();
+			label19 = new JLabel();
+			checkBox7 = new JCheckBox();
+			progressBar1 = new JProgressBar();
+			label20 = new JLabel();
+			button2 = new JButton();
 			button1 = new JButton();
 
 			// ======== this ========
-			setTitle("UFletch - GUI");
 			Container contentPane = getContentPane();
 			contentPane.setLayout(null);
 
@@ -2698,7 +2426,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					label25.setBounds(80, 265, 340, 25);
 
 					// ---- label2 ----
-					label2.setText("<html> <img src = http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/logs.png> </html>");
+					label2.setText("<html> <img src = http://images.wikia.com/runescape/images/5/58/MagicLogs.png> </html>");
 					panel4.add(label2);
 					label2.setBounds(new Rectangle(new Point(5, 35), label2
 							.getPreferredSize()));
@@ -2709,7 +2437,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					comboBox2.setBounds(50, 35, 160, 30);
 
 					// ---- label3 ----
-					label3.setText("<html> <img src = http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/bow.png> </html>");
+					label3.setText("<html> <img src=http://images.wikia.com/runescape/images/7/7f/Magic_longbow.png> </html>");
 					panel4.add(label3);
 					label3.setBounds(new Rectangle(new Point(5, 110), label3
 							.getPreferredSize()));
@@ -2720,13 +2448,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					comboBox3.setBounds(50, 110, 160, 30);
 
 					// ---- label4 ----
-					label4.setText("<html> <img src = http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/knife.png> </html>");
+					label4.setText("<html> <img src = http://images.wikia.com/runescape/images/c/cf/Knife_inventory.png> </html>");
 					panel4.add(label4);
 					label4.setBounds(220, 110, 25,
 							label4.getPreferredSize().height);
 
 					// ---- label5 ----
-					label5.setText("<html> <img src = http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/axe.png> </html>");
+					label5.setText("<html> <img src= http://images.wikia.com/runescape/images/0/0e/Dragon_hatchet.png> </html>");
 					panel4.add(label5);
 					label5.setBounds(220, 35, label5.getPreferredSize().width,
 							30);
@@ -2742,13 +2470,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					comboBox5.setBounds(255, 35, 170, 30);
 
 					// ---- label6 ----
-					label6.setText("<html> <img src = http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/settings.png> </html>");
+					label6.setText("<html> <img src = http://www.veryicon.com/icon/preview/Application/Apollo/Settings%20Icon.jpg> </html>");
 					panel4.add(label6);
 					label6.setBounds(new Rectangle(new Point(5, 180), label6
 							.getPreferredSize()));
 
 					// ---- label7 ----
-					label7.setText("<html> <img src = http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/settings.png> </html>");
+					label7.setText("<html> <img src = http://www.veryicon.com/icon/preview/Application/Apollo/Settings%20Icon.jpg> </html>");
 					panel4.add(label7);
 					label7.setBounds(375, 180, 47, 50);
 
@@ -2822,8 +2550,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					label31.setText("Enable Paint:");
 					label31.setFont(new Font("Tahoma", Font.PLAIN, 16));
 					panel2.add(label31);
-					label31.setBounds(new Rectangle(new Point(5, 0), label31
-							.getPreferredSize()));
+					label31.setBounds(5, 0, label31.getPreferredSize().width,
+							25);
 
 					// ---- label32 ----
 					label32.setText("Over Chatbox:");
@@ -2906,8 +2634,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					checkBox4.setFont(new Font("Tahoma", Font.PLAIN, 16));
 					checkBox4.setSelected(true);
 					panel2.add(checkBox4);
-					checkBox4.setBounds(new Rectangle(new Point(100, 0),
-							checkBox4.getPreferredSize()));
+					checkBox4.setBounds(100, 0,
+							checkBox4.getPreferredSize().width, 25);
 
 					// ---- checkBox8 ----
 					checkBox8.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -3024,7 +2752,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 							comboBox15.getPreferredSize().height);
 
 					// ---- label47 ----
-					label47.setText("<html> <img src= http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/paint.png> </html>");
+					label47.setText("<html> <img src= http://4.bp.blogspot.com/_xlKcL0Tlp-E/SHbVnh5BQHI/AAAAAAAAAQU/dUFrkZcvXWQ/s400/paintbrush.png> </html>");
 					panel2.add(label47);
 					label47.setBounds(265, -5, 125, 115);
 
@@ -3079,7 +2807,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					label18.setBounds(180, 5, 88, 25);
 
 					// ---- label1 ----
-					label1.setText("test");
+					label1.setText("<html><img src =http://universalscripts.org/UFletch_generate.php?user=All> </html>");
 					label1.addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
@@ -3092,14 +2820,14 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					// ---- button4 ----
 					button4.setText("Generate Signature");
 					button4.setForeground(new Color(0, 204, 0));
-					button4.setBackground(Color.white);
+					button4.setBackground(Color.green);
 					button4.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							button4ActionPerformed(e);
 						}
 					});
 					panel1.add(button4);
-					button4.setBounds(275, 5, 155, 25);
+					button4.setBounds(275, 5, 145, 25);
 				}
 				tabbedPane1.addTab("Signature", panel1);
 
@@ -3120,58 +2848,17 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					panel3.add(label15);
 					label15.setBounds(5, 130, 100, 30);
 
-					// ---- label26 ----
-					label26.setText("Auto Update:");
-					label26.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					panel3.add(label26);
-					label26.setBounds(125, 195, 100, 20);
-
-					// ---- checkBox7 ----
-					checkBox7.setText("(Highly Reccomended)");
-					checkBox7.setSelected(true);
-					checkBox7.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					panel3.add(checkBox7);
-					checkBox7.setBounds(220, 195, 190, 20);
-
 					// ---- label16 ----
-					label16.setText("Save Settings:");
+					label16.setText("Save Settings for this account:");
 					label16.setFont(new Font("Tahoma", Font.PLAIN, 16));
 					panel3.add(label16);
-					label16.setBounds(0, 195, 110, 20);
+					label16.setBounds(0, 195, 215, 25);
 
 					// ---- checkBox6 ----
 					checkBox6.setSelected(true);
 					checkBox6.setFont(new Font("Tahoma", Font.PLAIN, 16));
 					panel3.add(checkBox6);
-					checkBox6.setBounds(100, 195, 21, 21);
-
-					// ---- label19 ----
-					label19.setText("Version checker:  Latest Version:");
-					label19.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					label19.setForeground(Color.red);
-					panel3.add(label19);
-					label19.setBounds(0, 220, 235, 20);
-
-					// ---- label20 ----
-					label20.setText(newversion());
-					label20.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					label20.setForeground(Color.blue);
-					panel3.add(label20);
-					label20.setBounds(235, 220, 40, 20);
-
-					// ---- label21 ----
-					label21.setText("Your Version:");
-					label21.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					label21.setForeground(Color.red);
-					panel3.add(label21);
-					label21.setBounds(280, 220, 100, 20);
-
-					// ---- label22 ----
-					label22.setText(urversion());
-					label22.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					label22.setForeground(Color.blue);
-					panel3.add(label22);
-					label22.setBounds(380, 220, 45, 20);
+					checkBox6.setBounds(215, 200, 21, 16);
 
 					// ---- label23 ----
 					label23.setText("logout 20k experince before 99 fletching:");
@@ -3204,34 +2891,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					panel3.add(checkBox2);
 					checkBox2.setBounds(240, 165, 110, 25);
 
-					// ---- button5 ----
-					button5.setText("Donate");
-					button5.setForeground(Color.red);
-					button5.setBackground(Color.red);
-					button5.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							button5ActionPerformed(e);
-							button5ActionPerformed(e);
-						}
-					});
-					panel3.add(button5);
-					button5.setBounds(0, 240, 210, 50);
-
-					// ---- button2 ----
-					button2.setText("Check For Updates");
-					button2.setForeground(Color.red);
-					button2.setBackground(Color.red);
-					button2.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							button2ActionPerformed(e);
-							button2ActionPerformed(e);
-						}
-					});
-					panel3.add(button2);
-					button2.setBounds(210, 240, 215, 50);
-
 					// ---- label28 ----
-					label28.setText("<html> <img src =http://dl.dropbox.com/u/23938245/Scripts/UFletch/Images/camera.png> </html>");
+					label28.setText("<html> <img src =http://cemetery.canadagenweb.org/NB/NBC0002/camera.gif> </html>");
 					panel3.add(label28);
 					label28.setBounds(new Rectangle(new Point(0, 165), label28
 							.getPreferredSize()));
@@ -3249,7 +2910,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					label29.setFont(label29.getFont().deriveFont(Font.BOLD,
 							label29.getFont().getSize() + 20f));
 					panel3.add(label29);
-					label29.setBounds(5, 35, 415, 55);
+					label29.setBounds(5, 35, 415, 50);
 
 					// ---- label30 ----
 					label30.setText("UFletch: FREE, AIO, FLAWLESS!");
@@ -3270,7 +2931,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 
 					// ---- checkBox15 ----
 					checkBox15.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					checkBox15.setSelected(true);
 					panel3.add(checkBox15);
 					checkBox15.setBounds(new Rectangle(new Point(160, 105),
 							checkBox15.getPreferredSize()));
@@ -3284,10 +2944,49 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 
 					// ---- checkBox16 ----
 					checkBox16.setFont(new Font("Tahoma", Font.PLAIN, 16));
-					checkBox16.setSelected(true);
 					panel3.add(checkBox16);
 					checkBox16.setBounds(new Rectangle(new Point(290, 105),
 							checkBox16.getPreferredSize()));
+
+					// ---- label19 ----
+					label19.setText("Load Settings:");
+					label19.setFont(new Font("Tahoma", Font.PLAIN, 16));
+					panel3.add(label19);
+					label19.setBounds(245, 195,
+							label19.getPreferredSize().width, 25);
+
+					// ---- checkBox7 ----
+					checkBox7.setFont(new Font("Tahoma", Font.PLAIN, 16));
+					checkBox7.setSelected(true);
+					panel3.add(checkBox7);
+					checkBox7.setBounds(350, 200,
+							checkBox7.getPreferredSize().width, 15);
+
+					// ---- progressBar1 ----
+					progressBar1.setStringPainted(true);
+					panel3.add(progressBar1);
+					progressBar1.setBounds(0, 240, 210, 50);
+
+					// ---- label20 ----
+					label20.setText("Percentage to next level");
+					label20.setFont(new Font("Tahoma", Font.PLAIN, 16));
+					label20.setForeground(Color.red);
+					panel3.add(label20);
+					label20.setBounds(new Rectangle(new Point(20, 220), label20
+							.getPreferredSize()));
+
+					// ---- button2 ----
+					button2.setText("Highscores");
+					button2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+					button2.setForeground(Color.red);
+					button2.setBackground(new Color(255, 0, 51));
+					panel3.add(button2);
+					button2.setBounds(210, 225, 215, 65);
+					button2.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							button2ActionPerformed(e);
+						}
+					});
 
 					{ // compute preferred size
 						Dimension preferredSize = new Dimension();
@@ -3308,109 +3007,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				}
 				tabbedPane1.addTab("Other Settings", panel3);
 
-				// ======== panel5 ========
-				{
-					panel5.setLayout(null);
-
-					// ---- label50 ----
-					label50.setText("Log Type: The type of log you wish to fletch or chop.");
-					label50.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label50);
-					label50.setBounds(new Rectangle(new Point(0, 5), label50
-							.getPreferredSize()));
-
-					// ---- label51 ----
-					label51.setText("Axe Type: The axe to use while chopping logs.");
-					label51.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label51);
-					label51.setBounds(new Rectangle(new Point(0, 25), label51
-							.getPreferredSize()));
-
-					// ---- label52 ----
-					label52.setText("Knife Type: The Knife to use while fletching.");
-					label52.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label52);
-					label52.setBounds(new Rectangle(new Point(0, 45), label52
-							.getPreferredSize()));
-
-					// ---- label53 ----
-					label53.setText("Bow Type: The type of bow you wish to fletch.");
-					label53.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label53);
-					label53.setBounds(new Rectangle(new Point(0, 65), label53
-							.getPreferredSize()));
-
-					// ---- label54 ----
-					label54.setText("Method: How you want to fletch.");
-					label54.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label54);
-					label54.setBounds(new Rectangle(new Point(0, 85), label54
-							.getPreferredSize()));
-
-					// ---- label55 ----
-					label55.setText("Colors: The color for the checked item.");
-					label55.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label55);
-					label55.setBounds(new Rectangle(new Point(0, 105), label55
-							.getPreferredSize()));
-
-					// ---- label56 ----
-					label56.setText("Signature Name: The name you want on your dynamic signature.");
-					label56.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label56);
-					label56.setBounds(new Rectangle(new Point(0, 125), label56
-							.getPreferredSize()));
-
-					// ---- label57 ----
-					label57.setText("20k before 99: Logs you out 20k experince before 99 fletching.");
-					label57.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label57);
-					label57.setBounds(new Rectangle(new Point(0, 145), label57
-							.getPreferredSize()));
-
-					// ---- label58 ----
-					label58.setText("Message Notification: Notifiys you when someone talks.");
-					label58.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label58);
-					label58.setBounds(0, 165, 340,
-							label58.getPreferredSize().height);
-
-					// ---- label59 ----
-					label59.setText("Message Beep: Makes a beeping sound twice when someone talks.");
-					label59.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label59);
-					label59.setBounds(new Rectangle(new Point(0, 185), label59
-							.getPreferredSize()));
-
-					// ---- label60 ----
-					label60.setText("Mouse Speed: How fast the bots mouse should move.");
-					label60.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label60);
-					label60.setBounds(new Rectangle(new Point(0, 205), label60
-							.getPreferredSize()));
-
-					// ---- label61 ----
-					label61.setText("Screenshots: Takes a screenshot at the selected times.");
-					label61.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label61);
-					label61.setBounds(new Rectangle(new Point(0, 225), label61
-							.getPreferredSize()));
-
-					// ---- label62 ----
-					label62.setText("Save Settings: Saves the settings to be loaded next time.");
-					label62.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label62);
-					label62.setBounds(new Rectangle(new Point(0, 245), label62
-							.getPreferredSize()));
-
-					// ---- label63 ----
-					label63.setText("Auto-Update: Tells you when the bot is outdated and updates it.");
-					label63.setFont(new Font("Tahoma", Font.PLAIN, 14));
-					panel5.add(label63);
-					label63.setBounds(new Rectangle(new Point(0, 265), label63
-							.getPreferredSize()));
-				}
-				tabbedPane1.addTab("About", panel5);
 			}
 			contentPane.add(tabbedPane1);
 			tabbedPane1.setBounds(5, 0, 515, 295);
@@ -3531,21 +3127,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		private JPanel panel3;
 		private JSlider slider1;
 		private JLabel label15;
-		private JLabel label26;
-		private JCheckBox checkBox7;
 		private JLabel label16;
 		private JCheckBox checkBox6;
-		private JLabel label19;
-		private JLabel label20;
-		private JLabel label21;
-		private JLabel label22;
 		private JLabel label23;
 		private JCheckBox checkBox5;
 		private JLabel label27;
 		private JCheckBox checkBox1;
 		private JCheckBox checkBox2;
-		private JButton button5;
-		private JButton button2;
 		private JLabel label28;
 		private JCheckBox checkBox3;
 		private JLabel label29;
@@ -3554,26 +3142,16 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		private JCheckBox checkBox15;
 		private JLabel label49;
 		private JCheckBox checkBox16;
-		private JPanel panel5;
-		private JLabel label50;
-		private JLabel label51;
-		private JLabel label52;
-		private JLabel label53;
-		private JLabel label54;
-		private JLabel label55;
-		private JLabel label56;
-		private JLabel label57;
-		private JLabel label58;
-		private JLabel label59;
-		private JLabel label60;
-		private JLabel label61;
-		private JLabel label62;
-		private JLabel label63;
+		private JLabel label19;
+		private JCheckBox checkBox7;
+		private JProgressBar progressBar1;
+		private JLabel label20;
+		private JButton button2;
 		private JButton button1;
 		// JFormDesigner - End of variables declaration //GEN-END:variables
+
 	}
 
-	@Override
 	public void mouseClicked(MouseEvent e) {
 		p = e.getPoint();
 		if (p.x >= 9 && p.x <= 36 && p.y >= 347 && p.y <= 372 || p.x >= 716
@@ -3588,6 +3166,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		if (p.x >= 360 && p.x <= 460 && p.y >= 440 && p.y <= 464 || p.x >= 603
 				&& p.x <= 704 && p.y >= 282 && p.y <= 307) {
 			gui.button1.setText("Update!");
+			gui.progressBar1.setValue(skills
+					.getPercentToNextLevel(Skills.FLETCHING));
 			gui.setVisible(true);
 		}
 	}
@@ -3644,7 +3224,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			return;
 		}
 
-		@Override
 		public void run() {
 			while (!b.isInterrupted()) {
 				text();
@@ -3665,456 +3244,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			}
 			return "";
 		}
-	}
-
-	public class Irc extends Thread implements Runnable {
-		BufferedWriter writer = null;
-		BufferedReader reader = null;
-		Socket socket = null;
-
-		@Override
-		public void run() {
-			checkForWords();
-			return;
-		}
-
-		public Irc() {
-			connect();
-		}
-
-		public void sendMessage(String message) {
-			this.sendRaw("PRIVMSG " + constants.channel + " :" + message);
-		}
-
-		public void sendRaw(String line) {
-			try {
-				writer.write(line + "\n");
-				writer.flush();
-			} catch (IOException ioe) {
-			}
-		}
-
-		public void leave() {
-			sendRaw("QUIT " + constants.channel + "\n");
-			try {
-				socket.close();
-			} catch (IOException e) {
-			}
-		}
-
-		private void listAllNick(String message) {
-			StringTokenizer st = new StringTokenizer(message);
-			while (st.hasMoreTokens()) {
-				try {
-					users.insertString(users.getLength(),
-							"\n" + st.nextToken(), new SimpleAttributeSet());
-				} catch (BadLocationException e) {
-				}
-			}
-		}
-
-		public String IRCMessage(String IRCLine) {
-			int index = 0;
-			IRCLine.trim();
-			index = IRCLine.indexOf(":", 2);
-			if (index != -1) {
-				return IRCLine.substring(index + 1);
-			}
-			return IRCLine;
-		}
-
-		public void checkForWords() {
-			String line = null;
-			String text = null;
-			try {
-				while ((line = reader.readLine()) != null) {
-					if (line.contains("PING")) {
-						sendRaw("PONG " + line.substring(4) + "\r\n");
-					} else if (line.contains("JOIN")
-							&& !IRCgui.textArea2.getText().contains(
-							getIRCUserName(line))) {
-						users.insertString(users.getLength(), "\n"
-								+ getIRCUserName(line),
-								new SimpleAttributeSet());
-					} else if (line.contains("PART")
-							|| line.contains("QUIT")
-							&& IRCgui.textArea2.getText().contains(
-							getIRCUserName(line))) {
-						users.remove(
-								IRCgui.textArea2.getText().indexOf(
-										getIRCUserName(line).trim()) - 1,
-								getIRCUserName(line).length() + 1);
-					} else if (line.contains("KICK")
-							&& getIRCUserName(line).equals(
-							nameGUI.textField1.getText())) {
-						nameGUI.setVisible(false);
-						irc.leave();
-						JOptionPane.showMessageDialog(null,
-								"You have been kicked.");
-					} else if (!line.contains("PING") && !line.contains("QUIT")) {
-						text = IRCMessage(line);
-						doc.insertString(0, "\n(" + getTimeStamp() + ")<"
-								+ getIRCUserName(line) + ">: " + text,
-								new SimpleAttributeSet());
-					}
-				}
-			} catch (IOException e) {
-			} catch (BadLocationException e) {
-			}
-		}
-
-		public String getTimeStamp() {
-			Timestamp st = new Timestamp(System.currentTimeMillis());
-			String time = st.toString();
-			return time.substring(0, time.indexOf("."));
-		}
-
-		protected String getIRCUserName(String line) {
-			Pattern userPattern = Pattern.compile("^:\\w*!",
-					Pattern.CASE_INSENSITIVE);
-			Matcher user = userPattern.matcher(line);
-			String username = null;
-			if (user.find()) {
-				username = line.substring(user.start() + 1, user.end() - 1);
-				return username;
-			}
-			return "";
-		}
-
-		public void connect() {
-			String line = null;
-			try {
-				socket = new Socket(constants.server, 6667);
-				writer = new BufferedWriter(new OutputStreamWriter(
-						socket.getOutputStream()));
-				reader = new BufferedReader(new InputStreamReader(
-						socket.getInputStream()));
-				sendRaw("USER " + nameGUI.textField1.getText() + " 8 * :"
-						+ nameGUI.textField1.getText() + "\n");
-				sendRaw("NICK " + nameGUI.textField1.getText() + "\r\n");
-				while ((line = reader.readLine()) != null) {
-					if (line.indexOf("433") >= 0) {
-						log("Nickname is already in use.");
-						JOptionPane.showMessageDialog(null,
-								"Name taken please change your name!");
-						nameGUI.setVisible(true);
-						while (nameGUI.isVisible()) {
-							sleep(random(200, 400));
-						}
-						sendRaw("USER " + nameGUI.textField1.getText()
-								+ " 8 * :" + nameGUI.textField1.getText()
-								+ "\n");
-						sendRaw("NICK " + nameGUI.textField1.getText() + "\r\n");
-					}
-					if (line.indexOf("376") >= 0) {
-						sendRaw("JOIN " + constants.channel + "\r\n");
-						break;
-					}
-					if (line.indexOf("353") >= 0) {
-
-					}
-				}
-				while ((line = reader.readLine()) != null) {
-					if (line.indexOf("353") >= 0) {
-						listAllNick(IRCMessage(line));
-						Thread.sleep(100);
-						break;
-					}
-				}
-				while ((line = reader.readLine()) != null) {
-					if (line.indexOf("366") >= 0) {
-						break;
-					}
-				}
-			} catch (IOException e) {
-			} catch (InterruptedException e) {
-			}
-		}
-	}
-
-	public class IRCGui extends JFrame {
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public IRCGui() {
-			initComponents();
-			textArea1.setCaretPosition(textArea1.getDocument().getLength());
-		}
-
-		private void button1ActionPerformed(ActionEvent e) {
-			performAction();
-		}
-
-		private void button2ActionPerformed(ActionEvent e) {
-			clearScreen();
-		}
-
-		public void clearScreen() {
-			try {
-				doc.remove(0, doc.getLength());
-			} catch (BadLocationException e) {
-			}
-		}
-
-		private void performAction() {
-			if (IRCgui.textField1.getText().equals("/clear")) {
-				clearScreen();
-			} else if (!IRCgui.textField1.getText().equals("/clear")) {
-				irc.sendMessage(IRCgui.textField1.getText());
-				try {
-					doc.insertString(0, "\n(" + irc.getTimeStamp() + ")<"
-							+ nameGUI.textField1.getText() + ">: "
-							+ IRCgui.textField1.getText(),
-							new SimpleAttributeSet());
-				} catch (BadLocationException e1) {
-				}
-			}
-			textField1.setText("");
-		}
-
-		private void initComponents() {
-			// JFormDesigner - Component initialization - DO NOT MODIFY
-			// //GEN-BEGIN:initComponents
-			textField1 = new JTextField();
-			button1 = new JButton();
-			label1 = new JLabel();
-			label2 = new JLabel();
-			scrollPane2 = new JScrollPane();
-			textArea1 = new JTextArea();
-			scrollPane3 = new JScrollPane();
-			textArea2 = new JTextArea();
-			button2 = new JButton();
-
-			// ======== this ========
-			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			setTitle("UFletch - IRC");
-			setIconImage(null);
-			setResizable(false);
-			addWindowListener(new WindowListener() {
-				public void windowClosed(WindowEvent arg0) {
-					irc.leave();
-				}
-
-				public void windowActivated(WindowEvent arg0) {
-				}
-
-				public void windowClosing(WindowEvent arg0) {
-				}
-
-				public void windowDeactivated(WindowEvent arg0) {
-				}
-
-				public void windowDeiconified(WindowEvent arg0) {
-				}
-
-				public void windowIconified(WindowEvent arg0) {
-				}
-
-				public void windowOpened(WindowEvent arg0) {
-				}
-			});
-			Container contentPane = getContentPane();
-			contentPane.setLayout(null);
-			contentPane.add(textField1);
-			textField1.setBounds(0, 295, 555, 35);
-			textField1.addKeyListener(new KeyListener() {
-				@Override
-				public void keyPressed(KeyEvent e) {
-					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						performAction();
-					}
-				}
-
-				@Override
-				public void keyReleased(KeyEvent arg0) {
-				}
-
-				@Override
-				public void keyTyped(KeyEvent arg0) {
-				}
-			});
-
-			// ---- button1 ----
-			button1.setText("Send");
-			button1.setFont(button1.getFont().deriveFont(
-					button1.getFont().getSize() + 5f));
-			button1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					button1ActionPerformed(e);
-				}
-			});
-			contentPane.add(button1);
-			button1.setBounds(555, 295, 75, 35);
-
-			// ---- label1 ----
-			label1.setText("Users");
-			label1.setFont(label1.getFont().deriveFont(
-					label1.getFont().getSize() + 5f));
-			contentPane.add(label1);
-			label1.setBounds(605, 5, 50, 20);
-
-			// ---- label2 ----
-			label2.setText("Chat Area");
-			label2.setFont(label2.getFont().deriveFont(
-					label2.getFont().getSize() + 5f));
-			contentPane.add(label2);
-			label2.setBounds(230, 5, 85, 20);
-
-			// ======== scrollPane2 ========
-			{
-
-				// ---- textArea1 ----
-				textArea1.setEditable(false);
-				textArea1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-				scrollPane2.setViewportView(textArea1);
-			}
-			contentPane.add(scrollPane2);
-			scrollPane2.setBounds(0, 30, 555, 265);
-
-			// ======== scrollPane3 ========
-			{
-
-				// ---- textArea2 ----
-				textArea2.setEditable(false);
-				textArea2.setFont(new Font("Tahoma", Font.PLAIN, 11));
-				scrollPane3.setViewportView(textArea2);
-			}
-			contentPane.add(scrollPane3);
-			scrollPane3.setBounds(560, 30, 140, 265);
-
-			// ---- button2 ----
-			button2.setText("Clear");
-			button2.setFont(button2.getFont().deriveFont(
-					button2.getFont().getSize() + 5f));
-			contentPane.add(button2);
-			button2.setBounds(630, 295, 70, 35);
-			button2.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					button2ActionPerformed(e);
-				}
-			});
-
-			{ // compute preferred size
-				Dimension preferredSize = new Dimension();
-				for (int i = 0; i < contentPane.getComponentCount(); i++) {
-					Rectangle bounds = contentPane.getComponent(i).getBounds();
-					preferredSize.width = Math.max(bounds.x + bounds.width,
-							preferredSize.width);
-					preferredSize.height = Math.max(bounds.y + bounds.height,
-							preferredSize.height);
-				}
-				Insets insets = contentPane.getInsets();
-				preferredSize.width += insets.right;
-				preferredSize.height += insets.bottom;
-				contentPane.setMinimumSize(preferredSize);
-				contentPane.setPreferredSize(preferredSize);
-			}
-			setSize(710, 355);
-			setLocationRelativeTo(getOwner());
-			textArea1.setAutoscrolls(true);
-			// JFormDesigner - End of component initialization
-			// //GEN-END:initComponents
-		}
-
-		// JFormDesigner - Variables declaration - DO NOT MODIFY
-		// //GEN-BEGIN:variables
-		private JTextField textField1;
-		private JButton button1;
-		private JLabel label1;
-		private JLabel label2;
-		private JScrollPane scrollPane2;
-		private JTextArea textArea1;
-		private JScrollPane scrollPane3;
-		private JTextArea textArea2;
-		private JButton button2;
-		// JFormDesigner - End of variables declaration //GEN-END:variables
-	}
-
-	public class ircNameGUI extends JFrame {
-		private static final long serialVersionUID = 1L;
-
-		public ircNameGUI() {
-			initComponents();
-		}
-
-		private void initComponents() {
-			// JFormDesigner - Component initialization - DO NOT MODIFY
-			// //GEN-BEGIN:initComponents
-			checkBox1 = new JCheckBox();
-			label1 = new JLabel();
-			button1 = new JButton();
-			textField1 = new JTextField();
-
-			// ======== this ========
-			Container contentPane = getContentPane();
-			contentPane.setLayout(null);
-
-			// ---- checkBox1 ----
-			checkBox1.setText("Use Irc Chat system");
-			checkBox1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			contentPane.add(checkBox1);
-			checkBox1.setBounds(new Rectangle(new Point(5, 25), checkBox1
-					.getPreferredSize()));
-
-			// ---- label1 ----
-			label1.setText("Name:");
-			label1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			contentPane.add(label1);
-			label1.setBounds(new Rectangle(new Point(5, 5), label1
-					.getPreferredSize()));
-
-			// ---- button1 ----
-			button1.setText("Start");
-			button1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			button1.setForeground(Color.blue);
-			contentPane.add(button1);
-			button1.setBounds(5, 55, 165, 35);
-			contentPane.add(textField1);
-			textField1.setBounds(55, 5, 110,
-					textField1.getPreferredSize().height);
-			button1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					button1ActionPerformed(e);
-				}
-
-				private void button1ActionPerformed(ActionEvent e) {
-					setVisible(false);
-					if (gui.checkBox6.isSelected()) {
-						saveSettings();
-					}
-				}
-			});
-
-			{ // compute preferred size
-				Dimension preferredSize = new Dimension();
-				for (int i = 0; i < contentPane.getComponentCount(); i++) {
-					Rectangle bounds = contentPane.getComponent(i).getBounds();
-					preferredSize.width = Math.max(bounds.x + bounds.width,
-							preferredSize.width);
-					preferredSize.height = Math.max(bounds.y + bounds.height,
-							preferredSize.height);
-				}
-				Insets insets = contentPane.getInsets();
-				preferredSize.width += insets.right;
-				preferredSize.height += insets.bottom;
-				contentPane.setMinimumSize(preferredSize);
-				contentPane.setPreferredSize(preferredSize);
-			}
-			pack();
-			setLocationRelativeTo(getOwner());
-			// JFormDesigner - End of component initialization
-			// //GEN-END:initComponents
-		}
-
-		// JFormDesigner - Variables declaration - DO NOT MODIFY
-		// //GEN-BEGIN:variables
-		private JCheckBox checkBox1;
-		private JLabel label1;
-		private JButton button1;
-		private JTextField textField1;
-		// JFormDesigner - End of variables declaration //GEN-END:variables
 	}
 
 }
