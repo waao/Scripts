@@ -1,340 +1,290 @@
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
+import org.rsbot.event.events.MessageEvent;
+import org.rsbot.event.listeners.MessageListener;
+import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.script.Script;
+import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Game;
+import org.rsbot.script.methods.Magic;
+import org.rsbot.script.methods.Skills;
+import org.rsbot.script.util.WindowUtil;
+import org.rsbot.script.wrappers.*;
+import org.rsbot.util.GlobalConfiguration;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Collections;
-
-import java.text.NumberFormat;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.BufferedWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-
-import java.net.URL;
-import java.net.MalformedURLException;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JList;
-import javax.swing.JTextArea;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.ImageIcon;
-import javax.swing.DefaultListModel;
-import javax.swing.DefaultComboBoxModel;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 
-import org.rsbot.event.listeners.PaintListener;
-import org.rsbot.event.listeners.MessageListener;
-import org.rsbot.event.events.MessageEvent;
-import org.rsbot.script.Script;
-import org.rsbot.script.ScriptManifest;
-import org.rsbot.script.Random;
-import org.rsbot.script.wrappers.RSPlayer;
-import org.rsbot.script.wrappers.RSNPC;
-import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.script.wrappers.RSArea;
-import org.rsbot.script.wrappers.RSObject;
-import org.rsbot.script.wrappers.RSModel;
-import org.rsbot.script.wrappers.RSItem;
-import org.rsbot.script.wrappers.RSInterface;
-import org.rsbot.script.wrappers.RSComponent;
-import org.rsbot.script.util.WindowUtil;
-import org.rsbot.util.GlobalConfiguration;
+@ScriptManifest(authors = {"TerraBubble"}, keywords = "Combat", name = "FOGRunner", version = 1.51, description = "A Fist of Guthix playing script by TerraBubble")
 
-@ScriptManifest(authors = { "TerraBubble" }, keywords = "Combat", name = "FOGRunner", version = 1.51, description = "A Fist of Guthix playing script by TerraBubble")
+public class FOGRunner extends Script implements PaintListener, MessageListener, MouseListener, MouseMotionListener {
+	private final ScriptManifest properties = getClass().getAnnotation(ScriptManifest.class);
 
-public class FOGRunner extends Script implements PaintListener, MessageListener,
-													MouseListener, MouseMotionListener{
-	
-	final ScriptManifest properties = getClass().getAnnotation(ScriptManifest.class);
-	
 	// The GUI
 	private FOGRunner.FOGRunnerGUI gui;
 	// For Mouse Paint
-	public BufferedImage normal = null;
-	public BufferedImage clicked = null;
-	public BufferedImage upArrow = null;
-	public BufferedImage downArrow = null;
+	private BufferedImage normal = null;
+	private BufferedImage clicked = null;
+	private BufferedImage upArrow = null;
+	private BufferedImage downArrow = null;
 	// For Main Game Stats Paint
-	public int cornerNum = 5;
-	public int statsPaint = 2;
-	public double statsAlpha = 1.0;
-	public long startTime = System.currentTimeMillis();
-	public long runTime = 0;
-	public long seconds = 0;
-	public long minutes = 0;
-	public long hours = 0;
-	public int startTokens = 0;
-	public int tokensPerHour = 0;
-	public int tokensGained = 0;
-	public int currentTokens = 0;
-	public int bankedTokens = 0;
-	public int gamesPlayed = 0;
-	public int gamesPerHour = 0;
-	public int gamesWon = 0;
-	public int gamesLost = 0;
-	public int userMouseX = 0;
-	public int userMouseY = 0;
-	public boolean userMousePressed = false;
+	private final int cornerNum = 5;
+	private int statsPaint = 2;
+	private double statsAlpha = 1.0;
+	private long startTime = System.currentTimeMillis();
+	private long runTime = 0;
+	private long seconds = 0;
+	private long minutes = 0;
+	private long hours = 0;
+	private int startTokens = 0;
+	private int tokensPerHour = 0;
+	private int tokensGained = 0;
+	private int currentTokens = 0;
+	private int bankedTokens = 0;
+	private int gamesPlayed = 0;
+	private int gamesPerHour = 0;
+	private int gamesWon = 0;
+	private int gamesLost = 0;
+	private int userMouseX = 0;
+	private int userMouseY = 0;
+	private boolean userMousePressed = false;
 	// Extra Game Stats Paint
-	public int moreStats = 0;
-	public int moreStatsOffset = 0;
-	public double[] textAlpha = { 0, 0, 0, 0, 0, 0, 0, 0 };
-	public int gamesWonPerHour = 0;
-	public int gamesLostPerHour = 0;
-	public int averageCharges = 0;
-	public int averageChargesOpponent = 0;
-	public int totalCharges = 0;
-	public int totalChargesO = 0;
-	public int startRating = 0;
-	public int currentRating = 0;
-	public int gainedRating = 0;
+	private int moreStats = 0;
+	private int moreStatsOffset = 0;
+	private final double[] textAlpha = {0, 0, 0, 0, 0, 0, 0, 0};
+	private int gamesWonPerHour = 0;
+	private int gamesLostPerHour = 0;
+	private int averageCharges = 0;
+	private int averageChargesOpponent = 0;
+	private int totalCharges = 0;
+	private int totalChargesO = 0;
+	private int startRating = 0;
+	private int currentRating = 0;
+	private int gainedRating = 0;
 	// Status Paint
-	public int statusPaint = 2;
-	public double statusAlpha = 1.0;
-	public String status = "Starting Up...";
-	public String overallStatus = "NULL";
+	private int statusPaint = 2;
+	private double statusAlpha = 1.0;
+	private String status = "Starting Up...";
+	private String overallStatus = "NULL";
 	// Player Exp/Levels Paint
-	public int expPaint = 2;
-	public double expAlpha = 1.0;
-	public int[] expYs = { 345, 358, 371, 384, 397, 410, 423 };
-	public int nextPlace = 0;
-	public int startAttackExp = 0;
-	public int startStrengthExp = 0;
-	public int startDefenceExp = 0;
-	public int startMagicExp = 0;
-	public int startRangeExp = 0;
-	public int startConstitutionExp = 0;
-	public int startAttackLevel = 0;
-	public int startStrengthLevel = 0;
-	public int startDefenceLevel = 0;
-	public int startMagicLevel = 0;
-	public int startRangeLevel = 0;
-	public int startConstitutionLevel = 0;
-	public Rectangle attackBox = new Rectangle(7, 0, 490, 13);
-	public Rectangle strengthBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
-	public Rectangle defenceBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
-	public Rectangle magicBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
-	public Rectangle rangeBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
-	public Rectangle constitutionBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
-	public Rectangle expGradientBox = new Rectangle(attackBox.x, expYs[nextPlace], attackBox.width, 30);
+	private int expPaint = 2;
+	private double expAlpha = 1.0;
+	private final int[] expYs = {345, 358, 371, 384, 397, 410, 423};
+	private int nextPlace = 0;
+	private int startAttackExp = 0;
+	private int startStrengthExp = 0;
+	private int startDefenceExp = 0;
+	private int startMagicExp = 0;
+	private int startRangeExp = 0;
+	private int startConstitutionExp = 0;
+	private int startAttackLevel = 0;
+	private int startStrengthLevel = 0;
+	private int startDefenceLevel = 0;
+	private int startMagicLevel = 0;
+	private int startRangeLevel = 0;
+	private int startConstitutionLevel = 0;
+	private final Rectangle attackBox = new Rectangle(7, 0, 490, 13);
+	private final Rectangle strengthBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle defenceBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle magicBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle rangeBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle constitutionBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle expGradientBox = new Rectangle(attackBox.x, expYs[nextPlace], attackBox.width, 30);
 	// Button Rectangles
-	public Rectangle statusButtonRec = new Rectangle(560, 443, 51, 15);
-	public Rectangle expButtonRec = new Rectangle(statusButtonRec.x + 57, 443, 51, 15);
-	public Rectangle statsButtonRec = new Rectangle(expButtonRec.x + 57, 443, 51, 15);
-	public Rectangle moreStatsButtonRec = new Rectangle(expButtonRec.x - 10, 443 - 15, 71, 12);
+	private final Rectangle statusButtonRec = new Rectangle(560, 443, 51, 15);
+	private final Rectangle expButtonRec = new Rectangle(statusButtonRec.x + 57, 443, 51, 15);
+	private final Rectangle statsButtonRec = new Rectangle(expButtonRec.x + 57, 443, 51, 15);
+	private final Rectangle moreStatsButtonRec = new Rectangle(expButtonRec.x - 10, 443 - 15, 71, 12);
 	// Tile Paint
-	public boolean canDrawTheirTile = false;
-	public boolean canDrawInfo = false;
-	
+	private boolean canDrawTheirTile = false;
+	private boolean canDrawInfo = false;
+
 	// For GUI
 	// Main Things
-	public boolean dieScript = false;
-	public BufferedImage banner = null;
-	public boolean success = false;
-	public final File scriptFile = new File(new File(GlobalConfiguration.Paths.getScriptsSourcesDirectory()), "FOGRunner.java");
-	public final File settingsFile = new File(new File(GlobalConfiguration.Paths.getSettingsDirectory()), "FOGRunner.txt");
-	public final File bannerFile = new File(new File(GlobalConfiguration.Paths.getScriptsDirectory()), "FOGRunner.png");
-	public boolean loadBannerFromFile = true;
+	private boolean dieScript = false;
+	private BufferedImage banner = null;
+	private boolean success = false;
+	public final File scriptFile = new File(new File(GlobalConfiguration.Paths.getScriptCacheDirectory()), "FOGRunner.java");
+	private final File settingsFile = new File(new File(GlobalConfiguration.Paths.getScriptCacheDirectory()), "FOGRunner.txt");
+	private final File bannerFile = new File(new File(GlobalConfiguration.Paths.getScriptsDirectory()), "FOGRunner.png");
+	private boolean loadBannerFromFile = true;
 	// Misc Options
-	public boolean useAntiBan = true;
-	public boolean useBandages = true;
-	public boolean usePrayers = false;
-	public boolean useAttackPrayers = false;
-	public boolean useSkinPrayers = false;
-	public boolean useQuickPrayers = false;
-	public String quickPrayersLong = "When Hunting";
-	public boolean bankTokens = false;
-	public boolean search = true;
-	public boolean screenshots = true;
-	public int tokensBeforeBank = 9000;
-	public String tokensBeforeBankS = "9000";
-	public int mouseSpeed = 7;
+	private boolean useAntiBan = true;
+	private boolean useBandages = true;
+	private boolean usePrayers = false;
+	private boolean useAttackPrayers = false;
+	private boolean useSkinPrayers = false;
+	private boolean useQuickPrayers = false;
+	private String quickPrayersLong = "When Hunting";
+	private boolean bankTokens = false;
+	private boolean search = true;
+	private boolean screenshots = true;
+	private int tokensBeforeBank = 9000;
+	private String tokensBeforeBankS = "9000";
+	private int mouseSpeed = 7;
 	// When to use teleorb vars
-	public String teleorbLong = "When being Hunted";
-	public String teleorb = "NULL";
+	private String teleorbLong = "When being Hunted";
+	private String teleorb = "NULL";
 	// Various vars for setting up the items to wield
-	public int[]    inventoryItemsIDsX = new int[28];
-	public int      inventoryItemsNumP;
-	public int[]    inventoryItemsIDsP = new int[28];
-	public String[] inventoryItemsNamesP = new String[28];
-	public int      inventoryItemsNum = 0;
-	public int[]    inventoryItemsIDs = new int[39];
-	public String[] inventoryItemsNames = new String[39];
-	public int      equipmentItemsNum;
-	public int[]    equipmentItemsIDsX = new int[11];
-	public int[]    equipmentItemsIDs = new int[11];
-	public String[] equipmentItemsNames = new String[11];
-	
+	private final int[] inventoryItemsIDsX = new int[28];
+	private int inventoryItemsNumP;
+	private final int[] inventoryItemsIDsP = new int[28];
+	private final String[] inventoryItemsNamesP = new String[28];
+	private int inventoryItemsNum = 0;
+	private final int[] inventoryItemsIDs = new int[39];
+	private final String[] inventoryItemsNames = new String[39];
+	private int equipmentItemsNum;
+	private final int[] equipmentItemsIDsX = new int[11];
+	private final int[] equipmentItemsIDs = new int[11];
+	private final String[] equipmentItemsNames = new String[11];
+
 	// ATTACK
 	// Arrays containing the inventoryList item index positions for wielding items for each combat style
-	public int[] meleeListIDsAdded = new int[11];
-	public int[] magicListIDsAdded = new int[11];
-	public int[] rangeListIDsAdded = new int[11];
+	private final int[] meleeListIDsAdded = new int[11];
+	private final int[] magicListIDsAdded = new int[11];
+	private final int[] rangeListIDsAdded = new int[11];
 	// Arrays containing the actual inventory IDs for wielding items for each Combat Style
-	public int[] meleeEquipment;
-	public int[] rangeEquipment;
-	public int[] magicEquipment;
+	private int[] meleeEquipment;
+	private int[] rangeEquipment;
+	private int[] magicEquipment;
 	// Whether Combat Styles are active
-	public boolean meleeActive = true;
-	public boolean magicActive = true;
-	public boolean rangeActive = false;
+	private boolean meleeActive = true;
+	private boolean magicActive = true;
+	private boolean rangeActive = false;
 	// Attack Options for each combat style
-	public String meleeAttackStyle = "Attack EXP";
-	public String magicSpell = "Auto Highest (F2P)";
-	public String rangeAttackStyle = "Accurate";
+	private String meleeAttackStyle = "Attack EXP";
+	private String magicSpell = "Auto Highest (F2P)";
+	private String rangeAttackStyle = "Accurate";
 	// First Attack Style to Use
-	public String firstStyle = "Melee";
+	private String firstStyle = "Melee";
 	// The Current Attack Style
-	public String currentStyle = "Melee";
+	private String currentStyle = "Melee";
 	// Items to wield vars
-	public int inventoryListSelectedID;
-	public String[] startStylesP = new String[3];
-	public String[] startStyles1 = new String[1];
-	public String[] startStyles2 = new String[2];
-	public String[] startStyles3 = new String[3];
-	
+	private int inventoryListSelectedID;
+	private final String[] startStylesP = new String[3];
+	private final String[] startStyles1 = new String[1];
+	private final String[] startStyles2 = new String[2];
+	private final String[] startStyles3 = new String[3];
+
 	// DEFENCE
 	// Arrays containing the inventoryList item index positions for wielding items for each combat style
-	public int[] meleeListIDsAddedDefence = new int[11];
-	public int[] magicListIDsAddedDefence = new int[11];
-	public int[] rangeListIDsAddedDefence = new int[11];
+	private final int[] meleeListIDsAddedDefence = new int[11];
+	private final int[] magicListIDsAddedDefence = new int[11];
+	private final int[] rangeListIDsAddedDefence = new int[11];
 	// Arrays containing the actual inventory IDs for wielding items for each Combat Style
-	public int[] meleeEquipmentDefence;
-	public int[] rangeEquipmentDefence;
-	public int[] magicEquipmentDefence;
+	private int[] meleeEquipmentDefence;
+	private int[] rangeEquipmentDefence;
+	private int[] magicEquipmentDefence;
 	// Whether Combat Styles are active
-	public boolean meleeActiveDefence = true;
-	public boolean magicActiveDefence = true;
-	public boolean rangeActiveDefence = false;
+	private boolean meleeActiveDefence = true;
+	private boolean magicActiveDefence = true;
+	private boolean rangeActiveDefence = false;
 	// Whether to unequip other items in defence
 	public boolean meleeUnequip = false;
 	public boolean magicUnequip = false;
 	public boolean rangeUnequip = false;
 	// Defence Style
-	public String currentStyleDefence = "Melee";
-	public boolean FSGame = false;
+	private String currentStyleDefence = "Melee";
+	private boolean FSGame = false;
 	// Items to wield vars
-	public int inventoryListSelectedIDDefence;
-	
+	private int inventoryListSelectedIDDefence;
+
 	// For Script
 	// Spellbook Constants
-	public final int MODERN_SPELLBOOK = 192;
-	public final int ANCIENT_SPELLBOOK = 193;
-	public final int SPELL_WIND_RUSH = 98;
+	private final int MODERN_SPELLBOOK = 192;
+	private final int ANCIENT_SPELLBOOK = 193;
+	private final int SPELL_WIND_RUSH = 98;
 	// What triggers the attack style to switch
-	public boolean prayerSwitch = false;
-	public boolean meleeSafeSpotSwitch = false;
-	public boolean randomGameSwitch = true;
-	public int nextRandomSwitch = 3;
-	public boolean everyGameSwitch = false;
-	public boolean hitSwitch = false;
-	public int hitSwitchMinHits = 3;
-	public int hitSwitchMaxHits = 5;
-	public int nextHitSwitch = 4;
-	public int hits = 0;
-	public int lastKnownHealth = 100;
-	public boolean nextRandomSwitchSet = false;
-	public boolean justStarted = true;
-	public boolean gotRatingInfo = true;
+	private boolean prayerSwitch = false;
+	private boolean meleeSafeSpotSwitch = false;
+	private boolean randomGameSwitch = true;
+	private int nextRandomSwitch = 3;
+	private boolean everyGameSwitch = false;
+	private boolean hitSwitch = false;
+	private int hitSwitchMinHits = 3;
+	private int hitSwitchMaxHits = 5;
+	private int nextHitSwitch = 4;
+	private int hits = 0;
+	private int lastKnownHealth = 100;
+	private boolean nextRandomSwitchSet = false;
+	private boolean justStarted = true;
+	private boolean gotRatingInfo = true;
 	// Tiles for walking to
-	public RSTile entranceBefore = new RSTile(1717, 5598);
-	public RSTile entrance = new RSTile(1719, 5599);
+	private final RSTile entranceBefore = new RSTile(1717, 5598);
+	private final RSTile entrance = new RSTile(1719, 5599);
 	// General bot stuff
-	public boolean loginWait = false;
-	public boolean meleeTimerStarted = false;	// Whether the timer below has started
-	public org.rsbot.script.util.Timer meleeTimer = new org.rsbot.script.util.Timer(100); // Timer for if melee attacking (for rock bug)
-	public boolean initialised = false; // Whether the script has initialised
-	public boolean justPlayed = false; // Whether just played a game
-	public boolean walkedOnce = false; // Whether you've already walked to a tile in the waiting room
-	public boolean stoneHovered = false; // Whether the mouse has already hovered over the stone while waiting
+	private boolean loginWait = false;
+	private boolean meleeTimerStarted = false;	// Whether the timer below has started
+	private final org.rsbot.script.util.Timer meleeTimer = new org.rsbot.script.util.Timer(100); // Timer for if melee attacking (for rock bug)
+	private boolean initialised = false; // Whether the script has initialised
+	private boolean justPlayed = false; // Whether just played a game
+	private boolean walkedOnce = false; // Whether you've already walked to a tile in the waiting room
+	private boolean stoneHovered = false; // Whether the mouse has already hovered over the stone while waiting
 	// For Unequipping Items
-	public final int[] eComps =  { 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38 };
+	private final int[] eComps = {8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38};
 	// Whether you are hunted or not variables
-	public int prevHg = -1;
-	public int prevHd = -1;
-	public boolean roundOneHunted = false;
-	public boolean switchingRole = false;
-	public boolean hunted = true;
-	public boolean hunted2 = true;
+	private int prevHg = -1;
+	private int prevHd = -1;
+	private boolean roundOneHunted = false;
+	private boolean switchingRole = false;
+	private boolean hunted = true;
+	private boolean hunted2 = true;
 	// For doing initial settings at start of a round
-	public boolean setVarsRound1 = false;
-	public boolean setVarsRound2 = false;
+	private boolean setVarsRound1 = false;
+	private boolean setVarsRound2 = false;
 	// booleans for whether the round has started up
-	public boolean gone = false;
-	public boolean gone2 = false;
-	public boolean startedUp = false;
-	public boolean startedUp2 = false;
-	public int round = 1;
+	private boolean gone = false;
+	private boolean gone2 = false;
+	private boolean startedUp = false;
+	private boolean startedUp2 = false;
+	private int round = 1;
 	// Whether antiban should happen
-	public boolean antiBanTime = true;
+	private boolean antiBanTime = true;
 	// 'Go!' detection
-	public boolean goReceived = false;
-	public org.rsbot.script.util.Timer goTimer = new org.rsbot.script.util.Timer(5000);
-	public int canGoFailed = 0;
-	public boolean overrideGoReceived = false;
+	private boolean goReceived = false;
+	private final org.rsbot.script.util.Timer goTimer = new org.rsbot.script.util.Timer(5000);
+	private int canGoFailed = 0;
+	private boolean overrideGoReceived = false;
 	// Timer for waiting in the centre before searching for other player
-	public org.rsbot.script.util.Timer t = new org.rsbot.script.util.Timer(8000);
-	public org.rsbot.script.util.Timer t2 = new org.rsbot.script.util.Timer(30000);
-	public org.rsbot.script.util.Timer s = new org.rsbot.script.util.Timer(10000);
-	public boolean timerStarted = false;
-	public int timerToUse = 1;
+	private final org.rsbot.script.util.Timer t = new org.rsbot.script.util.Timer(8000);
+	private final org.rsbot.script.util.Timer t2 = new org.rsbot.script.util.Timer(30000);
+	private final org.rsbot.script.util.Timer s = new org.rsbot.script.util.Timer(10000);
+	private boolean timerStarted = false;
+	private int timerToUse = 1;
 	// For searching for other player
-	public RSTile lastKnownLoc = new RSTile(-1, -1);
-	public boolean searching = false;
-	public int spawnArea = 0;
-	public RSTile centerTile = new RSTile(1663, 5696);
-	public final int[] searchTilesXOrig = { 1663, 1677, 1688, 1682, 1659, 1644, 1637, 1649 };
-	public final int[] searchTilesYOrig = { 5717, 5708, 5692, 5677, 5671, 5681, 5698, 5712 };
-	public int[] searchTilesX = { 1663, 1677, 1688, 1682, 1659, 1644, 1637, 1649 };
-	public int[] searchTilesY = { 5717, 5708, 5692, 5677, 5671, 5681, 5698, 5712 };
-	public int searchTileOn = 0;
+	private RSTile lastKnownLoc = new RSTile(-1, -1);
+	private boolean searching = false;
+	private int spawnArea = 0;
+	private final RSTile centerTile = new RSTile(1663, 5696);
+	private final int[] searchTilesXOrig = {1663, 1677, 1688, 1682, 1659, 1644, 1637, 1649};
+	private final int[] searchTilesYOrig = {5717, 5708, 5692, 5677, 5671, 5681, 5698, 5712};
+	private final int[] searchTilesX = {1663, 1677, 1688, 1682, 1659, 1644, 1637, 1649};
+	private final int[] searchTilesY = {5717, 5708, 5692, 5677, 5671, 5681, 5698, 5712};
+	private int searchTileOn = 0;
 	// Debug mode boolean
-	public boolean dmode = false;
+	private boolean dmode = false;
 	// For setting prayer protection and attack
-	public int prayerlvl;
-	public int lastPrayerSet = 0;
-	public int lastAttackPrayerSet = 0;
-	public int lastSkinPrayerSet = -1;
+	private int prayerlvl;
+	private int lastPrayerSet = 0;
+	private int lastAttackPrayerSet = 0;
+	private int lastSkinPrayerSet = -1;
 	// For setting spell
-	public boolean setCombatSpells = false;
+	private boolean setCombatSpells = false;
 	// For random usage of teleorb
-	public int tRandom = 1;
+	private int tRandom = 1;
 	// For banking items not allowed in the FOG arena (UBI = Unknown Bad Items)
-	public String UBIString = "";
-	public boolean bankingUBIs = false;
-	public final int[] food = { 1895, 1893, 1891, 4293, 2142, 291, 2140, 3228, 9980,
+	private String UBIString = "";
+	private boolean bankingUBIs = false;
+	private final int[] food = {1895, 1893, 1891, 4293, 2142, 291, 2140, 3228, 9980,
 			7223, 6297, 6293, 6295, 6299, 7521, 9988, 7228, 2878, 7568, 2343,
 			1861, 13433, 315, 325, 319, 3144, 347, 355, 333, 339, 351, 329,
 			3381, 361, 10136, 5003, 379, 365, 373, 7946, 385, 397, 391, 3369,
@@ -348,26 +298,26 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			2036, 2217, 2213, 2205, 2209, 2054, 2040, 2080, 2277, 2225, 2255,
 			2221, 2253, 2219, 2281, 2227, 2223, 2191, 2233, 2092, 2032, 2074,
 			2030, 2281, 2235, 2064, 2028, 2187, 2185, 2229, 6883, 1971, 4608,
-			1883, 1885, 1973, 15272, 6962, 1969, 403, 6961 };		// IDs of food (not allowed)
-	public final int[] otherNAIDs = { 434, 592 }; // IDs of other items not allowed (clay, ash)
-	public final int[] NAIDs = concat(food, otherNAIDs);
+			1883, 1885, 1973, 15272, 6962, 1969, 403, 6961};		// IDs of food (not allowed)
+	private final int[] otherNAIDs = {434, 592}; // IDs of other items not allowed (clay, ash)
+	private final int[] NAIDs = concat(food, otherNAIDs);
 	// For detecting if you're in waiting room
 	public final RSTile waitingRoomTile = new RSTile(1653, 5300);
 	// FOG Items
-	public int tokenID = 12852;
-	public int teleorbID = 12855;
-	public int bandagesID = 12853;
-	public int[] stoneID = { 12845, 12846, 12847, 12848, 12849 };
-	public RSObject stoneObject;
-	
+	private final int tokenID = 12852;
+	private final int teleorbID = 12855;
+	private final int bandagesID = 12853;
+	private final int[] stoneID = {12845, 12846, 12847, 12848, 12849};
+	private RSObject stoneObject;
+
 	// Fist of Guthix item class, with all info on an item
 	class FOGItem {
-		public String name;
-		public int ID;
-		public int tokens;
+		public final String name;
+		public final int ID;
+		public final int tokens;
 		public int price = 0;
-		public boolean members;
-		
+		public final boolean members;
+
 		public FOGItem(String tehName, int tehID, int tehTokens, boolean isMembers) {
 			name = tehName;
 			ID = tehID;
@@ -375,7 +325,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			price = 0;
 			members = isMembers;
 		}
-		
+
 		public FOGItem(String tehName, int tehID, int tehTokens, int tehPrice, boolean isMembers) {
 			name = tehName;
 			ID = tehID;
@@ -383,80 +333,81 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			price = tehPrice;
 			members = isMembers;
 		}
-		
+
 		public boolean hasGotPrice() {
-			if(price != 0) {
+			if (price != 0) {
 				return true;
 			}
 			return false;
 		}
-		
+
 		// Sets the price from the GE database, returns true if successful
 		public boolean setPrice() {
-			int prePrice = 0;
+			int prePrice;
 			try {
 				prePrice = grandExchange.lookup(ID).getMinPrice();
-				if(prePrice > 0) {
+				if (prePrice > 0) {
 					price = prePrice;
 					return true;
 				}
-			} catch (NullPointerException e) {}
+			} catch (NullPointerException ignored) {
+			}
 			price = 0;
 			return false;
 		}
-		
+
 		// Gets the Coins Per Token ratio
 		public int getRatio() {
-			if(price > 0 && tokens > 0) {
-				return (int)Math.round(  ((double)(price)) / ((double)(tokens))  );
+			if (price > 0 && tokens > 0) {
+				return (int) Math.round(((double) (price)) / ((double) (tokens)));
 			} else {
 				return 0;
 			}
 		}
 	}
-	
+
 	// FOG Items You Can Purchase & Sell Degraded (IDs at 0 charge)
 	//		F2P
-	public FOGItem druidic_mage_top = new FOGItem("Druidic Mage Top", 12899, 300, false);
-	public FOGItem druidic_mage_bottom = new FOGItem("Druidic Mage Bottom", 12906, 200, false);
-	public FOGItem druidic_mage_hood = new FOGItem("Druidic Mage Hood", 12892, 100, false);
-	public FOGItem combat_robe_top = new FOGItem("Combat Robe Top", 12976, 150, false);
-	public FOGItem combat_robe_bottom = new FOGItem("Combat Robe Bottom", 12983, 100, false);
-	public FOGItem combat_hood = new FOGItem("Combat Hood", 12969, 50, false);
-	public FOGItem green_dhide_coif = new FOGItem("Green D'Hide Coif", 12941, 150, false);
-	public FOGItem bronze_gauntlets = new FOGItem("Bronze Gauntlets", 12986, 15, false);
-	public FOGItem iron_gauntlets = new FOGItem("Iron Gauntlets", 12989, 30, false);
-	public FOGItem steel_gauntlets = new FOGItem("Steel Gauntlets", 12992, 50, false);
-	public FOGItem black_gauntlets = new FOGItem("Black Gauntlets", 12995, 75, false);
-	public FOGItem mithril_gauntlets = new FOGItem("Mithril Gauntlets", 12998, 100, false);
-	public FOGItem adamant_gauntlets = new FOGItem("Adamant Gauntlets", 13001, 150, false);
-	public FOGItem rune_gauntlets = new FOGItem("Rune Gauntlets", 13004, 200, false);
-	public FOGItem adamant_spikeshield = new FOGItem("Adamant Spikeshield", 12913, 50, false);
-	public FOGItem adamant_berserker_shield = new FOGItem("Adamant Berserker Shield", 12920, 100, false);
-	public FOGItem rune_spikeshield = new FOGItem("Rune Spikeshield", 12927, 200, false);
-	public FOGItem rune_berserker_shield = new FOGItem("Rune Berserker Shield", 12934, 300, false);
+	private final FOGItem druidic_mage_top = new FOGItem("Druidic Mage Top", 12899, 300, false);
+	private final FOGItem druidic_mage_bottom = new FOGItem("Druidic Mage Bottom", 12906, 200, false);
+	private final FOGItem druidic_mage_hood = new FOGItem("Druidic Mage Hood", 12892, 100, false);
+	private final FOGItem combat_robe_top = new FOGItem("Combat Robe Top", 12976, 150, false);
+	private final FOGItem combat_robe_bottom = new FOGItem("Combat Robe Bottom", 12983, 100, false);
+	private final FOGItem combat_hood = new FOGItem("Combat Hood", 12969, 50, false);
+	private final FOGItem green_dhide_coif = new FOGItem("Green D'Hide Coif", 12941, 150, false);
+	private final FOGItem bronze_gauntlets = new FOGItem("Bronze Gauntlets", 12986, 15, false);
+	private final FOGItem iron_gauntlets = new FOGItem("Iron Gauntlets", 12989, 30, false);
+	private final FOGItem steel_gauntlets = new FOGItem("Steel Gauntlets", 12992, 50, false);
+	private final FOGItem black_gauntlets = new FOGItem("Black Gauntlets", 12995, 75, false);
+	private final FOGItem mithril_gauntlets = new FOGItem("Mithril Gauntlets", 12998, 100, false);
+	private final FOGItem adamant_gauntlets = new FOGItem("Adamant Gauntlets", 13001, 150, false);
+	private final FOGItem rune_gauntlets = new FOGItem("Rune Gauntlets", 13004, 200, false);
+	private final FOGItem adamant_spikeshield = new FOGItem("Adamant Spikeshield", 12913, 50, false);
+	private final FOGItem adamant_berserker_shield = new FOGItem("Adamant Berserker Shield", 12920, 100, false);
+	private final FOGItem rune_spikeshield = new FOGItem("Rune Spikeshield", 12927, 200, false);
+	private final FOGItem rune_berserker_shield = new FOGItem("Rune Berserker Shield", 12934, 300, false);
 	//		P2P
-	public FOGItem dragon_gauntlets = new FOGItem("Dragon Gauntlets", 13007, 300, true);
-	public FOGItem blue_dhide_coif = new FOGItem("Blue D'Hide Coif", 12948, 200, true);
-	public FOGItem red_dhide_coif = new FOGItem("Red D'Hide Coif", 12955, 300, true);
-	public FOGItem black_dhide_coif = new FOGItem("Black D'Hide Coif", 12962, 500, true);
-	public FOGItem battle_robe_top = new FOGItem("Battle Robe Top", 12878, 1500, true);
-	public FOGItem battle_robe_bottom = new FOGItem("Battle Robe Bottom", 12885, 1000, true);
-	public FOGItem battle_hood = new FOGItem("Battle Hood", 12871, 250, true);
-	
-	public FOGItem[] FOGItemsF2P = { druidic_mage_top, druidic_mage_bottom, druidic_mage_hood, combat_robe_top, combat_robe_bottom, combat_hood, green_dhide_coif, bronze_gauntlets, iron_gauntlets, steel_gauntlets, black_gauntlets, mithril_gauntlets, adamant_gauntlets, rune_gauntlets, adamant_spikeshield, adamant_berserker_shield, rune_spikeshield, rune_berserker_shield };
-	public FOGItem[] FOGItemsP2P = { dragon_gauntlets, blue_dhide_coif, red_dhide_coif, black_dhide_coif, battle_robe_top, battle_robe_bottom, battle_hood };
-	public FOGItem[] FOGItems = concat(FOGItemsF2P, FOGItemsP2P);
-	
-	public FOGItem f2pItem;
-	public FOGItem p2pItem;
-	
-	public int[] v = new int[100];
-	
+	private final FOGItem dragon_gauntlets = new FOGItem("Dragon Gauntlets", 13007, 300, true);
+	private final FOGItem blue_dhide_coif = new FOGItem("Blue D'Hide Coif", 12948, 200, true);
+	private final FOGItem red_dhide_coif = new FOGItem("Red D'Hide Coif", 12955, 300, true);
+	private final FOGItem black_dhide_coif = new FOGItem("Black D'Hide Coif", 12962, 500, true);
+	private final FOGItem battle_robe_top = new FOGItem("Battle Robe Top", 12878, 1500, true);
+	private final FOGItem battle_robe_bottom = new FOGItem("Battle Robe Bottom", 12885, 1000, true);
+	private final FOGItem battle_hood = new FOGItem("Battle Hood", 12871, 250, true);
+
+	private final FOGItem[] FOGItemsF2P = {druidic_mage_top, druidic_mage_bottom, druidic_mage_hood, combat_robe_top, combat_robe_bottom, combat_hood, green_dhide_coif, bronze_gauntlets, iron_gauntlets, steel_gauntlets, black_gauntlets, mithril_gauntlets, adamant_gauntlets, rune_gauntlets, adamant_spikeshield, adamant_berserker_shield, rune_spikeshield, rune_berserker_shield};
+	private final FOGItem[] FOGItemsP2P = {dragon_gauntlets, blue_dhide_coif, red_dhide_coif, black_dhide_coif, battle_robe_top, battle_robe_bottom, battle_hood};
+	private final FOGItem[] FOGItems = concat(FOGItemsF2P, FOGItemsP2P);
+
+	private FOGItem f2pItem;
+	private FOGItem p2pItem;
+
+	private final int[] v = new int[100];
+
 	class FOGRunnerGUI extends JFrame implements ListSelectionListener, ActionListener {
-		
+
 		// For Entire GUI:
-		int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+		final int screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		private JPanel jContentPane = null;
 		private JPanel MainTab = null;
 		private JPanel OptionsTab = null;
@@ -471,18 +422,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		private JButton Cancel = null;
 		private JButton Save = null;
 		private JButton Load = null;
-		private JLabel statusLabel = new JLabel();
-		
+		private final JLabel statusLabel = new JLabel();
+
 		// For Main Tab:
-		private JLabel imageLabel = new JLabel();
-		private JLabel notesLabel = new JLabel();
-		private JLabel note1 = new JLabel();
-		private JLabel note2 = new JLabel();
-		private JLabel note3 = new JLabel();
-		private JLabel continueNote = new JLabel();
-		private JLabel authorNote = new JLabel();
-		private JLabel versionNote = new JLabel();
-		
+		private final JLabel imageLabel = new JLabel();
+		private final JLabel notesLabel = new JLabel();
+		private final JLabel note1 = new JLabel();
+		private final JLabel note2 = new JLabel();
+		private final JLabel note3 = new JLabel();
+		private final JLabel continueNote = new JLabel();
+		private final JLabel authorNote = new JLabel();
+		private final JLabel versionNote = new JLabel();
+
 		// For Options Tab:
 		private JCheckBox chckbxAntiBan;
 		private JCheckBox chckbxBandages;
@@ -490,192 +441,191 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		private JCheckBox chckbxSearch;
 		private JCheckBox chckbxScreenshots;
 		private JCheckBox chckbxBankTokens;
-		private JLabel teleOrbLabel = new JLabel();
-		private JComboBox teleOrbBox = new JComboBox();
-		private JTextArea bankTokensNum = new JTextArea();
-		private JLabel mouseSpeedLabel = new JLabel();
-		private JLabel mouseSpeedLabel2 = new JLabel();
-		private JTextArea mouseSpeedBox = new JTextArea();
-		private JLabel continueNoteOptions = new JLabel();
-		
+		private final JLabel teleOrbLabel = new JLabel();
+		private final JComboBox teleOrbBox = new JComboBox();
+		private final JTextArea bankTokensNum = new JTextArea();
+		private final JLabel mouseSpeedLabel = new JLabel();
+		private final JLabel mouseSpeedLabel2 = new JLabel();
+		private final JTextArea mouseSpeedBox = new JTextArea();
+		private final JLabel continueNoteOptions = new JLabel();
+
 		// For Prayers Tab
 		private JCheckBox chckbxPrayers;
 		private JCheckBox chckbxAttackPrayers;
 		private JCheckBox chckbxSkinPrayers;
 		private JCheckBox chckbxQuickPrayers;
-		private JLabel prayersLabel = new JLabel();
-		private JLabel prayersLabel2 = new JLabel();
-		private JLabel prayersAttackLabel = new JLabel();
-		private JLabel prayersAttackLabel2 = new JLabel();
-		private JLabel prayersSkinLabel = new JLabel();
-		private JLabel prayersSkinLabel2 = new JLabel();
-		private JComboBox quickPrayersBox = new JComboBox();
-		private JLabel continueNotePrayers = new JLabel();
-		
+		private final JLabel prayersLabel = new JLabel();
+		private final JLabel prayersLabel2 = new JLabel();
+		private final JLabel prayersAttackLabel = new JLabel();
+		private final JLabel prayersAttackLabel2 = new JLabel();
+		private final JLabel prayersSkinLabel = new JLabel();
+		private final JLabel prayersSkinLabel2 = new JLabel();
+		private final JComboBox quickPrayersBox = new JComboBox();
+		private final JLabel continueNotePrayers = new JLabel();
+
 		// For Money Tab
-		private JLabel moneyLabel1 = new JLabel();
+		private final JLabel moneyLabel1 = new JLabel();
 		private JPanel itemsList = null;
 		private JScrollPane itemScrollPane = null;
-		public  JLabel[] itemPrices = new JLabel[100];
-		public  JLabel[] itemRatios = new JLabel[100];
-		
+		public final JLabel[] itemPrices = new JLabel[100];
+		public final JLabel[] itemRatios = new JLabel[100];
+
 		// For Attack Styles Tab && Defence Styles Tab:
-		private Color enabledColor  = new Color(210, 210, 210);
-		private Color disabledColor = new Color(230, 230, 230);
-		
+		private final Color enabledColor = new Color(210, 210, 210);
+		private final Color disabledColor = new Color(230, 230, 230);
+
 		// ATTACK
 		// For Attack Styles tab:
-		private JLabel inventoryNoteText1 = new JLabel();
-		private JLabel inventoryNoteText2 = new JLabel();
-		private JLabel inventoryNoteText3 = new JLabel();
-		private JLabel combatStylesText1 = new JLabel();
-		private JLabel combatStylesText2 = new JLabel();
-		private JLabel combatStylesText3 = new JLabel();
-		private JLabel startCombatStyleText = new JLabel();
-		private JComboBox startCombatStyle = new JComboBox();
+		private final JLabel inventoryNoteText1 = new JLabel();
+		private final JLabel inventoryNoteText2 = new JLabel();
+		private final JLabel inventoryNoteText3 = new JLabel();
+		private final JLabel combatStylesText1 = new JLabel();
+		private final JLabel combatStylesText2 = new JLabel();
+		private final JLabel combatStylesText3 = new JLabel();
+		private final JLabel startCombatStyleText = new JLabel();
+		private final JComboBox startCombatStyle = new JComboBox();
 		private JCheckBox chckbxFSGame;
-		private JLabel switchTriggersTitle = new JLabel();
+		private final JLabel switchTriggersTitle = new JLabel();
 		private JCheckBox prayerTrigger;
 		private JCheckBox meleeSafeSpotTrigger;
 		private JCheckBox everyGameTrigger;
 		private JCheckBox randomGameTrigger;
 		private JCheckBox hitTrigger;
-		private JTextArea hitTriggerBox1 = new JTextArea();
-		private JLabel hitTriggerText1 = new JLabel();
-		private JTextArea hitTriggerBox2 = new JTextArea();
-		private JLabel hitTriggerText2 = new JLabel();
-		
+		private final JTextArea hitTriggerBox1 = new JTextArea();
+		private final JLabel hitTriggerText1 = new JLabel();
+		private final JTextArea hitTriggerBox2 = new JTextArea();
+		private final JLabel hitTriggerText2 = new JLabel();
+
 		// For Inventory List:
 		private DefaultListModel model;
 		private JLabel inventoryTitleText;
 		private JScrollPane scrollPane;
 		private JList invList;
-		
+
 		// For Melee Section:
 		private JCheckBox chckbxMelee;
 		private JPanel meleePanel = null;
-		private Rectangle meleeArea = new Rectangle(285, 87, 430, 117);
-		
+		private final Rectangle meleeArea = new Rectangle(285, 87, 430, 117);
+
 		private DefaultListModel meleeModel;
 		private JLabel meleeTitleText;			//List Stuff
 		private JScrollPane meleeScrollPane;
 		private JList meleeList;
 		private JButton meleeAdd = null;
 		private JButton meleeRemove = null;
-		
+
 		private JLabel meleeOptionsTitle;
 		private JLabel meleeAttackStyleTitle;	//Options Stuff
-		private JComboBox meleeAttackStyleBox = new JComboBox();
+		private final JComboBox meleeAttackStyleBox = new JComboBox();
 		private JCheckBox chckbxMeleeUnequip;
-		
+
 		// For Magic Section:
-		
+
 		private JCheckBox chckbxMagic;
 		private JPanel magicPanel = null;
-		private Rectangle magicArea = new Rectangle(285, 207, 430, 117);
-		
+		private final Rectangle magicArea = new Rectangle(285, 207, 430, 117);
+
 		private DefaultListModel magicModel;
 		private JLabel magicTitleText;			//List Stuff
 		private JScrollPane magicScrollPane;
 		private JList magicList;
 		private JButton magicAdd = null;
 		private JButton magicRemove = null;
-		
+
 		private JLabel magicOptionsTitle;
 		private JLabel magicCastSpellTitle;		//Options Stuff
-		private JComboBox magicCastSpell = new JComboBox();
+		private final JComboBox magicCastSpell = new JComboBox();
 		private JCheckBox chckbxMagicUnequip;
-		
+
 		// For Range Section:
-		
+
 		private JCheckBox chckbxRange;
 		private JPanel rangePanel = null;
-		private Rectangle rangeArea = new Rectangle(285, 327, 430, 117);
-		
+		private final Rectangle rangeArea = new Rectangle(285, 327, 430, 117);
+
 		private DefaultListModel rangeModel;
 		private JLabel rangeTitleText;			//List Stuff
 		private JScrollPane rangeScrollPane;
 		private JList rangeList;
 		private JButton rangeAdd = null;
 		private JButton rangeRemove = null;
-		
+
 		private JLabel rangeOptionsTitle;
 		private JLabel rangeAttackStyleTitle;		//Options Stuff
-		private JComboBox rangeAttackStyleBox = new JComboBox();
+		private final JComboBox rangeAttackStyleBox = new JComboBox();
 		private JCheckBox chckbxRangeUnequip;
-		
-		
+
+
 		// DEFENCE
 		// For Defence Styles tab:
-		private JLabel inventoryNoteText1Defence = new JLabel();
-		private JLabel inventoryNoteText2Defence = new JLabel();
-		private JLabel inventoryNoteText3Defence = new JLabel();
-		private JLabel combatStylesText1Defence = new JLabel();
-		private JLabel combatStylesText2Defence = new JLabel();
-		private JLabel combatStylesText3Defence = new JLabel();
-		private JLabel stylesNoteDefence1 = new JLabel();
-		private JLabel stylesNoteDefence2 = new JLabel();
-		private JLabel stylesNoteDefence3 = new JLabel();
-		
+		private final JLabel inventoryNoteText1Defence = new JLabel();
+		private final JLabel inventoryNoteText2Defence = new JLabel();
+		private final JLabel inventoryNoteText3Defence = new JLabel();
+		private final JLabel combatStylesText1Defence = new JLabel();
+		private final JLabel combatStylesText2Defence = new JLabel();
+		private final JLabel combatStylesText3Defence = new JLabel();
+		private final JLabel stylesNoteDefence1 = new JLabel();
+		private final JLabel stylesNoteDefence2 = new JLabel();
+		private final JLabel stylesNoteDefence3 = new JLabel();
+
 		// For Inventory List:
 		private DefaultListModel modelDefence;
 		private JLabel inventoryTitleTextDefence;
 		private JScrollPane scrollPaneDefence;
 		private JList invListDefence;
-		
+
 		// For Melee Section:
 		private JCheckBox chckbxMeleeDefence;
 		private JPanel meleePanelDefence = null;
-		private Rectangle meleeAreaDefence = new Rectangle(285, 87, 430, 117);
-		
+		private final Rectangle meleeAreaDefence = new Rectangle(285, 87, 430, 117);
+
 		private DefaultListModel meleeModelDefence;
 		private JLabel meleeTitleTextDefence;			//List Stuff
 		private JScrollPane meleeScrollPaneDefence;
 		private JList meleeListDefence;
 		private JButton meleeAddDefence = null;
 		private JButton meleeRemoveDefence = null;
-		
+
 		private JCheckBox chckbxMeleeUnequipDefence;
-		
+
 		// For Magic Section:
-		
+
 		private JCheckBox chckbxMagicDefence;
 		private JPanel magicPanelDefence = null;
-		private Rectangle magicAreaDefence = new Rectangle(285, 207, 430, 117);
-		
+		private final Rectangle magicAreaDefence = new Rectangle(285, 207, 430, 117);
+
 		private DefaultListModel magicModelDefence;
 		private JLabel magicTitleTextDefence;			//List Stuff
 		private JScrollPane magicScrollPaneDefence;
 		private JList magicListDefence;
 		private JButton magicAddDefence = null;
 		private JButton magicRemoveDefence = null;
-		
+
 		private JCheckBox chckbxMagicUnequipDefence;
-		
+
 		// For Range Section:
-		
+
 		private JCheckBox chckbxRangeDefence;
 		private JPanel rangePanelDefence = null;
-		private Rectangle rangeAreaDefence = new Rectangle(285, 327, 430, 117);
-		
+		private final Rectangle rangeAreaDefence = new Rectangle(285, 327, 430, 117);
+
 		private DefaultListModel rangeModelDefence;
 		private JLabel rangeTitleTextDefence;			//List Stuff
 		private JScrollPane rangeScrollPaneDefence;
 		private JList rangeListDefence;
 		private JButton rangeAddDefence = null;
 		private JButton rangeRemoveDefence = null;
-		
+
 		private JCheckBox chckbxRangeUnequipDefence;
-		
-		
-		
+
+
 		public FOGRunnerGUI() {
 			initialize();
 			setVisible(true);
 		}
-		
+
 		private void initialize() {
-			for(int i = 0; i < FOGItems.length; i++) {
+			for (int i = 0; i < FOGItems.length; i++) {
 				itemPrices[i] = new JLabel();
 				itemPrices[i].setFont(new Font("SansSerif", 0, 12));
 				itemPrices[i].setText("Loading...");
@@ -683,7 +633,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				itemRatios[i].setFont(new Font("SansSerif", 0, 12));
 				itemRatios[i].setText("Loading...");
 			}
-			if(screenHeight < 750){
+			if (screenHeight < 750) {
 				this.setSize(810, 570);
 			} else {
 				this.setSize(810, 710);
@@ -692,7 +642,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			this.setTitle("FOGRunner by TerraBubble");
 			WindowUtil.position(this);
 		}
-		
+
 		private JPanel getJContentPane() {
 			if (jContentPane == null) {
 				jContentPane = new JPanel();
@@ -706,9 +656,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return jContentPane;
 		}
-		
+
 		private JTabbedPane getJTabbedPane() {
-			if(screenHeight < 750) {
+			if (screenHeight < 750) {
 				if (jTabbedPane == null) {
 					jTabbedPane = new JTabbedPane();
 					jTabbedPane.setBounds(new Rectangle(2, 4, 805, 515));
@@ -733,12 +683,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return jTabbedPane;
 		}
-		
+
 		private JPanel getMoneyTab() {
 			if (MoneyTab == null) {
 				MoneyTab = new JPanel();
 				MoneyTab.setLayout(null);
-				if(screenHeight < 750){
+				if (screenHeight < 750) {
 					MoneyTab.setBounds(0, 0, 775, 660);
 					MoneyTab.setPreferredSize(new Dimension(775, 700));
 				}
@@ -747,10 +697,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					moneyLabel1.setText("This tab shows prices and tokens for every FOG reward so you can maximise profit from FOG tokens.");
 					moneyLabel1.setBounds(new Rectangle(new Point(30, 25), moneyLabel1.getPreferredSize()));
 					MoneyTab.add(moneyLabel1);
-					
+
 					int x = 40;
 					int y = 82;
-					
+
 					JLabel nameText = new JLabel();
 					nameText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					nameText.setText("Name");
@@ -762,7 +712,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					nameTitle.setBackground(enabledColor);
 					nameTitle.setBorder(new LineBorder(Color.BLACK));
 					MoneyTab.add(nameTitle);
-					
+
 					JLabel tokensText = new JLabel();
 					tokensText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					tokensText.setText("FOG Tokens");
@@ -774,7 +724,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					tokensTitle.setBackground(enabledColor);
 					tokensTitle.setBorder(new LineBorder(Color.BLACK));
 					MoneyTab.add(tokensTitle);
-					
+
 					JLabel priceText = new JLabel();
 					priceText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					priceText.setText("GE Market Price");
@@ -786,7 +736,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					priceTitle.setBackground(enabledColor);
 					priceTitle.setBorder(new LineBorder(Color.BLACK));
 					MoneyTab.add(priceTitle);
-					
+
 					JLabel ratioText = new JLabel();
 					ratioText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					ratioText.setText("GP Per Token");
@@ -798,7 +748,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					ratioTitle.setBackground(enabledColor);
 					ratioTitle.setBorder(new LineBorder(Color.BLACK));
 					MoneyTab.add(ratioTitle);
-					
+
 					JLabel membersText = new JLabel();
 					membersText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					membersText.setText("Members?");
@@ -810,10 +760,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					membersTitle.setBackground(enabledColor);
 					membersTitle.setBorder(new LineBorder(Color.BLACK));
 					MoneyTab.add(membersTitle);
-					
-					
+
+
 					itemScrollPane = new JScrollPane(getItemsList(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-					if(screenHeight < 750){
+					if (screenHeight < 750) {
 						itemScrollPane.setBounds(x, y + 18, 695, 250);
 					} else {
 						itemScrollPane.setBounds(x, y + 18, 695, 360);
@@ -823,48 +773,47 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return MoneyTab;
 		}
-		
+
 		private JPanel getItemsList() {
 			if (itemsList == null) {
 				itemsList = new JPanel();
 				itemsList.setLayout(null);
 				itemsList.setBounds(40, 100, 695, 404);
 				itemsList.setPreferredSize(new Dimension(695, 410));
-				
-				for(int i = 0; i < FOGItems.length; i++) {
-					
+
+				for (int i = 0; i < FOGItems.length; i++) {
+
 					JLabel nameLabel = new JLabel();
 					nameLabel.setFont(new Font("SansSerif", 0, 12));
 					nameLabel.setText(FOGItems[i].name);
 					nameLabel.setBounds(new Rectangle(new Point(3, v[i] + 1), nameLabel.getPreferredSize()));
 					itemsList.add(nameLabel);
-					
+
 					JLabel tokensLabel = new JLabel();
 					tokensLabel.setFont(new Font("SansSerif", 0, 12));
 					tokensLabel.setText("" + FOGItems[i].tokens);
 					tokensLabel.setBounds(new Rectangle(new Point(195, v[i] + 1), tokensLabel.getPreferredSize()));
 					itemsList.add(tokensLabel);
-					
+
 					itemPrices[i].setBounds(new Rectangle(new Point(315, v[i] + 1), itemPrices[i].getPreferredSize()));
 					itemsList.add(itemPrices[i]);
 					itemRatios[i].setBounds(new Rectangle(new Point(435, v[i] + 1), itemRatios[i].getPreferredSize()));
 					itemsList.add(itemRatios[i]);
-					
-					
-					
+
+
 					JLabel membersLabel = new JLabel();
 					membersLabel.setFont(new Font("SansSerif", 0, 12));
-					if(FOGItems[i].members) {
+					if (FOGItems[i].members) {
 						membersLabel.setText("Yes");
 					} else {
 						membersLabel.setText("No");
 					}
 					membersLabel.setBounds(new Rectangle(new Point(555, v[i] + 1), membersLabel.getPreferredSize()));
 					itemsList.add(membersLabel);
-					
+
 					JPanel itemPanel = new JPanel();
 					itemPanel.setBounds(0, v[i], 695, 17);
-					if((v[i] + 2) % 2 == 0) {		// if v is even
+					if ((v[i] + 2) % 2 == 0) {		// if v is even
 						itemPanel.setBackground(disabledColor);
 					} else {
 						itemPanel.setBackground(enabledColor);
@@ -874,7 +823,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return itemsList;
 		}
-		
+
 		private JPanel getCombatStylesTabScrollable() {
 			if (CombatStylesTabScrollable == null) {
 				CombatStylesTabScrollable = new JPanel();
@@ -887,7 +836,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return CombatStylesTabScrollable;
 		}
-		
+
 		private JPanel getCombatStylesTabScrollableDefence() {
 			if (CombatStylesTabScrollableDefence == null) {
 				CombatStylesTabScrollableDefence = new JPanel();
@@ -900,11 +849,11 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return CombatStylesTabScrollableDefence;
 		}
-		
+
 		private JButton getStartButton() {
 			if (Start == null) {
 				Start = new JButton();
-				if(screenHeight < 750){
+				if (screenHeight < 750) {
 					Start.setBounds(new Rectangle(10, 513, 100, 25));
 				} else {
 					Start.setBounds(new Rectangle(10, 648, 100, 25));
@@ -914,11 +863,11 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return Start;
 		}
-		
+
 		private JButton getCancelButton() {
 			if (Cancel == null) {
 				Cancel = new JButton();
-				if(screenHeight < 750){
+				if (screenHeight < 750) {
 					Cancel.setBounds(new Rectangle(110, 513, 100, 25));
 				} else {
 					Cancel.setBounds(new Rectangle(110, 648, 100, 25));
@@ -928,11 +877,11 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return Cancel;
 		}
-		
+
 		private JButton getSaveButton() {
 			if (Save == null) {
 				Save = new JButton();
-				if(screenHeight < 750){
+				if (screenHeight < 750) {
 					Save.setBounds(new Rectangle(550, 513, 120, 25));
 				} else {
 					Save.setBounds(new Rectangle(550, 648, 120, 25));
@@ -942,11 +891,11 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return Save;
 		}
-		
+
 		private JButton getLoadButton() {
 			if (Load == null) {
 				Load = new JButton();
-				if(screenHeight < 750){
+				if (screenHeight < 750) {
 					Load.setBounds(new Rectangle(670, 513, 120, 25));
 				} else {
 					Load.setBounds(new Rectangle(670, 648, 120, 25));
@@ -956,83 +905,83 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return Load;
 		}
-		
+
 		private JLabel getStatusLabel() {
 			statusLabel.setFont(new Font("SansSerif", 0, 12));
 			statusLabel.setText("");
 			setStatusLabelBounds();
 			return statusLabel;
 		}
-		
+
 		private void setStatusLabelBounds() {
-			if(screenHeight < 750){
+			if (screenHeight < 750) {
 				statusLabel.setBounds(new Rectangle(new Point
-					(405-(int)(statusLabel.getPreferredSize().getWidth() / 2), 513), statusLabel.getPreferredSize()));
+						(405 - (int) (statusLabel.getPreferredSize().getWidth() / 2), 513), statusLabel.getPreferredSize()));
 			} else {
 				statusLabel.setBounds(new Rectangle(new Point
-					(405-(int)(statusLabel.getPreferredSize().getWidth() / 2), 648), statusLabel.getPreferredSize()));
+						(405 - (int) (statusLabel.getPreferredSize().getWidth() / 2), 648), statusLabel.getPreferredSize()));
 			}
 		}
-		
+
 		private JPanel getMainTab() {
 			if (MainTab == null) {
 				MainTab = new JPanel();
 				MainTab.setLayout(null);
 				{
-					if(success){
-				    	imageLabel.setIcon(new ImageIcon(banner));
+					if (success) {
+						imageLabel.setIcon(new ImageIcon(banner));
 					} else {
 						imageLabel.setText("Image download error");
 					}
-				    imageLabel.setBounds(new Rectangle(new Point(2, 0), imageLabel.getPreferredSize()));
-				    MainTab.add(imageLabel);
+					imageLabel.setBounds(new Rectangle(new Point(2, 0), imageLabel.getPreferredSize()));
+					MainTab.add(imageLabel);
 				}
 				{
 					notesLabel.setFont(new Font("SansSerif", 0, 23));
 					notesLabel.setText("Notes:");
-					notesLabel.setBounds(new Rectangle(new Point(400-(int)(notesLabel.getPreferredSize().getWidth() / 2), 260), notesLabel.getPreferredSize()));
+					notesLabel.setBounds(new Rectangle(new Point(400 - (int) (notesLabel.getPreferredSize().getWidth() / 2), 260), notesLabel.getPreferredSize()));
 					MainTab.add(notesLabel);
 				}
 				{
 					note1.setFont(new Font("SansSerif", 0, 15));
 					note1.setText("Start in the Fist of Guthix Lobby");
-					note1.setBounds(new Rectangle(new Point(400-(int)(note1.getPreferredSize().getWidth() / 2), 295), note1.getPreferredSize()));
+					note1.setBounds(new Rectangle(new Point(400 - (int) (note1.getPreferredSize().getWidth() / 2), 295), note1.getPreferredSize()));
 					MainTab.add(note1);
 				}
 				{
 					note2.setFont(new Font("SansSerif", 0, 15));
 					note2.setText("XP Paint will appear once you start gaining XP");
-					note2.setBounds(new Rectangle(new Point(400-(int)(note2.getPreferredSize().getWidth() / 2), 320), note2.getPreferredSize()));
+					note2.setBounds(new Rectangle(new Point(400 - (int) (note2.getPreferredSize().getWidth() / 2), 320), note2.getPreferredSize()));
 					MainTab.add(note2);
 				}
 				{
 					note3.setFont(new Font("SansSerif", 0, 15));
 					note3.setText("Hover over the XP Paint to see details in that skill");
-					note3.setBounds(new Rectangle(new Point(400-(int)(note3.getPreferredSize().getWidth() / 2), 345), note3.getPreferredSize()));
+					note3.setBounds(new Rectangle(new Point(400 - (int) (note3.getPreferredSize().getWidth() / 2), 345), note3.getPreferredSize()));
 					MainTab.add(note3);
 				}
 				{
 					continueNote.setFont(new Font("SansSerif", 0, 16));
 					continueNote.setText("Continue to next tab to set up script");
-					continueNote.setBounds(new Rectangle(new Point(400-(int)(continueNote.getPreferredSize().getWidth() / 2), 500), continueNote.getPreferredSize()));
+					continueNote.setBounds(new Rectangle(new Point(400 - (int) (continueNote.getPreferredSize().getWidth() / 2), 500), continueNote.getPreferredSize()));
 					MainTab.add(continueNote);
 				}
 				{
 					authorNote.setFont(new Font("SansSerif", 0, 12));
 					authorNote.setText("By TerraBubble");
-					authorNote.setBounds(new Rectangle(new Point(400-(int)(authorNote.getPreferredSize().getWidth() / 2), 555), authorNote.getPreferredSize()));
+					authorNote.setBounds(new Rectangle(new Point(400 - (int) (authorNote.getPreferredSize().getWidth() / 2), 555), authorNote.getPreferredSize()));
 					MainTab.add(authorNote);
 				}
 				{
 					versionNote.setFont(new Font("SansSerif", 0, 12));
 					versionNote.setText("Version " + getVersion());
-					versionNote.setBounds(new Rectangle(new Point(400-(int)(versionNote.getPreferredSize().getWidth() / 2), 572), versionNote.getPreferredSize()));
+					versionNote.setBounds(new Rectangle(new Point(400 - (int) (versionNote.getPreferredSize().getWidth() / 2), 572), versionNote.getPreferredSize()));
 					MainTab.add(versionNote);
 				}
 			}
 			return MainTab;
 		}
-		
+
 		private JPanel getOptionsTab() {
 			if (OptionsTab == null) {
 				OptionsTab = new JPanel();
@@ -1053,15 +1002,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 				{
 					teleOrbLabel.setText("Use Tele-Orb: ");
-                    teleOrbLabel.setBounds(new Rectangle(new Point(57, 75), teleOrbLabel.getPreferredSize()));
-                    OptionsTab.add(teleOrbLabel);
+					teleOrbLabel.setBounds(new Rectangle(new Point(57, 75), teleOrbLabel.getPreferredSize()));
+					OptionsTab.add(teleOrbLabel);
 				}
 				{
 					teleOrbBox.setModel(new DefaultComboBoxModel(new String[]{
-						"When being Hunted",
-						"When Hunting",
-						"Random (Hunting/Hunted)",
-						"Never"}));
+							"When being Hunted",
+							"When Hunting",
+							"Random (Hunting/Hunted)",
+							"Never"}));
 					teleOrbBox.setBounds(new Rectangle(new Point(160, 71), teleOrbBox.getPreferredSize()));
 					teleOrbBox.addActionListener(this);
 					OptionsTab.add(teleOrbBox);
@@ -1095,19 +1044,19 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 				{
 					mouseSpeedLabel.setText("Mouse Speed: ");
-                    mouseSpeedLabel.setBounds(new Rectangle(new Point(57, 187), mouseSpeedLabel.getPreferredSize()));
-                    OptionsTab.add(mouseSpeedLabel);
+					mouseSpeedLabel.setBounds(new Rectangle(new Point(57, 187), mouseSpeedLabel.getPreferredSize()));
+					OptionsTab.add(mouseSpeedLabel);
 				}
 				{
-					mouseSpeedBox.setBounds((int)mouseSpeedLabel.getPreferredSize().getWidth() + 67, 184, 30, 20);
+					mouseSpeedBox.setBounds((int) mouseSpeedLabel.getPreferredSize().getWidth() + 67, 184, 30, 20);
 					mouseSpeedBox.setBorder(new LineBorder(new Color(0, 0, 0, 255)));
 					mouseSpeedBox.setText("7");
 					OptionsTab.add(mouseSpeedBox);
 				}
 				{
 					mouseSpeedLabel2.setText("(The lower the number, the faster the mouse)");
-                    mouseSpeedLabel2.setBounds(new Rectangle(new Point((int)mouseSpeedLabel.getPreferredSize().getWidth() + 107, 187), mouseSpeedLabel2.getPreferredSize()));
-                    OptionsTab.add(mouseSpeedLabel2);
+					mouseSpeedLabel2.setBounds(new Rectangle(new Point((int) mouseSpeedLabel.getPreferredSize().getWidth() + 107, 187), mouseSpeedLabel2.getPreferredSize()));
+					OptionsTab.add(mouseSpeedLabel2);
 				}
 				{
 					chckbxDmode = new JCheckBox("Debug Mode");
@@ -1119,13 +1068,13 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				{
 					continueNoteOptions.setFont(new Font("SansSerif", 0, 16));
 					continueNoteOptions.setText("Continue to next tab to set up prayers");
-					continueNoteOptions.setBounds(new Rectangle(new Point(400-(int)(continueNoteOptions.getPreferredSize().getWidth() / 2), 530), continueNoteOptions.getPreferredSize()));
+					continueNoteOptions.setBounds(new Rectangle(new Point(400 - (int) (continueNoteOptions.getPreferredSize().getWidth() / 2), 530), continueNoteOptions.getPreferredSize()));
 					OptionsTab.add(continueNoteOptions);
 				}
 			}
 			return OptionsTab;
 		}
-		
+
 		private JPanel getPrayersTab() {
 			if (PrayersTab == null) {
 				PrayersTab = new JPanel();
@@ -1139,8 +1088,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 				{
 					quickPrayersBox.setModel(new DefaultComboBoxModel(new String[]{
-						"When Hunting",
-						"When Being Hunted"}));
+							"When Hunting",
+							"When Being Hunted"}));
 					quickPrayersBox.setBounds(new Rectangle(new Point(220, 21), quickPrayersBox.getPreferredSize()));
 					quickPrayersBox.addActionListener(this);
 					PrayersTab.add(quickPrayersBox);
@@ -1154,13 +1103,13 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 				{
 					prayersLabel.setText("This will use 'Protect from ...' prayers automatically depending on the attack style of your");
-                    prayersLabel.setBounds(new Rectangle(new Point(57, 80), prayersLabel.getPreferredSize()));
-                    PrayersTab.add(prayersLabel);
+					prayersLabel.setBounds(new Rectangle(new Point(57, 80), prayersLabel.getPreferredSize()));
+					PrayersTab.add(prayersLabel);
 				}
 				{
 					prayersLabel2.setText("opponent and your Prayer level.");
-                    prayersLabel2.setBounds(new Rectangle(new Point(57, 100), prayersLabel2.getPreferredSize()));
-                    PrayersTab.add(prayersLabel2);
+					prayersLabel2.setBounds(new Rectangle(new Point(57, 100), prayersLabel2.getPreferredSize()));
+					PrayersTab.add(prayersLabel2);
 				}
 				{
 					chckbxAttackPrayers = new JCheckBox("Use Attack Multiplier Prayers");
@@ -1171,13 +1120,13 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 				{
 					prayersAttackLabel.setText("This will use Attack Mulitplier Prayers (+5%, +10%, 15%) such as Mystic Might, Ultimate Strength");
-                    prayersAttackLabel.setBounds(new Rectangle(new Point(57, 159), prayersAttackLabel.getPreferredSize()));
-                    PrayersTab.add(prayersAttackLabel);
+					prayersAttackLabel.setBounds(new Rectangle(new Point(57, 159), prayersAttackLabel.getPreferredSize()));
+					PrayersTab.add(prayersAttackLabel);
 				}
 				{
 					prayersAttackLabel2.setText("and Incredible Reflexes automatically depending on your Prayer level and attack style.");
-                    prayersAttackLabel2.setBounds(new Rectangle(new Point(57, 179), prayersAttackLabel2.getPreferredSize()));
-                    PrayersTab.add(prayersAttackLabel2);
+					prayersAttackLabel2.setBounds(new Rectangle(new Point(57, 179), prayersAttackLabel2.getPreferredSize()));
+					PrayersTab.add(prayersAttackLabel2);
 				}
 				{
 					chckbxSkinPrayers = new JCheckBox("Use 'Skin' Defence Multiplier Prayers");
@@ -1188,26 +1137,26 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 				{
 					prayersSkinLabel.setText("This will use 'Skin' Defence Multiplier Prayers (Thick Skin, Rock Skin and Steel Skin)");
-                    prayersSkinLabel.setBounds(new Rectangle(new Point(57, 238), prayersSkinLabel.getPreferredSize()));
-                    PrayersTab.add(prayersSkinLabel);
+					prayersSkinLabel.setBounds(new Rectangle(new Point(57, 238), prayersSkinLabel.getPreferredSize()));
+					PrayersTab.add(prayersSkinLabel);
 				}
 				{
 					prayersSkinLabel2.setText("automatically depending on your Prayer level.");
-                    prayersSkinLabel2.setBounds(new Rectangle(new Point(57, 258), prayersSkinLabel2.getPreferredSize()));
-                    PrayersTab.add(prayersSkinLabel2);
+					prayersSkinLabel2.setBounds(new Rectangle(new Point(57, 258), prayersSkinLabel2.getPreferredSize()));
+					PrayersTab.add(prayersSkinLabel2);
 				}
 				{
 					continueNotePrayers.setFont(new Font("SansSerif", 0, 16));
 					continueNotePrayers.setText("Continue to next two tabs to set up your attack weapons and defence armour");
-					continueNotePrayers.setBounds(new Rectangle(new Point(400-(int)(continueNotePrayers.getPreferredSize().getWidth() / 2), 530), continueNotePrayers.getPreferredSize()));
+					continueNotePrayers.setBounds(new Rectangle(new Point(400 - (int) (continueNotePrayers.getPreferredSize().getWidth() / 2), 530), continueNotePrayers.getPreferredSize()));
 					PrayersTab.add(continueNotePrayers);
 				}
 			}
 			return PrayersTab;
 		}
-		
+
 		// ATTACK
-		private JPanel getMeleePanel(){
+		private JPanel getMeleePanel() {
 			meleePanel = new JPanel();
 			meleePanel.setBounds(meleeArea);
 			meleePanel.setBackground(enabledColor);
@@ -1257,10 +1206,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					meleeAttackStyleTitle.setBounds(new Rectangle(new Point(590, 120), meleeAttackStyleTitle.getPreferredSize()));
 					CombatStylesTab.add(meleeAttackStyleTitle);
 					meleeAttackStyleBox.setModel(new DefaultComboBoxModel(new String[]{
-					"Attack EXP",
-					"Strength EXP",
-					"Defence EXP",
-					"Shared EXP"}));
+							"Attack EXP",
+							"Strength EXP",
+							"Defence EXP",
+							"Shared EXP"}));
 					meleeAttackStyleBox.setBounds(new Rectangle(new Point(565, 140), meleeAttackStyleBox.getPreferredSize()));
 					meleeAttackStyleBox.addActionListener(this);
 					CombatStylesTab.add(meleeAttackStyleBox);
@@ -1269,8 +1218,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return meleePanel;
 		}
-		
-		private JPanel getMagicPanel(){
+
+		private JPanel getMagicPanel() {
 			magicPanel = new JPanel();
 			magicPanel.setBounds(magicArea);
 			magicPanel.setBackground(enabledColor);
@@ -1320,49 +1269,49 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					magicCastSpellTitle.setBounds(new Rectangle(new Point(590, 240), magicCastSpellTitle.getPreferredSize()));
 					CombatStylesTab.add(magicCastSpellTitle);
 					magicCastSpell.setModel(new DefaultComboBoxModel(new String[]{
-					"Auto Highest (F2P)",
-					"Auto Highest (P2P)",
-					"Fire Surge",
-					"Earth Surge",
-					"Water Surge",
-					"Wind Surge",
-					"Fire Wave",
-					"Earth Wave",
-					"Water Wave",
-					"Wind Wave",
-					"Fire Blast",
-					"Earth Blast",
-					"Water Blast",
-					"Wind Blast",
-					"Fire Bolt",
-					"Earth Bolt",
-					"Water Bolt",
-					"Wind Bolt",
-					"Fire Strike",
-					"Earth Strike",
-					"Water Strike",
-					"Wind Strike",
-					"Wind Rush",
-					"Ice Barrage",
-					"Blood Barrage",
-					"Shadow Barrage",
-					"Smoke Barrage",
-					"Ice Blitz",
-					"Blood Blitz",
-					"Shadow Blitz",
-					"Smoke Blitz",
-					"Ice Burst",
-					"Blood Burst",
-					"Shadow Burst",
-					"Smoke Burst",
-					"Ice Rush",
-					"Blood Rush",
-					"Shadow Rush",
-					"Smoke Rush",
-					"Miasmic Barrage",
-					"Miasmic Blitz",
-					"Miasmic Burst",
-					"Miasmic Rush"
+							"Auto Highest (F2P)",
+							"Auto Highest (P2P)",
+							"Fire Surge",
+							"Earth Surge",
+							"Water Surge",
+							"Wind Surge",
+							"Fire Wave",
+							"Earth Wave",
+							"Water Wave",
+							"Wind Wave",
+							"Fire Blast",
+							"Earth Blast",
+							"Water Blast",
+							"Wind Blast",
+							"Fire Bolt",
+							"Earth Bolt",
+							"Water Bolt",
+							"Wind Bolt",
+							"Fire Strike",
+							"Earth Strike",
+							"Water Strike",
+							"Wind Strike",
+							"Wind Rush",
+							"Ice Barrage",
+							"Blood Barrage",
+							"Shadow Barrage",
+							"Smoke Barrage",
+							"Ice Blitz",
+							"Blood Blitz",
+							"Shadow Blitz",
+							"Smoke Blitz",
+							"Ice Burst",
+							"Blood Burst",
+							"Shadow Burst",
+							"Smoke Burst",
+							"Ice Rush",
+							"Blood Rush",
+							"Shadow Rush",
+							"Smoke Rush",
+							"Miasmic Barrage",
+							"Miasmic Blitz",
+							"Miasmic Burst",
+							"Miasmic Rush"
 					}));
 					magicCastSpell.setBounds(new Rectangle(new Point(545, 260), magicCastSpell.getPreferredSize()));
 					magicCastSpell.addActionListener(this);
@@ -1372,8 +1321,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return magicPanel;
 		}
-		
-		private JPanel getRangePanel(){
+
+		private JPanel getRangePanel() {
 			rangePanel = new JPanel();
 			rangePanel.setBounds(rangeArea);
 			rangePanel.setBackground(disabledColor);
@@ -1423,9 +1372,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					rangeAttackStyleTitle.setBounds(new Rectangle(new Point(590, 360), rangeAttackStyleTitle.getPreferredSize()));
 					CombatStylesTab.add(rangeAttackStyleTitle);
 					rangeAttackStyleBox.setModel(new DefaultComboBoxModel(new String[]{
-					"Accurate",
-					"Rapid",
-					"Long range"}));
+							"Accurate",
+							"Rapid",
+							"Long range"}));
 					rangeAttackStyleBox.setBounds(new Rectangle(new Point(565, 380), rangeAttackStyleBox.getPreferredSize()));
 					rangeAttackStyleBox.addActionListener(this);
 					CombatStylesTab.add(rangeAttackStyleBox);
@@ -1434,12 +1383,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return rangePanel;
 		}
-		
+
 		private JPanel getCombatStylesTab() {
 			if (CombatStylesTab == null) {
 				CombatStylesTab = new JPanel();
 				CombatStylesTab.setLayout(null);
-				if(screenHeight < 750){
+				if (screenHeight < 750) {
 					CombatStylesTab.setBounds(0, 0, 775, 660);
 					CombatStylesTab.setPreferredSize(new Dimension(775, 700));
 				}
@@ -1463,12 +1412,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					{
 						// Inventory List Population with Inventory Items
 						int i = 0;
-						while(i < inventoryItemsNum){
+						while (i < inventoryItemsNum) {
 							String IDString = Integer.toString(inventoryItemsIDs[i]);
 							int zerosToAdd = 5 - IDString.length();
 							String zeros = "";
 							int wey = 0;
-							while(wey < zerosToAdd){
+							while (wey < zerosToAdd) {
 								zeros = zeros + "0";
 								wey++;
 							}
@@ -1478,7 +1427,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							i++;
 						}
 					}
-					
+
 					// Combat Styles instructions
 					combatStylesText1.setFont(new Font("SansSerif", 0, 12));
 					combatStylesText2.setFont(new Font("SansSerif", 0, 12));
@@ -1492,14 +1441,14 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					CombatStylesTab.add(combatStylesText1);
 					CombatStylesTab.add(combatStylesText2);
 					CombatStylesTab.add(combatStylesText3);
-					
+
 					// Melee Section
 					CombatStylesTab.add(getMeleePanel());
 					// Magic Section
 					CombatStylesTab.add(getMagicPanel());
 					// Range Section
 					CombatStylesTab.add(getRangePanel());
-					
+
 					// Bottom Options
 					startCombatStyleText.setFont(new Font("SansSerif", 0, 13));
 					startCombatStyleText.setText("First Attack Style to Use: ");
@@ -1509,18 +1458,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					startCombatStyle.setBounds(new Rectangle(440, 446, 100, 27));
 					startCombatStyle.addActionListener(this);
 					CombatStylesTab.add(startCombatStyle);
-					
+
 					chckbxFSGame = new JCheckBox("Use this at start of every game");
 					chckbxFSGame.addActionListener(this);
 					chckbxFSGame.setSelected(false);
 					chckbxFSGame.setBounds(new Rectangle(new Point(535, 446), chckbxFSGame.getPreferredSize()));
 					CombatStylesTab.add(chckbxFSGame);
-					
+
 					switchTriggersTitle.setFont(new Font("SansSerif", Font.BOLD, 13));
 					switchTriggersTitle.setText("Switch Attack Style...  ");
 					switchTriggersTitle.setBounds(new Rectangle(new Point(283, 470), switchTriggersTitle.getPreferredSize()));
 					CombatStylesTab.add(switchTriggersTitle);
-					
+
 					prayerTrigger = new JCheckBox("When opponent uses prayer protection... [ UNDER CONSTRUCTION ]");
 					prayerTrigger.addActionListener(this);
 					prayerTrigger.setSelected(false);
@@ -1563,7 +1512,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					hitTriggerText2.setText("Hitsplats on Opponent");
 					hitTriggerText2.setBounds(new Rectangle(new Point(480, 573), hitTriggerText2.getPreferredSize()));
 					CombatStylesTab.add(hitTriggerText2);
-					
+
 					inventoryNoteText1.setFont(new Font("SansSerif", 0, 13));
 					inventoryNoteText1.setText("This list should have");
 					inventoryNoteText1.setBounds(new Rectangle(new Point(26, 520), inventoryNoteText1.getPreferredSize()));
@@ -1580,9 +1529,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return CombatStylesTab;
 		}
-		
+
 		// DEFENCE
-		private JPanel getMeleePanelDefence(){
+		private JPanel getMeleePanelDefence() {
 			meleePanelDefence = new JPanel();
 			meleePanelDefence.setBounds(meleeAreaDefence);
 			meleePanelDefence.setBackground(enabledColor);
@@ -1626,8 +1575,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return meleePanelDefence;
 		}
-		
-		private JPanel getMagicPanelDefence(){
+
+		private JPanel getMagicPanelDefence() {
 			magicPanelDefence = new JPanel();
 			magicPanelDefence.setBounds(magicAreaDefence);
 			magicPanelDefence.setBackground(enabledColor);
@@ -1671,8 +1620,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return magicPanelDefence;
 		}
-		
-		private JPanel getRangePanelDefence(){
+
+		private JPanel getRangePanelDefence() {
 			rangePanelDefence = new JPanel();
 			rangePanelDefence.setBounds(rangeAreaDefence);
 			rangePanelDefence.setBackground(disabledColor);
@@ -1716,12 +1665,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return rangePanelDefence;
 		}
-		
+
 		private JPanel getCombatStylesTabDefence() {
 			if (CombatStylesTabDefence == null) {
 				CombatStylesTabDefence = new JPanel();
 				CombatStylesTabDefence.setLayout(null);
-				if(screenHeight < 750){
+				if (screenHeight < 750) {
 					CombatStylesTabDefence.setBounds(0, 0, 775, 660);
 					CombatStylesTabDefence.setPreferredSize(new Dimension(775, 700));
 				}
@@ -1745,12 +1694,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					{
 						// Inventory List Population with Inventory Items
 						int i = 0;
-						while(i < inventoryItemsNum){
+						while (i < inventoryItemsNum) {
 							String IDString = Integer.toString(inventoryItemsIDs[i]);
 							int zerosToAdd = 5 - IDString.length();
 							String zeros = "";
 							int wey = 0;
-							while(wey < zerosToAdd){
+							while (wey < zerosToAdd) {
 								zeros = zeros + "0";
 								wey++;
 							}
@@ -1760,7 +1709,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							i++;
 						}
 					}
-					
+
 					// Combat Styles instructions
 					combatStylesText1Defence.setFont(new Font("SansSerif", 0, 12));
 					combatStylesText2Defence.setFont(new Font("SansSerif", 0, 12));
@@ -1774,14 +1723,14 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					CombatStylesTabDefence.add(combatStylesText1Defence);
 					CombatStylesTabDefence.add(combatStylesText2Defence);
 					CombatStylesTabDefence.add(combatStylesText3Defence);
-					
+
 					// Melee Section
 					CombatStylesTabDefence.add(getMeleePanelDefence());
 					// Magic Section
 					CombatStylesTabDefence.add(getMagicPanelDefence());
 					// Range Section
 					CombatStylesTabDefence.add(getRangePanelDefence());
-					
+
 					// Bottom Note
 					stylesNoteDefence1.setFont(new Font("SansSerif", 0, 12));
 					stylesNoteDefence1.setText("These items will be equipped when being hunted and the enemy attacks you");
@@ -1795,7 +1744,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					stylesNoteDefence3.setText("If no items are entered, the script will just wear what it wore last round");
 					stylesNoteDefence3.setBounds(new Rectangle(new Point(283, 520), stylesNoteDefence3.getPreferredSize()));
 					CombatStylesTabDefence.add(stylesNoteDefence3);
-					
+
 					inventoryNoteText1Defence.setFont(new Font("SansSerif", 0, 13));
 					inventoryNoteText1Defence.setText("This list should have");
 					inventoryNoteText1Defence.setBounds(new Rectangle(new Point(26, 520), inventoryNoteText1Defence.getPreferredSize()));
@@ -1812,9 +1761,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return CombatStylesTabDefence;
 		}
-		
+
 		public void actionPerformed(final ActionEvent arg0) {
-			
+
 			if (arg0.getSource() == chckbxDmode) {
 				dmode = chckbxDmode.isSelected();
 			}
@@ -1835,7 +1784,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			if (arg0.getSource() == randomGameTrigger) {
 				randomGameSwitch = randomGameTrigger.isSelected();
-				if(randomGameTrigger.isSelected()){
+				if (randomGameTrigger.isSelected()) {
 					everyGameTrigger.setSelected(false);
 					everyGameSwitch = false;
 					hitTrigger.setSelected(false);
@@ -1844,7 +1793,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			if (arg0.getSource() == everyGameTrigger) {
 				everyGameSwitch = everyGameTrigger.isSelected();
-				if(everyGameTrigger.isSelected()){
+				if (everyGameTrigger.isSelected()) {
 					randomGameTrigger.setSelected(false);
 					randomGameSwitch = false;
 					hitTrigger.setSelected(false);
@@ -1853,14 +1802,14 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			if (arg0.getSource() == hitTrigger) {
 				hitSwitch = hitTrigger.isSelected();
-				if(hitTrigger.isSelected()){
+				if (hitTrigger.isSelected()) {
 					randomGameTrigger.setSelected(false);
 					randomGameSwitch = false;
 					everyGameTrigger.setSelected(false);
 					everyGameSwitch = false;
 				}
 			}
-			
+
 			// ATTACK
 			// Melee Item Adding/Removing
 			if (arg0.getSource() == meleeAdd) {
@@ -1869,15 +1818,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			if (arg0.getSource() == meleeRemove) {
 				try {
 					int indRemoving = meleeList.getSelectedIndex();
-					while(indRemoving < 10){
+					while (indRemoving < 10) {
 						meleeListIDsAdded[indRemoving] = meleeListIDsAdded[indRemoving + 1];
 						indRemoving++;
 					}
 					meleeListIDsAdded[10] = -1;
 					meleeModel.removeElementAt(meleeList.getSelectedIndex());
-				} catch (ArrayIndexOutOfBoundsException ignored){}
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+				}
 			}
-			
+
 			// Magic Item Adding/Removing
 			if (arg0.getSource() == magicAdd) {
 				magicAddMethod();
@@ -1885,15 +1835,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			if (arg0.getSource() == magicRemove) {
 				try {
 					int indRemoving = magicList.getSelectedIndex();
-					while(indRemoving < 10){
+					while (indRemoving < 10) {
 						magicListIDsAdded[indRemoving] = magicListIDsAdded[indRemoving + 1];
 						indRemoving++;
 					}
 					magicListIDsAdded[10] = -1;
 					magicModel.removeElementAt(magicList.getSelectedIndex());
-				} catch (ArrayIndexOutOfBoundsException ignored){}
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+				}
 			}
-			
+
 			// Range Item Adding/Removing
 			if (arg0.getSource() == rangeAdd) {
 				rangeAddMethod();
@@ -1901,15 +1852,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			if (arg0.getSource() == rangeRemove) {
 				try {
 					int indRemoving = rangeList.getSelectedIndex();
-					while(indRemoving < 10){
+					while (indRemoving < 10) {
 						rangeListIDsAdded[indRemoving] = rangeListIDsAdded[indRemoving + 1];
 						indRemoving++;
 					}
 					rangeListIDsAdded[10] = -1;
 					rangeModel.removeElementAt(rangeList.getSelectedIndex());
-				} catch (ArrayIndexOutOfBoundsException ignored){}
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+				}
 			}
-			
+
 			// DEFENCE
 			// Melee Defence Item Adding/Removing
 			if (arg0.getSource() == meleeAddDefence) {
@@ -1918,15 +1870,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			if (arg0.getSource() == meleeRemoveDefence) {
 				try {
 					int indRemoving = meleeListDefence.getSelectedIndex();
-					while(indRemoving < 10){
+					while (indRemoving < 10) {
 						meleeListIDsAddedDefence[indRemoving] = meleeListIDsAddedDefence[indRemoving + 1];
 						indRemoving++;
 					}
 					meleeListIDsAddedDefence[10] = -1;
 					meleeModelDefence.removeElementAt(meleeListDefence.getSelectedIndex());
-				} catch (ArrayIndexOutOfBoundsException ignored){}
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+				}
 			}
-			
+
 			// Magic Item Adding/Removing
 			if (arg0.getSource() == magicAddDefence) {
 				magicAddMethodDefence();
@@ -1934,15 +1887,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			if (arg0.getSource() == magicRemoveDefence) {
 				try {
 					int indRemoving = magicListDefence.getSelectedIndex();
-					while(indRemoving < 10){
+					while (indRemoving < 10) {
 						magicListIDsAddedDefence[indRemoving] = magicListIDsAddedDefence[indRemoving + 1];
 						indRemoving++;
 					}
 					magicListIDsAddedDefence[10] = -1;
 					magicModelDefence.removeElementAt(magicListDefence.getSelectedIndex());
-				} catch (ArrayIndexOutOfBoundsException ignored){}
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+				}
 			}
-			
+
 			// Range Item Adding/Removing
 			if (arg0.getSource() == rangeAddDefence) {
 				rangeAddMethodDefence();
@@ -1950,15 +1904,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			if (arg0.getSource() == rangeRemoveDefence) {
 				try {
 					int indRemoving = rangeListDefence.getSelectedIndex();
-					while(indRemoving < 10){
+					while (indRemoving < 10) {
 						rangeListIDsAddedDefence[indRemoving] = rangeListIDsAddedDefence[indRemoving + 1];
 						indRemoving++;
 					}
 					rangeListIDsAddedDefence[10] = -1;
 					rangeModelDefence.removeElementAt(rangeListDefence.getSelectedIndex());
-				} catch (ArrayIndexOutOfBoundsException ignored){}
+				} catch (ArrayIndexOutOfBoundsException ignored) {
+				}
 			}
-			
+
 			if (arg0.getSource() == chckbxAntiBan) {
 				useAntiBan = chckbxAntiBan.isSelected();
 			}
@@ -1998,21 +1953,21 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			if (arg0.getSource() == chckbxFSGame) {
 				FSGame = chckbxFSGame.isSelected();
 			}
-			
+
 			// ATTACK
 			if (arg0.getSource() == chckbxMelee) {
 				meleeActive = chckbxMelee.isSelected();
-				if(!meleeActive && !magicActive && !rangeActive){
+				if (!meleeActive && !magicActive && !rangeActive) {
 					JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 					chckbxMelee.setSelected(true);
 					meleeActive = true;
 				} else {
-					
+
 					meleeScrollPane.setEnabled(chckbxMelee.isSelected());
 					meleeAdd.setEnabled(chckbxMelee.isSelected());
 					meleeRemove.setEnabled(chckbxMelee.isSelected());
 					meleeAttackStyleBox.setEnabled(chckbxMelee.isSelected());
-					if(chckbxMelee.isSelected()){
+					if (chckbxMelee.isSelected()) {
 						startStylesP[0] = "Melee";
 						meleePanel.setBackground(enabledColor);
 					} else {
@@ -2025,7 +1980,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			if (arg0.getSource() == chckbxMagic) {
 				magicActive = chckbxMagic.isSelected();
-				if(!meleeActive && !magicActive && !rangeActive){
+				if (!meleeActive && !magicActive && !rangeActive) {
 					JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 					chckbxMagic.setSelected(true);
 					magicActive = true;
@@ -2034,7 +1989,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					magicAdd.setEnabled(chckbxMagic.isSelected());
 					magicRemove.setEnabled(chckbxMagic.isSelected());
 					magicCastSpell.setEnabled(chckbxMagic.isSelected());
-					if(chckbxMagic.isSelected()){
+					if (chckbxMagic.isSelected()) {
 						startStylesP[1] = "Magic";
 						magicPanel.setBackground(enabledColor);
 					} else {
@@ -2047,7 +2002,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			if (arg0.getSource() == chckbxRange) {
 				rangeActive = chckbxRange.isSelected();
-				if(!meleeActive && !magicActive && !rangeActive){
+				if (!meleeActive && !magicActive && !rangeActive) {
 					JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 					chckbxRange.setSelected(true);
 					rangeActive = true;
@@ -2056,7 +2011,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					rangeAdd.setEnabled(chckbxRange.isSelected());
 					rangeRemove.setEnabled(chckbxRange.isSelected());
 					rangeAttackStyleBox.setEnabled(chckbxRange.isSelected());
-					if(chckbxRange.isSelected()){
+					if (chckbxRange.isSelected()) {
 						startStylesP[2] = "Range";
 						rangePanel.setBackground(enabledColor);
 					} else {
@@ -2067,14 +2022,14 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					CombatStylesTab.repaint(rangeArea);
 				}
 			}
-			
+
 			//DEFENCE
 			if (arg0.getSource() == chckbxMeleeDefence) {
 				meleeActiveDefence = chckbxMeleeDefence.isSelected();
 				meleeScrollPaneDefence.setEnabled(chckbxMeleeDefence.isSelected());
 				meleeAddDefence.setEnabled(chckbxMeleeDefence.isSelected());
 				meleeRemoveDefence.setEnabled(chckbxMeleeDefence.isSelected());
-				if(chckbxMeleeDefence.isSelected()){
+				if (chckbxMeleeDefence.isSelected()) {
 					meleePanelDefence.setBackground(enabledColor);
 				} else {
 					meleePanelDefence.setBackground(disabledColor);
@@ -2086,7 +2041,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				magicScrollPaneDefence.setEnabled(chckbxMagicDefence.isSelected());
 				magicAddDefence.setEnabled(chckbxMagicDefence.isSelected());
 				magicRemoveDefence.setEnabled(chckbxMagicDefence.isSelected());
-				if(chckbxMagicDefence.isSelected()){
+				if (chckbxMagicDefence.isSelected()) {
 					magicPanelDefence.setBackground(enabledColor);
 				} else {
 					magicPanelDefence.setBackground(disabledColor);
@@ -2098,222 +2053,222 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				rangeScrollPaneDefence.setEnabled(chckbxRangeDefence.isSelected());
 				rangeAddDefence.setEnabled(chckbxRangeDefence.isSelected());
 				rangeRemoveDefence.setEnabled(chckbxRangeDefence.isSelected());
-				if(chckbxRangeDefence.isSelected()){
+				if (chckbxRangeDefence.isSelected()) {
 					rangePanelDefence.setBackground(enabledColor);
 				} else {
 					rangePanelDefence.setBackground(disabledColor);
 				}
 				CombatStylesTabDefence.repaint(rangeAreaDefence);
 			}
-			
+
 			if (arg0.getSource() == Save) {
 				statusLabel.setText("Saving...");
 				setStatusLabelBounds();
 				try {
-					
+
 					final BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
-					
+
 					out.write("FOGRunner Settings - Version:" + getVersion());
 					out.newLine();
-					
+
 					// Options Tab
 					out.write(
-						(chckbxAntiBan.isSelected() ? "true" : "false") + ":" +
-						(chckbxBandages.isSelected() ? "true" : "false") + ":" +
-						teleOrbBox.getSelectedIndex() + ":" +
-						(chckbxBankTokens.isSelected() ? "true" : "false") + ":" +
-						bankTokensNum.getText() + ":" +
-						(chckbxSearch.isSelected() ? "true" : "false") + ":" +
-						(chckbxScreenshots.isSelected() ? "true" : "false") + ":" +
-						mouseSpeedBox.getText() + ":" +
-						(chckbxDmode.isSelected() ? "true" : "false")
+							(chckbxAntiBan.isSelected() ? "true" : "false") + ":" +
+									(chckbxBandages.isSelected() ? "true" : "false") + ":" +
+									teleOrbBox.getSelectedIndex() + ":" +
+									(chckbxBankTokens.isSelected() ? "true" : "false") + ":" +
+									bankTokensNum.getText() + ":" +
+									(chckbxSearch.isSelected() ? "true" : "false") + ":" +
+									(chckbxScreenshots.isSelected() ? "true" : "false") + ":" +
+									mouseSpeedBox.getText() + ":" +
+									(chckbxDmode.isSelected() ? "true" : "false")
 					);
 					out.newLine();
-					
+
 					// Prayers Tab
 					out.write(
-						(chckbxQuickPrayers.isSelected() ? "true" : "false") + ":" +
-						quickPrayersBox.getSelectedIndex() + ":" +
-						(chckbxPrayers.isSelected() ? "true" : "false") + ":" +
-						(chckbxAttackPrayers.isSelected() ? "true" : "false") + ":" +
-						(chckbxSkinPrayers.isSelected() ? "true" : "false")
+							(chckbxQuickPrayers.isSelected() ? "true" : "false") + ":" +
+									quickPrayersBox.getSelectedIndex() + ":" +
+									(chckbxPrayers.isSelected() ? "true" : "false") + ":" +
+									(chckbxAttackPrayers.isSelected() ? "true" : "false") + ":" +
+									(chckbxSkinPrayers.isSelected() ? "true" : "false")
 					);
 					out.newLine();
-					
-					
+
+
 					// Melee Attack
 					out.write(
-						(chckbxMelee.isSelected() ? "true" : "false") + ":" +
-						meleeAttackStyleBox.getSelectedIndex()
+							(chckbxMelee.isSelected() ? "true" : "false") + ":" +
+									meleeAttackStyleBox.getSelectedIndex()
 					);
 					out.newLine();
 					int meleei = 0;
-					while(meleei < meleeModel.size() - 1) {
+					while (meleei < meleeModel.size() - 1) {
 						out.write(meleeModel.get(meleei).toString().substring(0, meleeModel.get(meleei).toString().indexOf(" - ")) + ":");
 						meleei++;
 					}
-					if(meleeModel.size() > 0) {
+					if (meleeModel.size() > 0) {
 						out.write(meleeModel.get(meleei).toString().substring(0, meleeModel.get(meleei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int meleei2 = 0;
-					while(meleei2 < meleeModel.size() - 1) {
+					while (meleei2 < meleeModel.size() - 1) {
 						out.write(meleeModel.get(meleei2).toString().substring(meleeModel.get(meleei2).toString().indexOf(" - ") + 3) + ":");
 						meleei2++;
 					}
-					if(meleeModel.size() > 0) {
+					if (meleeModel.size() > 0) {
 						out.write(meleeModel.get(meleei2).toString().substring(meleeModel.get(meleei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
-					
+
 					// Magic Attack
 					out.write(
-						(chckbxMagic.isSelected() ? "true" : "false") + ":" +
-						magicCastSpell.getSelectedIndex()
+							(chckbxMagic.isSelected() ? "true" : "false") + ":" +
+									magicCastSpell.getSelectedIndex()
 					);
 					out.newLine();
 					int magici = 0;
-					while(magici < magicModel.size() - 1) {
+					while (magici < magicModel.size() - 1) {
 						out.write(magicModel.get(magici).toString().substring(0, magicModel.get(magici).toString().indexOf(" - ")) + ":");
 						magici++;
 					}
-					if(magicModel.size() > 0) {
+					if (magicModel.size() > 0) {
 						out.write(magicModel.get(magici).toString().substring(0, magicModel.get(magici).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int magici2 = 0;
-					while(magici2 < magicModel.size() - 1) {
+					while (magici2 < magicModel.size() - 1) {
 						out.write(magicModel.get(magici2).toString().substring(magicModel.get(magici2).toString().indexOf(" - ") + 3) + ":");
 						magici2++;
 					}
-					if(magicModel.size() > 0) {
+					if (magicModel.size() > 0) {
 						out.write(magicModel.get(magici2).toString().substring(magicModel.get(magici2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
-					
+
 					// Range Attack
 					out.write(
-						(chckbxRange.isSelected() ? "true" : "false") + ":" +
-						rangeAttackStyleBox.getSelectedIndex()
+							(chckbxRange.isSelected() ? "true" : "false") + ":" +
+									rangeAttackStyleBox.getSelectedIndex()
 					);
 					out.newLine();
 					int rangei = 0;
-					while(rangei < rangeModel.size() - 1) {
+					while (rangei < rangeModel.size() - 1) {
 						out.write(rangeModel.get(rangei).toString().substring(0, rangeModel.get(rangei).toString().indexOf(" - ")) + ":");
 						rangei++;
 					}
-					if(rangeModel.size() > 0) {
+					if (rangeModel.size() > 0) {
 						out.write(rangeModel.get(rangei).toString().substring(0, rangeModel.get(rangei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int rangei2 = 0;
-					while(rangei2 < rangeModel.size() - 1) {
+					while (rangei2 < rangeModel.size() - 1) {
 						out.write(rangeModel.get(rangei2).toString().substring(rangeModel.get(rangei2).toString().indexOf(" - ") + 3) + ":");
 						rangei2++;
 					}
-					if(rangeModel.size() > 0) {
+					if (rangeModel.size() > 0) {
 						out.write(rangeModel.get(rangei2).toString().substring(rangeModel.get(rangei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
-					
+
 					// Attack Styles Options
 					out.write(
-						startCombatStyle.getSelectedIndex() + ":" +
-						(prayerTrigger.isSelected() ? "true" : "false") + ":" +
-						(everyGameTrigger.isSelected() ? "true" : "false") + ":" +
-						(randomGameTrigger.isSelected() ? "true" : "false") + ":" +
-						(hitTrigger.isSelected() ? "true" : "false") + ":" +
-						hitTriggerBox1.getText() + ":" +
-						hitTriggerBox2.getText() + ":" +
-						(meleeSafeSpotTrigger.isSelected() ? "true" : "false") + ":" +
-						(chckbxFSGame.isSelected() ? "true" : "false")
+							startCombatStyle.getSelectedIndex() + ":" +
+									(prayerTrigger.isSelected() ? "true" : "false") + ":" +
+									(everyGameTrigger.isSelected() ? "true" : "false") + ":" +
+									(randomGameTrigger.isSelected() ? "true" : "false") + ":" +
+									(hitTrigger.isSelected() ? "true" : "false") + ":" +
+									hitTriggerBox1.getText() + ":" +
+									hitTriggerBox2.getText() + ":" +
+									(meleeSafeSpotTrigger.isSelected() ? "true" : "false") + ":" +
+									(chckbxFSGame.isSelected() ? "true" : "false")
 					);
 					out.newLine();
-					
+
 					// Melee Defence
 					out.write(
-						(chckbxMeleeDefence.isSelected() ? "true" : "false")
+							(chckbxMeleeDefence.isSelected() ? "true" : "false")
 					);
 					out.newLine();
 					int meleeDefencei = 0;
-					while(meleeDefencei < meleeModelDefence.size() - 1) {
+					while (meleeDefencei < meleeModelDefence.size() - 1) {
 						out.write(meleeModelDefence.get(meleeDefencei).toString().substring(0, meleeModelDefence.get(meleeDefencei).toString().indexOf(" - ")) + ":");
 						meleeDefencei++;
 					}
-					if(meleeModelDefence.size() > 0) {
+					if (meleeModelDefence.size() > 0) {
 						out.write(meleeModelDefence.get(meleeDefencei).toString().substring(0, meleeModelDefence.get(meleeDefencei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int meleeDefencei2 = 0;
-					while(meleeDefencei2 < meleeModelDefence.size() - 1) {
+					while (meleeDefencei2 < meleeModelDefence.size() - 1) {
 						out.write(meleeModelDefence.get(meleeDefencei2).toString().substring(meleeModelDefence.get(meleeDefencei2).toString().indexOf(" - ") + 3) + ":");
 						meleeDefencei2++;
 					}
-					if(meleeModelDefence.size() > 0) {
+					if (meleeModelDefence.size() > 0) {
 						out.write(meleeModelDefence.get(meleeDefencei2).toString().substring(meleeModelDefence.get(meleeDefencei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
-					
+
 					// Magic Defence
 					out.write(
-						(chckbxMagicDefence.isSelected() ? "true" : "false")
+							(chckbxMagicDefence.isSelected() ? "true" : "false")
 					);
 					out.newLine();
 					int magicDefencei = 0;
-					while(magicDefencei < magicModelDefence.size() - 1) {
+					while (magicDefencei < magicModelDefence.size() - 1) {
 						out.write(magicModelDefence.get(magicDefencei).toString().substring(0, magicModelDefence.get(magicDefencei).toString().indexOf(" - ")) + ":");
 						magicDefencei++;
 					}
-					if(magicModelDefence.size() > 0) {
+					if (magicModelDefence.size() > 0) {
 						out.write(magicModelDefence.get(magicDefencei).toString().substring(0, magicModelDefence.get(magicDefencei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int magicDefencei2 = 0;
-					while(magicDefencei2 < magicModelDefence.size() - 1) {
+					while (magicDefencei2 < magicModelDefence.size() - 1) {
 						out.write(magicModelDefence.get(magicDefencei2).toString().substring(magicModelDefence.get(magicDefencei2).toString().indexOf(" - ") + 3) + ":");
 						magicDefencei2++;
 					}
-					if(magicModelDefence.size() > 0) {
+					if (magicModelDefence.size() > 0) {
 						out.write(magicModelDefence.get(magicDefencei2).toString().substring(magicModelDefence.get(magicDefencei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
-					
+
 					// Range Defence
 					out.write(
-						(chckbxRangeDefence.isSelected() ? "true" : "false")
+							(chckbxRangeDefence.isSelected() ? "true" : "false")
 					);
 					out.newLine();
 					int rangeDefencei = 0;
-					while(rangeDefencei < rangeModelDefence.size() - 1) {
+					while (rangeDefencei < rangeModelDefence.size() - 1) {
 						out.write(rangeModelDefence.get(rangeDefencei).toString().substring(0, rangeModelDefence.get(rangeDefencei).toString().indexOf(" - ")) + ":");
 						rangeDefencei++;
 					}
-					if(rangeModelDefence.size() > 0) {
+					if (rangeModelDefence.size() > 0) {
 						out.write(rangeModelDefence.get(rangeDefencei).toString().substring(0, rangeModelDefence.get(rangeDefencei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int rangeDefencei2 = 0;
-					while(rangeDefencei2 < rangeModelDefence.size() - 1) {
+					while (rangeDefencei2 < rangeModelDefence.size() - 1) {
 						out.write(rangeModelDefence.get(rangeDefencei2).toString().substring(rangeModelDefence.get(rangeDefencei2).toString().indexOf(" - ") + 3) + ":");
 						rangeDefencei2++;
 					}
-					if(rangeModelDefence.size() > 0) {
+					if (rangeModelDefence.size() > 0) {
 						out.write(rangeModelDefence.get(rangeDefencei2).toString().substring(rangeModelDefence.get(rangeDefencei2).toString().indexOf(" - ") + 3));
 					}
 					//out.newLine();
-					
+
 					out.close();
-					
+
 					statusLabel.setText("Saved");
 					setStatusLabelBounds();
-					
+
 				} catch (Exception e) {
 					statusLabel.setText("Error - See Log");
 					setStatusLabelBounds();
 					e.printStackTrace();
 				}
 			}
-			
+
 			if (arg0.getSource() == Load) {
 				statusLabel.setText("Loading...");
 				setStatusLabelBounds();
@@ -2321,48 +2276,48 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					final BufferedReader in = new BufferedReader(new FileReader(settingsFile));
 					String line;
 					double settingsVersion;
-					String[] options = {};
-					String[] prayers = {};
-					
-					String[] meleeOptions = {};
-					String[] meleeIDsS = {};
+					String[] options;
+					String[] prayers;
+
+					String[] meleeOptions;
+					String[] meleeIDsS;
 					int[] meleeIDs = {};
-					String[] meleeNames = {};
-					String[] magicOptions = {};
-					String[] magicIDsS = {};
+					String[] meleeNames;
+					String[] magicOptions;
+					String[] magicIDsS;
 					int[] magicIDs = {};
-					String[] magicNames = {};
-					String[] rangeOptions = {};
-					String[] rangeIDsS = {};
+					String[] magicNames;
+					String[] rangeOptions;
+					String[] rangeIDsS;
 					int[] rangeIDs = {};
-					String[] rangeNames = {};
-					
-					String[] attackStyleOptions = {};
-					
-					String   meleeOptionsDefence = "";
-					String[] meleeIDsDefenceS = {};
+					String[] rangeNames;
+
+					String[] attackStyleOptions;
+
+					String meleeOptionsDefence;
+					String[] meleeIDsDefenceS;
 					int[] meleeIDsDefence = {};
-					String[] meleeNamesDefence = {};
-					String   magicOptionsDefence = "";
-					String[] magicIDsDefenceS = {};
+					String[] meleeNamesDefence;
+					String magicOptionsDefence;
+					String[] magicIDsDefenceS;
 					int[] magicIDsDefence = {};
-					String[] magicNamesDefence = {};
-					String   rangeOptionsDefence = "";
-					String[] rangeIDsDefenceS = {};
+					String[] magicNamesDefence;
+					String rangeOptionsDefence;
+					String[] rangeIDsDefenceS;
 					int[] rangeIDsDefence = {};
-					String[] rangeNamesDefence = {};
-					
+					String[] rangeNamesDefence;
+
 					line = in.readLine();										// Line 1
 					settingsVersion = Double.parseDouble(line.substring(line.indexOf(":") + 1));
 					options = in.readLine().split(":");							// Line 2
 					prayers = in.readLine().split(":");							// Line 3
-					
+
 					meleeOptions = in.readLine().split(":");					// Line 4
 					line = in.readLine();										// Line 5
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						meleeIDsS = line.split(":");
 						meleeIDs = sTi(meleeIDsS);
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						meleeIDsS = new String[1];
 						meleeIDsS[0] = line;
 						meleeIDs = sTi(meleeIDsS);
@@ -2371,22 +2326,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						meleeIDsS[0] = "";
 					}
 					line = in.readLine();										// Line 6
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						meleeNames = line.split(":");
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						meleeNames = new String[1];
 						meleeNames[0] = line;
 					} else {
 						meleeNames = new String[1];
 						meleeNames[0] = "";
 					}
-					
+
 					magicOptions = in.readLine().split(":");					// Line 7
 					line = in.readLine();										// Line 8
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						magicIDsS = line.split(":");
 						magicIDs = sTi(magicIDsS);
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						magicIDsS = new String[1];
 						magicIDsS[0] = line;
 						magicIDs = sTi(magicIDsS);
@@ -2395,22 +2350,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						magicIDsS[0] = "";
 					}
 					line = in.readLine();										// Line 9
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						magicNames = line.split(":");
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						magicNames = new String[1];
 						magicNames[0] = line;
 					} else {
 						magicNames = new String[1];
 						magicNames[0] = "";
 					}
-					
+
 					rangeOptions = in.readLine().split(":");					// Line 10
 					line = in.readLine();										// Line 11
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						rangeIDsS = line.split(":");
 						rangeIDs = sTi(rangeIDsS);
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						rangeIDsS = new String[1];
 						rangeIDsS[0] = line;
 						rangeIDs = sTi(rangeIDsS);
@@ -2419,28 +2374,26 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						rangeIDsS[0] = "";
 					}
 					line = in.readLine();										// Line 12
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						rangeNames = line.split(":");
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						rangeNames = new String[1];
 						rangeNames[0] = line;
 					} else {
 						rangeNames = new String[1];
 						rangeNames[0] = "";
 					}
-					
-					
-					
+
+
 					attackStyleOptions = in.readLine().split(":");				// Line 13
-					
-					
-					
+
+
 					meleeOptionsDefence = in.readLine();						// Line 14
 					line = in.readLine();										// Line 15
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						meleeIDsDefenceS = line.split(":");
 						meleeIDsDefence = sTi(meleeIDsDefenceS);
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						meleeIDsDefenceS = new String[1];
 						meleeIDsDefenceS[0] = line;
 						meleeIDsDefence = sTi(meleeIDsDefenceS);
@@ -2449,22 +2402,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						meleeIDsDefenceS[0] = "";
 					}
 					line = in.readLine();										// Line 16
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						meleeNamesDefence = line.split(":");
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						meleeNamesDefence = new String[1];
 						meleeNamesDefence[0] = line;
 					} else {
 						meleeNamesDefence = new String[1];
 						meleeNamesDefence[0] = "";
 					}
-					
+
 					magicOptionsDefence = in.readLine();						// Line 17
 					line = in.readLine();										// Line 18
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						magicIDsDefenceS = line.split(":");
 						magicIDsDefence = sTi(magicIDsDefenceS);
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						magicIDsDefenceS = new String[1];
 						magicIDsDefenceS[0] = line;
 						magicIDsDefence = sTi(magicIDsDefenceS);
@@ -2473,22 +2426,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						magicIDsDefenceS[0] = "";
 					}
 					line = in.readLine();										// Line 19
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						magicNamesDefence = line.split(":");
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						magicNamesDefence = new String[1];
 						magicNamesDefence[0] = line;
 					} else {
 						magicNamesDefence = new String[1];
 						magicNamesDefence[0] = "";
 					}
-					
+
 					rangeOptionsDefence = in.readLine();						// Line 20
 					line = in.readLine();										// Line 21
-					if(line.contains(":")) {
+					if (line.contains(":")) {
 						rangeIDsDefenceS = line.split(":");
 						rangeIDsDefence = sTi(rangeIDsDefenceS);
-					} else if(!line.isEmpty()) {
+					} else if (!line.isEmpty()) {
 						rangeIDsDefenceS = new String[1];
 						rangeIDsDefenceS[0] = line;
 						rangeIDsDefence = sTi(rangeIDsDefenceS);
@@ -2497,10 +2450,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						rangeIDsDefenceS[0] = "";
 					}
 					line = in.readLine();										// Line 22
-					if(line != null) {
-						if(line.contains(":")) {
+					if (line != null) {
+						if (line.contains(":")) {
 							rangeNamesDefence = line.split(":");
-						} else if(!line.isEmpty()) {
+						} else if (!line.isEmpty()) {
 							rangeNamesDefence = new String[1];
 							rangeNamesDefence[0] = line;
 						} else {
@@ -2511,10 +2464,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						rangeNamesDefence = new String[1];
 						rangeNamesDefence[0] = "";
 					}
-					
-					
-					
-					
+
+
 					// Setting the Variables
 					// Options Tab
 					chckbxAntiBan.setSelected(Boolean.parseBoolean(options[0]));
@@ -2533,7 +2484,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					mouseSpeedBox.setText(options[7]);
 					chckbxDmode.setSelected(Boolean.parseBoolean(options[8]));
 					dmode = chckbxDmode.isSelected();
-					
+
 					// Prayers Tab
 					chckbxQuickPrayers.setSelected(Boolean.parseBoolean(prayers[0]));
 					useQuickPrayers = chckbxQuickPrayers.isSelected();
@@ -2545,36 +2496,36 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					useAttackPrayers = chckbxAttackPrayers.isSelected();
 					chckbxSkinPrayers.setSelected(Boolean.parseBoolean(prayers[4]));
 					useSkinPrayers = chckbxSkinPrayers.isSelected();
-					
+
 					// Attack Styles Tab
-					
+
 					chckbxMelee.setSelected(Boolean.parseBoolean(meleeOptions[0]));
 					chckbxMagic.setSelected(Boolean.parseBoolean(magicOptions[0]));
 					chckbxRange.setSelected(Boolean.parseBoolean(rangeOptions[0]));
 					chckbxMeleeDefence.setSelected(Boolean.parseBoolean(meleeOptionsDefence));
 					chckbxMagicDefence.setSelected(Boolean.parseBoolean(magicOptionsDefence));
 					chckbxRangeDefence.setSelected(Boolean.parseBoolean(rangeOptionsDefence));
-					
+
 					meleeAttackStyleBox.setSelectedIndex(Integer.parseInt(meleeOptions[1]));
 					meleeAttackStyle = meleeAttackStyleBox.getSelectedItem().toString();
 					magicCastSpell.setSelectedIndex(Integer.parseInt(magicOptions[1]));
 					magicSpell = magicCastSpell.getSelectedItem().toString();
 					rangeAttackStyleBox.setSelectedIndex(Integer.parseInt(rangeOptions[1]));
 					rangeAttackStyle = rangeAttackStyleBox.getSelectedItem().toString();
-					
+
 					int[] notFoundItems = new int[39];
 					String[] notFoundItemsNames = new String[39];
 					int notFoundItemsIndex = 0;
-					
+
 					// ATTACK
 					int iMelee = 0;
-					while(iMelee < meleeIDs.length) {
-						if(itemFound(meleeIDs[iMelee])){
+					while (iMelee < meleeIDs.length) {
+						if (itemFound(meleeIDs[iMelee])) {
 							int invIndex = invIndexOf(meleeIDs[iMelee]);
 							invList.setSelectedIndex(invIndex);
 							meleeAddMethod();
 						} else {
-							if(!arrayContains(meleeIDs[iMelee], notFoundItems)) {
+							if (!arrayContains(meleeIDs[iMelee], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = meleeIDs[iMelee];
 								notFoundItemsNames[notFoundItemsIndex] = meleeNames[iMelee];
 								notFoundItemsIndex++;
@@ -2582,15 +2533,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						iMelee++;
 					}
-					
+
 					int iMagic = 0;
-					while(iMagic < magicIDs.length) {
-						if(itemFound(magicIDs[iMagic])){
+					while (iMagic < magicIDs.length) {
+						if (itemFound(magicIDs[iMagic])) {
 							int invIndex = invIndexOf(magicIDs[iMagic]);
 							invList.setSelectedIndex(invIndex);
 							magicAddMethod();
 						} else {
-							if(!arrayContains(magicIDs[iMagic], notFoundItems)) {
+							if (!arrayContains(magicIDs[iMagic], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = magicIDs[iMagic];
 								notFoundItemsNames[notFoundItemsIndex] = magicNames[iMagic];
 								notFoundItemsIndex++;
@@ -2598,15 +2549,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						iMagic++;
 					}
-					
+
 					int iRange = 0;
-					while(iRange < rangeIDs.length) {
-						if(itemFound(rangeIDs[iRange])){
+					while (iRange < rangeIDs.length) {
+						if (itemFound(rangeIDs[iRange])) {
 							int invIndex = invIndexOf(rangeIDs[iRange]);
 							invList.setSelectedIndex(invIndex);
 							rangeAddMethod();
 						} else {
-							if(!arrayContains(rangeIDs[iRange], notFoundItems)) {
+							if (!arrayContains(rangeIDs[iRange], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = rangeIDs[iRange];
 								notFoundItemsNames[notFoundItemsIndex] = rangeNames[iRange];
 								notFoundItemsIndex++;
@@ -2614,16 +2565,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						iRange++;
 					}
-					
+
 					// DEFENCE
 					int iMeleeDefence = 0;
-					while(iMeleeDefence < meleeIDsDefence.length) {
-						if(itemFound(meleeIDsDefence[iMeleeDefence])){
+					while (iMeleeDefence < meleeIDsDefence.length) {
+						if (itemFound(meleeIDsDefence[iMeleeDefence])) {
 							int invIndex = invIndexOf(meleeIDsDefence[iMeleeDefence]);
 							invListDefence.setSelectedIndex(invIndex);
 							meleeAddMethodDefence();
 						} else {
-							if(!arrayContains(meleeIDsDefence[iMeleeDefence], notFoundItems)) {
+							if (!arrayContains(meleeIDsDefence[iMeleeDefence], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = meleeIDsDefence[iMeleeDefence];
 								notFoundItemsNames[notFoundItemsIndex] = meleeNamesDefence[iMeleeDefence];
 								notFoundItemsIndex++;
@@ -2631,15 +2582,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						iMeleeDefence++;
 					}
-					
+
 					int iMagicDefence = 0;
-					while(iMagicDefence < magicIDsDefence.length) {
-						if(itemFound(magicIDsDefence[iMagicDefence])){
+					while (iMagicDefence < magicIDsDefence.length) {
+						if (itemFound(magicIDsDefence[iMagicDefence])) {
 							int invIndex = invIndexOf(magicIDsDefence[iMagicDefence]);
 							invListDefence.setSelectedIndex(invIndex);
 							magicAddMethodDefence();
 						} else {
-							if(!arrayContains(magicIDsDefence[iMagicDefence], notFoundItems)) {
+							if (!arrayContains(magicIDsDefence[iMagicDefence], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = magicIDsDefence[iMagicDefence];
 								notFoundItemsNames[notFoundItemsIndex] = magicNamesDefence[iMagicDefence];
 								notFoundItemsIndex++;
@@ -2647,15 +2598,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						iMagicDefence++;
 					}
-					
+
 					int iRangeDefence = 0;
-					while(iRangeDefence < rangeIDsDefence.length) {
-						if(itemFound(rangeIDsDefence[iRangeDefence])){
+					while (iRangeDefence < rangeIDsDefence.length) {
+						if (itemFound(rangeIDsDefence[iRangeDefence])) {
 							int invIndex = invIndexOf(rangeIDsDefence[iRangeDefence]);
 							invListDefence.setSelectedIndex(invIndex);
 							rangeAddMethodDefence();
 						} else {
-							if(!arrayContains(rangeIDsDefence[iRangeDefence], notFoundItems)) {
+							if (!arrayContains(rangeIDsDefence[iRangeDefence], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = rangeIDsDefence[iRangeDefence];
 								notFoundItemsNames[notFoundItemsIndex] = rangeNamesDefence[iRangeDefence];
 								notFoundItemsIndex++;
@@ -2663,21 +2614,20 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						iRangeDefence++;
 					}
-					
-					
-					
+
+
 					meleeActive = chckbxMelee.isSelected();
-					if(!meleeActive && !magicActive && !rangeActive){
+					if (!meleeActive && !magicActive && !rangeActive) {
 						JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 						chckbxMelee.setSelected(true);
 						meleeActive = true;
 					} else {
-						
+
 						meleeScrollPane.setEnabled(chckbxMelee.isSelected());
 						meleeAdd.setEnabled(chckbxMelee.isSelected());
 						meleeRemove.setEnabled(chckbxMelee.isSelected());
 						meleeAttackStyleBox.setEnabled(chckbxMelee.isSelected());
-						if(chckbxMelee.isSelected()){
+						if (chckbxMelee.isSelected()) {
 							startStylesP[0] = "Melee";
 							meleePanel.setBackground(enabledColor);
 						} else {
@@ -2687,9 +2637,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						refreshStartStyleMenu();
 						CombatStylesTab.repaint(meleeArea);
 					}
-					
+
 					magicActive = chckbxMagic.isSelected();
-					if(!meleeActive && !magicActive && !rangeActive){
+					if (!meleeActive && !magicActive && !rangeActive) {
 						JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 						chckbxMagic.setSelected(true);
 						magicActive = true;
@@ -2698,7 +2648,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						magicAdd.setEnabled(chckbxMagic.isSelected());
 						magicRemove.setEnabled(chckbxMagic.isSelected());
 						magicCastSpell.setEnabled(chckbxMagic.isSelected());
-						if(chckbxMagic.isSelected()){
+						if (chckbxMagic.isSelected()) {
 							startStylesP[1] = "Magic";
 							magicPanel.setBackground(enabledColor);
 						} else {
@@ -2708,9 +2658,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						refreshStartStyleMenu();
 						CombatStylesTab.repaint(magicArea);
 					}
-					
+
 					rangeActive = chckbxRange.isSelected();
-					if(!meleeActive && !magicActive && !rangeActive){
+					if (!meleeActive && !magicActive && !rangeActive) {
 						JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 						chckbxRange.setSelected(true);
 						rangeActive = true;
@@ -2719,7 +2669,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						rangeAdd.setEnabled(chckbxRange.isSelected());
 						rangeRemove.setEnabled(chckbxRange.isSelected());
 						rangeAttackStyleBox.setEnabled(chckbxRange.isSelected());
-						if(chckbxRange.isSelected()){
+						if (chckbxRange.isSelected()) {
 							startStylesP[2] = "Range";
 							rangePanel.setBackground(enabledColor);
 						} else {
@@ -2729,40 +2679,40 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						refreshStartStyleMenu();
 						CombatStylesTab.repaint(rangeArea);
 					}
-					
+
 					meleeActiveDefence = chckbxMeleeDefence.isSelected();
 					meleeScrollPaneDefence.setEnabled(chckbxMeleeDefence.isSelected());
 					meleeAddDefence.setEnabled(chckbxMeleeDefence.isSelected());
 					meleeRemoveDefence.setEnabled(chckbxMeleeDefence.isSelected());
-					if(chckbxMeleeDefence.isSelected()){
+					if (chckbxMeleeDefence.isSelected()) {
 						meleePanelDefence.setBackground(enabledColor);
 					} else {
 						meleePanelDefence.setBackground(disabledColor);
 					}
 					CombatStylesTabDefence.repaint(meleeAreaDefence);
-					
+
 					magicActiveDefence = chckbxMagicDefence.isSelected();
 					magicScrollPaneDefence.setEnabled(chckbxMagicDefence.isSelected());
 					magicAddDefence.setEnabled(chckbxMagicDefence.isSelected());
 					magicRemoveDefence.setEnabled(chckbxMagicDefence.isSelected());
-					if(chckbxMagicDefence.isSelected()){
+					if (chckbxMagicDefence.isSelected()) {
 						magicPanelDefence.setBackground(enabledColor);
 					} else {
 						magicPanelDefence.setBackground(disabledColor);
 					}
 					CombatStylesTabDefence.repaint(magicAreaDefence);
-					
+
 					rangeActiveDefence = chckbxRangeDefence.isSelected();
 					rangeScrollPaneDefence.setEnabled(chckbxRangeDefence.isSelected());
 					rangeAddDefence.setEnabled(chckbxRangeDefence.isSelected());
 					rangeRemoveDefence.setEnabled(chckbxRangeDefence.isSelected());
-					if(chckbxRangeDefence.isSelected()){
+					if (chckbxRangeDefence.isSelected()) {
 						rangePanelDefence.setBackground(enabledColor);
 					} else {
 						rangePanelDefence.setBackground(disabledColor);
 					}
 					CombatStylesTabDefence.repaint(rangeAreaDefence);
-					
+
 					// Attack Style Options
 					startCombatStyle.setSelectedIndex(Integer.parseInt(attackStyleOptions[0]));
 					firstStyle = startCombatStyle.getSelectedItem().toString();
@@ -2770,7 +2720,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					prayerSwitch = prayerTrigger.isSelected();
 					everyGameTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[2]));
 					everyGameSwitch = everyGameTrigger.isSelected();
-					if(everyGameTrigger.isSelected()){
+					if (everyGameTrigger.isSelected()) {
 						randomGameTrigger.setSelected(false);
 						randomGameSwitch = false;
 						hitTrigger.setSelected(false);
@@ -2778,7 +2728,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 					randomGameTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[3]));
 					randomGameSwitch = randomGameTrigger.isSelected();
-					if(randomGameTrigger.isSelected()){
+					if (randomGameTrigger.isSelected()) {
 						everyGameTrigger.setSelected(false);
 						everyGameSwitch = false;
 						hitTrigger.setSelected(false);
@@ -2786,7 +2736,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 					hitTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[4]));
 					hitSwitch = hitTrigger.isSelected();
-					if(hitTrigger.isSelected()){
+					if (hitTrigger.isSelected()) {
 						randomGameTrigger.setSelected(false);
 						randomGameSwitch = false;
 						everyGameTrigger.setSelected(false);
@@ -2795,36 +2745,36 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					hitTriggerBox1.setText(attackStyleOptions[5]);
 					hitTriggerBox2.setText(attackStyleOptions[6]);
 					// VERSION 1.0+ ONLY [[[
-					if(settingsVersion >= 1.0) {
+					if (settingsVersion >= 1.0) {
 						// MELEE SAFE SPOT TRIGGER OPTION
-						if(attackStyleOptions.length > 7) {
+						if (attackStyleOptions.length > 7) {
 							meleeSafeSpotTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[7]));
 							meleeSafeSpotSwitch = meleeSafeSpotTrigger.isSelected();
 						}
 						// USE FIRST ATTACK STYLE AT START OF EACH ROUND OPTION
-						if(attackStyleOptions.length > 8) {
+						if (attackStyleOptions.length > 8) {
 							chckbxFSGame.setSelected(Boolean.parseBoolean(attackStyleOptions[8]));
 							FSGame = chckbxFSGame.isSelected();
 						}
 					}
 					// ]]]
-					
-					
+
+
 					in.close();
-					
-					if(notFoundItemsIndex != 0) {
+
+					if (notFoundItemsIndex != 0) {
 						String notFoundItemsText = "";
 						int i = 0;
-						while(i < notFoundItemsIndex) {
+						while (i < notFoundItemsIndex) {
 							notFoundItemsText = notFoundItemsText + Integer.toString(notFoundItems[i]) + " - " + notFoundItemsNames[i] + "\n";
 							i++;
 						}
 						JOptionPane.showMessageDialog(null, "These saved wield items were not found in your inventory,\n They will not be wielded:\n\n" + notFoundItemsText);
 					}
-					
+
 					statusLabel.setText("Loaded");
 					setStatusLabelBounds();
-					
+
 				} catch (FileNotFoundException e) {
 					statusLabel.setText("No Settings File");
 					setStatusLabelBounds();
@@ -2834,16 +2784,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					e.printStackTrace();
 				}
 			}
-			
+
 			if (arg0.getSource() == Cancel) {
 				dieScript = true;
 				dispose();
 			}
-			
+
 			if (arg0.getSource() == Start) {
 				boolean canStart = true;
-				
-				String mouseSpeedString = "";
+
+				String mouseSpeedString;
 				mouseSpeedString = mouseSpeedBox.getText();
 				try {
 					mouseSpeed = Integer.parseInt(mouseSpeedString);
@@ -2851,12 +2801,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					JOptionPane.showMessageDialog(null, "Please enter a NUMBER in the mouse speed box");
 					canStart = false;
 				}
-				if(mouseSpeed < 1 || mouseSpeed > 25){
+				if (mouseSpeed < 1 || mouseSpeed > 25) {
 					JOptionPane.showMessageDialog(null, "Please enter a valid number in the mouse speed box");
 					canStart = false;
 				}
-				
-				if(bankTokens) {
+
+				if (bankTokens) {
 					tokensBeforeBankS = bankTokensNum.getText();
 					try {
 						tokensBeforeBank = Integer.parseInt(tokensBeforeBankS);
@@ -2864,26 +2814,26 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						JOptionPane.showMessageDialog(null, "Please enter a NUMBER in the 'Bank Tokens After' box");
 						canStart = false;
 					}
-					if(tokensBeforeBank < 1){
+					if (tokensBeforeBank < 1) {
 						JOptionPane.showMessageDialog(null, "Please enter a number more than 0 in the 'Bank Tokens After' box");
 						canStart = false;
 					}
 				}
-				
-				if(hitSwitch) {
+
+				if (hitSwitch) {
 					String hitTriggerBox1Text = hitTriggerBox1.getText();
 					String hitTriggerBox2Text = hitTriggerBox2.getText();
-					int hitSwitchMinHitsP = 0;
-					int hitSwitchMaxHitsP = 0;
+					int hitSwitchMinHitsP;
+					int hitSwitchMaxHitsP;
 					try {
 						hitSwitchMinHitsP = Integer.parseInt(hitTriggerBox1Text);
 						hitSwitchMaxHitsP = Integer.parseInt(hitTriggerBox2Text);
-						if(hitSwitchMinHits < 0 || hitSwitchMaxHits < 0) {
+						if (hitSwitchMinHits < 0 || hitSwitchMaxHits < 0) {
 							JOptionPane.showMessageDialog(null, "Please enter positive numbers in the 'Change Attack Style on Opponent Hitsplats' boxes");
 							canStart = false;
 						}
-						if(canStart) {
-							if(hitSwitchMaxHitsP >= hitSwitchMinHitsP) {
+						if (canStart) {
+							if (hitSwitchMaxHitsP >= hitSwitchMinHitsP) {
 								hitSwitchMaxHits = hitSwitchMaxHitsP;
 								hitSwitchMinHits = hitSwitchMinHitsP;
 							} else {
@@ -2895,84 +2845,86 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						JOptionPane.showMessageDialog(null, "Please enter NUMBERS in the 'Change Attack Style on Opponent Hitsplats' boxes");
 						canStart = false;
 					}
-					
+
 				}
-				
-				if(canStart) {
+
+				if (canStart) {
 					// ATTACK
-					if(meleeActive){
+					if (meleeActive) {
 						createMeleeItemsArray();
 					}
-					if(magicActive){
+					if (magicActive) {
 						createMagicItemsArray();
 					}
-					if(rangeActive){
+					if (rangeActive) {
 						createRangeItemsArray();
 					}
 					// DEFENCE
-					if(meleeActiveDefence){
+					if (meleeActiveDefence) {
 						createMeleeItemsArrayDefence();
 					}
-					if(magicActiveDefence){
+					if (magicActiveDefence) {
 						createMagicItemsArrayDefence();
 					}
-					if(rangeActiveDefence){
+					if (rangeActiveDefence) {
 						createRangeItemsArrayDefence();
 					}
-					
-					if(bankTokens){
-						if(dmode){ log("Will bank tokens when over " + tokensBeforeBank); }
+
+					if (bankTokens) {
+						if (dmode) {
+							log("Will bank tokens when over " + tokensBeforeBank);
+						}
 					}
 					dieScript = false;
 					dispose();
 				}
 			}
 		}
-		
+
 		public boolean itemFound(int itemID) {
 			int i = 0;
 			boolean well = false;
-			while(i < inventoryItemsIDs.length){
-				if(inventoryItemsIDs[i] == itemID) {
+			while (i < inventoryItemsIDs.length) {
+				if (inventoryItemsIDs[i] == itemID) {
 					well = true;
 				}
 				i++;
 			}
 			return well;
 		}
-		
+
 		public boolean arrayContains(int itemID, int[] containingArray) {
 			int i = 0;
 			boolean well = false;
-			while(i < containingArray.length){
-				if(containingArray[i] == itemID) {
+			while (i < containingArray.length) {
+				if (containingArray[i] == itemID) {
 					well = true;
 				}
 				i++;
 			}
 			return well;
 		}
-		
+
 		public void meleeAddMethod() {
-			if(invList.getSelectedIndex() == meleeListIDsAdded[0] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[1] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[2] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[3] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[4] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[5] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[6] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[7] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[8] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[9] ||
-			   invList.getSelectedIndex() == meleeListIDsAdded[10] ){
-			} else if(meleeListIDsAdded[10] != -1) {
+			if (invList.getSelectedIndex() == meleeListIDsAdded[0] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[1] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[2] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[3] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[4] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[5] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[6] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[7] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[8] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[9] ||
+					invList.getSelectedIndex() == meleeListIDsAdded[10]) {
+			} else if (meleeListIDsAdded[10] != -1) {
 				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
 				String IDString = Integer.toString(inventoryItemsIDs[invList.getSelectedIndex()]);
 				int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
-				while(wey < zerosToAdd){
+				while (wey < zerosToAdd) {
 					zeros = zeros + "0";
 					wey++;
 				}
@@ -2982,27 +2934,27 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				meleeListIDsAdded[meleeModel.size() - 1] = invList.getSelectedIndex();
 			}
 		}
-		
+
 		public void magicAddMethod() {
-			if(invList.getSelectedIndex() == magicListIDsAdded[0] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[1] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[2] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[3] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[4] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[5] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[6] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[7] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[8] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[9] ||
-			   invList.getSelectedIndex() == magicListIDsAdded[10] ){
-			} else if(magicListIDsAdded[10] != -1) {
+			if (invList.getSelectedIndex() == magicListIDsAdded[0] ||
+					invList.getSelectedIndex() == magicListIDsAdded[1] ||
+					invList.getSelectedIndex() == magicListIDsAdded[2] ||
+					invList.getSelectedIndex() == magicListIDsAdded[3] ||
+					invList.getSelectedIndex() == magicListIDsAdded[4] ||
+					invList.getSelectedIndex() == magicListIDsAdded[5] ||
+					invList.getSelectedIndex() == magicListIDsAdded[6] ||
+					invList.getSelectedIndex() == magicListIDsAdded[7] ||
+					invList.getSelectedIndex() == magicListIDsAdded[8] ||
+					invList.getSelectedIndex() == magicListIDsAdded[9] ||
+					invList.getSelectedIndex() == magicListIDsAdded[10]) {
+			} else if (magicListIDsAdded[10] != -1) {
 				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
 				String IDString = Integer.toString(inventoryItemsIDs[invList.getSelectedIndex()]);
 				int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
-				while(wey < zerosToAdd){
+				while (wey < zerosToAdd) {
 					zeros = zeros + "0";
 					wey++;
 				}
@@ -3012,27 +2964,27 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				magicListIDsAdded[magicModel.size() - 1] = invList.getSelectedIndex();
 			}
 		}
-		
+
 		public void rangeAddMethod() {
-			if(invList.getSelectedIndex() == rangeListIDsAdded[0] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[1] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[2] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[3] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[4] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[5] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[6] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[7] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[8] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[9] ||
-			   invList.getSelectedIndex() == rangeListIDsAdded[10] ){
-			} else if(rangeListIDsAdded[10] != -1) {
+			if (invList.getSelectedIndex() == rangeListIDsAdded[0] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[1] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[2] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[3] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[4] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[5] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[6] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[7] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[8] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[9] ||
+					invList.getSelectedIndex() == rangeListIDsAdded[10]) {
+			} else if (rangeListIDsAdded[10] != -1) {
 				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
 				String IDString = Integer.toString(inventoryItemsIDs[invList.getSelectedIndex()]);
 				int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
-				while(wey < zerosToAdd){
+				while (wey < zerosToAdd) {
 					zeros = zeros + "0";
 					wey++;
 				}
@@ -3042,27 +2994,27 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				rangeListIDsAdded[rangeModel.size() - 1] = invList.getSelectedIndex();
 			}
 		}
-		
+
 		public void meleeAddMethodDefence() {
-			if(invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[0] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[1] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[2] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[3] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[4] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[5] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[6] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[7] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[8] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[9] ||
-			   invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[10] ){
-			} else if(meleeListIDsAddedDefence[10] != -1) {
+			if (invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[0] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[1] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[2] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[3] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[4] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[5] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[6] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[7] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[8] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[9] ||
+					invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[10]) {
+			} else if (meleeListIDsAddedDefence[10] != -1) {
 				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
 				String IDString = Integer.toString(inventoryItemsIDs[invListDefence.getSelectedIndex()]);
 				int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
-				while(wey < zerosToAdd){
+				while (wey < zerosToAdd) {
 					zeros = zeros + "0";
 					wey++;
 				}
@@ -3072,27 +3024,27 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				meleeListIDsAddedDefence[meleeModelDefence.size() - 1] = invListDefence.getSelectedIndex();
 			}
 		}
-		
+
 		public void magicAddMethodDefence() {
-			if(invListDefence.getSelectedIndex() == magicListIDsAddedDefence[0] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[1] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[2] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[3] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[4] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[5] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[6] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[7] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[8] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[9] ||
-			   invListDefence.getSelectedIndex() == magicListIDsAddedDefence[10] ){
-			} else if(magicListIDsAddedDefence[10] != -1) {
+			if (invListDefence.getSelectedIndex() == magicListIDsAddedDefence[0] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[1] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[2] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[3] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[4] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[5] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[6] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[7] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[8] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[9] ||
+					invListDefence.getSelectedIndex() == magicListIDsAddedDefence[10]) {
+			} else if (magicListIDsAddedDefence[10] != -1) {
 				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
 				String IDString = Integer.toString(inventoryItemsIDs[invListDefence.getSelectedIndex()]);
 				int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
-				while(wey < zerosToAdd){
+				while (wey < zerosToAdd) {
 					zeros = zeros + "0";
 					wey++;
 				}
@@ -3102,27 +3054,27 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				magicListIDsAddedDefence[magicModelDefence.size() - 1] = invListDefence.getSelectedIndex();
 			}
 		}
-		
+
 		public void rangeAddMethodDefence() {
-			if(invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[0] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[1] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[2] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[3] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[4] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[5] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[6] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[7] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[8] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[9] ||
-			   invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[10] ){
-			} else if(rangeListIDsAdded[10] != -1) {
+			if (invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[0] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[1] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[2] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[3] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[4] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[5] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[6] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[7] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[8] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[9] ||
+					invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[10]) {
+			} else if (rangeListIDsAdded[10] != -1) {
 				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
 				String IDString = Integer.toString(inventoryItemsIDs[invListDefence.getSelectedIndex()]);
 				int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
-				while(wey < zerosToAdd){
+				while (wey < zerosToAdd) {
 					zeros = zeros + "0";
 					wey++;
 				}
@@ -3132,12 +3084,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				rangeListIDsAddedDefence[rangeModelDefence.size() - 1] = invListDefence.getSelectedIndex();
 			}
 		}
-		
+
 		public int invIndexOf(int itemID) {
 			int i = 0;
 			boolean found = false;
-			while(i < inventoryItemsIDs.length && !found){
-				if(inventoryItemsIDs[i] == itemID) {
+			while (i < inventoryItemsIDs.length && !found) {
+				if (inventoryItemsIDs[i] == itemID) {
 					found = true;
 				} else {
 					i++;
@@ -3145,8 +3097,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return i;
 		}
-		
-		public int[] sTi(String[] sarray) throws Exception {			// String Array to Int Array
+
+		public int[] sTi(String[] sarray)  {			// String Array to Int Array
 			if (sarray != null) {
 				int intarray[] = new int[sarray.length];
 				for (int i = 0; i < sarray.length; i++) {
@@ -3156,7 +3108,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 			return null;
 		}
-		
+
 		public void valueChanged(final ListSelectionEvent arg0) {
 			// ATTACK
 			if (arg0.getSource() == invList) {
@@ -3167,62 +3119,62 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				inventoryListSelectedIDDefence = invListDefence.getSelectedIndex();
 			}
 		}
-		
+
 		// ATTACK
 		public void createMeleeItemsArray() {
 			int numberOfItems = meleeModel.size();
 			meleeEquipment = new int[numberOfItems];
 			int i = 0;
-			while(i < numberOfItems){
+			while (i < numberOfItems) {
 				meleeEquipment[i] = inventoryItemsIDs[meleeListIDsAdded[i]];
 				i++;
 			}
 		}
-		
+
 		public void createMagicItemsArray() {
 			int numberOfItems = magicModel.size();
 			magicEquipment = new int[numberOfItems];
 			int i = 0;
-			while(i < numberOfItems){
+			while (i < numberOfItems) {
 				magicEquipment[i] = inventoryItemsIDs[magicListIDsAdded[i]];
 				i++;
 			}
 		}
-		
+
 		public void createRangeItemsArray() {
 			int numberOfItems = rangeModel.size();
 			rangeEquipment = new int[numberOfItems];
 			int i = 0;
-			while(i < numberOfItems){
+			while (i < numberOfItems) {
 				rangeEquipment[i] = inventoryItemsIDs[rangeListIDsAdded[i]];
 				i++;
 			}
 		}
-		
+
 		public void refreshStartStyleMenu() {
-			
+
 			startStyles1[0] = "NULL";
 			startStyles2[0] = "NULL";
 			startStyles2[1] = "NULL";
 			startStyles3[0] = "NULL";
 			startStyles3[1] = "NULL";
 			startStyles3[2] = "NULL";
-			
+
 			int stylesEnabled = 0;
 			int i = 0;
-			while(i < 3){
-				if(!startStylesP[i].equals("NULL")){
+			while (i < 3) {
+				if (!startStylesP[i].equals("NULL")) {
 					stylesEnabled++;
 				}
 				i++;
 			}
-			if(dmode) { log("Styles Enabled for Attack: " + stylesEnabled); }
-			switch(stylesEnabled)
-			{
-				case 1:
-				{
+			if (dmode) {
+				log("Styles Enabled for Attack: " + stylesEnabled);
+			}
+			switch (stylesEnabled) {
+				case 1: {
 					int one = 0;
-					while(startStyles1[0].equals("NULL")){
+					while (startStyles1[0].equals("NULL")) {
 						startStyles1[0] = startStylesP[one];
 						one++;
 					}
@@ -3230,23 +3182,21 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					firstStyle = startStyles1[0];
 					break;
 				}
-				case 2:
-				{
+				case 2: {
 					int two = 0;
-					while(startStyles2[0].equals("NULL")){
+					while (startStyles2[0].equals("NULL")) {
 						startStyles2[0] = startStylesP[two];
 						two++;
 					}
-					while(startStyles2[1].equals("NULL")){
+					while (startStyles2[1].equals("NULL")) {
 						startStyles2[1] = startStylesP[two];
 						two++;
 					}
 					startCombatStyle.setModel(new DefaultComboBoxModel(startStyles2));
 					firstStyle = startStyles2[0];
-				break;
+					break;
 				}
-				case 3:
-				{
+				case 3: {
 					startStyles3[0] = startStylesP[0];
 					startStyles3[1] = startStylesP[1];
 					startStyles3[2] = startStylesP[2];
@@ -3256,120 +3206,124 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 			}
 		}
-		
+
 		// DEFENCE
 		public void createMeleeItemsArrayDefence() {
 			int numberOfItems = meleeModelDefence.size();
 			meleeEquipmentDefence = new int[numberOfItems];
 			int i = 0;
-			while(i < numberOfItems){
+			while (i < numberOfItems) {
 				meleeEquipmentDefence[i] = inventoryItemsIDs[meleeListIDsAddedDefence[i]];
 				i++;
 			}
 		}
-		
+
 		public void createMagicItemsArrayDefence() {
 			int numberOfItems = magicModelDefence.size();
 			magicEquipmentDefence = new int[numberOfItems];
 			int i = 0;
-			while(i < numberOfItems){
+			while (i < numberOfItems) {
 				magicEquipmentDefence[i] = inventoryItemsIDs[magicListIDsAddedDefence[i]];
 				i++;
 			}
 		}
-		
+
 		public void createRangeItemsArrayDefence() {
 			int numberOfItems = rangeModelDefence.size();
 			rangeEquipmentDefence = new int[numberOfItems];
 			int i = 0;
-			while(i < numberOfItems){
+			while (i < numberOfItems) {
 				rangeEquipmentDefence[i] = inventoryItemsIDs[rangeListIDsAddedDefence[i]];
 				i++;
 			}
 		}
 	}
-	
+
 	public Point getPlayerScreenLoc() {
 		Point thePoint = new Point(245, 156);
 		try {
-			if(calc.tileOnScreen(getPlayerLocThrow())) {
-				thePoint =  calc.tileToScreen(getPlayerLocThrow(), 4);
+			if (calc.tileOnScreen(getPlayerLocThrow())) {
+				thePoint = calc.tileToScreen(getPlayerLocThrow(), 4);
 			}
-		} catch (NullPointerException ignored) {}
-		return thePoint;
-	}
-	
-	public Point getPlayerScreenLocThrow() throws NullPointerException {
-		Point thePoint = new Point(245, 156);
-		if(calc.tileOnScreen(getPlayerLocThrow())) {
-			thePoint =  calc.tileToScreen(getPlayerLocThrow(), 4);
+		} catch (NullPointerException ignored) {
 		}
 		return thePoint;
 	}
-	
-	public RSTile getPlayerLoc() {
+
+	Point getPlayerScreenLocThrow() throws NullPointerException {
+		Point thePoint = new Point(245, 156);
+		if (calc.tileOnScreen(getPlayerLocThrow())) {
+			thePoint = calc.tileToScreen(getPlayerLocThrow(), 4);
+		}
+		return thePoint;
+	}
+
+	RSTile getPlayerLoc() {
 		try {
 			return getPlayer().getLocation();
-		} catch (NullPointerException ignored) {}
+		} catch (NullPointerException ignored) {
+		}
 		return new RSTile(0, 0);
 	}
-	
-	public RSTile getPlayerLocThrow() throws NullPointerException {
+
+	RSTile getPlayerLocThrow() throws NullPointerException {
 		RSTile theTile = getPlayerThrow().getLocation();
 		return theTile;
 	}
-	
-	public boolean playerLocKnown() {
-		if(getPlayerLoc().getX() == 0 && getPlayerLoc().getY() == 0) {
+
+	boolean playerLocKnown() {
+		if (getPlayerLoc().getX() == 0 && getPlayerLoc().getY() == 0) {
 			return false;
 		} else {
 			return true;
 		}
 	}
-	
-	public RSPlayer getPlayer() {
+
+	RSPlayer getPlayer() {
 		String name = interfaces.get(730).getComponent(18).getText();
 		RSPlayer[] array = players.getAll();
 		int i = 0;
 		while (i < array.length) {
-			if (array[i] != null){
-				try{
-					if ((array[i].getName()).equals(name)){
+			if (array[i] != null) {
+				try {
+					if ((array[i].getName()).equals(name)) {
 						return array[i];
 					}
-				} catch (NullPointerException ignored){}
-			i++;
+				} catch (NullPointerException ignored) {
+				}
+				i++;
 			}
 		}
 		return null;
 	}
-	
-	public RSPlayer getPlayerThrow() throws NullPointerException {
+
+	RSPlayer getPlayerThrow() throws NullPointerException {
 		String name = interfaces.get(730).getComponent(18).getText();
 		RSPlayer[] array = players.getAll();
 		int i = 0;
 		while (i < array.length) {
-			if (array[i] != null){
-				try{
-					if ((array[i].getName()).equals(name)){
+			if (array[i] != null) {
+				try {
+					if ((array[i].getName()).equals(name)) {
 						return array[i];
 					}
-				} catch (NullPointerException ignored){}
-			i++;
+				} catch (NullPointerException ignored) {
+				}
+				i++;
 			}
 		}
 		throw new NullPointerException();
 	}
-	
-	public String playerName() {
+
+	String playerName() {
 		return interfaces.get(730).getComponent(18).getText();
 	}
-	
-	public boolean inLobby() {
+
+	boolean inLobby() {
 		int x = getMyPlayer().getLocation().getX();
 		int y = getMyPlayer().getLocation().getY();
 		if (x <= 1725 && x >= 1670) {
-			if (y <= 5615 && y >= 5585){
+			if (y <= 5615 && y >= 5585) {
 				return true;
 			}
 		}
@@ -3377,11 +3331,11 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		return false;
 	}
 
-	public boolean inGame() {
+	boolean inGame() {
 		int x = getMyPlayer().getLocation().getX();
 		int y = getMyPlayer().getLocation().getY();
 		if (x <= 1710 && x >= 1615) {
-			if (y <= 5735 && y >= 5650){
+			if (y <= 5735 && y >= 5650) {
 				return true;
 			}
 		}
@@ -3389,11 +3343,11 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		return false;
 	}
 
-	public boolean inWaitingRoom() {
+	boolean inWaitingRoom() {
 		int x = getMyPlayer().getLocation().getX();
 		int y = getMyPlayer().getLocation().getY();
 		if (x <= 1660 && x >= 1610) {
-			if (y <= 5620 && y >= 5600){
+			if (y <= 5620 && y >= 5600) {
 				return true;
 			}
 		}
@@ -3404,93 +3358,101 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 	public int getCharges() {
 		String chargesTxt = interfaces.get(730).getComponent(17).getText();
 		int chargesIndex = chargesTxt.indexOf(": ");
-		String finalString = chargesTxt.substring(chargesIndex+2);
+		String finalString = chargesTxt.substring(chargesIndex + 2);
 		int finalCharges = Integer.parseInt(finalString);
 		return finalCharges;
 	}
-	
-	public void setNextHitSwitch() {
-		
+
+	void setNextHitSwitch() {
+
 		int hitSwitchMinHitsBIG = hitSwitchMinHits * 1000;
 		int hitSwitchMaxHitsBIG = hitSwitchMaxHits * 1000;
 		int nextBig = random(hitSwitchMinHitsBIG, hitSwitchMaxHitsBIG);
-		double nextDown = (double)nextBig / 1000.00;
-		int next = (int)Math.round(nextDown);
-		
+		double nextDown = (double) nextBig / 1000.00;
+		int next = (int) Math.round(nextDown);
+
 		nextHitSwitch = next;
 	}
-	
-	public void setRandomStyle() {
+
+	void setRandomStyle() {
 		status = "Changing Style...";
 		int numActive = 0;
-		if(meleeActive){ numActive++; }
-		if(magicActive){ numActive++; }
-		if(rangeActive){ numActive++; }
-		
-		if(numActive == 3){
-			int rand = random(1, 2);
-			switch(rand){
-				case 1:
-				{
-					if(currentStyle.equals("Melee")){
-						currentStyle = "Magic";
-					} else if(currentStyle.equals("Magic")){
-						currentStyle = "Range";
-					} else if(currentStyle.equals("Range")){
-						currentStyle = "Melee";
-					}
-					break;
-				}
-				case 2:
-				{
-					if(currentStyle.equals("Melee")){
-						currentStyle = "Range";
-					} else if(currentStyle.equals("Magic")){
-						currentStyle = "Melee";
-					} else if(currentStyle.equals("Range")){
-						currentStyle = "Magic";
-					}
-					break;
-				}
-			}
-		} else if(numActive == 2){
-			if(currentStyle.equals("Melee")){
-				if(magicActive){
-					currentStyle = "Magic";
-				} else if(rangeActive) {
-					currentStyle = "Range";
-				}
-			} else if(currentStyle.equals("Magic")){
-				if(rangeActive){
-					currentStyle = "Range";
-				} else if(meleeActive) {
-					currentStyle = "Melee";
-				}
-			} else if(currentStyle.equals("Range")){
-				if(meleeActive){
-					currentStyle = "Melee";
-				} else if(magicActive) {
-					currentStyle = "Magic";
-				}
-			}
-		} else if(numActive == 1){
-			if(dmode) { log("Only one Combat Style active. Cannot switch."); }
-		} else if(numActive == 0){
-			if(dmode) { log("ERROR - NO COMBAT STYLES"); }
+		if (meleeActive) {
+			numActive++;
 		}
-		if(numActive > 1){
+		if (magicActive) {
+			numActive++;
+		}
+		if (rangeActive) {
+			numActive++;
+		}
+
+		if (numActive == 3) {
+			int rand = random(1, 2);
+			switch (rand) {
+				case 1: {
+					if (currentStyle.equals("Melee")) {
+						currentStyle = "Magic";
+					} else if (currentStyle.equals("Magic")) {
+						currentStyle = "Range";
+					} else if (currentStyle.equals("Range")) {
+						currentStyle = "Melee";
+					}
+					break;
+				}
+				case 2: {
+					if (currentStyle.equals("Melee")) {
+						currentStyle = "Range";
+					} else if (currentStyle.equals("Magic")) {
+						currentStyle = "Melee";
+					} else if (currentStyle.equals("Range")) {
+						currentStyle = "Magic";
+					}
+					break;
+				}
+			}
+		} else if (numActive == 2) {
+			if (currentStyle.equals("Melee")) {
+				if (magicActive) {
+					currentStyle = "Magic";
+				} else if (rangeActive) {
+					currentStyle = "Range";
+				}
+			} else if (currentStyle.equals("Magic")) {
+				if (rangeActive) {
+					currentStyle = "Range";
+				} else if (meleeActive) {
+					currentStyle = "Melee";
+				}
+			} else if (currentStyle.equals("Range")) {
+				if (meleeActive) {
+					currentStyle = "Melee";
+				} else if (magicActive) {
+					currentStyle = "Magic";
+				}
+			}
+		} else if (numActive == 1) {
+			if (dmode) {
+				log("Only one Combat Style active. Cannot switch.");
+			}
+		} else if (numActive == 0) {
+			if (dmode) {
+				log("ERROR - NO COMBAT STYLES");
+			}
+		}
+		if (numActive > 1) {
 			setupStyleEquipment();
 			setupStyle();
 		}
 	}
-	
-	public boolean isFOGItem(int id) {
+
+	boolean isFOGItem(int id) {
 		boolean isIt = false;
-		int i = 0 ;
-		while(!isIt && i < FOGItems.length) {
+		int i = 0;
+		while (!isIt && i < FOGItems.length) {
 			int i2 = 0;
-			while(!isIt && i2 < 7) {
-				if(FOGItems[i].ID - i2 == id){
+			while (!isIt && i2 < 7) {
+				if (FOGItems[i].ID - i2 == id) {
 					isIt = true;
 					dlog("Found FOG Item: " + id + ", FOGItems[" + i + "] - " + i2);
 				}
@@ -3500,14 +3462,14 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		return isIt;
 	}
-	
-	public boolean isFOGItem2(int id) {
+
+	boolean isFOGItem2(int id) {
 		boolean isIt = false;
-		int i = 0 ;
-		while(!isIt && i < FOGItems.length) {
+		int i = 0;
+		while (!isIt && i < FOGItems.length) {
 			int i2 = 0;
-			while(!isIt && i2 < 7) {
-				if(FOGItems[i].ID - i2 == id){
+			while (!isIt && i2 < 7) {
+				if (FOGItems[i].ID - i2 == id) {
 					isIt = true;
 				}
 				i2++;
@@ -3517,12 +3479,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		return isIt;
 	}
 
-	public boolean isFOGItemInInv(int id) {
+	boolean isFOGItemInInv(int id) {
 		int idOn = id;
 		int i = 0;
-		while(i < FOGItems.length) {
-			while(idOn <= FOGItems[i].ID && idOn >= (FOGItems[i].ID - 5)) {
-				if(inventory.getCount(false, idOn) > 0) {	
+		while (i < FOGItems.length) {
+			while (idOn <= FOGItems[i].ID && idOn >= (FOGItems[i].ID - 5)) {
+				if (inventory.getCount(false, idOn) > 0) {
 					return true;
 				} else {
 					idOn++;
@@ -3532,21 +3494,21 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		return false;
 	}
-	
-	public int wieldFOGItem(int id) {
+
+	int wieldFOGItem(int id) {
 		int toReturn = -1;
 		boolean done = false;
 		int idOn = id;
 		int i = 0;
-		while(!done && i < FOGItems.length) {
-			while(!done && idOn <= FOGItems[i].ID && idOn >= (FOGItems[i].ID - 5)) {
-				if(inventory.getCount(false, idOn) > 0) {	
-					if(doActionExtreme(idOn, "Wear")) {
+		while (!done && i < FOGItems.length) {
+			while (!done && idOn <= FOGItems[i].ID && idOn >= (FOGItems[i].ID - 5)) {
+				if (inventory.getCount(false, idOn) > 0) {
+					if (doActionExtreme(idOn, "Wear")) {
 						done = true;
 						toReturn = idOn;
 						dlog("Wielded (\"Wear\") FOG Item: " + idOn + ", From old id: " + id + ", FOGItems[" + i + "] - ");
 					} else {
-						if(doActionExtreme(idOn, "Wield")) {
+						if (doActionExtreme(idOn, "Wield")) {
 							done = true;
 							toReturn = idOn;
 							dlog("Wielded (\"Wield\") FOG Item: " + idOn + ", From old id: " + id + ", FOGItems[" + i + "] - ");
@@ -3562,49 +3524,58 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		return toReturn;
 	}
-	
+
 	public boolean stringArrayContains(String[] array, String term) {
-		for(int i = 0; i < array.length; i++) {
-			if(array[i].contains(term)) {
+		for (String anArray : array) {
+			if (anArray.contains(term)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	public boolean doActionExtreme(int itemID, String action) {
+
+	boolean doActionExtreme(int itemID, String action) {
 		try {
 			RSItem item = inventory.getItem(itemID);
-			if(item == null)
+			if (item == null) {
 				return false;
+			}
 			int tries = 0;
-			while(!item.doAction(action) && tries < 10) {
+			while (!item.doAction(action) && tries < 10) {
 				tries++;
-				if(!menu.contains(action)) {
-					if(!hoverItemCentre(item))
+				if (!menu.contains(action)) {
+					if (!hoverItemCentre(item)) {
 						moveMouseUp();
+					}
 				}
 			}
-			if(tries < 10)
+			if (tries < 10) {
 				return true;
+			}
 		} catch (NullPointerException e) {
-			if(dmode)
+			if (dmode) {
 				e.printStackTrace();
+			}
 		}
 		return false;
 	}
-	public void moveMouseUp() {
-		int x = (int)mouse.getLocation().getX();
-		int y = (int)mouse.getLocation().getY();
+
+	void moveMouseUp() {
+		int x = (int) mouse.getLocation().getX();
+		int y = (int) mouse.getLocation().getY();
 		mouse.move(x + random(-10, 10), y - random(20, 80));
 	}
+
 	public void moveMouseDown() {
-		int x = (int)mouse.getLocation().getX();
-		int y = (int)mouse.getLocation().getY();
+		int x = (int) mouse.getLocation().getX();
+		int y = (int) mouse.getLocation().getY();
 		mouse.move(x + random(-10, 10), y + random(20, 80));
 	}
-	public boolean hoverItemCentre(RSItem item) {
-		if(item == null || item.getComponent() == null || item.getComponent().getArea() == null || item.getComponent().getArea().x == -1)
+
+	boolean hoverItemCentre(RSItem item) {
+		if (item == null || item.getComponent() == null || item.getComponent().getArea() == null || item.getComponent().getArea().x == -1) {
 			return false;
+		}
 		Rectangle r1 = item.getComponent().getArea();
 		int width = r1.width / 2;
 		int height = r1.height / 2;
@@ -3616,22 +3587,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		mouse.move(mx, my);
 		return true;
 	}
-	
-	public void setupStyleEquipment() {
+
+	void setupStyleEquipment() {
 		try {
-			if(equipmentItemsInInventory()) {
-				if(currentStyle.equals("Melee")){
+			if (equipmentItemsInInventory()) {
+				if (currentStyle.equals("Melee")) {
 					int i = 0;
-					while(i < meleeEquipment.length){
-						if(inventory.getCount(false, meleeEquipment[i]) > 0){
-							if(!doActionExtreme(meleeEquipment[i], "Wear")){
-								if(!doActionExtreme(meleeEquipment[i], "Wield")){
+					while (i < meleeEquipment.length) {
+						if (inventory.getCount(false, meleeEquipment[i]) > 0) {
+							if (!doActionExtreme(meleeEquipment[i], "Wear")) {
+								if (!doActionExtreme(meleeEquipment[i], "Wield")) {
 									dlog("Unwearable item: " + meleeEquipment[i]);
 								}
 							}
-						} else if(isFOGItem(meleeEquipment[i]) && isFOGItemInInv(meleeEquipment[i])) {
+						} else if (isFOGItem(meleeEquipment[i]) && isFOGItemInInv(meleeEquipment[i])) {
 							int newID = wieldFOGItem(meleeEquipment[i]);
-							if(newID != -1) {
+							if (newID != -1) {
 								meleeEquipment[i] = newID;
 							} else {
 								dlog("Unwearable FOG item: " + meleeEquipment[i]);
@@ -3639,18 +3610,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						i++;
 					}
-				} else if(currentStyle.equals("Magic")){
+				} else if (currentStyle.equals("Magic")) {
 					int i = 0;
-					while(i < magicEquipment.length){
-						if(inventory.getCount(false, magicEquipment[i]) > 0){
-							if(!doActionExtreme(magicEquipment[i], "Wear")){
-								if(!doActionExtreme(magicEquipment[i], "Wield")){
+					while (i < magicEquipment.length) {
+						if (inventory.getCount(false, magicEquipment[i]) > 0) {
+							if (!doActionExtreme(magicEquipment[i], "Wear")) {
+								if (!doActionExtreme(magicEquipment[i], "Wield")) {
 									dlog("Unwearable item: " + magicEquipment[i]);
 								}
 							}
-						} else if(isFOGItem(magicEquipment[i]) && isFOGItemInInv(magicEquipment[i])) {
+						} else if (isFOGItem(magicEquipment[i]) && isFOGItemInInv(magicEquipment[i])) {
 							int newID = wieldFOGItem(magicEquipment[i]);
-							if(newID != -1) {
+							if (newID != -1) {
 								magicEquipment[i] = newID;
 							} else {
 								dlog("Unwearable FOG item: " + magicEquipment[i]);
@@ -3658,18 +3629,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						i++;
 					}
-				} else if(currentStyle.equals("Range")){
+				} else if (currentStyle.equals("Range")) {
 					int i = 0;
-					while(i < rangeEquipment.length){
-						if(inventory.getCount(false, rangeEquipment[i]) > 0){
-							if(!doActionExtreme(rangeEquipment[i], "Wear")){
-								if(!doActionExtreme(rangeEquipment[i], "Wield")){
+					while (i < rangeEquipment.length) {
+						if (inventory.getCount(false, rangeEquipment[i]) > 0) {
+							if (!doActionExtreme(rangeEquipment[i], "Wear")) {
+								if (!doActionExtreme(rangeEquipment[i], "Wield")) {
 									dlog("Unwearable item: " + rangeEquipment[i]);
 								}
 							}
-						} else if(isFOGItem(rangeEquipment[i]) && isFOGItemInInv(rangeEquipment[i])) {
+						} else if (isFOGItem(rangeEquipment[i]) && isFOGItemInInv(rangeEquipment[i])) {
 							int newID = wieldFOGItem(rangeEquipment[i]);
-							if(newID != -1) {
+							if (newID != -1) {
 								rangeEquipment[i] = newID;
 							} else {
 								dlog("Unwearable FOG item: " + rangeEquipment[i]);
@@ -3679,47 +3650,48 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 				}
 			}
-		} catch (NullPointerException ignored) {}
+		} catch (NullPointerException ignored) {
+		}
 	}
-	
-	public void setupStyle() {
-		if(currentStyle.equals("Melee")){
-			if(meleeAttackStyle.equals("Attack EXP")){
+
+	void setupStyle() {
+		if (currentStyle.equals("Melee")) {
+			if (meleeAttackStyle.equals("Attack EXP")) {
 				combat.setFightMode(0);
-			} else if(meleeAttackStyle.equals("Strength EXP")){
+			} else if (meleeAttackStyle.equals("Strength EXP")) {
 				combat.setFightMode(1);
-			} else if(meleeAttackStyle.equals("Shared EXP")){
+			} else if (meleeAttackStyle.equals("Shared EXP")) {
 				combat.setFightMode(2);
-			} else if(meleeAttackStyle.equals("Defence EXP")){
+			} else if (meleeAttackStyle.equals("Defence EXP")) {
 				combat.setFightMode(3);
 			}
-			
-		} else if(currentStyle.equals("Range")){
-			if(rangeAttackStyle.equals("Accurate")){
+
+		} else if (currentStyle.equals("Range")) {
+			if (rangeAttackStyle.equals("Accurate")) {
 				combat.setFightMode(0);
-			} else if(rangeAttackStyle.equals("Rapid")){
+			} else if (rangeAttackStyle.equals("Rapid")) {
 				combat.setFightMode(1);
-			} else if(rangeAttackStyle.equals("Long range")){
+			} else if (rangeAttackStyle.equals("Long range")) {
 				combat.setFightMode(2);
 			}
 		}
 	}
-	
-	public void setupStyleDefence() {
+
+	void setupStyleDefence() {
 		try {
-			if(equipmentItemsInInventoryDefence()) {
-				if(currentStyleDefence.equals("Melee")){
+			if (equipmentItemsInInventoryDefence()) {
+				if (currentStyleDefence.equals("Melee")) {
 					int i = 0;
-					while(i < meleeEquipmentDefence.length && getMyPlayer().getHPPercent() > 50 && inGame()){
-						if(inventory.getCount(false, meleeEquipmentDefence[i]) > 0){
-							if(!doActionExtreme(meleeEquipmentDefence[i], "Wear")){
-								if(!doActionExtreme(meleeEquipmentDefence[i], "Wield")){
+					while (i < meleeEquipmentDefence.length && getMyPlayer().getHPPercent() > 50 && inGame()) {
+						if (inventory.getCount(false, meleeEquipmentDefence[i]) > 0) {
+							if (!doActionExtreme(meleeEquipmentDefence[i], "Wear")) {
+								if (!doActionExtreme(meleeEquipmentDefence[i], "Wield")) {
 									dlog("Unwearable item: " + meleeEquipmentDefence[i]);
 								}
 							}
-						} else if(isFOGItem(meleeEquipmentDefence[i]) && isFOGItemInInv(meleeEquipmentDefence[i])) {
+						} else if (isFOGItem(meleeEquipmentDefence[i]) && isFOGItemInInv(meleeEquipmentDefence[i])) {
 							int newID = wieldFOGItem(meleeEquipmentDefence[i]);
-							if(newID != -1) {
+							if (newID != -1) {
 								meleeEquipmentDefence[i] = newID;
 							} else {
 								dlog("Unwearable FOG item: " + meleeEquipmentDefence[i]);
@@ -3727,18 +3699,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						i++;
 					}
-				} else if(currentStyleDefence.equals("Magic")){
+				} else if (currentStyleDefence.equals("Magic")) {
 					int i = 0;
-					while(i < magicEquipmentDefence.length && getMyPlayer().getHPPercent() > 50 && inGame()){
-						if(inventory.getCount(false, magicEquipmentDefence[i]) > 0){
-							if(!doActionExtreme(magicEquipmentDefence[i], "Wear")){
-								if(!doActionExtreme(magicEquipmentDefence[i], "Wield")){
+					while (i < magicEquipmentDefence.length && getMyPlayer().getHPPercent() > 50 && inGame()) {
+						if (inventory.getCount(false, magicEquipmentDefence[i]) > 0) {
+							if (!doActionExtreme(magicEquipmentDefence[i], "Wear")) {
+								if (!doActionExtreme(magicEquipmentDefence[i], "Wield")) {
 									dlog("Unwearable item: " + magicEquipmentDefence[i]);
 								}
 							}
-						} else if(isFOGItem(magicEquipmentDefence[i]) && isFOGItemInInv(magicEquipmentDefence[i])) {
+						} else if (isFOGItem(magicEquipmentDefence[i]) && isFOGItemInInv(magicEquipmentDefence[i])) {
 							int newID = wieldFOGItem(magicEquipmentDefence[i]);
-							if(newID != -1) {
+							if (newID != -1) {
 								magicEquipmentDefence[i] = newID;
 							} else {
 								dlog("Unwearable FOG item: " + magicEquipmentDefence[i]);
@@ -3746,18 +3718,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						i++;
 					}
-				} else if(currentStyleDefence.equals("Range")){
+				} else if (currentStyleDefence.equals("Range")) {
 					int i = 0;
-					while(i < rangeEquipmentDefence.length && getMyPlayer().getHPPercent() > 50 && inGame()){
-						if(inventory.getCount(false, rangeEquipmentDefence[i]) > 0){
-							if(!doActionExtreme(rangeEquipmentDefence[i], "Wear")){
-								if(!doActionExtreme(rangeEquipmentDefence[i], "Wield")){
+					while (i < rangeEquipmentDefence.length && getMyPlayer().getHPPercent() > 50 && inGame()) {
+						if (inventory.getCount(false, rangeEquipmentDefence[i]) > 0) {
+							if (!doActionExtreme(rangeEquipmentDefence[i], "Wear")) {
+								if (!doActionExtreme(rangeEquipmentDefence[i], "Wield")) {
 									dlog("Unwearable item: " + rangeEquipmentDefence[i]);
 								}
 							}
-						} else if(isFOGItem(rangeEquipmentDefence[i]) && isFOGItemInInv(rangeEquipmentDefence[i])) {
+						} else if (isFOGItem(rangeEquipmentDefence[i]) && isFOGItemInInv(rangeEquipmentDefence[i])) {
 							int newID = wieldFOGItem(rangeEquipmentDefence[i]);
-							if(newID != -1) {
+							if (newID != -1) {
 								rangeEquipmentDefence[i] = newID;
 							} else {
 								dlog("Unwearable FOG item: " + rangeEquipmentDefence[i]);
@@ -3767,42 +3739,43 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 				}
 			}
-		} catch (NullPointerException ignored) {}
+		} catch (NullPointerException ignored) {
+		}
 	}
-	
-	public boolean equipmentItemsInInventory() {
+
+	boolean equipmentItemsInInventory() {
 		boolean isThere = false;
-		if(currentStyle.equals("Melee")){
-			if(inventory.getCount(false, meleeEquipment) > 0){
+		if (currentStyle.equals("Melee")) {
+			if (inventory.getCount(false, meleeEquipment) > 0) {
 				isThere = true;
 			} else {
 				int i = 0;
-				while(!isThere && i < meleeEquipment.length) {
-					if(isFOGItem2(meleeEquipment[i]) && isFOGItemInInv(meleeEquipment[i])) {
+				while (!isThere && i < meleeEquipment.length) {
+					if (isFOGItem2(meleeEquipment[i]) && isFOGItemInInv(meleeEquipment[i])) {
 						isThere = true;
 					}
 					i++;
 				}
 			}
-		} else if(currentStyle.equals("Magic")){
-			if(inventory.getCount(false, magicEquipment) > 0){
+		} else if (currentStyle.equals("Magic")) {
+			if (inventory.getCount(false, magicEquipment) > 0) {
 				isThere = true;
 			} else {
 				int i = 0;
-				while(!isThere && i < magicEquipment.length) {
-					if(isFOGItem2(magicEquipment[i]) && isFOGItemInInv(magicEquipment[i])) {
+				while (!isThere && i < magicEquipment.length) {
+					if (isFOGItem2(magicEquipment[i]) && isFOGItemInInv(magicEquipment[i])) {
 						isThere = true;
 					}
 					i++;
 				}
 			}
-		} else if(currentStyle.equals("Range")){
-			if(inventory.getCount(false, rangeEquipment) > 0){
+		} else if (currentStyle.equals("Range")) {
+			if (inventory.getCount(false, rangeEquipment) > 0) {
 				isThere = true;
 			} else {
 				int i = 0;
-				while(!isThere && i < rangeEquipment.length) {
-					if(isFOGItem2(rangeEquipment[i]) && isFOGItemInInv(rangeEquipment[i])) {
+				while (!isThere && i < rangeEquipment.length) {
+					if (isFOGItem2(rangeEquipment[i]) && isFOGItemInInv(rangeEquipment[i])) {
 						isThere = true;
 					}
 					i++;
@@ -3811,40 +3784,40 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		return isThere;
 	}
-	
-	public boolean equipmentItemsInInventoryDefence() {
+
+	boolean equipmentItemsInInventoryDefence() {
 		boolean isThere = false;
-		if(currentStyleDefence.equals("Melee")){
-			if(inventory.getCount(false, meleeEquipmentDefence) > 0){
+		if (currentStyleDefence.equals("Melee")) {
+			if (inventory.getCount(false, meleeEquipmentDefence) > 0) {
 				isThere = true;
 			} else {
 				int i = 0;
-				while(!isThere && i < meleeEquipmentDefence.length) {
-					if(isFOGItem2(meleeEquipmentDefence[i]) && isFOGItemInInv(meleeEquipmentDefence[i])) {
+				while (!isThere && i < meleeEquipmentDefence.length) {
+					if (isFOGItem2(meleeEquipmentDefence[i]) && isFOGItemInInv(meleeEquipmentDefence[i])) {
 						isThere = true;
 					}
 					i++;
 				}
 			}
-		} else if(currentStyleDefence.equals("Magic")){
-			if(inventory.getCount(false, magicEquipmentDefence) > 0){
+		} else if (currentStyleDefence.equals("Magic")) {
+			if (inventory.getCount(false, magicEquipmentDefence) > 0) {
 				isThere = true;
 			} else {
 				int i = 0;
-				while(!isThere && i < magicEquipmentDefence.length) {
-					if(isFOGItem2(magicEquipmentDefence[i]) && isFOGItemInInv(magicEquipmentDefence[i])) {
+				while (!isThere && i < magicEquipmentDefence.length) {
+					if (isFOGItem2(magicEquipmentDefence[i]) && isFOGItemInInv(magicEquipmentDefence[i])) {
 						isThere = true;
 					}
 					i++;
 				}
 			}
-		} else if(currentStyleDefence.equals("Range")){
-			if(inventory.getCount(false, rangeEquipmentDefence) > 0){
+		} else if (currentStyleDefence.equals("Range")) {
+			if (inventory.getCount(false, rangeEquipmentDefence) > 0) {
 				isThere = true;
 			} else {
 				int i = 0;
-				while(!isThere && i < rangeEquipmentDefence.length) {
-					if(isFOGItem2(rangeEquipmentDefence[i]) && isFOGItemInInv(rangeEquipmentDefence[i])) {
+				while (!isThere && i < rangeEquipmentDefence.length) {
+					if (isFOGItem2(rangeEquipmentDefence[i]) && isFOGItemInInv(rangeEquipmentDefence[i])) {
 						isThere = true;
 					}
 					i++;
@@ -3853,109 +3826,111 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		return isThere;
 	}
-	
-	public int itemsInEquipment() {
+
+	int itemsInEquipment() {
 		int itemsFound = 0;
 		int i = 0;
-		while(i < 11){
+		while (i < 11) {
 			try {
 				RSComponent comp = equipment.getInterface().getComponent(eComps[i]);
 				String[] compActions = comp.getActions();
-				if(compActions[0].contains("Remove")){
+				if (compActions[0].contains("Remove")) {
 					itemsFound++;
 				}
-			} catch (NullPointerException ignored) {}
+			} catch (NullPointerException ignored) {
+			}
 			i++;
 		}
 		return itemsFound;
 	}
-	
+
 	public void unequipAll() {
-		while(game.getCurrentTab() != game.TAB_EQUIPMENT) {
-			game.openTab(game.TAB_EQUIPMENT);
+		while (game.getCurrentTab() != Game.TAB_EQUIPMENT) {
+			game.openTab(Game.TAB_EQUIPMENT);
 			sleep(101);
 		}
-		while(itemsInEquipment() > 0){
+		while (itemsInEquipment() > 0) {
 			RSItem[] eItems = equipment.getItems();
-			String[] order = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+			String[] order = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 			java.util.List list = Arrays.asList(order);
 			Collections.shuffle(list);
-			Object[] noOrderObjects = new Object[11];
+			Object[] noOrderObjects;
 			String[] noOrderStrings = new String[11];
 			noOrderObjects = list.toArray();
-			for (int i=0;i<11;i++){ 
-				noOrderStrings[i]=noOrderObjects[i].toString();
+			for (int i = 0; i < 11; i++) {
+				noOrderStrings[i] = noOrderObjects[i].toString();
 			}
 			int[] noOrder = new int[11];
-			for(int i = 0; i < 11; i++) {
+			for (int i = 0; i < 11; i++) {
 				noOrder[i] = Integer.parseInt(noOrderStrings[i]);
 			}
-			for(int i = 0; i < 11; i++) {
+			for (int i = 0; i < 11; i++) {
 				try {
 					int nextItem = noOrder[i];
-					if(equipment.getInterface().getComponent(eComps[nextItem]).getActions()[0].contains("Remove")){
-						if(eItems[nextItem].doAction("Remove")){
-							if(itemsInEquipment() < 3){
+					if (equipment.getInterface().getComponent(eComps[nextItem]).getActions()[0].contains("Remove")) {
+						if (eItems[nextItem].doAction("Remove")) {
+							if (itemsInEquipment() < 3) {
 								sleep(700);
 							}
 							sleep(random(50, 150));
 						}
 					}
-				} catch (NullPointerException ignored) {}
+				} catch (NullPointerException ignored) {
+				}
 			}
 		}
-		game.openTab(game.TAB_INVENTORY);
+		game.openTab(Game.TAB_INVENTORY);
 		sleep(200);
 	}
-	
-	public void initialise() {
-		
-		if(game.isLoggedIn()) {
+
+	void initialise() {
+
+		if (game.isLoggedIn()) {
 			// Player Stats Exp
-			startAttackExp = skills.getCurrentExp(skills.ATTACK);
-			startStrengthExp = skills.getCurrentExp(skills.STRENGTH);
-			startDefenceExp = skills.getCurrentExp(skills.DEFENSE);
-			startMagicExp = skills.getCurrentExp(skills.MAGIC);
-			startRangeExp = skills.getCurrentExp(skills.RANGE);
-			startConstitutionExp = skills.getCurrentExp(skills.CONSTITUTION);
+			startAttackExp = skills.getCurrentExp(Skills.ATTACK);
+			startStrengthExp = skills.getCurrentExp(Skills.STRENGTH);
+			startDefenceExp = skills.getCurrentExp(Skills.DEFENSE);
+			startMagicExp = skills.getCurrentExp(Skills.MAGIC);
+			startRangeExp = skills.getCurrentExp(Skills.RANGE);
+			startConstitutionExp = skills.getCurrentExp(Skills.CONSTITUTION);
 			// Prayer Stats Levels
-			startAttackLevel = skills.getRealLevel(skills.ATTACK);
-			startStrengthLevel = skills.getRealLevel(skills.STRENGTH);
-			startDefenceLevel = skills.getRealLevel(skills.DEFENSE);
-			startMagicLevel = skills.getRealLevel(skills.MAGIC);
-			startRangeLevel = skills.getRealLevel(skills.RANGE);
-			startConstitutionLevel = skills.getRealLevel(skills.CONSTITUTION);
-		}	
-		
-		if(!dieScript) {
-			
+			startAttackLevel = skills.getRealLevel(Skills.ATTACK);
+			startStrengthLevel = skills.getRealLevel(Skills.STRENGTH);
+			startDefenceLevel = skills.getRealLevel(Skills.DEFENSE);
+			startMagicLevel = skills.getRealLevel(Skills.MAGIC);
+			startRangeLevel = skills.getRealLevel(Skills.RANGE);
+			startConstitutionLevel = skills.getRealLevel(Skills.CONSTITUTION);
+		}
+
+		if (!dieScript) {
+
 			status = "Checking Items...";
-			
+
 			clearItemListArrays();
 			startStylesP[0] = "Melee";
 			startStylesP[1] = "Magic";
 			startStylesP[2] = "NULL";
-			
+
 			clearItemListArraysDefence();
-			
+
 			/*
 			status = "Unequipping All Items...";
 			unequipAll();
 			status = "Opening GUI...";
 			*/
-			
-			game.openTab(game.TAB_INVENTORY);
+
+			game.openTab(Game.TAB_INVENTORY);
 			sleep(50);
 			inventoryItemsNumP = inventory.getCount(false);
 			int i = 0;
-			while(i < 28){
+			while (i < 28) {
 				inventoryItemsIDsX[i] = inventory.getItemAt(i).getID();
 				i++;
 			}
 			int i2 = 0;
 			int i2Try = 0;
-			while(i2 < inventoryItemsNumP){
-				if(inventoryItemsIDsX[i2Try] == -1){
+			while (i2 < inventoryItemsNumP) {
+				if (inventoryItemsIDsX[i2Try] == -1) {
 					i2Try++;
 				} else {
 					inventoryItemsIDsP[i2] = inventoryItemsIDsX[i2Try];
@@ -3965,7 +3940,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					i2Try++;
 				}
 			}
-			
+
 			int iToAdd = 0;
 			while (iToAdd < inventoryItemsNumP) {
 				inventoryItemsIDs[iToAdd] = inventoryItemsIDsP[iToAdd];
@@ -3973,21 +3948,21 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				inventoryItemsNum++;
 				iToAdd++;
 			}
-			
+
 			// Equipment
-			game.openTab(game.TAB_EQUIPMENT);
+			game.openTab(Game.TAB_EQUIPMENT);
 			sleep(50);
 			equipmentItemsNum = equipment.getCount();
 			RSItem[] equipmentItems = equipment.getItems();
 			int iE = 0;
-			while(iE < 11){
+			while (iE < 11) {
 				equipmentItemsIDsX[iE] = equipmentItems[iE].getID();
 				iE++;
 			}
 			int i2E = 0;
 			int i2TryE = 0;
-			while(i2E < equipmentItemsNum){
-				if(equipmentItemsIDsX[i2TryE] == -1){
+			while (i2E < equipmentItemsNum) {
+				if (equipmentItemsIDsX[i2TryE] == -1) {
 					i2TryE++;
 				} else {
 					equipmentItemsIDs[i2E] = equipmentItemsIDsX[i2TryE];
@@ -3997,7 +3972,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					i2TryE++;
 				}
 			}
-			
+
 			int iToAddE = 0;
 			while (iToAddE < equipmentItemsNum) {
 				inventoryItemsIDs[iToAdd] = equipmentItemsIDs[iToAddE];
@@ -4006,23 +3981,23 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				iToAdd++;
 				iToAddE++;
 			}
-			if(magic.getInterface() == null || !magic.getInterface().isValid()) {
-				game.openTab(game.TAB_MAGIC);
+			if (magic.getInterface() == null || !magic.getInterface().isValid()) {
+				game.openTab(Game.TAB_MAGIC);
 			}
-			game.openTab(game.TAB_INVENTORY);
+			game.openTab(Game.TAB_INVENTORY);
 			status = "Opening GUI...";
 			dieScript = true;
-			for(int n = 0; n < v.length; n++) {
-				v[n] = (int)(17 * n);
+			for (int n = 0; n < v.length; n++) {
+				v[n] = 17 * n;
 			}
-			
+
 			gui = new FOGRunnerGUI();
-			
+
 			status = "Loading FOG Reward Prices...";
-			for(int m = 0; m < FOGItems.length; m++) {
-				if(gui.isVisible()) {
+			for (int m = 0; m < FOGItems.length; m++) {
+				if (gui.isVisible()) {
 					FOGItems[m].setPrice();
-					if(gui.isActive() || gui.isVisible()) {
+					if (gui.isActive() || gui.isVisible()) {
 						gui.itemPrices[m].setText("" + FOGItems[m].price);
 						gui.itemRatios[m].setText("" + FOGItems[m].getRatio());
 					}
@@ -4030,20 +4005,20 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					break;
 				}
 			}
-			if(gui.isVisible()) {
+			if (gui.isVisible()) {
 				int[] ratiosP2P = new int[FOGItemsP2P.length];
-				for(int j = 0; j < ratiosP2P.length; j++) {
+				for (int j = 0; j < ratiosP2P.length; j++) {
 					ratiosP2P[j] = FOGItemsP2P[j].getRatio();
 				}
 				int[] ratiosF2P = new int[FOGItemsF2P.length];
-				for(int l = 0; l < ratiosF2P.length; l++) {
+				for (int l = 0; l < ratiosF2P.length; l++) {
 					ratiosF2P[l] = FOGItemsF2P[l].getRatio();
 				}
-				
-				for(int k = 0; k < FOGItems.length; k++) {
-					if(FOGItems[k].members) {
-						if(FOGItems[k].getRatio() >= maxInArray(ratiosP2P)) {
-							if(gui.isActive()) {
+
+				for (int k = 0; k < FOGItems.length; k++) {
+					if (FOGItems[k].members) {
+						if (FOGItems[k].getRatio() >= maxInArray(ratiosP2P)) {
+							if (gui.isActive()) {
 								gui.itemRatios[k].setText("" + FOGItems[k].getRatio() + " - P2P Best");
 								gui.itemRatios[k].setFont(new Font("SansSerif", Font.BOLD, 12));
 								gui.itemRatios[k].setBounds(new Rectangle(new Point(435, v[k] + 1), gui.itemRatios[k].getPreferredSize()));
@@ -4051,8 +4026,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							f2pItem = FOGItems[k];
 						}
 					} else {
-						if(FOGItems[k].getRatio() >= maxInArray(ratiosF2P)) {
-							if(gui.isActive()) {
+						if (FOGItems[k].getRatio() >= maxInArray(ratiosF2P)) {
+							if (gui.isActive()) {
 								gui.itemRatios[k].setText("" + FOGItems[k].getRatio() + " - F2P Best");
 								gui.itemRatios[k].setFont(new Font("SansSerif", Font.BOLD, 12));
 								gui.itemRatios[k].setBounds(new Rectangle(new Point(435, v[k] + 1), gui.itemRatios[k].getPreferredSize()));
@@ -4062,61 +4037,70 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 				}
 			}
-			
+
 			while (gui.isActive() || gui.isVisible()) {
 				status = "Waiting for GUI...";
 				sleep(50);
 			}
 		}
-		
-		if(!dieScript) {
-			
+
+		if (!dieScript) {
+
 			startTime = System.currentTimeMillis();
 			seconds = 0;
 			minutes = 0;
 			hours = 0;
 			mouse.setSpeed(mouseSpeed);
-			
+
 			try {
 				startTokens = inventory.getCount(true, tokenID);
-			} catch (NullPointerException ignored) {}
-			
+			} catch (NullPointerException ignored) {
+			}
+
 			nextPlace = 0;
 			// Player Stats Exp
-			startAttackExp = skills.getCurrentExp(skills.ATTACK);
-			startStrengthExp = skills.getCurrentExp(skills.STRENGTH);
-			startDefenceExp = skills.getCurrentExp(skills.DEFENSE);
-			startMagicExp = skills.getCurrentExp(skills.MAGIC);
-			startRangeExp = skills.getCurrentExp(skills.RANGE);
-			startConstitutionExp = skills.getCurrentExp(skills.CONSTITUTION);
+			startAttackExp = skills.getCurrentExp(Skills.ATTACK);
+			startStrengthExp = skills.getCurrentExp(Skills.STRENGTH);
+			startDefenceExp = skills.getCurrentExp(Skills.DEFENSE);
+			startMagicExp = skills.getCurrentExp(Skills.MAGIC);
+			startRangeExp = skills.getCurrentExp(Skills.RANGE);
+			startConstitutionExp = skills.getCurrentExp(Skills.CONSTITUTION);
 			// Prayer Stats Levels
-			startAttackLevel = skills.getRealLevel(skills.ATTACK);
-			startStrengthLevel = skills.getRealLevel(skills.STRENGTH);
-			startDefenceLevel = skills.getRealLevel(skills.DEFENSE);
-			startMagicLevel = skills.getRealLevel(skills.MAGIC);
-			startRangeLevel = skills.getRealLevel(skills.RANGE);
-			startConstitutionLevel = skills.getRealLevel(skills.CONSTITUTION);
-			
-			prayerlvl = skills.getRealLevel(skills.PRAYER);
-			
-			if(teleorbLong.equals("When being Hunted")) {			teleorb = "hunted";		} else
-			if(teleorbLong.equals("When Hunting")) {				teleorb = "hunting";	} else
-			if(teleorbLong.equals("Random (Hunting/Hunted)")) {		teleorb = "random";		} else
-			if(teleorbLong.equals("Never")) {						teleorb = "never";		} else
-			{ if(dmode) { log("Tele-Orb Mode Error"); } }
-			
+			startAttackLevel = skills.getRealLevel(Skills.ATTACK);
+			startStrengthLevel = skills.getRealLevel(Skills.STRENGTH);
+			startDefenceLevel = skills.getRealLevel(Skills.DEFENSE);
+			startMagicLevel = skills.getRealLevel(Skills.MAGIC);
+			startRangeLevel = skills.getRealLevel(Skills.RANGE);
+			startConstitutionLevel = skills.getRealLevel(Skills.CONSTITUTION);
+
+			prayerlvl = skills.getRealLevel(Skills.PRAYER);
+
+			if (teleorbLong.equals("When being Hunted")) {
+				teleorb = "hunted";
+			} else if (teleorbLong.equals("When Hunting")) {
+				teleorb = "hunting";
+			} else if (teleorbLong.equals("Random (Hunting/Hunted)")) {
+				teleorb = "random";
+			} else if (teleorbLong.equals("Never")) {
+				teleorb = "never";
+			} else {
+				if (dmode) {
+					log("Tele-Orb Mode Error");
+				}
+			}
+
 			currentStyle = firstStyle;
-			
+
 			log(">>> FOGRUNNER STARTED <<<");
 			status = "Equipping Items...";
 			setupStyleEquipment();
 			setupStyle();
 		}
-		
+
 		initialised = true;
 	}
-	
-	public void initialiseImages() {
+
+	void initialiseImages() {
 		status = "Loading Images...";
 		try {
 			banner = ImageIO.read(bannerFile);
@@ -4126,7 +4110,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		} catch (IOException e) {
 			loadBannerFromFile = false;
 		}
-		if(!loadBannerFromFile) {
+		if (!loadBannerFromFile) {
 			try {
 				final URL bannerURL = new URL("http://i55.tinypic.com/288144x.png");
 				banner = ImageIO.read(bannerURL);
@@ -4136,7 +4120,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			} catch (IOException e) {
 				log("Unable to open banner image.");
 			}
-			if(success) {
+			if (success) {
 				try {
 					ImageIO.write(banner, "png", bannerFile);
 				} catch (IOException e) {
@@ -4159,36 +4143,42 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			log("Unable to open cursor image.");
 		}
 	}
-	
-	public double getVersion() {
+
+	double getVersion() {
 		return 1.51;
 	}
-	
+
 	@Override
 	public final boolean onStart() {
-		if(!game.isLoggedIn()) {
+		if (!game.isLoggedIn()) {
 			env.enableRandom("Login");
 			loginWait = true;
 			status = "Logging in...";
 			log(">>> GUI WILL OPEN AFTER LOGIN <<<");
 		}
-		
+		File out_dir = new File(GlobalConfiguration.Paths.getScriptCacheDirectory() + "/images/");
+		if (!out_dir.exists()) {
+			try {
+				out_dir.createNewFile();//createNewDirectory
+			} catch (IOException ignored) {
+			}
+		}
+		ImageIO.setCacheDirectory(out_dir);//To prevent secuirty issues.
 		initialised = false;
 		return true;
 	}
-	
-	@Override
+
 	public void onRepaint(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		
+
 		// Round 2 detection
-		if(inGame()) {
-			if(prevHg != -1 || prevHd != -1) {
-				if(interfaces.get(730).getComponent(26).getBoundsArrayIndex() != -1 &&			// hunting component index = 26
-				   interfaces.get(730).getComponent(27).getBoundsArrayIndex() != -1) {			// hunted component index  = 27
-				   	if(round != 2) {
+		if (inGame()) {
+			if (prevHg != -1 || prevHd != -1) {
+				if (interfaces.get(730).getComponent(26).getBoundsArrayIndex() != -1 &&			// hunting component index = 26
+						interfaces.get(730).getComponent(27).getBoundsArrayIndex() != -1) {			// hunted component index  = 27
+					if (round != 2) {
 						canDrawTheirTile = false;
-				   		antiBanTime = false;
+						antiBanTime = false;
 						timerStarted = false;
 						searchTileOn = 0;
 						searching = false;
@@ -4201,56 +4191,57 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						meleeTimerStarted = false;
 						lastKnownHealth = 100;
 						round = 2;
-				   	}
+					}
 				}
 			}
 		}
-		
+
 		// Paint Variables
 		runTime = System.currentTimeMillis() - startTime;
-    	seconds = runTime / 1000;
-    	if ( seconds >= 60 ) {
-    		minutes = seconds / 60;
-    		seconds -= (minutes * 60);
-    	}
-    	if ( minutes >= 60 ) {
-    		hours = minutes / 60;
-    		minutes -= (hours * 60);
-    	}
-    	
+		seconds = runTime / 1000;
+		if (seconds >= 60) {
+			minutes = seconds / 60;
+			seconds -= (minutes * 60);
+		}
+		if (minutes >= 60) {
+			hours = minutes / 60;
+			minutes -= (hours * 60);
+		}
+
 		tokensGained = (currentTokens + bankedTokens) - startTokens;
 		tokensPerHour = (int) ((3600000.0 / (double) runTime) * tokensGained);
 		gamesPerHour = (int) ((3600000.0 / (double) runTime) * gamesPlayed);
 		gamesWonPerHour = (int) ((3600000.0 / (double) runTime) * gamesWon);
 		gamesLostPerHour = (int) ((3600000.0 / (double) runTime) * gamesLost);
 		int ratingPerHour = (int) ((3600000.0 / (double) runTime) * gainedRating);
-		
+
 		// Tile Paint
-		
-    	// Your Player Tile
-    	try {
-    		drawTile(g, getMyPlayer().getLocation(), new Color(0, 255, 0, 80), "You", new Color(0, 255, 0, 255));
-    	} catch (NullPointerException ignored) {}
-    	
-    	// Opponent Tile
-    	if(canDrawTheirTile){
-    		try {
-    			if(getPlayerLocThrow().getX() != 0) {
+
+		// Your Player Tile
+		try {
+			drawTile(g, getMyPlayer().getLocation(), new Color(0, 255, 0, 80), "You", new Color(0, 255, 0, 255));
+		} catch (NullPointerException ignored) {
+		}
+
+		// Opponent Tile
+		if (canDrawTheirTile) {
+			try {
+				if (getPlayerLocThrow().getX() != 0) {
 					lastKnownLoc = getPlayerLocThrow();
-    				drawTile(g, getPlayerLocThrow(), new Color(255, 0, 0, 80), "Opponent", new Color(255, 0, 0, 255));
-    			}
-    		} catch (NullPointerException e){
-    			canDrawTheirTile = false;
-    		}
-    	}
-		
+					drawTile(g, getPlayerLocThrow(), new Color(255, 0, 0, 80), "Opponent", new Color(255, 0, 0, 255));
+				}
+			} catch (NullPointerException e) {
+				canDrawTheirTile = false;
+			}
+		}
+
 		// Mouse Paint
 		if (clicked != null) {
-			final int mx = (int)mouse.getLocation().getX();
-			final int my = (int)mouse.getLocation().getY();
-			final int mpx = (int)mouse.getPressLocation().getX();
-			final int mpy = (int)mouse.getPressLocation().getY();
-			final long mpt = System.currentTimeMillis()	- mouse.getPressTime();
+			final int mx = (int) mouse.getLocation().getX();
+			final int my = (int) mouse.getLocation().getY();
+			final int mpx = (int) mouse.getPressLocation().getX();
+			final int mpy = (int) mouse.getPressLocation().getY();
+			final long mpt = System.currentTimeMillis() - mouse.getPressTime();
 			if (mpt < 1000) {
 				g.setColor(Color.RED);
 				g.drawLine(mpx - 6, mpy, mpx - 2, mpy);
@@ -4266,36 +4257,38 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				g.drawLine(mpx - 1, mpy + 5, mpx - 1, mpy + 3);
 				g.drawLine(mpx + 1, mpy + 5, mpx + 1, mpy + 3);
 			}
-			if (mouse.getPressTime() == -1 || mpt >= 300)
+			if (mouse.getPressTime() == -1 || mpt >= 300) {
 				g.drawImage(normal, mx - 10, my - 6, null);
-			if (mpt < 300)
+			}
+			if (mpt < 300) {
 				g.drawImage(clicked, mx - 10, my - 6, null);
+			}
 		}
-		
-		Color statusWhite = new Color(255, 255, 255, (int)(255 * statusAlpha));
-		
+
+		Color statusWhite = new Color(255, 255, 255, (int) (255 * statusAlpha));
+
 		// Status Paint
-		if(statusPaint != 0){
-			if(statusPaint == 1) {
-				if(statusAlpha < 1.0) {
-					statusAlpha+=0.2;
+		if (statusPaint != 0) {
+			if (statusPaint == 1) {
+				if (statusAlpha < 1.0) {
+					statusAlpha += 0.2;
 				} else {
 					statusPaint = 2;
 				}
-			} else if(statusPaint == 2){
+			} else if (statusPaint == 2) {
 				statusAlpha = 1.0;
-			} else if(statusPaint == 3){
-				if(statusAlpha > 0.2) {
-					statusAlpha-=0.2;
+			} else if (statusPaint == 3) {
+				if (statusAlpha > 0.2) {
+					statusAlpha -= 0.2;
 				} else {
 					statusAlpha = 0.0;
 					statusPaint = 0;
 				}
 			}
-			
-			statusWhite = new Color(255, 255, 255, (int)(255 * statusAlpha));
-			
-			g.setColor(new Color(0, 0, 70, (int)(150 * statusAlpha)));	
+
+			statusWhite = new Color(255, 255, 255, (int) (255 * statusAlpha));
+
+			g.setColor(new Color(0, 0, 70, (int) (150 * statusAlpha)));
 			g.fillRoundRect(1, 301, 514, 37, cornerNum, cornerNum);
 			g.setColor(statusWhite);
 			g.drawRoundRect(1, 301, 514, 37, cornerNum, cornerNum);
@@ -4303,52 +4296,52 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			g.drawString(properties.name() + " v" + getVersion(), 6, 316);
 			g.drawString("Status: ", 150, 316);
 			g.setFont(new Font("Arial", Font.PLAIN, 14));
-			if(!overallStatus.equals("NULL")){
+			if (!overallStatus.equals("NULL")) {
 				g.drawString(overallStatus + " | " + status, 205, 316);
 			} else {
 				g.drawString(status, 205, 316);
 			}
-			if(dmode){
+			if (dmode) {
 				String hgS = Integer.toString(interfaces.get(730).getComponent(26).getBoundsArrayIndex());
 				String hdS = Integer.toString(interfaces.get(730).getComponent(27).getBoundsArrayIndex());
 				int magicIndex = -1;
-				if(magic.getInterface() != null && magic.getInterface().isValid()) {
+				if (magic.getInterface() != null && magic.getInterface().isValid()) {
 					magicIndex = magic.getInterface().getIndex();
 				}
 				g.drawString("Magic ID: " + magicIndex + "  B.A.Is: Hunting: " + hgS + " Hunted: " + hdS + "   User Mouse: " + userMouseX + ", " + userMouseY, 2, 299);
 			}
-			if(inGame()){
-				if(canDrawInfo){
+			if (inGame()) {
+				if (canDrawInfo) {
 					try {
-						if(dmode){
+						if (dmode) {
 							String thing = Integer.toString(getPlayerThrow().getAnimation());
 							g.drawString("OP Anim: " + thing, 2, 287);
 						}
 						g.drawString("Opponent LvL: " + getPlayerThrow().getCombatLevel(), 6, 331);
 						drawHealthBar(g, g2d, 150, 332);
-						
+
 						// Setting the last known hit on the opponent
-						if(hitSwitch) {
-							if(inGame()) {
-								if(round == 1) {
-									if(!hunted) {
-										if(attacking()) {
-											if(getPlayerThrow().getHPPercent() < lastKnownHealth) {
+						if (hitSwitch) {
+							if (inGame()) {
+								if (round == 1) {
+									if (!hunted) {
+										if (attacking()) {
+											if (getPlayerThrow().getHPPercent() < lastKnownHealth) {
 												lastKnownHealth = getPlayerThrow().getHPPercent();
 												hits++;
-											} else if(getPlayerThrow().getHPPercent() > lastKnownHealth) {
+											} else if (getPlayerThrow().getHPPercent() > lastKnownHealth) {
 												lastKnownHealth = getPlayerThrow().getHPPercent();
 											}
 										}
 									}
 								}
-								if(round == 2) {
-									if(!hunted2){
-										if(attacking()) {
-											if(getPlayerThrow().getHPPercent() < lastKnownHealth) {
+								if (round == 2) {
+									if (!hunted2) {
+										if (attacking()) {
+											if (getPlayerThrow().getHPPercent() < lastKnownHealth) {
 												lastKnownHealth = getPlayerThrow().getHPPercent();
 												hits++;
-											} else if(getPlayerThrow().getHPPercent() > lastKnownHealth) {
+											} else if (getPlayerThrow().getHPPercent() > lastKnownHealth) {
 												lastKnownHealth = getPlayerThrow().getHPPercent();
 											}
 										}
@@ -4358,7 +4351,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 					} catch (NullPointerException e) {
 						canDrawInfo = false;
-						if(dmode){
+						if (dmode) {
 							log("Null Error: " + e);
 							e.printStackTrace();
 						}
@@ -4366,206 +4359,284 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				}
 			}
 		}
-    	
-    	Color buttonNormal = new Color(30, 30, 100, 255);
+
+		Color buttonNormal = new Color(30, 30, 100, 255);
 		Color buttonOver = new Color(60, 60, 130, 255);
 		Color buttonPressed = new Color(0, 0, 50, 255);
 		Color buttonNormalOn = new Color(20, 75, 20, 255);
 		Color buttonOverOn = new Color(40, 95, 40, 255);
 		Color buttonPressedOn = new Color(0, 60, 0, 255);
-		
-		Color buttonNormalS = new Color(30, 30, 100, (int)(255 * statsAlpha));
-		Color buttonOverS = new Color(60, 60, 130, (int)(255 * statsAlpha));
-		Color buttonPressedS = new Color(0, 0, 50, (int)(255 * statsAlpha));
-		Color buttonNormalOnS = new Color(20, 75, 20, (int)(255 * statsAlpha));
-		Color buttonOverOnS = new Color(40, 95, 40, (int)(255 * statsAlpha));
-		Color buttonPressedOnS = new Color(0, 60, 0, (int)(255 * statsAlpha));
-		
-		Color statsWhite = new Color(255, 255, 255, (int)(255 * statsAlpha));
-		
+
+		Color buttonNormalS = new Color(30, 30, 100, (int) (255 * statsAlpha));
+		Color buttonOverS = new Color(60, 60, 130, (int) (255 * statsAlpha));
+		Color buttonPressedS = new Color(0, 0, 50, (int) (255 * statsAlpha));
+		Color buttonNormalOnS = new Color(20, 75, 20, (int) (255 * statsAlpha));
+		Color buttonOverOnS = new Color(40, 95, 40, (int) (255 * statsAlpha));
+		Color buttonPressedOnS = new Color(0, 60, 0, (int) (255 * statsAlpha));
+
+		Color statsWhite = new Color(255, 255, 255, (int) (255 * statsAlpha));
+
 		// Stats Paint
-		int[] coords = new int[] {199, 214, 229, 244, 259, 274, 289, 304, 319, 334, 349, 364, 379, 394, 409, 424, 439, 454, 469, 484};
-		if(statsPaint != 0) {
-			if(statsPaint == 1) {
-				if(statsAlpha < 1.0) {
-					statsAlpha+=0.2;
+		int[] coords = new int[]{199, 214, 229, 244, 259, 274, 289, 304, 319, 334, 349, 364, 379, 394, 409, 424, 439, 454, 469, 484};
+		if (statsPaint != 0) {
+			if (statsPaint == 1) {
+				if (statsAlpha < 1.0) {
+					statsAlpha += 0.2;
 				} else {
 					statsPaint = 2;
 				}
-			} else if(statsPaint == 2){
+			} else if (statsPaint == 2) {
 				statsAlpha = 1.0;
-			} else if(statsPaint == 3){
-				if(statsAlpha > 0.2) {
-					statsAlpha-=0.2;
+			} else if (statsPaint == 3) {
+				if (statsAlpha > 0.2) {
+					statsAlpha -= 0.2;
 				} else {
 					statsAlpha = 0.0;
 					statsPaint = 0;
 				}
 			}
-			
-			statsWhite = new Color(255, 255, 255, (int)(255 * statsAlpha));
-			
-			if(moreStats == 0) {
-				g.setColor(new Color(0, 0, 70, (int)(110 * statsAlpha)));	
-	       		g.fillRoundRect(555, 327, 175, 134, cornerNum, cornerNum);
-				g.setColor(new Color(255, 255, 255, (int)(255 * statsAlpha)));
+
+			statsWhite = new Color(255, 255, 255, (int) (255 * statsAlpha));
+
+			if (moreStats == 0) {
+				g.setColor(new Color(0, 0, 70, (int) (110 * statsAlpha)));
+				g.fillRoundRect(555, 327, 175, 134, cornerNum, cornerNum);
+				g.setColor(new Color(255, 255, 255, (int) (255 * statsAlpha)));
 				g.drawRoundRect(555, 327, 175, 134, cornerNum, cornerNum);
-	 	      	g.setFont(new Font("Arial", Font.BOLD, 14));
-	   	    	g.drawString(properties.name() + " v" + getVersion(), 561, coords[9] + 8);
-	   	    	g.setFont(new Font("Arial", Font.PLAIN, 12));
-	   	    	g.drawString("Run Time: " + hours + ":" + minutes + ":" + seconds, 561, coords[10] + 8);
-	        	g.setColor(new Color(200, 200, 200, (int)(255 * statsAlpha)));
-	        	g.drawString("-----------------------------------------", 561, coords[11] + 3);
-	        	g.setColor(statsWhite);
-	        	g.drawString("Tokens Gained: " + tokensGained, 561, coords[12]);
-	        	g.drawString("Tokens/Hour: " + tokensPerHour, 561, coords[13]);
-	        	g.drawString("Games Played: " + gamesPlayed, 561, coords[14]);
-	        	g.drawString("Won: " + gamesWon + "  Lost: " + gamesLost + "  Ratio: " + getRatio(), 561, coords[15]);
+				g.setFont(new Font("Arial", Font.BOLD, 14));
+				g.drawString(properties.name() + " v" + getVersion(), 561, coords[9] + 8);
+				g.setFont(new Font("Arial", Font.PLAIN, 12));
+				g.drawString("Run Time: " + hours + ":" + minutes + ":" + seconds, 561, coords[10] + 8);
+				g.setColor(new Color(200, 200, 200, (int) (255 * statsAlpha)));
+				g.drawString("-----------------------------------------", 561, coords[11] + 3);
+				g.setColor(statsWhite);
+				g.drawString("Tokens Gained: " + tokensGained, 561, coords[12]);
+				g.drawString("Tokens/Hour: " + tokensPerHour, 561, coords[13]);
+				g.drawString("Games Played: " + gamesPlayed, 561, coords[14]);
+				g.drawString("Won: " + gamesWon + "  Lost: " + gamesLost + "  Ratio: " + getRatio(), 561, coords[15]);
 			} else {
-				switch(moreStats) {
+				switch (moreStats) {
 					case 1:
-						if(moreStatsOffset < 120) {
-							moreStatsOffset+=5;
+						if (moreStatsOffset < 120) {
+							moreStatsOffset += 5;
 						} else {
 							moreStats = 2;
 						}
 						break;
 					case 3:
-						if(moreStatsOffset > 0) {
-							moreStatsOffset-=5;
+						if (moreStatsOffset > 0) {
+							moreStatsOffset -= 5;
 						} else {
 							moreStats = 0;
 						}
 						break;
 				}
-				g.setColor(new Color(0, 0, 70, (int)(110 * statsAlpha)));	
-	       		g.fillRoundRect(555, 327 - moreStatsOffset, 175, 134 + moreStatsOffset, cornerNum, cornerNum);
+				g.setColor(new Color(0, 0, 70, (int) (110 * statsAlpha)));
+				g.fillRoundRect(555, 327 - moreStatsOffset, 175, 134 + moreStatsOffset, cornerNum, cornerNum);
 				g.setColor(statsWhite);
 				g.drawRoundRect(555, 327 - moreStatsOffset, 175, 134 + moreStatsOffset, cornerNum, cornerNum);
-	 	      	g.setFont(new Font("Arial", Font.BOLD, 14));
-	   	    	g.drawString(properties.name() + " v" + getVersion(), 561, coords[9] + 8 - moreStatsOffset);
-	   	    	g.setFont(new Font("Arial", Font.PLAIN, 12));
-	   	    	g.drawString("Run Time: " + hours + ":" + minutes + ":" + seconds, 561, coords[10] + 8 - moreStatsOffset);
-	        	g.setColor(new Color(200, 200, 200, (int)(255 * statsAlpha)));
-	        	g.drawString("-----------------------------------------", 561, coords[11] + 3 - moreStatsOffset);
-	        	g.setColor(statsWhite);
-	        	g.drawString("Tokens Gained: " + tokensGained, 561, coords[12] - moreStatsOffset);
-	        	g.drawString("Tokens/Hour: " + tokensPerHour, 561, coords[13] - moreStatsOffset);
-	        	g.drawString("Games Played: " + gamesPlayed, 561, coords[14] - moreStatsOffset);
-	        	g.drawString("Won: " + gamesWon + "  Lost: " + gamesLost + "  Ratio: " + getRatio(), 561, coords[15] - moreStatsOffset);
-	        	if(moreStatsOffset >= 115) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[0] < 1.0) { textAlpha[0]+=0.2; }}
-	        		if(moreStats == 3 || moreStats == 0){ if(textAlpha[0] > 0.0) { textAlpha[0]-=0.2; }}
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(0)));
-	        		g.drawString("Games/Hour: " + gamesPerHour, 561, coords[8]);
-	        	}
-        		if(moreStatsOffset >= 105) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[1] < 1.0) { textAlpha[1]+=0.2; }}
-	        		if(moreStatsOffset <= 115){ if(moreStats == 3 || moreStats == 0){ if(textAlpha[1] > 0.0) { textAlpha[1]-=0.2; }} }
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(1)));
-        			g.drawString("Wins/H: " + gamesWonPerHour + "  " + "Losses/H: " + gamesLostPerHour, 561, coords[9]);
-        		}
-        		if(moreStatsOffset >= 90) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[2] < 1.0) { textAlpha[2]+=0.2; }}
-	        		if(moreStatsOffset <= 105){ if(moreStats == 3 || moreStats == 0){ if(textAlpha[2] > 0.0) { textAlpha[2]-=0.2; }} }
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(2)));
-        			g.drawString("% Games Won: " + ((int)(getRatio2() * 100)) + "%", 561, coords[10]);
-        		}
-        		if(moreStatsOffset >= 75) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[3] < 1.0) { textAlpha[3]+=0.2; }}
-	        		if(moreStatsOffset <= 90){ if(moreStats == 3 || moreStats == 0){ if(textAlpha[3] > 0.0) { textAlpha[3]-=0.2; }} }
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(3)));
-        			g.drawString("Average Charges: " + averageCharges, 561, coords[11]);
-        		}
-        		if(moreStatsOffset >= 60) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[4] < 1.0) { textAlpha[4]+=0.2; }}
-	        		if(moreStatsOffset <= 75){ if(moreStats == 3 || moreStats == 0){ if(textAlpha[4] > 0.0) { textAlpha[4]-=0.2; }} }
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(4)));
-        			g.drawString("Average Op. Charges: " + averageChargesOpponent, 561, coords[12]);
-        		}
-        		if(moreStatsOffset >= 45) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[5] < 1.0) { textAlpha[5]+=0.2; }}
-	        		if(moreStatsOffset <= 60){ if(moreStats == 3 || moreStats == 0){ if(textAlpha[5] > 0.0) { textAlpha[5]-=0.2; }} }
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(5)));
-        			g.drawString("Current Rating: " + currentRating, 561, coords[13]);
-        		}
-        		if(moreStatsOffset >= 30) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[6] < 1.0) { textAlpha[6]+=0.2; }}
-	        		if(moreStatsOffset <= 45){ if(moreStats == 3 || moreStats == 0){ if(textAlpha[6] > 0.0) { textAlpha[6]-=0.2; }} }
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(6)));
-        			g.drawString("Gained Rating: " + gainedRating, 561, coords[14]);
-        		}
-        		if(moreStatsOffset >= 15) {
-	        		if(moreStats == 1 || moreStats == 2){ if(textAlpha[7] < 1.0) { textAlpha[7]+=0.2; }}
-	        		if(moreStatsOffset <= 30){ if(moreStats == 3 || moreStats == 0){ if(textAlpha[7] > 0.0) { textAlpha[7]-=0.2; }} }
-	        		g.setColor(new Color(255, 255, 255, getTextAlpha(7)));
-        			g.drawString("Rating/Hour: " + ratingPerHour, 561, coords[15]);
-        		}
+				g.setFont(new Font("Arial", Font.BOLD, 14));
+				g.drawString(properties.name() + " v" + getVersion(), 561, coords[9] + 8 - moreStatsOffset);
+				g.setFont(new Font("Arial", Font.PLAIN, 12));
+				g.drawString("Run Time: " + hours + ":" + minutes + ":" + seconds, 561, coords[10] + 8 - moreStatsOffset);
+				g.setColor(new Color(200, 200, 200, (int) (255 * statsAlpha)));
+				g.drawString("-----------------------------------------", 561, coords[11] + 3 - moreStatsOffset);
+				g.setColor(statsWhite);
+				g.drawString("Tokens Gained: " + tokensGained, 561, coords[12] - moreStatsOffset);
+				g.drawString("Tokens/Hour: " + tokensPerHour, 561, coords[13] - moreStatsOffset);
+				g.drawString("Games Played: " + gamesPlayed, 561, coords[14] - moreStatsOffset);
+				g.drawString("Won: " + gamesWon + "  Lost: " + gamesLost + "  Ratio: " + getRatio(), 561, coords[15] - moreStatsOffset);
+				if (moreStatsOffset >= 115) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[0] < 1.0) {
+							textAlpha[0] += 0.2;
+						}
+					}
+					if (moreStats == 3 || moreStats == 0) {
+						if (textAlpha[0] > 0.0) {
+							textAlpha[0] -= 0.2;
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(0)));
+					g.drawString("Games/Hour: " + gamesPerHour, 561, coords[8]);
+				}
+				if (moreStatsOffset >= 105) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[1] < 1.0) {
+							textAlpha[1] += 0.2;
+						}
+					}
+					if (moreStatsOffset <= 115) {
+						if (moreStats == 3 || moreStats == 0) {
+							if (textAlpha[1] > 0.0) {
+								textAlpha[1] -= 0.2;
+							}
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(1)));
+					g.drawString("Wins/H: " + gamesWonPerHour + "  " + "Losses/H: " + gamesLostPerHour, 561, coords[9]);
+				}
+				if (moreStatsOffset >= 90) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[2] < 1.0) {
+							textAlpha[2] += 0.2;
+						}
+					}
+					if (moreStatsOffset <= 105) {
+						if (moreStats == 3 || moreStats == 0) {
+							if (textAlpha[2] > 0.0) {
+								textAlpha[2] -= 0.2;
+							}
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(2)));
+					g.drawString("% Games Won: " + ((int) (getRatio2() * 100)) + "%", 561, coords[10]);
+				}
+				if (moreStatsOffset >= 75) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[3] < 1.0) {
+							textAlpha[3] += 0.2;
+						}
+					}
+					if (moreStatsOffset <= 90) {
+						if (moreStats == 3 || moreStats == 0) {
+							if (textAlpha[3] > 0.0) {
+								textAlpha[3] -= 0.2;
+							}
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(3)));
+					g.drawString("Average Charges: " + averageCharges, 561, coords[11]);
+				}
+				if (moreStatsOffset >= 60) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[4] < 1.0) {
+							textAlpha[4] += 0.2;
+						}
+					}
+					if (moreStatsOffset <= 75) {
+						if (moreStats == 3 || moreStats == 0) {
+							if (textAlpha[4] > 0.0) {
+								textAlpha[4] -= 0.2;
+							}
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(4)));
+					g.drawString("Average Op. Charges: " + averageChargesOpponent, 561, coords[12]);
+				}
+				if (moreStatsOffset >= 45) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[5] < 1.0) {
+							textAlpha[5] += 0.2;
+						}
+					}
+					if (moreStatsOffset <= 60) {
+						if (moreStats == 3 || moreStats == 0) {
+							if (textAlpha[5] > 0.0) {
+								textAlpha[5] -= 0.2;
+							}
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(5)));
+					g.drawString("Current Rating: " + currentRating, 561, coords[13]);
+				}
+				if (moreStatsOffset >= 30) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[6] < 1.0) {
+							textAlpha[6] += 0.2;
+						}
+					}
+					if (moreStatsOffset <= 45) {
+						if (moreStats == 3 || moreStats == 0) {
+							if (textAlpha[6] > 0.0) {
+								textAlpha[6] -= 0.2;
+							}
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(6)));
+					g.drawString("Gained Rating: " + gainedRating, 561, coords[14]);
+				}
+				if (moreStatsOffset >= 15) {
+					if (moreStats == 1 || moreStats == 2) {
+						if (textAlpha[7] < 1.0) {
+							textAlpha[7] += 0.2;
+						}
+					}
+					if (moreStatsOffset <= 30) {
+						if (moreStats == 3 || moreStats == 0) {
+							if (textAlpha[7] > 0.0) {
+								textAlpha[7] -= 0.2;
+							}
+						}
+					}
+					g.setColor(new Color(255, 255, 255, getTextAlpha(7)));
+					g.drawString("Rating/Hour: " + ratingPerHour, 561, coords[15]);
+				}
 			}
 		}
-		
-		Color expWhite = new Color(255, 255, 255, (int)(255 * expAlpha));
-		
+
+		Color expWhite = new Color(255, 255, 255, (int) (255 * expAlpha));
+
 		// Exp Paint
-		if(game.isLoggedIn() && initialised && expPaint != 0){
-			if(expPaint == 1) {
-				if(expAlpha < 1.0) {
-					expAlpha+=0.2;
+		if (game.isLoggedIn() && initialised && expPaint != 0) {
+			if (expPaint == 1) {
+				if (expAlpha < 1.0) {
+					expAlpha += 0.2;
 				} else {
 					expPaint = 2;
 				}
-			} else if(expPaint == 2){
+			} else if (expPaint == 2) {
 				expAlpha = 1.0;
-			} else if(expPaint == 3){
-				if(expAlpha > 0.2) {
-					expAlpha-=0.2;
+			} else if (expPaint == 3) {
+				if (expAlpha > 0.2) {
+					expAlpha -= 0.2;
 				} else {
 					expAlpha = 0.0;
 					expPaint = 0;
 				}
 			}
-			
-			expWhite = new Color(255, 255, 255, (int)(255 * expAlpha));
-			
-			int gainedAttackExp = skills.getCurrentExp(skills.ATTACK) - startAttackExp;
-			int gainedStrengthExp = skills.getCurrentExp(skills.STRENGTH) - startStrengthExp;
-			int gainedDefenceExp = skills.getCurrentExp(skills.DEFENSE) - startDefenceExp;
-			int gainedMagicExp = skills.getCurrentExp(skills.MAGIC) - startMagicExp;
-			int gainedRangeExp = skills.getCurrentExp(skills.RANGE) - startRangeExp;
-			int gainedConstitutionExp = skills.getCurrentExp(skills.CONSTITUTION) - startConstitutionExp;
-			
-			int gainedAttackExpHour = (int)((3600000.0 / (double) runTime) * gainedAttackExp);
-			int gainedStrengthExpHour = (int)((3600000.0 / (double) runTime) * gainedStrengthExp);
-			int gainedDefenceExpHour = (int)((3600000.0 / (double) runTime) * gainedDefenceExp);
-			int gainedMagicExpHour = (int)((3600000.0 / (double) runTime) * gainedMagicExp);
-			int gainedRangeExpHour = (int)((3600000.0 / (double) runTime) * gainedRangeExp);
-			int gainedConstitutionExpHour = (int)((3600000.0 / (double) runTime) * gainedConstitutionExp);
-			
-			int gainedAttackLevel = skills.getRealLevel(skills.ATTACK) - startAttackLevel;
-			int gainedStrengthLevel = skills.getRealLevel(skills.STRENGTH) - startStrengthLevel;
-			int gainedDefenceLevel = skills.getRealLevel(skills.DEFENSE) - startDefenceLevel;
-			int gainedMagicLevel = skills.getRealLevel(skills.MAGIC) - startMagicLevel;
-			int gainedRangeLevel = skills.getRealLevel(skills.RANGE) - startRangeLevel;
-			int gainedConstitutionLevel = skills.getRealLevel(skills.CONSTITUTION) - startConstitutionLevel;
-			
-			Color blackVisible = new Color(0, 0, 0, (int)(200 * expAlpha));
+
+			expWhite = new Color(255, 255, 255, (int) (255 * expAlpha));
+
+			int gainedAttackExp = skills.getCurrentExp(Skills.ATTACK) - startAttackExp;
+			int gainedStrengthExp = skills.getCurrentExp(Skills.STRENGTH) - startStrengthExp;
+			int gainedDefenceExp = skills.getCurrentExp(Skills.DEFENSE) - startDefenceExp;
+			int gainedMagicExp = skills.getCurrentExp(Skills.MAGIC) - startMagicExp;
+			int gainedRangeExp = skills.getCurrentExp(Skills.RANGE) - startRangeExp;
+			int gainedConstitutionExp = skills.getCurrentExp(Skills.CONSTITUTION) - startConstitutionExp;
+
+			int gainedAttackExpHour = (int) ((3600000.0 / (double) runTime) * gainedAttackExp);
+			int gainedStrengthExpHour = (int) ((3600000.0 / (double) runTime) * gainedStrengthExp);
+			int gainedDefenceExpHour = (int) ((3600000.0 / (double) runTime) * gainedDefenceExp);
+			int gainedMagicExpHour = (int) ((3600000.0 / (double) runTime) * gainedMagicExp);
+			int gainedRangeExpHour = (int) ((3600000.0 / (double) runTime) * gainedRangeExp);
+			int gainedConstitutionExpHour = (int) ((3600000.0 / (double) runTime) * gainedConstitutionExp);
+
+			int gainedAttackLevel = skills.getRealLevel(Skills.ATTACK) - startAttackLevel;
+			int gainedStrengthLevel = skills.getRealLevel(Skills.STRENGTH) - startStrengthLevel;
+			int gainedDefenceLevel = skills.getRealLevel(Skills.DEFENSE) - startDefenceLevel;
+			int gainedMagicLevel = skills.getRealLevel(Skills.MAGIC) - startMagicLevel;
+			int gainedRangeLevel = skills.getRealLevel(Skills.RANGE) - startRangeLevel;
+			int gainedConstitutionLevel = skills.getRealLevel(Skills.CONSTITUTION) - startConstitutionLevel;
+
+			Color blackVisible = new Color(0, 0, 0, (int) (200 * expAlpha));
 			Color blackInvisible = new Color(0, 0, 0, 0);
 			expGradientBox.y = expYs[nextPlace];
 			GradientPaint expGradient = new GradientPaint(expGradientBox.x, expGradientBox.y, blackVisible, expGradientBox.x, expGradientBox.y + expGradientBox.height, blackInvisible, false);
 			g2d.setPaint(expGradient);
 			g2d.fillRect(expGradientBox.x, expGradientBox.y, expGradientBox.width, expGradientBox.height);
-			
-			Color expDarkGrey = new Color(70, 70, 70, (int)(255 * expAlpha));
-			Color expDarkerGrey = new Color(40, 40, 40, (int)(255 * expAlpha));
-			Color expBlack = new Color(0, 0, 0, (int)(255 * expAlpha));
-			Color expDarkBlue = new Color(0, 0, 150, (int)(255 * expAlpha));
-			Color expBrown = new Color(75, 45, 0, (int)(255 * expAlpha));
-			Color expDarkRed = new Color(150, 0, 0, (int)(255 * expAlpha));
-			Color expGreen = new Color(0, 255, 0, (int)(255 * expAlpha));
-			Color expRed = new Color(255, 0, 0, (int)(255 * expAlpha));
-			
-			if(gainedAttackExp > 0) {
-				if(attackBox.y == 0) {
+
+			Color expDarkGrey = new Color(70, 70, 70, (int) (255 * expAlpha));
+			Color expDarkerGrey = new Color(40, 40, 40, (int) (255 * expAlpha));
+			Color expBlack = new Color(0, 0, 0, (int) (255 * expAlpha));
+			Color expDarkBlue = new Color(0, 0, 150, (int) (255 * expAlpha));
+			Color expBrown = new Color(75, 45, 0, (int) (255 * expAlpha));
+			Color expDarkRed = new Color(150, 0, 0, (int) (255 * expAlpha));
+			Color expGreen = new Color(0, 255, 0, (int) (255 * expAlpha));
+			Color expRed = new Color(255, 0, 0, (int) (255 * expAlpha));
+
+			if (gainedAttackExp > 0) {
+				if (attackBox.y == 0) {
 					attackBox.y = expYs[nextPlace];
 					nextPlace++;
 				}
@@ -4577,15 +4648,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
 				g.drawString("XP Gained: " + gainedAttackExp, attackBox.x + 77, attackBox.y + 10);
 				g.drawString("XP/Hour: " + gainedAttackExpHour, attackBox.x + 183, attackBox.y + 10);
-				g.drawString("Level: " + skills.getRealLevel(skills.ATTACK) + "(+" + gainedAttackLevel + ")", attackBox.x + 268, attackBox.y + 10);
-				if(skills.getRealLevel(skills.ATTACK) < 99) {
-					g.drawString("% to " + (skills.getRealLevel(skills.ATTACK) + 1) + ":", attackBox.x + 343, attackBox.y + 10);
-					drawPercentBar(g, g2d, attackBox.x + 385, attackBox.y + 1, attackBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(skills.ATTACK));
+				g.drawString("Level: " + skills.getRealLevel(Skills.ATTACK) + "(+" + gainedAttackLevel + ")", attackBox.x + 268, attackBox.y + 10);
+				if (skills.getRealLevel(Skills.ATTACK) < 99) {
+					g.drawString("% to " + (skills.getRealLevel(Skills.ATTACK) + 1) + ":", attackBox.x + 343, attackBox.y + 10);
+					drawPercentBar(g, g2d, attackBox.x + 385, attackBox.y + 1, attackBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.ATTACK));
 				}
 			}
-			
-			if(gainedStrengthExp > 0) {
-				if(strengthBox.y == 0) {
+
+			if (gainedStrengthExp > 0) {
+				if (strengthBox.y == 0) {
 					strengthBox.y = expYs[nextPlace];
 					nextPlace++;
 				}
@@ -4597,15 +4668,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
 				g.drawString("XP Gained: " + gainedStrengthExp, strengthBox.x + 77, strengthBox.y + 10);
 				g.drawString("XP/Hour: " + gainedStrengthExpHour, strengthBox.x + 183, strengthBox.y + 10);
-				g.drawString("Level: " + skills.getRealLevel(skills.STRENGTH) + "(+" + gainedStrengthLevel + ")", strengthBox.x + 268, strengthBox.y + 10);
-				if(skills.getRealLevel(skills.STRENGTH) < 99) {
-					g.drawString("% to " + (skills.getRealLevel(skills.STRENGTH) + 1) + ":", strengthBox.x + 343, strengthBox.y + 10);
-					drawPercentBar(g, g2d, strengthBox.x + 385, strengthBox.y + 1, strengthBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(skills.STRENGTH));
+				g.drawString("Level: " + skills.getRealLevel(Skills.STRENGTH) + "(+" + gainedStrengthLevel + ")", strengthBox.x + 268, strengthBox.y + 10);
+				if (skills.getRealLevel(Skills.STRENGTH) < 99) {
+					g.drawString("% to " + (skills.getRealLevel(Skills.STRENGTH) + 1) + ":", strengthBox.x + 343, strengthBox.y + 10);
+					drawPercentBar(g, g2d, strengthBox.x + 385, strengthBox.y + 1, strengthBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.STRENGTH));
 				}
 			}
-			
-			if(gainedDefenceExp > 0) {
-				if(defenceBox.y == 0) {
+
+			if (gainedDefenceExp > 0) {
+				if (defenceBox.y == 0) {
 					defenceBox.y = expYs[nextPlace];
 					nextPlace++;
 				}
@@ -4617,15 +4688,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
 				g.drawString("XP Gained: " + gainedDefenceExp, defenceBox.x + 77, defenceBox.y + 10);
 				g.drawString("XP/Hour: " + gainedDefenceExpHour, defenceBox.x + 183, defenceBox.y + 10);
-				g.drawString("Level: " + skills.getRealLevel(skills.DEFENSE) + "(+" + gainedDefenceLevel + ")", defenceBox.x + 268, defenceBox.y + 10);
-				if(skills.getRealLevel(skills.DEFENSE) < 99) {
-					g.drawString("% to " + (skills.getRealLevel(skills.DEFENSE) + 1) + ":", defenceBox.x + 343, defenceBox.y + 10);
-					drawPercentBar(g, g2d, defenceBox.x + 385, defenceBox.y + 1, defenceBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(skills.DEFENSE));
+				g.drawString("Level: " + skills.getRealLevel(Skills.DEFENSE) + "(+" + gainedDefenceLevel + ")", defenceBox.x + 268, defenceBox.y + 10);
+				if (skills.getRealLevel(Skills.DEFENSE) < 99) {
+					g.drawString("% to " + (skills.getRealLevel(Skills.DEFENSE) + 1) + ":", defenceBox.x + 343, defenceBox.y + 10);
+					drawPercentBar(g, g2d, defenceBox.x + 385, defenceBox.y + 1, defenceBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.DEFENSE));
 				}
 			}
-			
-			if(gainedMagicExp > 0) {
-				if(magicBox.y == 0) {
+
+			if (gainedMagicExp > 0) {
+				if (magicBox.y == 0) {
 					magicBox.y = expYs[nextPlace];
 					nextPlace++;
 				}
@@ -4637,15 +4708,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
 				g.drawString("XP Gained: " + gainedMagicExp, magicBox.x + 77, magicBox.y + 10);
 				g.drawString("XP/Hour: " + gainedMagicExpHour, magicBox.x + 183, magicBox.y + 10);
-				g.drawString("Level: " + skills.getRealLevel(skills.MAGIC) + "(+" + gainedMagicLevel + ")", magicBox.x + 268, magicBox.y + 10);
-				if(skills.getRealLevel(skills.MAGIC) < 99) {
-					g.drawString("% to " + (skills.getRealLevel(skills.MAGIC) + 1) + ":", magicBox.x + 343, magicBox.y + 10);
-					drawPercentBar(g, g2d, magicBox.x + 385, magicBox.y + 1, magicBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(skills.MAGIC));
+				g.drawString("Level: " + skills.getRealLevel(Skills.MAGIC) + "(+" + gainedMagicLevel + ")", magicBox.x + 268, magicBox.y + 10);
+				if (skills.getRealLevel(Skills.MAGIC) < 99) {
+					g.drawString("% to " + (skills.getRealLevel(Skills.MAGIC) + 1) + ":", magicBox.x + 343, magicBox.y + 10);
+					drawPercentBar(g, g2d, magicBox.x + 385, magicBox.y + 1, magicBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.MAGIC));
 				}
 			}
-			
-			if(gainedRangeExp > 0) {
-				if(rangeBox.y == 0) {
+
+			if (gainedRangeExp > 0) {
+				if (rangeBox.y == 0) {
 					rangeBox.y = expYs[nextPlace];
 					nextPlace++;
 				}
@@ -4657,15 +4728,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
 				g.drawString("XP Gained: " + gainedRangeExp, rangeBox.x + 77, rangeBox.y + 10);
 				g.drawString("XP/Hour: " + gainedRangeExpHour, rangeBox.x + 183, rangeBox.y + 10);
-				g.drawString("Level: " + skills.getRealLevel(skills.RANGE) + "(+" + gainedRangeLevel + ")", rangeBox.x + 268, rangeBox.y + 10);
-				if(skills.getRealLevel(skills.RANGE) < 99) {
-					g.drawString("% to " + (skills.getRealLevel(skills.RANGE) + 1) + ":", rangeBox.x + 343, rangeBox.y + 10);
-					drawPercentBar(g, g2d, rangeBox.x + 385, rangeBox.y + 1, rangeBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(skills.RANGE));
+				g.drawString("Level: " + skills.getRealLevel(Skills.RANGE) + "(+" + gainedRangeLevel + ")", rangeBox.x + 268, rangeBox.y + 10);
+				if (skills.getRealLevel(Skills.RANGE) < 99) {
+					g.drawString("% to " + (skills.getRealLevel(Skills.RANGE) + 1) + ":", rangeBox.x + 343, rangeBox.y + 10);
+					drawPercentBar(g, g2d, rangeBox.x + 385, rangeBox.y + 1, rangeBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.RANGE));
 				}
 			}
-			
-			if(gainedConstitutionExp > 0) {
-				if(constitutionBox.y == 0) {
+
+			if (gainedConstitutionExp > 0) {
+				if (constitutionBox.y == 0) {
 					constitutionBox.y = expYs[nextPlace];
 					nextPlace++;
 				}
@@ -4677,62 +4748,62 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
 				g.drawString("XP Gained: " + gainedConstitutionExp, constitutionBox.x + 77, constitutionBox.y + 10);
 				g.drawString("XP/Hour: " + gainedConstitutionExpHour, constitutionBox.x + 183, constitutionBox.y + 10);
-				g.drawString("Level: " + skills.getRealLevel(skills.CONSTITUTION) + "(+" + gainedConstitutionLevel + ")", constitutionBox.x + 268, constitutionBox.y + 10);
-				if(skills.getRealLevel(skills.CONSTITUTION) < 99) {
-					g.drawString("% to " + (skills.getRealLevel(skills.CONSTITUTION) + 1) + ":", constitutionBox.x + 343, constitutionBox.y + 10);
-					drawPercentBar(g, g2d, constitutionBox.x + 385, constitutionBox.y + 1, constitutionBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(skills.CONSTITUTION));
+				g.drawString("Level: " + skills.getRealLevel(Skills.CONSTITUTION) + "(+" + gainedConstitutionLevel + ")", constitutionBox.x + 268, constitutionBox.y + 10);
+				if (skills.getRealLevel(Skills.CONSTITUTION) < 99) {
+					g.drawString("% to " + (skills.getRealLevel(Skills.CONSTITUTION) + 1) + ":", constitutionBox.x + 343, constitutionBox.y + 10);
+					drawPercentBar(g, g2d, constitutionBox.x + 385, constitutionBox.y + 1, constitutionBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.CONSTITUTION));
 				}
 			}
-			
+
 			// Mouse Over Boxes
-			
-			if(gainedAttackExp > 0) {
-				if(mouseInArea(attackBox)) {
+
+			if (gainedAttackExp > 0) {
+				if (mouseInArea(attackBox)) {
 					drawExpInfo(g, g2d, expBlack, expWhite, expBlack, expGreen, expRed,
-									"Attack", skills.ATTACK, gainedAttackExp, gainedAttackLevel);
+							"Attack", Skills.ATTACK, gainedAttackExp, gainedAttackLevel);
 				}
 			}
-			
-			if(gainedStrengthExp > 0) {
-				if(mouseInArea(strengthBox)) {
+
+			if (gainedStrengthExp > 0) {
+				if (mouseInArea(strengthBox)) {
 					drawExpInfo(g, g2d, expBlack, expWhite, expDarkerGrey, expGreen, expRed,
-									"Strength", skills.STRENGTH, gainedStrengthExp, gainedStrengthLevel);
+							"Strength", Skills.STRENGTH, gainedStrengthExp, gainedStrengthLevel);
 				}
 			}
-			
-			if(gainedDefenceExp > 0) {
-				if(mouseInArea(defenceBox)) {
+
+			if (gainedDefenceExp > 0) {
+				if (mouseInArea(defenceBox)) {
 					drawExpInfo(g, g2d, expBlack, expWhite, expDarkGrey, expGreen, expRed,
-									"Defence", skills.DEFENSE, gainedDefenceExp, gainedDefenceLevel);
+							"Defence", Skills.DEFENSE, gainedDefenceExp, gainedDefenceLevel);
 				}
 			}
-			
-			if(gainedMagicExp > 0) {
-				if(mouseInArea(magicBox)) {
+
+			if (gainedMagicExp > 0) {
+				if (mouseInArea(magicBox)) {
 					drawExpInfo(g, g2d, expBlack, expWhite, expDarkBlue, expGreen, expRed,
-									"Magic", skills.MAGIC, gainedMagicExp, gainedMagicLevel);
+							"Magic", Skills.MAGIC, gainedMagicExp, gainedMagicLevel);
 				}
 			}
-			
-			if(gainedRangeExp > 0) {
-				if(mouseInArea(rangeBox)) {
+
+			if (gainedRangeExp > 0) {
+				if (mouseInArea(rangeBox)) {
 					drawExpInfo(g, g2d, expBlack, expWhite, expBrown, expGreen, expRed,
-									"Range", skills.RANGE, gainedRangeExp, gainedRangeLevel);
+							"Range", Skills.RANGE, gainedRangeExp, gainedRangeLevel);
 				}
 			}
-			
-			if(gainedConstitutionExp > 0) {
-				if(mouseInArea(constitutionBox)) {
+
+			if (gainedConstitutionExp > 0) {
+				if (mouseInArea(constitutionBox)) {
 					drawExpInfo(g, g2d, expBlack, expWhite, expDarkRed, expGreen, expRed,
-									"Constitution", skills.CONSTITUTION, gainedConstitutionExp, gainedConstitutionLevel);
+							"Constitution", Skills.CONSTITUTION, gainedConstitutionExp, gainedConstitutionLevel);
 				}
 			}
 		}
-		
+
 		// Status Button
-		if(statusPaint == 1 || statusPaint == 2) {
-			if(mouseInArea(statusButtonRec)) {
-				if(userMousePressed) {
+		if (statusPaint == 1 || statusPaint == 2) {
+			if (mouseInArea(statusButtonRec)) {
+				if (userMousePressed) {
 					drawButton(g, statusButtonRec, buttonPressedOn, "Status", Color.WHITE);
 				} else {
 					drawButton(g, statusButtonRec, buttonOverOn, "Status", Color.WHITE);
@@ -4741,8 +4812,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				drawButton(g, statusButtonRec, buttonNormalOn, "Status", Color.WHITE);
 			}
 		} else {
-			if(mouseInArea(statusButtonRec)) {
-				if(userMousePressed) {
+			if (mouseInArea(statusButtonRec)) {
+				if (userMousePressed) {
 					drawButton(g, statusButtonRec, buttonPressed, "Status", Color.WHITE);
 				} else {
 					drawButton(g, statusButtonRec, buttonOver, "Status", Color.WHITE);
@@ -4752,9 +4823,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 		// Exp Button
-		if(expPaint == 1 || expPaint == 2) {
-			if(mouseInArea(expButtonRec)) {
-				if(userMousePressed) {
+		if (expPaint == 1 || expPaint == 2) {
+			if (mouseInArea(expButtonRec)) {
+				if (userMousePressed) {
 					drawButton(g, expButtonRec, buttonPressedOn, "Exp", Color.WHITE);
 				} else {
 					drawButton(g, expButtonRec, buttonOverOn, "Exp", Color.WHITE);
@@ -4763,8 +4834,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				drawButton(g, expButtonRec, buttonNormalOn, "Exp", Color.WHITE);
 			}
 		} else {
-			if(mouseInArea(expButtonRec)) {
-				if(userMousePressed) {
+			if (mouseInArea(expButtonRec)) {
+				if (userMousePressed) {
 					drawButton(g, expButtonRec, buttonPressed, "Exp", Color.WHITE);
 				} else {
 					drawButton(g, expButtonRec, buttonOver, "Exp", Color.WHITE);
@@ -4774,9 +4845,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 		// Stats Button
-		if(statsPaint == 1 || statsPaint == 2) {
-			if(mouseInArea(statsButtonRec)) {
-				if(userMousePressed) {
+		if (statsPaint == 1 || statsPaint == 2) {
+			if (mouseInArea(statsButtonRec)) {
+				if (userMousePressed) {
 					drawButton(g, statsButtonRec, buttonPressedOn, "Stats", Color.WHITE);
 				} else {
 					drawButton(g, statsButtonRec, buttonOverOn, "Stats", Color.WHITE);
@@ -4785,8 +4856,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				drawButton(g, statsButtonRec, buttonNormalOn, "Stats", Color.WHITE);
 			}
 		} else {
-			if(mouseInArea(statsButtonRec)) {
-				if(userMousePressed) {
+			if (mouseInArea(statsButtonRec)) {
+				if (userMousePressed) {
 					drawButton(g, statsButtonRec, buttonPressed, "Stats", Color.WHITE);
 				} else {
 					drawButton(g, statsButtonRec, buttonOver, "Stats", Color.WHITE);
@@ -4796,10 +4867,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 		// More Stats Button
-		if(statsPaint == 1 || statsPaint == 2 || statsPaint == 3) {
-			if(moreStats == 1 || moreStats == 2) {
-				if(mouseInArea(moreStatsButtonRec)) {
-					if(userMousePressed) {
+		if (statsPaint == 1 || statsPaint == 2 || statsPaint == 3) {
+			if (moreStats == 1 || moreStats == 2) {
+				if (mouseInArea(moreStatsButtonRec)) {
+					if (userMousePressed) {
 						drawButton(g, moreStatsButtonRec, buttonPressedOnS, "Less", statsWhite, -1, statsWhite);
 					} else {
 						drawButton(g, moreStatsButtonRec, buttonOverOnS, "Less", statsWhite, -1, statsWhite);
@@ -4807,15 +4878,15 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				} else {
 					drawButton(g, moreStatsButtonRec, buttonNormalOnS, "Less", statsWhite, -1, statsWhite);
 				}
-				if(downArrow != null) {
-					if(statsAlpha > 0.5) {
+				if (downArrow != null) {
+					if (statsAlpha > 0.5) {
 						g.drawImage(downArrow, moreStatsButtonRec.x + 4, moreStatsButtonRec.y + 3, null);
 						g.drawImage(downArrow, moreStatsButtonRec.x + moreStatsButtonRec.width - downArrow.getWidth() - 4, moreStatsButtonRec.y + 3, null);
 					}
 				}
-			} else if(moreStats == 0 || moreStats == 3) {
-				if(mouseInArea(moreStatsButtonRec)) {
-					if(userMousePressed) {
+			} else if (moreStats == 0 || moreStats == 3) {
+				if (mouseInArea(moreStatsButtonRec)) {
+					if (userMousePressed) {
 						drawButton(g, moreStatsButtonRec, buttonPressedS, "More", statsWhite, -1, statsWhite);
 					} else {
 						drawButton(g, moreStatsButtonRec, buttonOverS, "More", statsWhite, -1, statsWhite);
@@ -4823,8 +4894,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				} else {
 					drawButton(g, moreStatsButtonRec, buttonNormalS, "More", statsWhite, -1, statsWhite);
 				}
-				if(downArrow != null) {
-					if(statsAlpha > 0.5) {
+				if (downArrow != null) {
+					if (statsAlpha > 0.5) {
 						g.drawImage(upArrow, moreStatsButtonRec.x + 4, moreStatsButtonRec.y + 3, null);
 						g.drawImage(upArrow, moreStatsButtonRec.x + moreStatsButtonRec.width - upArrow.getWidth() - 4, moreStatsButtonRec.y + 3, null);
 					}
@@ -4832,62 +4903,62 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 	}
-	
-	public int getTTLSecs(int skill, int gainedExp) {
-		int seconds = (int)((double)skills.getExpToNextLevel(skill) / 
-									((1000.0 / (double) runTime) * (double)gainedExp));
-		if ( seconds >= 60 ) {
-    		int minutes = seconds / 60;
-    		seconds -= (minutes * 60);
-    	}
-    	return seconds;
+
+	int getTTLSecs(int skill, int gainedExp) {
+		int seconds = (int) ((double) skills.getExpToNextLevel(skill) /
+				((1000.0 / (double) runTime) * (double) gainedExp));
+		if (seconds >= 60) {
+			int minutes = seconds / 60;
+			seconds -= (minutes * 60);
+		}
+		return seconds;
 	}
-	
-	public int getTTLMins(int skill, int gainedExp) {
+
+	int getTTLMins(int skill, int gainedExp) {
 		int minutes = 0;
-		int seconds = (int)((double)skills.getExpToNextLevel(skill) / 
-									((1000.0 / (double) runTime) * (double)gainedExp));
-    	if ( seconds >= 60 ) {
-    		minutes = seconds / 60;
-    		seconds -= (minutes * 60);
-    	}
-    	if ( minutes >= 60 ) {
-    		int hours = minutes / 60;
-    		minutes -= (hours * 60);
-    	}
-    	return minutes;
+		int seconds = (int) ((double) skills.getExpToNextLevel(skill) /
+				((1000.0 / (double) runTime) * (double) gainedExp));
+		if (seconds >= 60) {
+			minutes = seconds / 60;
+			seconds -= (minutes * 60);
+		}
+		if (minutes >= 60) {
+			int hours = minutes / 60;
+			minutes -= (hours * 60);
+		}
+		return minutes;
 	}
-	
-	public int getTTLHours(int skill, int gainedExp) {
+
+	int getTTLHours(int skill, int gainedExp) {
 		int hours = 0;
-		int minutes= 0;
-		int seconds = (int)((double)skills.getExpToNextLevel(skill) / 
-									((1000.0 / (double) runTime) * (double)gainedExp));
-		if ( seconds >= 60 ) {
-    		minutes = seconds / 60;
-    		seconds -= (minutes * 60);
-    	}
-    	if ( minutes >= 60 ) {
-    		hours = minutes / 60;
-    		minutes -= (hours * 60);
-    	}
-    	return hours;
+		int minutes = 0;
+		int seconds = (int) ((double) skills.getExpToNextLevel(skill) /
+				((1000.0 / (double) runTime) * (double) gainedExp));
+		if (seconds >= 60) {
+			minutes = seconds / 60;
+			seconds -= (minutes * 60);
+		}
+		if (minutes >= 60) {
+			hours = minutes / 60;
+			minutes -= (hours * 60);
+		}
+		return hours;
 	}
-	
-	public String getTTL(int skill, int gainedExp) {
+
+	String getTTL(int skill, int gainedExp) {
 		return "" + getTTLHours(skill, gainedExp) + ":" + getTTLMins(skill, gainedExp) + ":" + getTTLSecs(skill, gainedExp);
 	}
-	
-	public int getTextAlpha(int index) {
-		return (int)(((int)(textAlpha[index] * 255)) * statsAlpha);
+
+	int getTextAlpha(int index) {
+		return (int) (((int) (textAlpha[index] * 255)) * statsAlpha);
 	}
-	
-	public void drawPercentBar(Graphics g, Graphics2D g2d, int x, int y, int height, Color black, Color white, Color green, Color red, int percent) {
+
+	void drawPercentBar(Graphics g, Graphics2D g2d, int x, int y, int height, Color black, Color white, Color green, Color red, int percent) {
 		g.setColor(red);
 		g.fillRoundRect(x, y, 100, height, 11, 11);
 		g.setColor(green);
 		g.fillRoundRect(x, y, percent, height, 11, 11);
-		GradientPaint gradient = new GradientPaint(x, y, white, x, y + (int)((double)height / 1.5), new Color(255, 255, 255, 0), false);
+		GradientPaint gradient = new GradientPaint(x, y, white, x, y + (int) ((double) height / 1.5), new Color(255, 255, 255, 0), false);
 		g2d.setPaint(gradient);
 		g2d.fillRoundRect(x, y, 100, height, 11, 11);
 		g.setColor(black);
@@ -4896,22 +4967,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		g.drawRoundRect(x, y, 100, height, 11, 11);
 		g.drawRoundRect(x, y, percent, height, 11, 11);
 	}
-	
-	public void drawExpInfo(Graphics g, Graphics2D g2d, Color black, Color white, Color background, Color green, Color red,
-									String skillName, int skill, int gainedExp, int gainedLevel) {
+
+	void drawExpInfo(Graphics g, Graphics2D g2d, Color black, Color white, Color background, Color green, Color red,
+	                 String skillName, int skill, int gainedExp, int gainedLevel) {
 		int boxX = userMouseX;
 		int boxY = userMouseY - 112;
 		int width = 130;
 		int height = userMouseY - boxY;
-		int[] ys = { 3, 15, 27, 39, 51, 63, 75, 87, 99 };
-		for(int i = 0; i < ys.length; i++) {
+		int[] ys = {3, 15, 27, 39, 51, 63, 75, 87, 99};
+		for (int i = 0; i < ys.length; i++) {
 			ys[i] = ys[i] + boxY + 9;
 		}
-		for(int i = 1; i < ys.length; i++) {
+		for (int i = 1; i < ys.length; i++) {
 			ys[i] += 1;
 		}
 		int textX = boxX + 5;
-		int expPerHour = (int)((3600000.0 / (double) runTime) * gainedExp);
+		int expPerHour = (int) ((3600000.0 / (double) runTime) * gainedExp);
 		g.setColor(background);
 		g.fillRoundRect(boxX, boxY, width, height, cornerNum, cornerNum);
 		GradientPaint gradient = new GradientPaint(boxX, boxY, white, boxX, boxY + 7, new Color(255, 255, 255, 0), false);
@@ -4923,7 +4994,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		Font theFont = new Font("Arial", Font.BOLD, 10);
 		FontMetrics theFontMetrics = g.getFontMetrics(theFont);
 		int titleWidth = theFontMetrics.stringWidth(skillName);
-		int titleX = boxX + (((int)(width / 2)) - ((int)(titleWidth / 2)));
+		int titleX = boxX + (width / 2 - titleWidth / 2);
 		g.setFont(theFont);
 		g.drawString(skillName, titleX, ys[0]);
 		g.drawString("Current XP: " + skills.getCurrentExp(skill), textX, ys[1]);
@@ -4933,21 +5004,20 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		g.drawString("Gained LvLs: " + gainedLevel, textX, ys[5]);
 		g.drawString("XP to LvL: " + skills.getExpToNextLevel(skill), textX, ys[6]);
 		g.drawString("TTL: " + getTTL(skill, gainedExp), textX, ys[7]);
-		int barX = boxX + (((int)(width / 2)) - 50);
+		int barX = boxX + (width / 2 - 50);
 		drawPercentBar(g, g2d, barX, ys[8] - 9, 10, black, white, green, red, skills.getPercentToNextLevel(skill));
 	}
-	
-	
-	
-	public void drawButton(Graphics g, Rectangle area, Color color, String text, Color textColor) {
-		 drawButton(g, area, color, text, textColor, 0, Color.WHITE);
+
+
+	void drawButton(Graphics g, Rectangle area, Color color, String text, Color textColor) {
+		drawButton(g, area, color, text, textColor, 0, Color.WHITE);
 	}
-	
+
 	public void drawButton(Graphics g, Rectangle area, Color color, String text, Color textColor, int textOffsetY) {
-		 drawButton(g, area, color, text, textColor, textOffsetY, Color.WHITE);
+		drawButton(g, area, color, text, textColor, textOffsetY, Color.WHITE);
 	}
-	
-	public void drawButton(Graphics g, Rectangle area, Color color, String text, Color textColor, int textOffsetY, Color borderColor) {
+
+	void drawButton(Graphics g, Rectangle area, Color color, String text, Color textColor, int textOffsetY, Color borderColor) {
 		g.setColor(color);
 		g.fillRoundRect(area.x, area.y, area.width, area.height, 8, 8);
 		g.setColor(borderColor);
@@ -4956,94 +5026,94 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		Font theFont = new Font("Arial", Font.PLAIN, 12);
 		FontMetrics theFontMetrics = g.getFontMetrics(theFont);
 		int textWidth = theFontMetrics.stringWidth(text);
-		int textX = area.x + (((int)(area.width / 2)) - ((int)(textWidth / 2)));
+		int textX = area.x + (area.width / 2 - textWidth / 2);
 		g.setFont(theFont);
 		g.drawString(text, textX, area.y + 12 + textOffsetY);
 	}
-	
-	public void drawHealthBarHunted(Graphics g, Graphics2D g2d, int X, int Y) throws NullPointerException {
+
+	void drawHealthBarHunted(Graphics g, Graphics2D g2d, int X, int Y) throws NullPointerException {
 		g.setFont(new Font("Arial", Font.PLAIN, 14));
-		g.setColor(new Color(255, 255, 255, (int)(255 * statusAlpha)));
+		g.setColor(new Color(255, 255, 255, (int) (255 * statusAlpha)));
 		g.drawString("Your Health: ", X, Y);
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
-		if(status.equals("Dying...")) {
-			g.setColor(new Color(255, 0, 0, (int)(255 * statusAlpha)));
+		if (status.equals("Dying...")) {
+			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
-			GradientPaint gradient = new GradientPaint(X + 100, Y - 10, new Color(255, 255, 255, (int)(255 * statusAlpha)), X + 100, Y + ((int)((double)10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
+			GradientPaint gradient = new GradientPaint(X + 100, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 100, Y + ((int) ((double) 10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
-			g.setColor(new Color(0, 0, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
 			g.drawString("0%", X + 115, Y - 1);
 			g.drawRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
 		} else {
-			g.setColor(new Color(255, 0, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
-			g.setColor(new Color(0, 255, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(0, 255, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 100, Y - 10, getMyPlayer().getHPPercent() * 2, 10, 11, 11);
-			GradientPaint gradient = new GradientPaint(X + 100, Y - 10, new Color(255, 255, 255, (int)(255 * statusAlpha)), X + 100, Y + ((int)((double)10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
+			GradientPaint gradient = new GradientPaint(X + 100, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 100, Y + ((int) ((double) 10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
-			g.setColor(new Color(0, 0, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
 			g.drawString("" + getMyPlayer().getHPPercent() + "%", X + 115, Y - 1);
 			g.drawRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
 			g.drawRoundRect(X + 100, Y - 10, getMyPlayer().getHPPercent() * 2, 10, 11, 11);
 		}
 	}
-	
-	public void drawHealthBarHunting(Graphics g, Graphics2D g2d, int X, int Y) throws NullPointerException {
+
+	void drawHealthBarHunting(Graphics g, Graphics2D g2d, int X, int Y) throws NullPointerException {
 		g.setFont(new Font("Arial", Font.PLAIN, 14));
-		g.setColor(new Color(255, 255, 255, (int)(255 * statusAlpha)));
+		g.setColor(new Color(255, 255, 255, (int) (255 * statusAlpha)));
 		g.drawString("Opponent's Health: ", X, Y);
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
-		if(status.equals("Opponent Killed")) {
-			g.setColor(new Color(255, 0, 0, (int)(255 * statusAlpha)));
+		if (status.equals("Opponent Killed")) {
+			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
-			GradientPaint gradient = new GradientPaint(X + 130, Y - 10, new Color(255, 255, 255, (int)(255 * statusAlpha)), X + 130, Y + ((int)((double)10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
+			GradientPaint gradient = new GradientPaint(X + 130, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 130, Y + ((int) ((double) 10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
-			g.setColor(new Color(0, 0, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
 			g.drawString("0%", X + 145, Y - 1);
 			g.drawRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
 		} else {
-			g.setColor(new Color(255, 0, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
-			g.setColor(new Color(0, 255, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(0, 255, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 130, Y - 10, getPlayerThrow().getHPPercent() * 2, 10, 11, 11);
-			GradientPaint gradient = new GradientPaint(X + 130, Y - 10, new Color(255, 255, 255, (int)(255 * statusAlpha)), X + 130, Y + ((int)((double)10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
+			GradientPaint gradient = new GradientPaint(X + 130, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 130, Y + ((int) ((double) 10 / 1.5)) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
-			g.setColor(new Color(0, 0, 0, (int)(255 * statusAlpha)));
+			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
 			g.drawString("" + getPlayerThrow().getHPPercent() + "%", X + 145, Y - 1);
 			g.drawRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
 			g.drawRoundRect(X + 130, Y - 10, getPlayerThrow().getHPPercent() * 2, 10, 11, 11);
 		}
 	}
-	
-	public void drawHealthBar(Graphics g, Graphics2D g2d, int X, int Y) throws NullPointerException {
-		if(round == 1){
-			if(hunted){
+
+	void drawHealthBar(Graphics g, Graphics2D g2d, int X, int Y) throws NullPointerException {
+		if (round == 1) {
+			if (hunted) {
 				drawHealthBarHunted(g, g2d, X, Y);
 			} else {
 				drawHealthBarHunting(g, g2d, X, Y);
 			}
-		} else if(round == 2){
-			if(hunted2){
+		} else if (round == 2) {
+			if (hunted2) {
 				drawHealthBarHunted(g, g2d, X, Y);
 			} else {
 				drawHealthBarHunting(g, g2d, X, Y);
 			}
 		}
 	}
-	
-	public void drawTile(final Graphics g, final RSTile tile, final Color tileColor, final String caption, final Color captionColor) {
+
+	void drawTile(final Graphics g, final RSTile tile, final Color tileColor, final String caption, final Color captionColor) {
 		final RSTile tx = new RSTile(tile.getX() + 1, tile.getY());
 		final RSTile ty = new RSTile(tile.getX(), tile.getY() + 1);
 		final RSTile txy = new RSTile(tile.getX() + 1, tile.getY() + 1);
-		final Point pn = calc.tileToScreen(tile,0,0,0);
-		final Point px = calc.tileToScreen(tx,0,0,0);
-		final Point py = calc.tileToScreen(ty,0,0,0);
-		final Point pxy = calc.tileToScreen(txy,0,0,0);
-		if(pn.x != -1 && pn.y != -1 && px.x != -1 && px.y != -1 && py.x != -1 && py.y != -1 && pxy.x != -1 && pxy.y != -1) {
+		final Point pn = calc.tileToScreen(tile, 0, 0, 0);
+		final Point px = calc.tileToScreen(tx, 0, 0, 0);
+		final Point py = calc.tileToScreen(ty, 0, 0, 0);
+		final Point pxy = calc.tileToScreen(txy, 0, 0, 0);
+		if (pn.x != -1 && pn.y != -1 && px.x != -1 && px.y != -1 && py.x != -1 && py.y != -1 && pxy.x != -1 && pxy.y != -1) {
 			g.setColor(new Color(0, 0, 0, 255));
 			g.drawPolygon(new int[]{py.x, pxy.x, px.x, pn.x}, new int[]{py.y, pxy.y, px.y, pn.y}, 4);
 			g.setColor(tileColor);
@@ -5053,24 +5123,24 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			g.drawString(caption, Math.max(Math.max(pn.x, px.x), Math.max(py.x, pxy.x)) + 5, Math.min(Math.min(pn.y, px.y), Math.min(py.y, pxy.y)) + 15);
 		}
 	}
-	
-	public boolean doModelAction(RSObject obj, String action) {
+
+	boolean doModelAction(RSObject obj, String action) {
 		try {
 			RSModel model = obj.getModel();
-			if(model != null) {
-				if(obj.isOnScreen()) {
+			if (model != null) {
+				if (obj.isOnScreen()) {
 					Point p = model.getPoint();
-					if(p.x != -1 && p.y != -1) {
+					if (p.x != -1 && p.y != -1) {
 						int tries = 0;
 						boolean done = false;
-						while(!done && tries < 10) {
+						while (!done && tries < 10) {
 							mouse.move(model.getPoint(), 0, 0);
-							if(menu.doAction(action)) {
+							if (menu.doAction(action)) {
 								done = true;
 							}
 							tries++;
 						}
-						if(tries < 10) {
+						if (tries < 10) {
 							return true;
 						} else {
 							dlog("Object doAction failed");
@@ -5087,23 +5157,23 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			} else {
 				dlog("Object does not have model, attempting tile click");
 				RSTile loc = obj.getLocation();
-				if(loc == null) {
+				if (loc == null) {
 					dlog("Null object location");
 					return false;
 				}
-				if(calc.tileOnScreen(loc)) {
+				if (calc.tileOnScreen(loc)) {
 					Point p = calc.tileToScreen(loc, 0.5, 0.5, -500);
-					if(p.x != -1 && p.y != -1) {
+					if (p.x != -1 && p.y != -1) {
 						int tries = 0;
 						boolean done = false;
-						while(!done && tries < 10) {
+						while (!done && tries < 10) {
 							mouse.move(calc.tileToScreen(loc, 0.5, 0.5, -500), 0, 0);
-							if(menu.doAction(action)) {
+							if (menu.doAction(action)) {
 								done = true;
 							}
 							tries++;
 						}
-						if(tries < 10) {
+						if (tries < 10) {
 							return true;
 						} else {
 							dlog("Object doAction failed");
@@ -5118,20 +5188,21 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					return false;
 				}
 			}
-		} catch (NullPointerException fail) {}
+		} catch (NullPointerException ignored) {
+		}
 		return false;
 	}
-	
-	public void getStone() {
+
+	void getStone() {
 		status = "Getting Stone...";
 		try {
 			boolean walkToStone = false;
 			stoneObject = objects.getNearest(30143);
 			RSTile stoneTile = stoneObject.getLocation();
 			RSTile nextToStoneTile = new RSTile(stoneObject.getLocation().getX() + 1, stoneObject.getLocation().getY());
-			if(stoneObject.isOnScreen()){
-				while(inventory.getCount(stoneID) < 1 && !walkToStone && inGame() && !dieScript && !switchingRole){
-					if(!doModelAction(stoneObject, "Take-stone")){
+			if (stoneObject.isOnScreen()) {
+				while (inventory.getCount(stoneID) < 1 && !walkToStone && inGame() && !dieScript && !switchingRole) {
+					if (!doModelAction(stoneObject, "Take-stone")) {
 						/*try {
 							stoneObject.doHover();
 						} catch (NullPointerException ignored) {
@@ -5139,17 +5210,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						} catch (ArrayIndexOutOfBoundsException ignored) {
 							if(dmode) { log("stoneObject doHover fail, ArrayIndexOutOfBoundsException"); }
 						}*/
-						if(!doModelAction(stoneObject, "Take-stone")){
+						if (!doModelAction(stoneObject, "Take-stone")) {
 							walkToStone = true;
 						} else {
 							sleep(1000);
-							while(getMyPlayer().isMoving()) {
+							while (getMyPlayer().isMoving()) {
 								sleep(1);
 							}
 						}
 					} else {
 						sleep(1000);
-						while(getMyPlayer().isMoving()) {
+						while (getMyPlayer().isMoving()) {
 							sleep(1);
 						}
 					}
@@ -5157,14 +5228,14 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			} else {
 				walkToStone = true;
 			}
-			if(walkToStone && !switchingRole){
-				while(calc.distanceTo(nextToStoneTile) > 2 && inGame()){
+			if (walkToStone && !switchingRole) {
+				while (calc.distanceTo(nextToStoneTile) > 2 && inGame()) {
 					walking.walkTileOnScreen(nextToStoneTile);
 					sleep(random(500, 1000));
 				}
 			}
-			while(inventory.getCount(stoneID) < 1 && inGame() && !dieScript && !switchingRole){
-				if(!doModelAction(stoneObject, "Take-stone")){
+			while (inventory.getCount(stoneID) < 1 && inGame() && !dieScript && !switchingRole) {
+				if (!doModelAction(stoneObject, "Take-stone")) {
 					/*try {
 						stoneObject.doHover();
 					} catch (NullPointerException ignored) {
@@ -5172,39 +5243,41 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					} catch (ArrayIndexOutOfBoundsException ignored) {
 						if(dmode) { log("stoneObject doHover fail, ArrayIndexOutOfBoundsException"); }
 					}*/
-					if(!doModelAction(stoneObject, "Take-stone")){
+					if (!doModelAction(stoneObject, "Take-stone")) {
 						walkToStone = true;
 					} else {
 						sleep(1000);
-						while(getMyPlayer().isMoving()) {
+						while (getMyPlayer().isMoving()) {
 							sleep(1);
 						}
 					}
 				} else {
 					sleep(1000);
-					while(getMyPlayer().isMoving()) {
+					while (getMyPlayer().isMoving()) {
 						sleep(1);
 					}
 				}
 			}
-			if(switchingRole){
+			if (switchingRole) {
 				switchRole();
 			}
-		} catch (NullPointerException e){
-			if(dmode){ log("Could not get stone"); }
+		} catch (NullPointerException e) {
+			if (dmode) {
+				log("Could not get stone");
+			}
 		}
 	}
-	
-	public void getStoneSwitch() {
+
+	void getStoneSwitch() {
 		status = "Getting Stone...";
 		try {
 			boolean walkToStone = false;
 			stoneObject = objects.getNearest(30143);
 			RSTile stoneTile = stoneObject.getLocation();
 			RSTile nextToStoneTile = new RSTile(stoneObject.getLocation().getX() + 1, stoneObject.getLocation().getY());
-			if(calc.tileOnScreen(stoneTile)){
-				while(inventory.getCount(stoneID) < 1 && !walkToStone && inGame() && !dieScript){
-					if(!doModelAction(stoneObject, "Take-stone")){
+			if (calc.tileOnScreen(stoneTile)) {
+				while (inventory.getCount(stoneID) < 1 && !walkToStone && inGame() && !dieScript) {
+					if (!doModelAction(stoneObject, "Take-stone")) {
 						/*try {
 							stoneObject.doHover();
 						} catch (NullPointerException ignored) {
@@ -5212,7 +5285,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						} catch (ArrayIndexOutOfBoundsException ignored) {
 							if(dmode) { log("stoneObject doHover fail, ArrayIndexOutOfBoundsException"); }
 						}*/
-						if(!doModelAction(stoneObject, "Take-stone")){
+						if (!doModelAction(stoneObject, "Take-stone")) {
 							walkToStone = true;
 						} else {
 							sleep(1500);
@@ -5224,48 +5297,55 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			} else {
 				walkToStone = true;
 			}
-			if(walkToStone){
-				while(calc.distanceTo(stoneObject.getLocation()) > 3 && inGame()){
+			if (walkToStone) {
+				while (calc.distanceTo(stoneObject.getLocation()) > 3 && inGame()) {
 					walking.walkTileOnScreen(nextToStoneTile);
 					sleep(random(500, 1000));
 				}
 			}
-			while(inventory.getCount(stoneID) < 1 && inGame()){
+			while (inventory.getCount(stoneID) < 1 && inGame()) {
 				try {
 					//stoneObject.doHover();
 					doModelAction(stoneObject, "Take-stone");
 				} catch (NullPointerException ignored) {
-					if(dmode) { log("stoneObject doHover/doClick fail, NullPointerException"); }
+					if (dmode) {
+						log("stoneObject doHover/doClick fail, NullPointerException");
+					}
 				} catch (ArrayIndexOutOfBoundsException ignored) {
-					if(dmode) { log("stoneObject doHover/doClick fail, ArrayIndexOutOfBoundsException"); }
+					if (dmode) {
+						log("stoneObject doHover/doClick fail, ArrayIndexOutOfBoundsException");
+					}
 				}
 				sleep(2000);
 			}
-		} catch (NullPointerException e){
-			if(dmode){ log("Could not get stone"); }
+		} catch (NullPointerException e) {
+			if (dmode) {
+				log("Could not get stone");
+			}
 		}
 	}
-	
-	public void wieldStone() {
+
+	void wieldStone() {
 		try {
 			status = "Wielding Stone...";
 			int tries = 0;
-			while(!inventory.getItem(stoneID).doAction("Wield") && tries < 10 && inGame() && !dieScript){
+			while (!inventory.getItem(stoneID).doAction("Wield") && tries < 10 && inGame() && !dieScript) {
 				tries++;
 				mouse.moveSlightly();
 			}
-		} catch (NullPointerException ignored) {}
+		} catch (NullPointerException ignored) {
+		}
 	}
-	
-	public void setSpell() {
+
+	void setSpell() {
 		status = "Setting Spell...";
-		game.openTab(game.TAB_MAGIC);
+		game.openTab(Game.TAB_MAGIC);
 		sleep(50);
 		try {
-			if(!setCombatSpells && magic.getInterface().getIndex() == MODERN_SPELLBOOK) {
+			if (!setCombatSpells && magic.getInterface().getIndex() == MODERN_SPELLBOOK) {
 				int tries = 0;
-				while(!setCombatSpells && tries < 15){
-						setCombatSpells = magic.getInterface().getComponent(magic.INTERFACE_SORT_BY_COMBAT).doAction("");
+				while (!setCombatSpells && tries < 15) {
+					setCombatSpells = magic.getInterface().getComponent(Magic.INTERFACE_SORT_BY_COMBAT).doAction("");
 					tries++;
 				}
 			} else {
@@ -5274,229 +5354,225 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		} catch (NullPointerException e) {
 			setCombatSpells = true;
 		}
-		
-		if       (magicSpell.equals("Auto Highest (F2P)")){
+
+		if (magicSpell.equals("Auto Highest (F2P)")) {
 			autoCastHighestF2P();
-		} else if(magicSpell.equals("Auto Highest (P2P)")){
+		} else if (magicSpell.equals("Auto Highest (P2P)")) {
 			autoCastHighestP2P();
-		} else if(magicSpell.equals("Fire Surge")){
-			autoCast(magic.SPELL_FIRE_SURGE);
-		} else if(magicSpell.equals("Earth Surge")){
-			autoCast(magic.SPELL_EARTH_SURGE);
-		} else if(magicSpell.equals("Water Surge")){
-			autoCast(magic.SPELL_WATER_SURGE);
-		} else if(magicSpell.equals("Wind Surge")){
-			autoCast(magic.SPELL_WIND_SURGE);
-		} else if(magicSpell.equals("Fire Wave")){
-			autoCast(magic.SPELL_FIRE_WAVE);
-		} else if(magicSpell.equals("Earth Wave")){
-			autoCast(magic.SPELL_EARTH_WAVE);
-		} else if(magicSpell.equals("Water Wave")){
-			autoCast(magic.SPELL_WATER_WAVE);
-		} else if(magicSpell.equals("Wind Wave")){
-			autoCast(magic.SPELL_WIND_WAVE);
-		} else if(magicSpell.equals("Fire Blast")){
-			autoCast(magic.SPELL_FIRE_BLAST);
-		} else if(magicSpell.equals("Earth Blast")){
-			autoCast(magic.SPELL_EARTH_BLAST);
-		} else if(magicSpell.equals("Water Blast")){
-			autoCast(magic.SPELL_WATER_BLAST);
-		} else if(magicSpell.equals("Wind Blast")){
-			autoCast(magic.SPELL_WIND_BLAST);
-		} else if(magicSpell.equals("Fire Bolt")){
-			autoCast(magic.SPELL_FIRE_BOLT);
-		} else if(magicSpell.equals("Earth Bolt")){
-			autoCast(magic.SPELL_EARTH_BOLT);
-		} else if(magicSpell.equals("Water Bolt")){
-			autoCast(magic.SPELL_WATER_BOLT);
-		} else if(magicSpell.equals("Wind Bolt")){
-			autoCast(magic.SPELL_WIND_BOLT);
-		} else if(magicSpell.equals("Fire Strike")){
-			autoCast(magic.SPELL_FIRE_STRIKE);
-		} else if(magicSpell.equals("Earth Strike")){
-			autoCast(magic.SPELL_EARTH_STRIKE);
-		} else if(magicSpell.equals("Water Strike")){
-			autoCast(magic.SPELL_WATER_STRIKE);
-		} else if(magicSpell.equals("Wind Strike")){
-			autoCast(magic.SPELL_WIND_STRIKE);
-		} else if(magicSpell.equals("Wind Rush")){
+		} else if (magicSpell.equals("Fire Surge")) {
+			autoCast(Magic.SPELL_FIRE_SURGE);
+		} else if (magicSpell.equals("Earth Surge")) {
+			autoCast(Magic.SPELL_EARTH_SURGE);
+		} else if (magicSpell.equals("Water Surge")) {
+			autoCast(Magic.SPELL_WATER_SURGE);
+		} else if (magicSpell.equals("Wind Surge")) {
+			autoCast(Magic.SPELL_WIND_SURGE);
+		} else if (magicSpell.equals("Fire Wave")) {
+			autoCast(Magic.SPELL_FIRE_WAVE);
+		} else if (magicSpell.equals("Earth Wave")) {
+			autoCast(Magic.SPELL_EARTH_WAVE);
+		} else if (magicSpell.equals("Water Wave")) {
+			autoCast(Magic.SPELL_WATER_WAVE);
+		} else if (magicSpell.equals("Wind Wave")) {
+			autoCast(Magic.SPELL_WIND_WAVE);
+		} else if (magicSpell.equals("Fire Blast")) {
+			autoCast(Magic.SPELL_FIRE_BLAST);
+		} else if (magicSpell.equals("Earth Blast")) {
+			autoCast(Magic.SPELL_EARTH_BLAST);
+		} else if (magicSpell.equals("Water Blast")) {
+			autoCast(Magic.SPELL_WATER_BLAST);
+		} else if (magicSpell.equals("Wind Blast")) {
+			autoCast(Magic.SPELL_WIND_BLAST);
+		} else if (magicSpell.equals("Fire Bolt")) {
+			autoCast(Magic.SPELL_FIRE_BOLT);
+		} else if (magicSpell.equals("Earth Bolt")) {
+			autoCast(Magic.SPELL_EARTH_BOLT);
+		} else if (magicSpell.equals("Water Bolt")) {
+			autoCast(Magic.SPELL_WATER_BOLT);
+		} else if (magicSpell.equals("Wind Bolt")) {
+			autoCast(Magic.SPELL_WIND_BOLT);
+		} else if (magicSpell.equals("Fire Strike")) {
+			autoCast(Magic.SPELL_FIRE_STRIKE);
+		} else if (magicSpell.equals("Earth Strike")) {
+			autoCast(Magic.SPELL_EARTH_STRIKE);
+		} else if (magicSpell.equals("Water Strike")) {
+			autoCast(Magic.SPELL_WATER_STRIKE);
+		} else if (magicSpell.equals("Wind Strike")) {
+			autoCast(Magic.SPELL_WIND_STRIKE);
+		} else if (magicSpell.equals("Wind Rush")) {
 			autoCast(SPELL_WIND_RUSH);
-		} else if(magicSpell.equals("Ice Barrage")){
-			autoCast(magic.SPELL_ICE_BARRAGE);
-		} else if(magicSpell.equals("Blood Barrage")){
-			autoCast(magic.SPELL_BLOOD_BARRAGE);
-		} else if(magicSpell.equals("Shadow Barrage")){
-			autoCast(magic.SPELL_SHADOW_BARRAGE);
-		} else if(magicSpell.equals("Smoke Barrage")){
-			autoCast(magic.SPELL_SMOKE_BARRAGE);
-		} else if(magicSpell.equals("Ice Blitz")){
-			autoCast(magic.SPELL_ICE_BLITZ);
-		} else if(magicSpell.equals("Blood Blitz")){
-			autoCast(magic.SPELL_BLOOD_BLITZ);
-		} else if(magicSpell.equals("Shadow Blitz")){
-			autoCast(magic.SPELL_SHADOW_BLITZ);
-		} else if(magicSpell.equals("Smoke Blitz")){
-			autoCast(magic.SPELL_SMOKE_BLITZ);
-		} else if(magicSpell.equals("Ice Burst")){
-			autoCast(magic.SPELL_ICE_BURST);
-		} else if(magicSpell.equals("Blood Burst")){
-			autoCast(magic.SPELL_BLOOD_BURST);
-		} else if(magicSpell.equals("Shadow Burst")){
-			autoCast(magic.SPELL_SHADOW_BURST);
-		} else if(magicSpell.equals("Smoke Burst")){
-			autoCast(magic.SPELL_SMOKE_BURST);
-		} else if(magicSpell.equals("Ice Rush")){
-			autoCast(magic.SPELL_ICE_RUSH);
-		} else if(magicSpell.equals("Blood Rush")){
-			autoCast(magic.SPELL_BLOOD_RUSH);
-		} else if(magicSpell.equals("Shadow Rush")){
-			autoCast(magic.SPELL_SHADOW_RUSH);
-		} else if(magicSpell.equals("Smoke Rush")){
-			autoCast(magic.SPELL_SMOKE_RUSH);
-		} else if(magicSpell.equals("Miasmic Barrage")){
-			autoCast(magic.SPELL_MIASMIC_BARRAGE);
-		} else if(magicSpell.equals("Miasmic Blitz")){
-			autoCast(magic.SPELL_MIASMIC_BLITZ);
-		} else if(magicSpell.equals("Miasmic Burst")){
-			autoCast(magic.SPELL_MIASMIC_BURST);
-		} else if(magicSpell.equals("Miasmic Rush")){
-			autoCast(magic.SPELL_MIASMIC_RUSH);
+		} else if (magicSpell.equals("Ice Barrage")) {
+			autoCast(Magic.SPELL_ICE_BARRAGE);
+		} else if (magicSpell.equals("Blood Barrage")) {
+			autoCast(Magic.SPELL_BLOOD_BARRAGE);
+		} else if (magicSpell.equals("Shadow Barrage")) {
+			autoCast(Magic.SPELL_SHADOW_BARRAGE);
+		} else if (magicSpell.equals("Smoke Barrage")) {
+			autoCast(Magic.SPELL_SMOKE_BARRAGE);
+		} else if (magicSpell.equals("Ice Blitz")) {
+			autoCast(Magic.SPELL_ICE_BLITZ);
+		} else if (magicSpell.equals("Blood Blitz")) {
+			autoCast(Magic.SPELL_BLOOD_BLITZ);
+		} else if (magicSpell.equals("Shadow Blitz")) {
+			autoCast(Magic.SPELL_SHADOW_BLITZ);
+		} else if (magicSpell.equals("Smoke Blitz")) {
+			autoCast(Magic.SPELL_SMOKE_BLITZ);
+		} else if (magicSpell.equals("Ice Burst")) {
+			autoCast(Magic.SPELL_ICE_BURST);
+		} else if (magicSpell.equals("Blood Burst")) {
+			autoCast(Magic.SPELL_BLOOD_BURST);
+		} else if (magicSpell.equals("Shadow Burst")) {
+			autoCast(Magic.SPELL_SHADOW_BURST);
+		} else if (magicSpell.equals("Smoke Burst")) {
+			autoCast(Magic.SPELL_SMOKE_BURST);
+		} else if (magicSpell.equals("Ice Rush")) {
+			autoCast(Magic.SPELL_ICE_RUSH);
+		} else if (magicSpell.equals("Blood Rush")) {
+			autoCast(Magic.SPELL_BLOOD_RUSH);
+		} else if (magicSpell.equals("Shadow Rush")) {
+			autoCast(Magic.SPELL_SHADOW_RUSH);
+		} else if (magicSpell.equals("Smoke Rush")) {
+			autoCast(Magic.SPELL_SMOKE_RUSH);
+		} else if (magicSpell.equals("Miasmic Barrage")) {
+			autoCast(Magic.SPELL_MIASMIC_BARRAGE);
+		} else if (magicSpell.equals("Miasmic Blitz")) {
+			autoCast(Magic.SPELL_MIASMIC_BLITZ);
+		} else if (magicSpell.equals("Miasmic Burst")) {
+			autoCast(Magic.SPELL_MIASMIC_BURST);
+		} else if (magicSpell.equals("Miasmic Rush")) {
+			autoCast(Magic.SPELL_MIASMIC_RUSH);
 		}
 	}
-	
-	public boolean autoCastHighestF2P() {
-		int ML = skills.getCurrentLevel(skills.MAGIC);
-		if		 (ML >= 59) {
-			return autoCast(magic.SPELL_FIRE_BLAST);
-		} else if(ML >= 53) {
-			return autoCast(magic.SPELL_EARTH_BLAST);
-		} else if(ML >= 47) {
-			return autoCast(magic.SPELL_WATER_BLAST);
-		} else if(ML >= 41) {
-			return autoCast(magic.SPELL_WIND_BLAST);
-		} else if(ML >= 35) {
-			return autoCast(magic.SPELL_FIRE_BOLT);
-		} else if(ML >= 29) {
-			return autoCast(magic.SPELL_EARTH_BOLT);
-		} else if(ML >= 23) {
-			return autoCast(magic.SPELL_WATER_BOLT);
-		} else if(ML >= 17) {
-			return autoCast(magic.SPELL_WIND_BOLT);
-		} else if(ML >= 13) {
-			return autoCast(magic.SPELL_FIRE_STRIKE);
-		} else if(ML >= 9) {
-			return autoCast(magic.SPELL_EARTH_STRIKE);
-		} else if(ML >= 5) {
-			return autoCast(magic.SPELL_WATER_STRIKE);
+
+	boolean autoCastHighestF2P() {
+		int ML = skills.getCurrentLevel(Skills.MAGIC);
+		if (ML >= 59) {
+			return autoCast(Magic.SPELL_FIRE_BLAST);
+		} else if (ML >= 53) {
+			return autoCast(Magic.SPELL_EARTH_BLAST);
+		} else if (ML >= 47) {
+			return autoCast(Magic.SPELL_WATER_BLAST);
+		} else if (ML >= 41) {
+			return autoCast(Magic.SPELL_WIND_BLAST);
+		} else if (ML >= 35) {
+			return autoCast(Magic.SPELL_FIRE_BOLT);
+		} else if (ML >= 29) {
+			return autoCast(Magic.SPELL_EARTH_BOLT);
+		} else if (ML >= 23) {
+			return autoCast(Magic.SPELL_WATER_BOLT);
+		} else if (ML >= 17) {
+			return autoCast(Magic.SPELL_WIND_BOLT);
+		} else if (ML >= 13) {
+			return autoCast(Magic.SPELL_FIRE_STRIKE);
+		} else if (ML >= 9) {
+			return autoCast(Magic.SPELL_EARTH_STRIKE);
+		} else if (ML >= 5) {
+			return autoCast(Magic.SPELL_WATER_STRIKE);
 		} else {
-			return autoCast(magic.SPELL_WIND_STRIKE);
+			return autoCast(Magic.SPELL_WIND_STRIKE);
 		}
 	}
-	
-	public boolean autoCastHighestP2P() {
-		final int ML = skills.getCurrentLevel(skills.MAGIC);
+
+	boolean autoCastHighestP2P() {
+		final int ML = skills.getCurrentLevel(Skills.MAGIC);
 		final int spellbook = magic.getInterface().getIndex();
-		
-		if(spellbook == MODERN_SPELLBOOK) {
-			if(ML >= 95) {
-				return autoCast(magic.SPELL_FIRE_SURGE);
-			} else if(ML >= 90) {
-				return autoCast(magic.SPELL_EARTH_SURGE);
-			} else if(ML >= 85) {
-				return autoCast(magic.SPELL_WATER_SURGE);
-			} else if(ML >= 81) {
-				return autoCast(magic.SPELL_WIND_SURGE);
-			} else if(ML >= 75) {
-				return autoCast(magic.SPELL_FIRE_WAVE);
-			} else if(ML >= 70) {
-				return autoCast(magic.SPELL_EARTH_WAVE);
-			} else if(ML >= 65) {
-				return autoCast(magic.SPELL_WATER_WAVE);
-			} else if(ML >= 62) {
-				return autoCast(magic.SPELL_WIND_WAVE);
-			} else if(ML >= 59) {
-				return autoCast(magic.SPELL_FIRE_BLAST);
-			} else if(ML >= 53) {
-				return autoCast(magic.SPELL_EARTH_BLAST);
-			} else if(ML >= 47) {
-				return autoCast(magic.SPELL_WATER_BLAST);
-			} else if(ML >= 41) {
-				return autoCast(magic.SPELL_WIND_BLAST);
-			} else if(ML >= 35) {
-				return autoCast(magic.SPELL_FIRE_BOLT);
-			} else if(ML >= 29) {
-				return autoCast(magic.SPELL_EARTH_BOLT);
-			} else if(ML >= 23) {
-				return autoCast(magic.SPELL_WATER_BOLT);
-			} else if(ML >= 17) {
-				return autoCast(magic.SPELL_WIND_BOLT);
-			} else if(ML >= 13) {
-				return autoCast(magic.SPELL_FIRE_STRIKE);
-			} else if(ML >= 9) {
-				return autoCast(magic.SPELL_EARTH_STRIKE);
-			} else if(ML >= 5) {
-				return autoCast(magic.SPELL_WATER_STRIKE);
+
+		if (spellbook == MODERN_SPELLBOOK) {
+			if (ML >= 95) {
+				return autoCast(Magic.SPELL_FIRE_SURGE);
+			} else if (ML >= 90) {
+				return autoCast(Magic.SPELL_EARTH_SURGE);
+			} else if (ML >= 85) {
+				return autoCast(Magic.SPELL_WATER_SURGE);
+			} else if (ML >= 81) {
+				return autoCast(Magic.SPELL_WIND_SURGE);
+			} else if (ML >= 75) {
+				return autoCast(Magic.SPELL_FIRE_WAVE);
+			} else if (ML >= 70) {
+				return autoCast(Magic.SPELL_EARTH_WAVE);
+			} else if (ML >= 65) {
+				return autoCast(Magic.SPELL_WATER_WAVE);
+			} else if (ML >= 62) {
+				return autoCast(Magic.SPELL_WIND_WAVE);
+			} else if (ML >= 59) {
+				return autoCast(Magic.SPELL_FIRE_BLAST);
+			} else if (ML >= 53) {
+				return autoCast(Magic.SPELL_EARTH_BLAST);
+			} else if (ML >= 47) {
+				return autoCast(Magic.SPELL_WATER_BLAST);
+			} else if (ML >= 41) {
+				return autoCast(Magic.SPELL_WIND_BLAST);
+			} else if (ML >= 35) {
+				return autoCast(Magic.SPELL_FIRE_BOLT);
+			} else if (ML >= 29) {
+				return autoCast(Magic.SPELL_EARTH_BOLT);
+			} else if (ML >= 23) {
+				return autoCast(Magic.SPELL_WATER_BOLT);
+			} else if (ML >= 17) {
+				return autoCast(Magic.SPELL_WIND_BOLT);
+			} else if (ML >= 13) {
+				return autoCast(Magic.SPELL_FIRE_STRIKE);
+			} else if (ML >= 9) {
+				return autoCast(Magic.SPELL_EARTH_STRIKE);
+			} else if (ML >= 5) {
+				return autoCast(Magic.SPELL_WATER_STRIKE);
 			} else {
-				return autoCast(magic.SPELL_WIND_STRIKE);
+				return autoCast(Magic.SPELL_WIND_STRIKE);
 			}
-		} else if(spellbook == ANCIENT_SPELLBOOK) {
-			if(ML >= 94) {
-				return autoCast(magic.SPELL_ICE_BARRAGE);
-			} else if(ML >= 92) {
-				return autoCast(magic.SPELL_BLOOD_BARRAGE);
-			} else if(ML >= 88) {
-				return autoCast(magic.SPELL_SHADOW_BARRAGE);
-			} else if(ML >= 86) {
-				return autoCast(magic.SPELL_SMOKE_BARRAGE);
-			} else if(ML >= 82) {
-				return autoCast(magic.SPELL_ICE_BLITZ);
-			} else if(ML >= 80) {
-				return autoCast(magic.SPELL_BLOOD_BLITZ);
-			} else if(ML >= 76) {
-				return autoCast(magic.SPELL_SHADOW_BLITZ);
-			} else if(ML >= 74) {
-				return autoCast(magic.SPELL_SMOKE_BLITZ);
-			} else if(ML >= 70) {
-				return autoCast(magic.SPELL_ICE_BURST);
-			} else if(ML >= 68) {
-				return autoCast(magic.SPELL_BLOOD_BURST);
-			} else if(ML >= 64) {
-				return autoCast(magic.SPELL_SHADOW_BURST);
-			} else if(ML >= 62) {
-				return autoCast(magic.SPELL_SMOKE_BURST);
-			} else if(ML >= 58) {
-				return autoCast(magic.SPELL_ICE_RUSH);
-			} else if(ML >= 56) {
-				return autoCast(magic.SPELL_BLOOD_RUSH);
-			} else if(ML >= 52) {
-				return autoCast(magic.SPELL_SHADOW_RUSH);
-			} else if(ML >= 50) {
-				return autoCast(magic.SPELL_SMOKE_RUSH);
-			} else {
-				return false;	// Player does not have requirement to use the ancient spellbook they have? Impossible.
-			}
+		} else if (spellbook == ANCIENT_SPELLBOOK) {
+			if (ML >= 94) {
+				return autoCast(Magic.SPELL_ICE_BARRAGE);
+			} else if (ML >= 92) {
+				return autoCast(Magic.SPELL_BLOOD_BARRAGE);
+			} else if (ML >= 88) {
+				return autoCast(Magic.SPELL_SHADOW_BARRAGE);
+			} else if (ML >= 86) {
+				return autoCast(Magic.SPELL_SMOKE_BARRAGE);
+			} else if (ML >= 82) {
+				return autoCast(Magic.SPELL_ICE_BLITZ);
+			} else if (ML >= 80) {
+				return autoCast(Magic.SPELL_BLOOD_BLITZ);
+			} else if (ML >= 76) {
+				return autoCast(Magic.SPELL_SHADOW_BLITZ);
+			} else if (ML >= 74) {
+				return autoCast(Magic.SPELL_SMOKE_BLITZ);
+			} else if (ML >= 70) {
+				return autoCast(Magic.SPELL_ICE_BURST);
+			} else if (ML >= 68) {
+				return autoCast(Magic.SPELL_BLOOD_BURST);
+			} else if (ML >= 64) {
+				return autoCast(Magic.SPELL_SHADOW_BURST);
+			} else if (ML >= 62) {
+				return autoCast(Magic.SPELL_SMOKE_BURST);
+			} else if (ML >= 58) {
+				return autoCast(Magic.SPELL_ICE_RUSH);
+			} else if (ML >= 56) {
+				return autoCast(Magic.SPELL_BLOOD_RUSH);
+			} else if (ML >= 52) {
+				return autoCast(Magic.SPELL_SHADOW_RUSH);
+			} else return ML >= 50 && autoCast(magic.SPELL_SMOKE_RUSH);
 		} else {
 			dlog("Spellbook error - GET OFF LUNAR!");
 		}
 		return false;
 	}
-	
-	public boolean autoCast(int spell) {
+
+	boolean autoCast(int spell) {
 		try {
 			int i = 0;
 			int thisRound = round;
-			if(spell != 90) {
-				while(!magic.autoCastSpell(spell) && i < 10 && inGame() && round == thisRound){
+			if (spell != 90) {
+				while (!magic.autoCastSpell(spell) && i < 10 && inGame() && round == thisRound) {
 					sleep(200);
 					i++;
 				}
 			} else {
-				while(!magic.autoCastSpell(89) && i < 10 && inGame() && round == thisRound){
+				while (!magic.autoCastSpell(89) && i < 10 && inGame() && round == thisRound) {
 					sleep(200);
 					i++;
 				}
 			}
-			if(i == 10){
+			if (i == 10) {
 				return false;
 			} else {
 				return true;
@@ -5505,13 +5581,13 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			return false;
 		}
 	}
-	
-	public boolean attacking() {
+
+	boolean attacking() {
 		boolean well = false;
 		try {
-			if(getMyPlayer().getInteracting() instanceof RSPlayer && inGame()) {
-				if(!getPlayer().isMoving()) {
-					if(getPlayer().isInCombat()){
+			if (getMyPlayer().getInteracting() instanceof RSPlayer && inGame()) {
+				if (!getPlayer().isMoving()) {
+					if (getPlayer().isInCombat()) {
 						well = true;
 					}
 				} else {
@@ -5523,36 +5599,36 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		return well;
 	}
-	
-	public void attack() {
+
+	void attack() {
 		status = "Attacking...";
 		try {
 			mouse.setSpeed(3);
 			mouse.move(getPlayerScreenLocThrow());
 			mouse.move(getPlayerScreenLocThrow());
-			if(calc.tileOnScreen(getPlayerLocThrow())) {
+			if (calc.tileOnScreen(getPlayerLocThrow())) {
 				mouse.click(false);
 				sleep(350, 500);
 				mouse.setSpeed(10);
-				if(menu.isOpen()) {
-					if(menu.contains("Attack " + playerName())) {
-						if(menu.doAction("Attack " + playerName())) {
+				if (menu.isOpen()) {
+					if (menu.contains("Attack " + playerName())) {
+						if (menu.doAction("Attack " + playerName())) {
 							sleep(random(1700, 2200));
 							mouse.moveSlightly();
 						} else {
-							while(menu.isOpen()) {
+							while (menu.isOpen()) {
 								mouse.moveSlightly();
 							}
 						}
 					} else {
-						while(menu.isOpen()) {
+						while (menu.isOpen()) {
 							mouse.moveSlightly();
 						}
 					}
 				}
 			}
 			mouse.setSpeed(mouseSpeed);
-			if(switchingRole){
+			if (switchingRole) {
 				switchRole();
 			}
 		} catch (NullPointerException ignored) {
@@ -5560,93 +5636,97 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		mouse.setSpeed(mouseSpeed);
 	}
-	
-	public boolean atCenter() {
-		if(calc.distanceTo(centerTile) > 1){
+
+	boolean atCenter() {
+		if (calc.distanceTo(centerTile) > 1) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public boolean opponentAtCenter() throws NullPointerException {
-		if(calc.distanceBetween(getPlayerLocThrow(), centerTile) > 4){
+		if (calc.distanceBetween(getPlayerLocThrow(), centerTile) > 4) {
 			return false;
 		}
 		return true;
 	}
-	
-	public void search() {
+
+	void search() {
 		status = "Searching for Opponent...";
 		antiBanTime = false;
-		RSTile nextTile = new RSTile(searchTilesX[searchTileOn],searchTilesY[searchTileOn]);
+		RSTile nextTile = new RSTile(searchTilesX[searchTileOn], searchTilesY[searchTileOn]);
 		RSTile[] tilePath = walking.findPath(nextTile);
 		walking.walkPathMM(tilePath);
 		sleep(random(200, 700));
-		if(getMyPlayer().isMoving() || searchTileOn == 0){
+		if (getMyPlayer().isMoving() || searchTileOn == 0) {
 			s.reset();
 		}
-		if(!s.isRunning()){
+		if (!s.isRunning()) {
 			dlog("been standing still too long, cancelling search");
 			timerStarted = false;
 			searchTileOn = 0;
 			searching = false;
 			antiBanTime = true;
 		}
-		if(calc.distanceBetween(getMyPlayer().getLocation(), nextTile) < 11.0){
+		if (calc.distanceBetween(getMyPlayer().getLocation(), nextTile) < 11.0) {
 			searchTileOn++;
 		}
-		if(searchTileOn == 8){
+		if (searchTileOn == 8) {
 			timerStarted = false;
 			searchTileOn = 0;
 			searching = false;
 			antiBanTime = true;
 		}
 	}
-	
-	public void useTeleOrb() {
+
+	void useTeleOrb() {
 		status = "Using TeleOrb...";
-		if(inventory.getCount(false, teleorbID) > 0) {
+		if (inventory.getCount(false, teleorbID) > 0) {
 			RSItem tItem = inventory.getItem(teleorbID);
 			boolean clicked = false;
-			while(!clicked && inGame()){
-				if(tItem.doClick(true)){
+			while (!clicked && inGame()) {
+				if (tItem.doClick(true)) {
 					clicked = true;
 					sleep(random(3000, 3500));
 				} else {
-					sleep(random(50,200));
+					sleep(random(50, 200));
 				}
 			}
 		} else {
-			if(dmode) { log("No TeleOrb to use"); }
+			if (dmode) {
+				log("No TeleOrb to use");
+			}
 		}
 	}
-	
-	public void setSearchTiles() {
+
+	void setSearchTiles() {
 		int x = getMyPlayer().getLocation().getX();
 		int y = getMyPlayer().getLocation().getY();
-		if(x >= 1652 && x <= 1675 && y >= 5654 && y <= 5668){
+		if (x >= 1652 && x <= 1675 && y >= 5654 && y <= 5668) {
 			spawnArea = 0;
-		} else if(x >= 1627 && x <= 1646 && y >= 5662 && y <= 5682){
+		} else if (x >= 1627 && x <= 1646 && y >= 5662 && y <= 5682) {
 			spawnArea = 1;
-		} else if(x >= 1620 && x <= 1637 && y >= 5685 && y <= 5710){
+		} else if (x >= 1620 && x <= 1637 && y >= 5685 && y <= 5710) {
 			spawnArea = 2;
-		} else if(x >= 1629 && x <= 1649 && y >= 5713 && y <= 5731){
+		} else if (x >= 1629 && x <= 1649 && y >= 5713 && y <= 5731) {
 			spawnArea = 3;
-		} else if(x >= 1651 && x <= 1675 && y >= 5720 && y <= 5735){
+		} else if (x >= 1651 && x <= 1675 && y >= 5720 && y <= 5735) {
 			spawnArea = 4;
-		} else if(x >= 1677 && x <= 1695 && y >= 5706 && y <= 5723){
+		} else if (x >= 1677 && x <= 1695 && y >= 5706 && y <= 5723) {
 			spawnArea = 5;
-		} else if(x >= 1687 && x <= 1708 && y >= 5686 && y <= 5704){
+		} else if (x >= 1687 && x <= 1708 && y >= 5686 && y <= 5704) {
 			spawnArea = 6;
-		} else if(x >= 1678 && x <= 1706 && y >= 5665 && y <= 5684){
+		} else if (x >= 1678 && x <= 1706 && y >= 5665 && y <= 5684) {
 			spawnArea = 7;
 		}
-		if(dmode){ log("Spawn Area: " + Integer.toString(spawnArea)); }
+		if (dmode) {
+			log("Spawn Area: " + Integer.toString(spawnArea));
+		}
 		// Set search tiles X
 		int i = 0;
 		int origNum = spawnArea;
-		while(i < 8){
-			if(origNum > 7){
+		while (i < 8) {
+			if (origNum > 7) {
 				origNum = 0;
 			}
 			searchTilesX[i] = searchTilesXOrig[origNum];
@@ -5656,78 +5736,84 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		// Set search tiles Y
 		int i2 = 0;
 		int origNum2 = spawnArea;
-		while(i2 < 8){
-			if(origNum2 > 7){
+		while (i2 < 8) {
+			if (origNum2 > 7) {
 				origNum2 = 0;
 			}
 			searchTilesY[i2] = searchTilesYOrig[origNum2];
 			i2++;
 			origNum2++;
 		}
-		if(dmode){ log("Search Tiles Set..."); }
+		if (dmode) {
+			log("Search Tiles Set...");
+		}
 	}
-	
-	public void startup() throws NullPointerException {
-		if(dmode) { 
+
+	void startup() throws NullPointerException {
+		if (dmode) {
 			log("Starting up...");
 			String logLoc = Integer.toString(getMyPlayer().getLocation().getX()) + ", " + Integer.toString(getMyPlayer().getLocation().getY());
 			log("Spawn pos: " + logLoc);
 		}
-		if(round == 1){
-			if(hunted){
+		if (round == 1) {
+			if (hunted) {
 				getStone();
-				if(hunted) {
+				if (hunted) {
 					wieldStone();
-					if(teleorb.equals("hunted")) {
+					if (teleorb.equals("hunted")) {
 						useTeleOrb();
-					} else if(teleorb.equals("random")) {
-						if(tRandom > 500) {
+					} else if (teleorb.equals("random")) {
+						if (tRandom > 500) {
 							useTeleOrb();
 						}
 					}
 				}
 			} else {
 				setSearchTiles();
-				if(FSGame)
+				if (FSGame) {
 					currentStyle = firstStyle;
+				}
 				setupStyleEquipment();
 				setupStyle();
-				if(currentStyle.equals("Magic"))
+				if (currentStyle.equals("Magic")) {
 					setSpell();
-				if(teleorb.equals("hunting")) {
+				}
+				if (teleorb.equals("hunting")) {
 					useTeleOrb();
-				} else if(teleorb.equals("random")) {
-					if(tRandom <= 500) {
+				} else if (teleorb.equals("random")) {
+					if (tRandom <= 500) {
 						useTeleOrb();
 					}
 				}
 			}
 			startedUp = true;
-		} else if(round == 2){
-			if(hunted2){
+		} else if (round == 2) {
+			if (hunted2) {
 				getStone();
-				if(hunted2) {
+				if (hunted2) {
 					wieldStone();
-					if(teleorb.equals("hunted")) {
+					if (teleorb.equals("hunted")) {
 						useTeleOrb();
-					} else if(teleorb.equals("random")) {
-						if(tRandom > 500) {
+					} else if (teleorb.equals("random")) {
+						if (tRandom > 500) {
 							useTeleOrb();
 						}
 					}
 				}
 			} else {
 				setSearchTiles();
-				if(FSGame){ currentStyle = firstStyle; }
+				if (FSGame) {
+					currentStyle = firstStyle;
+				}
 				setupStyleEquipment();
 				setupStyle();
-				if(currentStyle.equals("Magic")){
+				if (currentStyle.equals("Magic")) {
 					setSpell();
 				}
-				if(teleorb.equals("hunting")) {
+				if (teleorb.equals("hunting")) {
 					useTeleOrb();
-				} else if(teleorb.equals("random")) {
-					if(tRandom <= 500) {
+				} else if (teleorb.equals("random")) {
+					if (tRandom <= 500) {
 						useTeleOrb();
 					}
 				}
@@ -5735,8 +5821,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			startedUp2 = true;
 		}
 	}
-	
-	public boolean playerGoneThroughPortal() {
+
+	boolean playerGoneThroughPortal() {
 		boolean found = false;
 		final int x = lastKnownLoc.getX();
 		final int y = lastKnownLoc.getY();
@@ -5744,118 +5830,133 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		final RSArea neHouse = new RSArea(1665, 5702, 1669, 5706);
 		final RSArea seHouse = new RSArea(1674, 5686, 1678, 5690);
 		final RSArea swHouse = new RSArea(1654, 5681, 1658, 5685);
-		
-		if(	nwHouse.contains(x, y) ||
-			neHouse.contains(x, y) ||
-			seHouse.contains(x, y) ||
-			swHouse.contains(x, y) ) {
-				found = true;
+
+		if (nwHouse.contains(x, y) ||
+				neHouse.contains(x, y) ||
+				seHouse.contains(x, y) ||
+				swHouse.contains(x, y)) {
+			found = true;
 		}
 		return found;
 	}
-	
-	public int getItemIDT(String name) {
+
+	int getItemIDT(String name) {
 		RSItem[] items = inventory.getItems();
 		int slot = -1;
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].getName().contains(name)) {
-				slot = items[i].getID();
+		for (RSItem item : items) {
+			if (item.getName().contains(name)) {
+				slot = item.getID();
 			}
 		}
 		return slot;
 	}
-	
-	public void bankUBIs() {
+
+	void bankUBIs() {
 		status = "Banking Disallowed Items";
-		if(dmode){ log("Disallowed item in inventory, banking..."); }
+		if (dmode) {
+			log("Disallowed item in inventory, banking...");
+		}
 		int itemIndex = UBIString.indexOf("arena:") + 7;
 		String itemString = UBIString.substring(itemIndex);
-		if(dmode){ log("item name string: \"" + itemString + "\""); }
+		if (dmode) {
+			log("item name string: \"" + itemString + "\"");
+		}
 		int itemID = getItemIDT(itemString);
-		if(dmode){ log("ID is " + itemID); }
+		if (dmode) {
+			log("ID is " + itemID);
+		}
 		RSTile bankerCloseTile = new RSTile(1704, 5599);
 		RSTile[] bankerCloseTilePath = walking.findPath(bankerCloseTile);
-		while(calc.distanceTo(bankerCloseTile) > 3){
-			if(dmode){ log("Walking to tile close to banker"); }
+		while (calc.distanceTo(bankerCloseTile) > 3) {
+			if (dmode) {
+				log("Walking to tile close to banker");
+			}
 			walking.walkPathMM(bankerCloseTilePath);
-			sleep(random(1000,2000));
+			sleep(random(1000, 2000));
 		}
 		RSNPC banker = npcs.getNearest(7605);
-		while(!banker.isOnScreen() || banker.isMoving()){
-			if(dmode){ log("Walking to banker location"); }
+		while (!banker.isOnScreen() || banker.isMoving()) {
+			if (dmode) {
+				log("Walking to banker location");
+			}
 			RSTile bankerTile = banker.getLocation();
 			walking.walkPathMM(walking.findPath(bankerTile));
 			sleep(random(500, 1500));
 		}
-		while(!bank.isOpen()){
-			if(dmode){ log("clicking on banker..."); }
+		while (!bank.isOpen()) {
+			if (dmode) {
+				log("clicking on banker...");
+			}
 			banker.doAction("Bank Banker");
 			sleep(1500);
 		}
-		while(inventory.getCount(itemID) != 0){
+		while (inventory.getCount(itemID) != 0) {
 			try {
 				bank.deposit(itemID, 0);
 				sleep(500);
-				if(inventory.getCount(itemID) > 0){
-					sleep(random(800,1100));
+				if (inventory.getCount(itemID) > 0) {
+					sleep(random(800, 1100));
 				}
 			} catch (NullPointerException ignored) {
-				if(dmode){ log("bad item null exception..."); }
+				if (dmode) {
+					log("bad item null exception...");
+				}
 			}
 		}
-		if(bank.isOpen()){
-			if(random(1,2) == 2){
+		if (bank.isOpen()) {
+			if (random(1, 2) == 2) {
 				bank.close();
 			}
 		}
 		bankingUBIs = false;
 	}
-	
-	public void bankTokensM() {
+
+	void bankTokensM() {
 		status = "Banking Tokens";
 		int tokensToBank = inventory.getCount(true, tokenID);
-		while(inventory.getCount(true, tokenID) > 0){
+		while (inventory.getCount(true, tokenID) > 0) {
 			RSNPC banker = npcs.getNearest(7605);
-			while(!banker.isOnScreen() || banker.isMoving()){
+			while (!banker.isOnScreen() || banker.isMoving()) {
 				RSTile bankerTile = banker.getLocation();
 				walking.walkPathMM(walking.findPath(bankerTile));
 				sleep(random(500, 1500));
 			}
-			while(!bank.isOpen()){
+			while (!bank.isOpen()) {
 				banker.doAction("Bank Banker");
 				sleep(1500);
 			}
-			while(inventory.getCount(true, tokenID) > 0){
+			while (inventory.getCount(true, tokenID) > 0) {
 				try {
 					bank.deposit(tokenID, 0);
 					sleep(500);
-					if(inventory.getCount(true, tokenID) > 0){
-						sleep(random(800,1100));
+					if (inventory.getCount(true, tokenID) > 0) {
+						sleep(random(800, 1100));
 					}
-				} catch (NullPointerException ignored) {}
+				} catch (NullPointerException ignored) {
+				}
 			}
 			bankedTokens += tokensToBank;
-			if(bank.isOpen()){
-				if(random(100, 200) > 100){
+			if (bank.isOpen()) {
+				if (random(100, 200) > 100) {
 					bank.close();
 				}
 			}
 		}
 	}
-	
+
 	public int loop() {
 		try {
-			if(!initialised){
+			if (!initialised) {
 				initialiseImages();
 				int i = 0;
-				if(loginWait) {
+				if (loginWait) {
 					status = "Waiting for Login...";
 					sleep(4000, 5000);
 				}
 				loginWait = false;
 				initialise();
 			}
-			if(dieScript){
+			if (dieScript) {
 				log("Stopping Script...");
 				stopScript();
 			} else {
@@ -5867,44 +5968,49 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						keyboard.releaseKey(keyUp);
 					}
 				}
-				if(game.getCurrentTab() != game.TAB_INVENTORY){
-					game.openTab(game.TAB_INVENTORY);
+				if (game.getCurrentTab() != Game.TAB_INVENTORY) {
+					game.openTab(Game.TAB_INVENTORY);
 					mouse.moveSlightly();
 				}
-				if(switchingRole){ switchRole(); }
-				if(walking.getEnergy() > random(35, 50)){
+				if (switchingRole) {
+					switchRole();
+				}
+				if (walking.getEnergy() > random(35, 50)) {
 					walking.setRun(true);
 					sleep(1000);
 				}
-				if(walking.getEnergy() < 1){
+				if (walking.getEnergy() < 1) {
 					walking.setRun(false);
 					sleep(1000);
 				}
-				if(useAntiBan){
-					if(antiBanTime){
+				if (useAntiBan) {
+					if (antiBanTime) {
 						antiBan();
 					}
 				}
-				try{
+				try {
 					currentTokens = inventory.getCount(true, tokenID);
-				} catch (NullPointerException ignored) {}
-				
-				
-				if(inLobby()){
+				} catch (NullPointerException ignored) {
+				}
+
+
+				if (inLobby()) {
 					overallStatus = "In Lobby";
 					canDrawInfo = false;
 					canDrawTheirTile = false;
 					antiBanTime = true;
 					walkedOnce = false;
-					if(justStarted){
+					if (justStarted) {
 						int tries = 0;
-						if(randomGameSwitch){
-							if(!nextRandomSwitchSet) {
+						if (randomGameSwitch) {
+							if (!nextRandomSwitchSet) {
 								int properRandomHigh = random(1000, 5000);
 								int aThousand = 1000;
 								double smaller = (double) properRandomHigh / (double) aThousand;
 								int properRandom = (int) Math.round(smaller);
-								if(dmode){ log("Next style switch: " + properRandom); }
+								if (dmode) {
+									log("Next style switch: " + properRandom);
+								}
 								nextRandomSwitch = properRandom;
 								nextRandomSwitchSet = true;
 							}
@@ -5912,37 +6018,41 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						sleep(250);
 						try {
 							startRating = Integer.parseInt(interfaces.get(731).getComponent(7).getText().substring(
-																interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
+									interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
 							currentRating = Integer.parseInt(interfaces.get(731).getComponent(7).getText().substring(
-																interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
+									interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
 						} catch (StringIndexOutOfBoundsException e) {
-							if(dmode) {
+							if (dmode) {
 								e.printStackTrace();
 							}
 						} catch (NumberFormatException e) {
-							if(dmode) {
+							if (dmode) {
 								e.printStackTrace();
 							}
 						}
 						gainedRating = 0;
 						justStarted = false;
 					}
-					if(justPlayed){
-						if(dmode){ log("In Lobby"); }
-						if(everyGameSwitch){
+					if (justPlayed) {
+						if (dmode) {
+							log("In Lobby");
+						}
+						if (everyGameSwitch) {
 							setRandomStyle();
-						} else if(randomGameSwitch){
-							if(nextRandomSwitch == gamesPlayed){
+						} else if (randomGameSwitch) {
+							if (nextRandomSwitch == gamesPlayed) {
 								setRandomStyle();
 								mouse.moveSlightly();
 								nextRandomSwitchSet = false;
 							}
-							if(!nextRandomSwitchSet) {
+							if (!nextRandomSwitchSet) {
 								int properRandomHigh = random(1000, 5000);
 								int aThousand = 1000;
 								double smaller = (double) properRandomHigh / (double) aThousand;
 								int properRandom = (int) Math.round(smaller);
-								if(dmode){ log("Next style switch: " + properRandom); }
+								if (dmode) {
+									log("Next style switch: " + properRandom);
+								}
 								nextRandomSwitch = gamesPlayed + properRandom;
 								nextRandomSwitchSet = true;
 							}
@@ -5951,103 +6061,104 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						justPlayed = false;
 						gotRatingInfo = false;
 					}
-					if(!gotRatingInfo) {
+					if (!gotRatingInfo) {
 						try {
 							currentRating = Integer.parseInt(interfaces.get(731).getComponent(7).getText().substring(
-															interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
+									interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
 							gainedRating = currentRating - startRating;
 							gotRatingInfo = true;
 							dlog("Got Rating Stats");
 						} catch (StringIndexOutOfBoundsException e) {
-							if(dmode) {
+							if (dmode) {
 								e.printStackTrace();
 							}
 						} catch (NumberFormatException e) {
-							if(dmode) {
+							if (dmode) {
 								e.printStackTrace();
 							}
 						}
 					}
-					if(bankTokens) {
-						if(inventory.getCount(true, tokenID) > tokensBeforeBank){
+					if (bankTokens) {
+						if (inventory.getCount(true, tokenID) > tokensBeforeBank) {
 							bankTokensM();
 							mouse.moveSlightly();
 						}
 					}
-					while(inventory.getCount(NAIDs) > 0){
+					while (inventory.getCount(NAIDs) > 0) {
 						status = "Banking Disallowed Items";
 						RSNPC banker = npcs.getNearest(7605);
-						while(!banker.isOnScreen() || banker.isMoving()){
+						while (!banker.isOnScreen() || banker.isMoving()) {
 							RSTile bankerTile = banker.getLocation();
 							walking.walkPathMM(walking.findPath(bankerTile));
 							sleep(random(500, 1500));
 						}
-						while(!bank.isOpen()){
+						while (!bank.isOpen()) {
 							banker.doAction("Bank Banker");
 							mouse.moveSlightly();
 							sleep(1500);
 						}
-						for(int i = 0; i < NAIDs.length; i++){
-							while(inventory.getCount(NAIDs[i]) > 0){
+						for (int NAID : NAIDs) {
+							while (inventory.getCount(NAID) > 0) {
 								try {
-									bank.deposit(NAIDs[i], 0);
+									bank.deposit(NAID, 0);
 									mouse.moveSlightly();
 									sleep(500);
-									if(inventory.getCount(NAIDs[i]) > 0){
-										sleep(random(800,1100));
+									if (inventory.getCount(NAID) > 0) {
+										sleep(random(800, 1100));
 									}
-								} catch (NullPointerException ignored) {}
+								} catch (NullPointerException ignored) {
+								}
 							}
 						}
-						if(bank.isOpen()){
-							if(random(1000,2000) > 1000){
+						if (bank.isOpen()) {
+							if (random(1000, 2000) > 1000) {
 								bank.close();
 							}
 						}
 					}
-					if(!calc.tileOnScreen(entrance)){
+					if (!calc.tileOnScreen(entrance)) {
 						status = "Walking to Waiting Room...";
-						if(!dieScript){
+						if (!dieScript) {
 							walking.walkPathMM(walking.findPath(entranceBefore));
 							mouse.moveSlightly();
-							sleep(random(600,1000));
+							sleep(random(600, 1000));
 						}
 					} else {
-						if(bank.isOpen()){
+						if (bank.isOpen()) {
 							bank.close();
 						}
-						if(!getMyPlayer().isMoving()) {
+						if (!getMyPlayer().isMoving()) {
 							status = "Going into Waiting Room...";
 							mouse.setSpeed(3);
 							RSObject entranceObject = objects.getNearest(30224);
 							mouse.move(calc.tileToScreen(entrance, 1));
 							int timesTried = 0;
-							while(!entranceObject.doAction("Go-through") && timesTried < 10 && inLobby()) {
+							while (!entranceObject.doAction("Go-through") && timesTried < 10 && inLobby()) {
 								sleep(400);
 								timesTried++;
 							}
 							mouse.setSpeed(mouseSpeed);
 							mouse.moveSlightly();
 							int millisWaiting = 0;
-							while(inLobby() && !bankingUBIs){
+							while (inLobby() && !bankingUBIs) {
 								sleep(10);
 								millisWaiting += 10;
-								if(millisWaiting > 1000){
+								if (millisWaiting > 1000) {
 									turnCamera();
 									break;
 								}
 							}
 						}
-						if(bankingUBIs){
+						if (bankingUBIs) {
 							bankUBIs();
 							mouse.moveSlightly();
 						}
 					}
 				}
-				
-				
-				if(inWaitingRoom()){
-					if(!walkedOnce){
+
+
+				if (inWaitingRoom()) {
+					if (!walkedOnce) {
 						prevHd = -1;
 						prevHg = -1;
 						canDrawInfo = false;
@@ -6081,72 +6192,82 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						overallStatus = "In Waiting Room";
 						status = "Waiting...";
 						sleep(random(825, 1225));
-						walking.walkTileOnScreen(new RSTile(random(1650,1652),random(5598,5604)));
+						walking.walkTileOnScreen(new RSTile(random(1650, 1652), random(5598, 5604)));
 						sleep(500);
 					}
 				}
-				
+
 				// THE GAME
 				// YOU JUST LOST THE GAME
 				// =P			123456789
-				
-				if(inGame()){
+
+				if (inGame()) {
 					justPlayed = true;
-					if(round == 1){
-						if(!setVarsRound1){
+					if (round == 1) {
+						if (!setVarsRound1) {
 							goTimer.reset();
 							prevHg = interfaces.get(730).getComponent(26).getBoundsArrayIndex();
 							prevHd = interfaces.get(730).getComponent(27).getBoundsArrayIndex();
 							setVarsRound1 = true;
 						}
-						if(!gone){
+						if (!gone) {
 							overallStatus = "In Game";
 							status = "Waiting for 'Go!'";
 							antiBanTime = true;
 							canDrawInfo = false;
 							canDrawTheirTile = false;
-							if(!goReceived && !overrideGoReceived){
-								if(!goTimer.isRunning()){
+							if (!goReceived && !overrideGoReceived) {
+								if (!goTimer.isRunning()) {
 									overrideGoReceived = true;
 								}
 							}
-							if(goReceived || overrideGoReceived){
-								if(overrideGoReceived){
-									if(dmode) { log("goReceived overriden, going..."); }
+							if (goReceived || overrideGoReceived) {
+								if (overrideGoReceived) {
+									if (dmode) {
+										log("goReceived overriden, going...");
+									}
 								} else {
-									if(dmode) { log("goReceived true, going..."); }
+									if (dmode) {
+										log("goReceived true, going...");
+									}
 								}
 								gone = true;
 								goReceived = false;
 								overrideGoReceived = false;
 							}
 						}
-						if(gone) {
-							if(!startedUp){
+						if (gone) {
+							if (!startedUp) {
 								prevHg = interfaces.get(730).getComponent(26).getBoundsArrayIndex();
 								prevHd = interfaces.get(730).getComponent(27).getBoundsArrayIndex();
-								if(prevHg != -1){
+								if (prevHg != -1) {
 									hunted = false;
 									roundOneHunted = false;
 									overallStatus = "Round 1, Hunting";
-									if(dmode){ log("Hunting, Round 1"); }
+									if (dmode) {
+										log("Hunting, Round 1");
+									}
 								} else {
 									hunted = true;
 									roundOneHunted = true;
 									overallStatus = "Round 1, Being Hunted";
-									if(dmode){ log("Being Hunted, Round 1"); }
+									if (dmode) {
+										log("Being Hunted, Round 1");
+									}
 								}
 								canGoFailed = 0;
 								overrideGoReceived = false;
-								if(dmode) { log("Round 1 Starting Up..."); }
+								if (dmode) {
+									log("Round 1 Starting Up...");
+								}
 								antiBanTime = false;
-								if(hitSwitch && !hunted) {
+								if (hitSwitch && !hunted) {
 									setNextHitSwitch();
 								}
 								startup();
 							}
-							if(hunted){
-								if(!atCenter()){
+							if (hunted) {
+								if (!atCenter()) {
 									status = "Running to Center";
 									antiBanTime = false;
 									RSTile[] tilePath = walking.findPath(centerTile);
@@ -6156,15 +6277,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 									status = "At Center";
 									antiBanTime = true;
 								}
-								if(playerLocKnown()){
+								if (playerLocKnown()) {
 									canDrawInfo = true;
 									canDrawTheirTile = true;
-									if(getMyPlayer().isInCombat()){
+									if (getMyPlayer().isInCombat()) {
 										setPrayer();
-										if(playerLocKnown()) setDefenceStyle();
+										if (playerLocKnown()) {
+											setDefenceStyle();
+										}
 										setSkinPrayer();
-										if(useQuickPrayers){
-											if(quickPrayersLong.equals("When Being Hunted")) {
+										if (useQuickPrayers) {
+											if (quickPrayersLong.equals("When Being Hunted")) {
 												setQuickPrayers(true);
 											}
 										}
@@ -6175,19 +6298,21 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 									canDrawInfo = false;
 									canDrawTheirTile = false;
 								}
-								if(getMyPlayer().getHPPercent() < 50){
-									if(useBandages) {
-										if(inventory.getCount(false, bandagesID) > 0){
+								if (getMyPlayer().getHPPercent() < 50) {
+									if (useBandages) {
+										if (inventory.getCount(false, bandagesID) > 0) {
 											status = "Using Bandages...";
 											dlog("Using Bandages...");
 											doActionExtreme(bandagesID, "Heal");
 										}
 									}
 								}
-								if(getMyPlayer().getHPPercent() < 1){
+								if (getMyPlayer().getHPPercent() < 1) {
 									status = "Dying...";
 									antiBanTime = false;
-									if(dmode) { log("Died"); }
+									if (dmode) {
+										log("Died");
+									}
 									stoneHovered = false;
 									lastPrayerSet = 0;
 									lastAttackPrayerSet = 0;
@@ -6198,25 +6323,25 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 									timerToUse = 1;
 									canDrawTheirTile = false;
 									meleeTimerStarted = false;
-									while(playerLocKnown()){
+									while (playerLocKnown()) {
 										timerStarted = false;
 										sleep(1);
 									}
 								}
 							} else {
-								if(playerLocKnown()) {
+								if (playerLocKnown()) {
 									canDrawInfo = true;
 									canDrawTheirTile = true;
 									timerStarted = false;
 									searchTileOn = 0;
 									searching = false;
-									if(calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3 && !attacking()) {
+									if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3 && !attacking()) {
 										status = "Running to Opponent...";
 										antiBanTime = false;
 										walking.walkPathMM(walking.findPath(getPlayerLoc()));
-										if(currentStyle.equals("Magic") || currentStyle.equals("Range")) {
+										if (currentStyle.equals("Magic") || currentStyle.equals("Range")) {
 											try {
-												if(calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLocThrow()) < 15.0) {
+												if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLocThrow()) < 15.0) {
 													char keyDown = KeyEvent.VK_DOWN;
 													keyboard.pressKey(keyDown);
 													camera.turnToCharacter(getPlayerThrow());
@@ -6226,39 +6351,40 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 														sleep(1);
 													}
 													keyboard.releaseKey(keyDown);
-													if(calc.tileOnScreen(getPlayerLocThrow())) {
+													if (calc.tileOnScreen(getPlayerLocThrow())) {
 														attack();
 													}
 												}
-											} catch (NullPointerException ignored) {}
+											} catch (NullPointerException ignored) {
+											}
 										}
 										int sleepTime = 0;
-										while(	playerLocKnown() && 
+										while (playerLocKnown() &&
 												calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3 &&
-																							 sleepTime < random(300, 400)) {
+												sleepTime < random(300, 400)) {
 											sleep(1);
 											sleepTime++;
 										}
 									}
-									if(playerLocKnown() && (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) <= 4.3 || attacking())) {
-										if(getPlayer().getHPPercent() > 0){
-											if(!attacking()){
+									if (playerLocKnown() && (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) <= 4.3 || attacking())) {
+										if (getPlayer().getHPPercent() > 0) {
+											if (!attacking()) {
 												antiBanTime = false;
 												attack();
 											} else {
-												if(currentStyle.equals("Melee")){	// MELEE GLITCH BUG FIX 12345
-													if(calc.distanceTo(getPlayerLoc()) > 1 && !getMyPlayer().isMoving() && !getPlayer().isMoving()){
-														if(meleeSafeSpotSwitch) {
+												if (currentStyle.equals("Melee")) {	// MELEE GLITCH BUG FIX 12345
+													if (calc.distanceTo(getPlayerLoc()) > 1 && !getMyPlayer().isMoving() && !getPlayer().isMoving()) {
+														if (meleeSafeSpotSwitch) {
 															setRandomStyle();
-															if(currentStyle.equals("Magic")){
+															if (currentStyle.equals("Magic")) {
 																setSpell();
 															}
 														} else {
-															if(!meleeTimerStarted) {
+															if (!meleeTimerStarted) {
 																meleeTimer.reset();
 																meleeTimerStarted = true;
 															} else {
-																if(!meleeTimer.isRunning()){
+																if (!meleeTimer.isRunning()) {
 																	attack();
 																}
 																meleeTimerStarted = false;
@@ -6271,22 +6397,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 													meleeTimerStarted = false;
 												}
 												setAttackPrayer();
-												if(useQuickPrayers){
-													if(quickPrayersLong.equals("When Hunting")) {
+												if (useQuickPrayers) {
+													if (quickPrayersLong.equals("When Hunting")) {
 														setQuickPrayers(true);
 													}
 												}
-												if(currentStyle.equals("Magic")){
-													if(!maging()){
+												if (currentStyle.equals("Magic")) {
+													if (!maging()) {
 														setSpell();
 													}
 												}
-												if(hitSwitch) {
-													if(hits >= nextHitSwitch) {
+												if (hitSwitch) {
+													if (hits >= nextHitSwitch) {
 														hits = 0;
 														setNextHitSwitch();
 														setRandomStyle();
-														if(currentStyle.equals("Magic")){
+														if (currentStyle.equals("Magic")) {
 															setSpell();
 														}
 													}
@@ -6296,9 +6422,11 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 											}
 										} else {
 											status = "Opponent Killed";
-											if(dmode) { log("Opponent Killed"); }
+											if (dmode) {
+												log("Opponent Killed");
+											}
 											round = 2;
-											while(playerLocKnown()){
+											while (playerLocKnown()) {
 												lastKnownHealth = 100;
 												antiBanTime = false;
 												timerStarted = false;
@@ -6319,12 +6447,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 									canDrawInfo = false;
 									canDrawTheirTile = false;
 									setQuickPrayers(false);
-									if(playerGoneThroughPortal()){
+									if (playerGoneThroughPortal()) {
 										timerToUse = 2;
 									} else {
 										timerToUse = 1;
 									}
-									if(!atCenter() && !searching){
+									if (!atCenter() && !searching) {
 										status = "Running to Center";
 										antiBanTime = false;
 										RSTile[] tilePath = walking.findPath(centerTile);
@@ -6333,25 +6461,29 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 										timerStarted = false;
 									} else {
 										status = "Waiting at Center";
-										if(search) {
-											if(!searching){
-												if(!timerStarted){
-													if(timerToUse == 1){
+										if (search) {
+											if (!searching) {
+												if (!timerStarted) {
+													if (timerToUse == 1) {
 														t.reset();
 													} else {
 														t2.reset();
 													}
 													timerStarted = true;
 												}
-												if(timerToUse == 1){
-													if(!t.isRunning()){
-														if(dmode){ log("Searching for player..."); }
+												if (timerToUse == 1) {
+													if (!t.isRunning()) {
+														if (dmode) {
+															log("Searching for player...");
+														}
 														searching = true;
 														timerStarted = false;
 													}
 												} else {
-													if(!t2.isRunning()){
-														if(dmode){ log("Searching for player..."); }
+													if (!t2.isRunning()) {
+														if (dmode) {
+															log("Searching for player...");
+														}
 														searching = true;
 														timerStarted = false;
 													}
@@ -6366,55 +6498,65 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 								setupStyleEquipment();
 							}
 						}
-					} else if(round == 2){
-						if(!setVarsRound2){
+					} else if (round == 2) {
+						if (!setVarsRound2) {
 							goTimer.reset();
 							setVarsRound2 = true;
 						}
-						if(!gone2){
+						if (!gone2) {
 							overallStatus = "In Game";
 							status = "Waiting for 'Go!'";
 							canDrawInfo = false;
 							canDrawTheirTile = false;
-							antiBanTime = true; 
-							if(!goReceived && !overrideGoReceived) {
-								if(!goTimer.isRunning()){
+							antiBanTime = true;
+							if (!goReceived && !overrideGoReceived) {
+								if (!goTimer.isRunning()) {
 									overrideGoReceived = true;
 								}
 							}
-							if(goReceived || overrideGoReceived){
-								if(overrideGoReceived){
-									if(dmode) { log("goReceived overriden, going"); }
+							if (goReceived || overrideGoReceived) {
+								if (overrideGoReceived) {
+									if (dmode) {
+										log("goReceived overriden, going");
+									}
 								} else {
-									if(dmode) { log("goReceived is true, going"); }
+									if (dmode) {
+										log("goReceived is true, going");
+									}
 								}
 								gone2 = true;
 								goReceived = false;
 								overrideGoReceived = false;
 							}
 						}
-						if(gone2) {
-							if(!startedUp2){
-								if(roundOneHunted){
+						if (gone2) {
+							if (!startedUp2) {
+								if (roundOneHunted) {
 									hunted2 = false;
 									overallStatus = "Round 2, Hunting";
-									if(dmode){ log("Hunting, Round 2"); }
+									if (dmode) {
+										log("Hunting, Round 2");
+									}
 								} else {
 									hunted2 = true;
 									overallStatus = "Round 2, Being Hunted";
-									if(dmode){ log("Being Hunted, Round 2"); }
+									if (dmode) {
+										log("Being Hunted, Round 2");
+									}
 								}
 								canGoFailed = 0;
 								overrideGoReceived = false;
-								if(dmode) { log("Round 2 Starting Up..."); }
+								if (dmode) {
+									log("Round 2 Starting Up...");
+								}
 								antiBanTime = false;
-								if(hitSwitch && !hunted2) {
+								if (hitSwitch && !hunted2) {
 									setNextHitSwitch();
 								}
 								startup();
 							}
-							if(hunted2){
-								if(!atCenter()){
+							if (hunted2) {
+								if (!atCenter()) {
 									status = "Running to Center...";
 									antiBanTime = false;
 									RSTile[] tilePath = walking.findPath(centerTile);
@@ -6424,15 +6566,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 									status = "At Center";
 									antiBanTime = true;
 								}
-								if(playerLocKnown()){
+								if (playerLocKnown()) {
 									canDrawInfo = true;
 									canDrawTheirTile = true;
-									if(getMyPlayer().isInCombat()){
+									if (getMyPlayer().isInCombat()) {
 										setPrayer();
-										if(playerLocKnown()) setDefenceStyle();
+										if (playerLocKnown()) {
+											setDefenceStyle();
+										}
 										setSkinPrayer();
-										if(useQuickPrayers){
-											if(quickPrayersLong.equals("When Being Hunted")) {
+										if (useQuickPrayers) {
+											if (quickPrayersLong.equals("When Being Hunted")) {
 												setQuickPrayers(true);
 											}
 										}
@@ -6443,36 +6587,38 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 									canDrawInfo = false;
 									canDrawTheirTile = false;
 								}
-								if(getMyPlayer().getHPPercent() < 50){
-									if(useBandages) {
-										if(inventory.getCount(false, bandagesID) > 0){
+								if (getMyPlayer().getHPPercent() < 50) {
+									if (useBandages) {
+										if (inventory.getCount(false, bandagesID) > 0) {
 											status = "Using Bandages...";
 											dlog("Using Bandages...");
 											doActionExtreme(bandagesID, "Heal");
 										}
 									}
 								}
-								if(getMyPlayer().getHPPercent() < 1){
+								if (getMyPlayer().getHPPercent() < 1) {
 									status = "Dying...";
-									if(dmode) { log("Died"); }
+									if (dmode) {
+										log("Died");
+									}
 									canDrawTheirTile = false;
 									justPlayed = true;
 									sleep(3500);
 								}
 							} else {
-								if(playerLocKnown()) {
+								if (playerLocKnown()) {
 									canDrawInfo = true;
 									canDrawTheirTile = true;
 									timerStarted = false;
 									searchTileOn = 0;
 									searching = false;
-									if(calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3 && !attacking()) {
+									if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3 && !attacking()) {
 										status = "Running to Opponent";
 										antiBanTime = false;
 										walking.walkPathMM(walking.findPath(getPlayerLoc()));
-										if(currentStyle.equals("Magic") || currentStyle.equals("Range")) {
+										if (currentStyle.equals("Magic") || currentStyle.equals("Range")) {
 											try {
-												if(calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLocThrow()) < 15.0) {
+												if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLocThrow()) < 15.0) {
 													char keyDown = KeyEvent.VK_DOWN;
 													keyboard.pressKey(keyDown);
 													camera.turnToCharacter(getPlayerThrow());
@@ -6482,39 +6628,40 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 														sleep(1);
 													}
 													keyboard.releaseKey(keyDown);
-													if(calc.tileOnScreen(getPlayerLocThrow())) {
+													if (calc.tileOnScreen(getPlayerLocThrow())) {
 														attack();
 													}
 												}
-											} catch (NullPointerException ignored) {}
+											} catch (NullPointerException ignored) {
+											}
 										}
 										int sleepTime = 0;
-										while(	playerLocKnown() && 
+										while (playerLocKnown() &&
 												calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3 &&
-																							 sleepTime < random(300, 400)) {
+												sleepTime < random(300, 400)) {
 											sleep(1);
 											sleepTime++;
 										}
 									}
-									if(playerLocKnown() && (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) <= 4.3 || attacking())) {
-										if(getPlayer().getHPPercent() > 0){
-											if(!attacking()){
+									if (playerLocKnown() && (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) <= 4.3 || attacking())) {
+										if (getPlayer().getHPPercent() > 0) {
+											if (!attacking()) {
 												antiBanTime = false;
 												attack();
 											} else {
-												if(currentStyle.equals("Melee")){	// MELEE GLITCH BUG FIX 12345
-													if(calc.distanceTo(getPlayerLoc()) > 1 && !getMyPlayer().isMoving() && !getPlayer().isMoving()){
-														if(meleeSafeSpotSwitch) {
+												if (currentStyle.equals("Melee")) {	// MELEE GLITCH BUG FIX 12345
+													if (calc.distanceTo(getPlayerLoc()) > 1 && !getMyPlayer().isMoving() && !getPlayer().isMoving()) {
+														if (meleeSafeSpotSwitch) {
 															setRandomStyle();
-															if(currentStyle.equals("Magic")){
+															if (currentStyle.equals("Magic")) {
 																setSpell();
 															}
 														} else {
-															if(!meleeTimerStarted) {
+															if (!meleeTimerStarted) {
 																meleeTimer.reset();
 																meleeTimerStarted = true;
 															} else {
-																if(!meleeTimer.isRunning()){
+																if (!meleeTimer.isRunning()) {
 																	attack();
 																}
 																meleeTimerStarted = false;
@@ -6527,22 +6674,22 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 													meleeTimerStarted = false;
 												}
 												setAttackPrayer();
-												if(useQuickPrayers){
-													if(quickPrayersLong.equals("When Hunting")) {
+												if (useQuickPrayers) {
+													if (quickPrayersLong.equals("When Hunting")) {
 														setQuickPrayers(true);
 													}
 												}
-												if(currentStyle.equals("Magic")){
-													if(!maging()){
+												if (currentStyle.equals("Magic")) {
+													if (!maging()) {
 														setSpell();
 													}
 												}
-												if(hitSwitch) {
-													if(hits >= nextHitSwitch) {
+												if (hitSwitch) {
+													if (hits >= nextHitSwitch) {
 														hits = 0;
 														setNextHitSwitch();
 														setRandomStyle();
-														if(currentStyle.equals("Magic")){
+														if (currentStyle.equals("Magic")) {
 															setSpell();
 														}
 													}
@@ -6552,7 +6699,9 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 											}
 										} else {
 											status = "Opponent Killed";
-											if(dmode) { log("Opponent Killed"); }
+											if (dmode) {
+												log("Opponent Killed");
+											}
 											justPlayed = true;
 											sleep(3500);
 										}
@@ -6561,12 +6710,12 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 									canDrawInfo = false;
 									canDrawTheirTile = false;
 									setQuickPrayers(false);
-									if(playerGoneThroughPortal()){
+									if (playerGoneThroughPortal()) {
 										timerToUse = 2;
 									} else {
 										timerToUse = 1;
 									}
-									if(!atCenter() && !searching){
+									if (!atCenter() && !searching) {
 										status = "Running to Center...";
 										antiBanTime = false;
 										RSTile[] tilePath = walking.findPath(centerTile);
@@ -6575,25 +6724,29 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 										timerStarted = false;
 									} else {
 										status = "Waiting at Center";
-										if(search) {
-											if(!searching){
-												if(!timerStarted){
-													if(timerToUse == 1){
+										if (search) {
+											if (!searching) {
+												if (!timerStarted) {
+													if (timerToUse == 1) {
 														t.reset();
 													} else {
 														t2.reset();
 													}
 													timerStarted = true;
 												}
-												if(timerToUse == 1){
-													if(!t.isRunning()){
-														if(dmode){ log("Searching for player..."); }
+												if (timerToUse == 1) {
+													if (!t.isRunning()) {
+														if (dmode) {
+															log("Searching for player...");
+														}
 														searching = true;
 														timerStarted = false;
 													}
 												} else {
-													if(!t2.isRunning()){
-														if(dmode){ log("Searching for player..."); }
+													if (!t2.isRunning()) {
+														if (dmode) {
+															log("Searching for player...");
+														}
 														searching = true;
 														timerStarted = false;
 													}
@@ -6609,75 +6762,76 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							}
 						}
 					}
-				}	
+				}
 			}
 		} catch (NullPointerException e) {
 			dlog("MAIN LOOP NULLPOINTER");
-			if(dmode)
+			if (dmode) {
 				e.printStackTrace();
-		}	
+			}
+		}
 		return 0;
 	}
-	
-	public double round2(double value) {
+
+	double round2(double value) {
 		double result = value * 100;
-		int resultint = (int)result;
-		double resultintdub = (double)resultint;
+		int resultint = (int) result;
+		double resultintdub = (double) resultint;
 		double finalresult = resultintdub / 100;
 		return finalresult;
 	}
-	
-	public double getRatio() {
+
+	double getRatio() {
 		double ratio = 666;
-		double gamesWonDouble = (double)gamesWon;
-		double gamesLostDouble = (double)gamesLost;
-		if(gamesWon != 0 && gamesLost != 0){
+		double gamesWonDouble = (double) gamesWon;
+		double gamesLostDouble = (double) gamesLost;
+		if (gamesWon != 0 && gamesLost != 0) {
 			ratio = round2(gamesWonDouble / gamesLostDouble);
 		} else {
-			if(gamesLost == 0 && gamesWon != 0){
+			if (gamesLost == 0 && gamesWon != 0) {
 				ratio = gamesWonDouble;
-			} else if(gamesLost != 0 && gamesWon == 0){
+			} else if (gamesLost != 0 && gamesWon == 0) {
 				ratio = 0;
-			} else if(gamesLost == 0 && gamesWon == 0){
+			} else if (gamesLost == 0 && gamesWon == 0) {
 				ratio = 0;
 			}
 		}
 		return ratio;
 	}
-	
-	public double getRatio2() {
+
+	double getRatio2() {
 		double ratio = 666;
-		double gamesWonDouble = (double)gamesWon;
-		double gamesPlayedDouble = (double)gamesPlayed;
-		if(gamesWon != 0 && gamesPlayed != 0){
+		double gamesWonDouble = (double) gamesWon;
+		double gamesPlayedDouble = (double) gamesPlayed;
+		if (gamesWon != 0 && gamesPlayed != 0) {
 			ratio = round2(gamesWonDouble / gamesPlayedDouble);
 		} else {
-			if(gamesPlayed == 0 && gamesWon != 0){
+			if (gamesPlayed == 0 && gamesWon != 0) {
 				ratio = gamesWonDouble;
-			} else if(gamesPlayed != 0 && gamesWon == 0){
+			} else if (gamesPlayed != 0 && gamesWon == 0) {
 				ratio = 0;
-			} else if(gamesPlayed == 0 && gamesWon == 0){
+			} else if (gamesPlayed == 0 && gamesWon == 0) {
 				ratio = 0;
 			}
 		}
 		return ratio;
 	}
-	
-	public void onFinish(){
+
+	public void onFinish() {
 		status = "Stopping Script...";
 		log("Gained " + tokensGained + " Tokens in " + hours + ":" + minutes + ":" + seconds + " - " + tokensPerHour + " Tokens Per Hour");
 		log("Games Played: " + gamesPlayed + ", Won: " + gamesWon + ", Lost: " + gamesLost + ", W/L Ratio: " + getRatio());
 		log("Thank You for using FOGRunner by TerraBubble");
 	}
-	
+
 	public void messageReceived(MessageEvent e) {
 		final String messageString = e.getMessage();
 		String messageStringLower = messageString.toLowerCase();
-		
-		switch(e.getID()) {
+
+		switch (e.getID()) {
 			case MessageEvent.MESSAGE_SERVER: {
 				if (messageString.contains("You've just advanced")) {
-					if(screenshots) {
+					if (screenshots) {
 						env.saveScreenshot(true);
 						log("Congrats on level up! Screenshot taken =D");
 						sleep(random(1500, 2500));
@@ -6687,8 +6841,8 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 				}
 				if (messageString.contains("current role")) {
-					if(inGame()){
-						if(!switchingRole){
+					if (inGame()) {
+						if (!switchingRole) {
 							switchingRole = true;
 						}
 					}
@@ -6697,53 +6851,53 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					gamesPlayed++;
 					gamesWon++;
 					String chargesString = messageStringLower.substring(
-								messageStringLower.indexOf("you had") + 8, messageStringLower.indexOf("charges") - 1);
+							messageStringLower.indexOf("you had") + 8, messageStringLower.indexOf("charges") - 1);
 					String chargesStringO = messageStringLower.substring(
-								messageStringLower.indexOf("opponent had") + 13, messageStringLower.lastIndexOf("."));
-					if(dmode) {
+							messageStringLower.indexOf("opponent had") + 13, messageStringLower.lastIndexOf("."));
+					if (dmode) {
 						log("Strings: You: " + chargesString + " Opponent: " + chargesStringO);
 					}
 					int charges = Integer.parseInt(chargesString);
 					int chargesO = Integer.parseInt(chargesStringO);
-					if(dmode) {
+					if (dmode) {
 						log("Ints: You: " + charges + " Opponent: " + chargesO);
 					}
-					totalCharges+=charges;
-					totalChargesO+=chargesO;
-					averageCharges = (int)(totalCharges / gamesPlayed);
-					averageChargesOpponent = (int)(totalChargesO / gamesPlayed);
+					totalCharges += charges;
+					totalChargesO += chargesO;
+					averageCharges = totalCharges / gamesPlayed;
+					averageChargesOpponent = totalChargesO / gamesPlayed;
 				}
 				if (messageStringLower.contains("you lost")) {
 					gamesPlayed++;
 					gamesLost++;
 					String chargesString = messageStringLower.substring(
-								messageStringLower.indexOf("you had") + 8, messageStringLower.indexOf("charges") - 1);
+							messageStringLower.indexOf("you had") + 8, messageStringLower.indexOf("charges") - 1);
 					String chargesStringO = messageStringLower.substring(
-								messageStringLower.indexOf("opponent had") + 13, messageStringLower.lastIndexOf("."));
-					if(dmode) {
+							messageStringLower.indexOf("opponent had") + 13, messageStringLower.lastIndexOf("."));
+					if (dmode) {
 						log("Strings: You: " + chargesString + " Opponent: " + chargesStringO);
 					}
 					int charges = Integer.parseInt(chargesString);
 					int chargesO = Integer.parseInt(chargesStringO);
-					if(dmode) {
+					if (dmode) {
 						log("Ints: You: " + charges + " Opponent: " + chargesO);
 					}
-					totalCharges+=charges;
-					totalChargesO+=chargesO;
-					averageCharges = (int)(totalCharges / gamesPlayed);
-					averageChargesOpponent = (int)(totalChargesO / gamesPlayed);
+					totalCharges += charges;
+					totalChargesO += chargesO;
+					averageCharges = totalCharges / gamesPlayed;
+					averageChargesOpponent = totalChargesO / gamesPlayed;
 				}
-				
+
 				if (messageString.contains("The following item is not allowed")) {
-					if(inLobby()){
+					if (inLobby()) {
 						bankingUBIs = true;
 						UBIString = messageString;
 					}
 				}
 			}
 			case MessageEvent.MESSAGE_CHAT: {
-				if(e.getSender().equals(getMyPlayer().getName())) {
-					if(messageStringLower.contains("1")) {
+				if (e.getSender().equals(getMyPlayer().getName())) {
+					if (messageStringLower.contains("1")) {
 						goReceived = true;
 						status = "'1' Received";
 					}
@@ -6751,57 +6905,60 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 	}
-	
-	public void switchRole() {
+
+	void switchRole() {
 		status = "Switching Role...";
-		if(round == 1){
-			if(hunted){
+		if (round == 1) {
+			if (hunted) {
 				hunted = false;
 				roundOneHunted = false;
 			} else {
 				hunted = true;
 				roundOneHunted = true;
 			}
-		} else if(round == 2) {
-			if(hunted2){
+		} else if (round == 2) {
+			if (hunted2) {
 				hunted2 = false;
 			} else {
 				hunted2 = true;
 			}
 		}
-		
+
 		boolean goEdge = true;
 		try {
 			RSObject stoneObjectTest = objects.getNearest(30143);
-			if(stoneObjectTest != null){
+			if (stoneObjectTest != null) {
 				goEdge = false;
 			}
-		} catch (NullPointerException e) {}
-		
-		if(goEdge){
+		} catch (NullPointerException ignored) {
+		}
+
+		if (goEdge) {
 			RSTile edgeTile = new RSTile(1693, 5675);
-			while(calc.distanceTo(edgeTile) > 5 && inGame()){
+			while (calc.distanceTo(edgeTile) > 5 && inGame()) {
 				walking.walkPathMM(walking.findPath(edgeTile));
 			}
 		} else {
 			RSObject stoneObjectS = objects.getNearest(30143);
 			RSTile nextToStoneTileS = new RSTile(stoneObjectS.getLocation().getX() + 1, stoneObjectS.getLocation().getY());
-			while(calc.distanceTo(nextToStoneTileS) > 5 && inGame()){
+			while (calc.distanceTo(nextToStoneTileS) > 5 && inGame()) {
 				walking.walkPathMM(walking.findPath(nextToStoneTileS));
 				sleep(random(500, 1000));
 			}
 		}
 		// Setup Again:
-		
-		if(dmode) { log("Switching Role..."); }
-		if(round == 1){
-			if(hunted){
+
+		if (dmode) {
+			log("Switching Role...");
+		}
+		if (round == 1) {
+			if (hunted) {
 				getStoneSwitch();
 				wieldStone();
-				if(teleorb.equals("hunted")) {
+				if (teleorb.equals("hunted")) {
 					useTeleOrb();
-				} else if(teleorb.equals("random")) {
-					if(tRandom > 500) {
+				} else if (teleorb.equals("random")) {
+					if (tRandom > 500) {
 						useTeleOrb();
 					}
 				}
@@ -6809,25 +6966,25 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				setSearchTiles();
 				setupStyleEquipment();
 				setupStyle();
-				if(currentStyle.equals("Magic")){
+				if (currentStyle.equals("Magic")) {
 					setSpell();
 				}
-				if(teleorb.equals("hunting")) {
+				if (teleorb.equals("hunting")) {
 					useTeleOrb();
-				} else if(teleorb.equals("random")) {
-					if(tRandom <= 500) {
+				} else if (teleorb.equals("random")) {
+					if (tRandom <= 500) {
 						useTeleOrb();
 					}
 				}
 			}
-		} else if(round == 2){
-			if(hunted2){
+		} else if (round == 2) {
+			if (hunted2) {
 				getStoneSwitch();
 				wieldStone();
-				if(teleorb.equals("hunted")) {
+				if (teleorb.equals("hunted")) {
 					useTeleOrb();
-				} else if(teleorb.equals("random")) {
-					if(tRandom > 500) {
+				} else if (teleorb.equals("random")) {
+					if (tRandom > 500) {
 						useTeleOrb();
 					}
 				}
@@ -6835,13 +6992,13 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				setSearchTiles();
 				setupStyleEquipment();
 				setupStyle();
-				if(currentStyle.equals("Magic")){
+				if (currentStyle.equals("Magic")) {
 					setSpell();
 				}
-				if(teleorb.equals("hunting")) {
+				if (teleorb.equals("hunting")) {
 					useTeleOrb();
-				} else if(teleorb.equals("random")) {
-					if(tRandom <= 500) {
+				} else if (teleorb.equals("random")) {
+					if (tRandom <= 500) {
 						useTeleOrb();
 					}
 				}
@@ -6849,10 +7006,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		}
 		switchingRole = false;
 	}
-		
+
 	// ATTACK
-	public void clearItemListArrays() {
-		
+	void clearItemListArrays() {
+
 		meleeListIDsAdded[0] = -1;
 		meleeListIDsAdded[1] = -1;
 		meleeListIDsAdded[2] = -1;
@@ -6864,7 +7021,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		meleeListIDsAdded[8] = -1;
 		meleeListIDsAdded[9] = -1;
 		meleeListIDsAdded[10] = -1;
-		
+
 		magicListIDsAdded[0] = -1;
 		magicListIDsAdded[1] = -1;
 		magicListIDsAdded[2] = -1;
@@ -6876,7 +7033,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		magicListIDsAdded[8] = -1;
 		magicListIDsAdded[9] = -1;
 		magicListIDsAdded[10] = -1;
-		
+
 		rangeListIDsAdded[0] = -1;
 		rangeListIDsAdded[1] = -1;
 		rangeListIDsAdded[2] = -1;
@@ -6889,10 +7046,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		rangeListIDsAdded[9] = -1;
 		rangeListIDsAdded[10] = -1;
 	}
-	
+
 	// DEFENCE
-	public void clearItemListArraysDefence() {
-		
+	void clearItemListArraysDefence() {
+
 		meleeListIDsAddedDefence[0] = -1;
 		meleeListIDsAddedDefence[1] = -1;
 		meleeListIDsAddedDefence[2] = -1;
@@ -6904,7 +7061,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		meleeListIDsAddedDefence[8] = -1;
 		meleeListIDsAddedDefence[9] = -1;
 		meleeListIDsAddedDefence[10] = -1;
-		
+
 		magicListIDsAddedDefence[0] = -1;
 		magicListIDsAddedDefence[1] = -1;
 		magicListIDsAddedDefence[2] = -1;
@@ -6916,7 +7073,7 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		magicListIDsAddedDefence[8] = -1;
 		magicListIDsAddedDefence[9] = -1;
 		magicListIDsAddedDefence[10] = -1;
-		
+
 		rangeListIDsAddedDefence[0] = -1;
 		rangeListIDsAddedDefence[1] = -1;
 		rangeListIDsAddedDefence[2] = -1;
@@ -6929,102 +7086,101 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 		rangeListIDsAddedDefence[9] = -1;
 		rangeListIDsAddedDefence[10] = -1;
 	}
-	
-	public boolean maging() {
+
+	boolean maging() {
 		int anim = getMyPlayer().getAnimation();
-		if(anim == 14221	// Staff + Wind
-		|| anim == 14220	// Staff + Water
-		|| anim == 14222	// Staff + Earth
-		|| anim == 14223	// Staff + Fire
-		|| anim == 10546	// No Staff + Wind
-		|| anim == 10542	// No Staff + Water
-		|| anim == 14209	// No Staff + Earth
-		|| anim == 2791		// No Staff + Fire
-		|| anim == 1978		// Ancient Blitz or Rush Spell
-		|| anim == 1979		// Ancient Burst or Barrage Spell
-		|| anim == -1		// Idle
-		) {	
+		if (anim == 14221	// Staff + Wind
+				|| anim == 14220	// Staff + Water
+				|| anim == 14222	// Staff + Earth
+				|| anim == 14223	// Staff + Fire
+				|| anim == 10546	// No Staff + Wind
+				|| anim == 10542	// No Staff + Water
+				|| anim == 14209	// No Staff + Earth
+				|| anim == 2791		// No Staff + Fire
+				|| anim == 1978		// Ancient Blitz or Rush Spell
+				|| anim == 1979		// Ancient Burst or Barrage Spell
+				|| anim == -1		// Idle
+				) {
 			return true;
 		}
 		return false;
 	}
-	
-	public void setDefenceStyle() {
+
+	void setDefenceStyle() {
 		boolean canSetup = false;
-		int anim = -1;
+		int anim;
 		try {
 			anim = getPlayerThrow().getAnimation();
 		} catch (NullPointerException e) {
 			anim = -1;
 		}
-		if(anim == 14221	// Staff + Wind
-		|| anim == 14220	// Staff + Water
-		|| anim == 14222	// Staff + Earth
-		|| anim == 14223	// Staff + Fire
-		|| anim == 10546	// No Staff + Wind
-		|| anim == 10542	// No Staff + Water
-		|| anim == 14209	// No Staff + Earth
-		|| anim == 2791		// No Staff + Fire
-		|| anim == 1978		// Ancient Blitz or Rush Spell
-		|| anim == 1979		// Ancient Burst or Barrage Spell
-		) {
-			if(magicActiveDefence){
+		if (anim == 14221	// Staff + Wind
+				|| anim == 14220	// Staff + Water
+				|| anim == 14222	// Staff + Earth
+				|| anim == 14223	// Staff + Fire
+				|| anim == 10546	// No Staff + Wind
+				|| anim == 10542	// No Staff + Water
+				|| anim == 14209	// No Staff + Earth
+				|| anim == 2791		// No Staff + Fire
+				|| anim == 1978		// Ancient Blitz or Rush Spell
+				|| anim == 1979		// Ancient Burst or Barrage Spell
+				) {
+			if (magicActiveDefence) {
 				currentStyleDefence = "Magic";
 				canSetup = true;
 			}
-		} else
-		if(anim == 426		// All bows and all arrows
-		|| anim == 4230		// Crossbow
-		|| anim == 2075		// Some crossbow-like thing not sure...
-		){
-			if(rangeActiveDefence){
+		} else if (anim == 426		// All bows and all arrows
+				|| anim == 4230		// Crossbow
+				|| anim == 2075		// Some crossbow-like thing not sure...
+				) {
+			if (rangeActiveDefence) {
 				currentStyleDefence = "Range";
 				canSetup = true;
 			}
-		} else if(	anim != -1			// Idle
-				 && anim != 9012		// Using TeleOrb
-				 && anim != 710			// Other Magic Spells to lower stats/freeze
-				 && anim != 716
-				 && anim != 717
-				 && anim != 718
-				 && anim != 1161
-				 && anim != 1163
-				 && anim != 1164
-				 && anim != 1165
-				 && anim != 12806		// Defencive Stance, Possibly Ancient Prayer of Opponent
-				 ){
-			if(meleeActiveDefence){
+		} else if (anim != -1			// Idle
+				&& anim != 9012		// Using TeleOrb
+				&& anim != 710			// Other Magic Spells to lower stats/freeze
+				&& anim != 716
+				&& anim != 717
+				&& anim != 718
+				&& anim != 1161
+				&& anim != 1163
+				&& anim != 1164
+				&& anim != 1165
+				&& anim != 12806		// Defencive Stance, Possibly Ancient Prayer of Opponent
+				) {
+			if (meleeActiveDefence) {
 				currentStyleDefence = "Melee";
 				canSetup = true;
 			}
 		}
-		if(canSetup) {
+		if (canSetup) {
 			setupStyleDefence();
-			game.openTab(game.TAB_INVENTORY);
+			game.openTab(Game.TAB_INVENTORY);
 		}
 	}
-	
-	public void setQuickPrayers(boolean on) {
-		if(skills.getCurrentLevel(skills.PRAYER) > 0) {
-			if(on) {
-				if(interfaces.get(game.INTERFACE_PRAYER_ORB).getComponent(1).containsAction("Turn quick prayers on")) {
+
+	void setQuickPrayers(boolean on) {
+		if (skills.getCurrentLevel(Skills.PRAYER) > 0) {
+			if (on) {
+				if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).containsAction("Turn quick prayers on")) {
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(interfaces.get(game.INTERFACE_PRAYER_ORB).getComponent(1).doAction("Turn quick prayers on")) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).doAction("Turn quick prayers on")) {
 							prayerSet = true;
 						}
 						tries++;
 					}
 				}
-			} else if(!on) {
-				if(interfaces.get(game.INTERFACE_PRAYER_ORB).getComponent(1).containsAction("Turn prayers off")) {
+			} else if (!on) {
+				if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).containsAction("Turn prayers off")) {
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(interfaces.get(game.INTERFACE_PRAYER_ORB).getComponent(1).doAction("Turn prayers off")) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).doAction("Turn prayers off")) {
 							prayerSet = true;
 						}
 						tries++;
@@ -7033,69 +7189,69 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 	}
-	
-	public void turnOffPrayer() {
-		if(lastPrayerSet == 17) {
+
+	void turnOffPrayer() {
+		if (lastPrayerSet == 17) {
 			status = "Turning Off Prayer...";
-			game.openTab(game.TAB_PRAYER);
+			game.openTab(Game.TAB_PRAYER);
 			mouse.move(645, 340);
 			sleep(101);
-			if(setPrayer(17, false)){
+			if (setPrayer(17, false)) {
 				lastPrayerSet = 0;
 			}
-		} else if(lastPrayerSet == 18) {
+		} else if (lastPrayerSet == 18) {
 			status = "Turning Off Prayer...";
-			game.openTab(game.TAB_PRAYER);
+			game.openTab(Game.TAB_PRAYER);
 			mouse.move(683, 340);
 			sleep(101);
-			if(setPrayer(18, false)){
+			if (setPrayer(18, false)) {
 				lastPrayerSet = 0;
 			}
-		} else if(lastPrayerSet == 19) {
+		} else if (lastPrayerSet == 19) {
 			status = "Turning Off Prayer...";
-			game.openTab(game.TAB_PRAYER);
+			game.openTab(Game.TAB_PRAYER);
 			mouse.move(718, 340);
 			sleep(101);
-			if(setPrayer(19, false)){
+			if (setPrayer(19, false)) {
 				lastPrayerSet = 0;
 			}
 		}
-		game.openTab(game.TAB_INVENTORY);
+		game.openTab(Game.TAB_INVENTORY);
 	}
-	
+
 	public void turnOffAttackPrayer() {
-		if(lastAttackPrayerSet == 1 ||
-		   lastAttackPrayerSet == 2 ||
-		   lastAttackPrayerSet == 3 ||
-		   lastAttackPrayerSet == 4 ||
-		   lastAttackPrayerSet == 6 ||
-		   lastAttackPrayerSet == 7 ||
-		   lastAttackPrayerSet == 11 ||
-		   lastAttackPrayerSet == 12 ||
-		   lastAttackPrayerSet == 14 ||
-		   lastAttackPrayerSet == 15 ||
-		   lastAttackPrayerSet == 20 ||
-		   lastAttackPrayerSet == 21
-		   ) {
+		if (lastAttackPrayerSet == 1 ||
+				lastAttackPrayerSet == 2 ||
+				lastAttackPrayerSet == 3 ||
+				lastAttackPrayerSet == 4 ||
+				lastAttackPrayerSet == 6 ||
+				lastAttackPrayerSet == 7 ||
+				lastAttackPrayerSet == 11 ||
+				lastAttackPrayerSet == 12 ||
+				lastAttackPrayerSet == 14 ||
+				lastAttackPrayerSet == 15 ||
+				lastAttackPrayerSet == 20 ||
+				lastAttackPrayerSet == 21
+				) {
 			status = "Turning Off Attack Prayer...";
-			game.openTab(game.TAB_PRAYER);
+			game.openTab(Game.TAB_PRAYER);
 			int thisRound = round;
 			int tries = 0;
 			boolean prayerSet = false;
-			while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-				if(setPrayer(lastAttackPrayerSet, false)) {
+			while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+				if (setPrayer(lastAttackPrayerSet, false)) {
 					prayerSet = true;
 					lastAttackPrayerSet = 0;
 				}
 				tries++;
 			}
-			game.openTab(game.TAB_INVENTORY);
+			game.openTab(Game.TAB_INVENTORY);
 		}
 	}
-	
-	public void setAttackPrayer() {
-		prayerlvl = skills.getRealLevel(skills.PRAYER);
-		if(useAttackPrayers) {
+
+	void setAttackPrayer() {
+		prayerlvl = skills.getRealLevel(Skills.PRAYER);
+		if (useAttackPrayers) {
 			// prayer 1 = Burst of Strength +5% Strength
 			// prayer 2 = Clarity of Thought +5% Attack
 			// prayer 3 = Sharp Eye +5% Ranged
@@ -7108,19 +7264,19 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			// prayer 15 = Incredible Reflexes +15% Attack
 			// prayer 20 = Eagle Eye +15% Ranged
 			// prayer 21 = Mystic Might +15% Magic
-			if(currentStyle.equals("Melee")) {
-				if(meleeAttackStyle.equals("Strength EXP")) {
-					if(prayerlvl >= 31){
-						if(lastAttackPrayerSet != 14) {
+			if (currentStyle.equals("Melee")) {
+				if (meleeAttackStyle.equals("Strength EXP")) {
+					if (prayerlvl >= 31) {
+						if (lastAttackPrayerSet != 14) {
 							status = "Setting Attack Prayer...";
 							int thisRound = round;
-							game.openTab(game.TAB_PRAYER);
+							game.openTab(Game.TAB_PRAYER);
 							mouse.setSpeed(mouseSpeed);
 							sleep(101);
 							int tries = 0;
 							boolean prayerSet = false;
-							while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-								if(setPrayer(14, true)) {
+							while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+								if (setPrayer(14, true)) {
 									prayerSet = true;
 									lastAttackPrayerSet = 14;
 								}
@@ -7128,17 +7284,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							}
 							mouse.setSpeed(mouseSpeed);
 						}
-					} else if(prayerlvl >= 13){
-						if(lastAttackPrayerSet != 6) {
+					} else if (prayerlvl >= 13) {
+						if (lastAttackPrayerSet != 6) {
 							status = "Setting Attack Prayer...";
 							int thisRound = round;
-							game.openTab(game.TAB_PRAYER);
+							game.openTab(Game.TAB_PRAYER);
 							mouse.setSpeed(mouseSpeed);
 							sleep(101);
 							int tries = 0;
 							boolean prayerSet = false;
-							while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-								if(setPrayer(6, true)) {
+							while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+								if (setPrayer(6, true)) {
 									prayerSet = true;
 									lastAttackPrayerSet = 6;
 								}
@@ -7146,17 +7302,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							}
 							mouse.setSpeed(mouseSpeed);
 						}
-					} else if(prayerlvl >= 4){
-						if(lastAttackPrayerSet != 1) {
+					} else if (prayerlvl >= 4) {
+						if (lastAttackPrayerSet != 1) {
 							status = "Setting Attack Prayer...";
 							int thisRound = round;
-							game.openTab(game.TAB_PRAYER);
+							game.openTab(Game.TAB_PRAYER);
 							mouse.setSpeed(mouseSpeed);
 							sleep(101);
 							int tries = 0;
 							boolean prayerSet = false;
-							while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-								if(setPrayer(1, true)) {
+							while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+								if (setPrayer(1, true)) {
 									prayerSet = true;
 									lastAttackPrayerSet = 1;
 								}
@@ -7165,18 +7321,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							mouse.setSpeed(mouseSpeed);
 						}
 					}
-				} else if(meleeAttackStyle.equals("Attack EXP")) {
-					if(prayerlvl >= 34){
-						if(lastAttackPrayerSet != 15) {
+				} else if (meleeAttackStyle.equals("Attack EXP")) {
+					if (prayerlvl >= 34) {
+						if (lastAttackPrayerSet != 15) {
 							status = "Setting Attack Prayer...";
 							int thisRound = round;
-							game.openTab(game.TAB_PRAYER);
+							game.openTab(Game.TAB_PRAYER);
 							mouse.setSpeed(mouseSpeed);
 							sleep(101);
 							int tries = 0;
 							boolean prayerSet = false;
-							while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-								if(setPrayer(15, true)) {
+							while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+								if (setPrayer(15, true)) {
 									prayerSet = true;
 									lastAttackPrayerSet = 15;
 								}
@@ -7184,17 +7340,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							}
 							mouse.setSpeed(mouseSpeed);
 						}
-					} else if(prayerlvl >= 16){
-						if(lastAttackPrayerSet != 7) {
+					} else if (prayerlvl >= 16) {
+						if (lastAttackPrayerSet != 7) {
 							status = "Setting Attack Prayer...";
 							int thisRound = round;
-							game.openTab(game.TAB_PRAYER);
+							game.openTab(Game.TAB_PRAYER);
 							mouse.setSpeed(mouseSpeed);
 							sleep(101);
 							int tries = 0;
 							boolean prayerSet = false;
-							while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-								if(setPrayer(7, true)) {
+							while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+								if (setPrayer(7, true)) {
 									prayerSet = true;
 									lastAttackPrayerSet = 7;
 								}
@@ -7202,17 +7358,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 							}
 							mouse.setSpeed(mouseSpeed);
 						}
-					} else if(prayerlvl >= 7){
-						if(lastAttackPrayerSet != 2) {
+					} else if (prayerlvl >= 7) {
+						if (lastAttackPrayerSet != 2) {
 							status = "Setting Attack Prayer...";
 							int thisRound = round;
-							game.openTab(game.TAB_PRAYER);
+							game.openTab(Game.TAB_PRAYER);
 							mouse.setSpeed(mouseSpeed);
 							sleep(101);
 							int tries = 0;
 							boolean prayerSet = false;
-							while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-								if(setPrayer(2, true)) {
+							while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+								if (setPrayer(2, true)) {
 									prayerSet = true;
 									lastAttackPrayerSet = 2;
 								}
@@ -7222,18 +7378,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 					}
 				}
-			} else if(currentStyle.equals("Magic")) {
-				if(prayerlvl >= 45){
-					if(lastAttackPrayerSet != 21) {
+			} else if (currentStyle.equals("Magic")) {
+				if (prayerlvl >= 45) {
+					if (lastAttackPrayerSet != 21) {
 						status = "Setting Attack Prayer...";
 						int thisRound = round;
-						game.openTab(game.TAB_PRAYER);
+						game.openTab(Game.TAB_PRAYER);
 						mouse.setSpeed(mouseSpeed);
 						sleep(101);
 						int tries = 0;
 						boolean prayerSet = false;
-						while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-							if(setPrayer(21, true)) {
+						while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+							if (setPrayer(21, true)) {
 								prayerSet = true;
 								lastAttackPrayerSet = 21;
 							}
@@ -7241,17 +7397,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						mouse.setSpeed(mouseSpeed);
 					}
-				} else if(prayerlvl >= 27){
-					if(lastAttackPrayerSet != 12) {
+				} else if (prayerlvl >= 27) {
+					if (lastAttackPrayerSet != 12) {
 						status = "Setting Attack Prayer...";
 						int thisRound = round;
-						game.openTab(game.TAB_PRAYER);
+						game.openTab(Game.TAB_PRAYER);
 						mouse.setSpeed(mouseSpeed);
 						sleep(101);
 						int tries = 0;
 						boolean prayerSet = false;
-						while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-							if(setPrayer(12, true)) {
+						while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+							if (setPrayer(12, true)) {
 								prayerSet = true;
 								lastAttackPrayerSet = 12;
 							}
@@ -7259,17 +7415,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						mouse.setSpeed(mouseSpeed);
 					}
-				} else if(prayerlvl >= 9){
-					if(lastAttackPrayerSet != 4) {
+				} else if (prayerlvl >= 9) {
+					if (lastAttackPrayerSet != 4) {
 						status = "Setting Attack Prayer...";
 						int thisRound = round;
-						game.openTab(game.TAB_PRAYER);
+						game.openTab(Game.TAB_PRAYER);
 						mouse.setSpeed(mouseSpeed);
 						sleep(101);
 						int tries = 0;
 						boolean prayerSet = false;
-						while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-							if(setPrayer(4, true)) {
+						while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+							if (setPrayer(4, true)) {
 								prayerSet = true;
 								lastAttackPrayerSet = 4;
 							}
@@ -7278,18 +7434,18 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						mouse.setSpeed(mouseSpeed);
 					}
 				}
-			} else if(currentStyle.equals("Range")) {
-				if(prayerlvl >= 44){
-					if(lastAttackPrayerSet != 20) {
+			} else if (currentStyle.equals("Range")) {
+				if (prayerlvl >= 44) {
+					if (lastAttackPrayerSet != 20) {
 						status = "Setting Attack Prayer...";
 						int thisRound = round;
-						game.openTab(game.TAB_PRAYER);
+						game.openTab(Game.TAB_PRAYER);
 						mouse.setSpeed(mouseSpeed);
 						sleep(101);
 						int tries = 0;
 						boolean prayerSet = false;
-						while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-							if(setPrayer(20, true)) {
+						while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+							if (setPrayer(20, true)) {
 								prayerSet = true;
 								lastAttackPrayerSet = 20;
 							}
@@ -7297,17 +7453,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						mouse.setSpeed(mouseSpeed);
 					}
-				} else if(prayerlvl >= 26){
-					if(lastAttackPrayerSet != 11) {
+				} else if (prayerlvl >= 26) {
+					if (lastAttackPrayerSet != 11) {
 						status = "Setting Attack Prayer...";
 						int thisRound = round;
-						game.openTab(game.TAB_PRAYER);
+						game.openTab(Game.TAB_PRAYER);
 						mouse.setSpeed(mouseSpeed);
 						sleep(101);
 						int tries = 0;
 						boolean prayerSet = false;
-						while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-							if(setPrayer(11, true)) {
+						while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+							if (setPrayer(11, true)) {
 								prayerSet = true;
 								lastAttackPrayerSet = 11;
 							}
@@ -7315,17 +7471,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 						}
 						mouse.setSpeed(mouseSpeed);
 					}
-				} else if(prayerlvl >= 8){
-					if(lastAttackPrayerSet != 3) {
+				} else if (prayerlvl >= 8) {
+					if (lastAttackPrayerSet != 3) {
 						status = "Setting Attack Prayer...";
 						int thisRound = round;
-						game.openTab(game.TAB_PRAYER);
+						game.openTab(Game.TAB_PRAYER);
 						mouse.setSpeed(mouseSpeed);
 						sleep(101);
 						int tries = 0;
 						boolean prayerSet = false;
-						while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-							if(setPrayer(3, true)) {
+						while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+							if (setPrayer(3, true)) {
 								prayerSet = true;
 								lastAttackPrayerSet = 3;
 							}
@@ -7337,10 +7493,10 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 	}
-	
-	public void setPrayer() {
-		prayerlvl = skills.getRealLevel(skills.PRAYER);
-		if(usePrayers) {
+
+	void setPrayer() {
+		prayerlvl = skills.getRealLevel(Skills.PRAYER);
+		if (usePrayers) {
 			// prayer 17 = Protect from Magic
 			// prayer 18 = Protect from Missiles
 			// prayer 19 = Protect from Melee
@@ -7350,28 +7506,28 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			} catch (NullPointerException e) {
 				anim = -1;
 			}
-			if(anim == 14221	// Staff + Wind
-			|| anim == 14220	// Staff + Water
-			|| anim == 14222	// Staff + Earth
-			|| anim == 14223	// Staff + Fire
-			|| anim == 10546	// No Staff + Wind
-			|| anim == 10542	// No Staff + Water
-			|| anim == 14209	// No Staff + Earth
-			|| anim == 2791		// No Staff + Fire
-			|| anim == 1978		// Ancient Blitz or Rush Spell
-			|| anim == 1979		// Ancient Burst or Barrage Spell
-			) {
-				if(prayerlvl >= 37 && lastPrayerSet != 17){
+			if (anim == 14221	// Staff + Wind
+					|| anim == 14220	// Staff + Water
+					|| anim == 14222	// Staff + Earth
+					|| anim == 14223	// Staff + Fire
+					|| anim == 10546	// No Staff + Wind
+					|| anim == 10542	// No Staff + Water
+					|| anim == 14209	// No Staff + Earth
+					|| anim == 2791		// No Staff + Fire
+					|| anim == 1978		// Ancient Blitz or Rush Spell
+					|| anim == 1979		// Ancient Burst or Barrage Spell
+					) {
+				if (prayerlvl >= 37 && lastPrayerSet != 17) {
 					status = "Setting Prayer...";
-					game.openTab(game.TAB_PRAYER);
+					game.openTab(Game.TAB_PRAYER);
 					mouse.setSpeed(mouseSpeed);
 					mouse.move(645, 340);
 					sleep(101);
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(setPrayer(17, true)) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (setPrayer(17, true)) {
 							prayerSet = true;
 							lastPrayerSet = 17;
 						}
@@ -7379,22 +7535,21 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 					mouse.setSpeed(mouseSpeed);
 				}
-			} else
-			if(anim == 426		// All bows and all arrows
-			|| anim == 4230		// Crossbow
-			|| anim == 2075		// Some crossbow-like thing not sure...
-			){
-				if(prayerlvl >= 40 && lastPrayerSet != 18){
+			} else if (anim == 426		// All bows and all arrows
+					|| anim == 4230		// Crossbow
+					|| anim == 2075		// Some crossbow-like thing not sure...
+					) {
+				if (prayerlvl >= 40 && lastPrayerSet != 18) {
 					status = "Setting Prayer...";
-					game.openTab(game.TAB_PRAYER);
+					game.openTab(Game.TAB_PRAYER);
 					mouse.setSpeed(mouseSpeed);
 					sleep(101);
 					mouse.move(683, 340);
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(setPrayer(18, true)) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (setPrayer(18, true)) {
 							prayerSet = true;
 							lastPrayerSet = 18;
 						}
@@ -7402,29 +7557,29 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 					mouse.setSpeed(mouseSpeed);
 				}
-			} else if(	anim != -1			// Idle
-					 && anim != 9012		// Using TeleOrb
-					 && anim != 710			// Magic Spells to lower stats/freeze
-					 && anim != 716
-					 && anim != 717
-					 && anim != 718
-					 && anim != 1161
-					 && anim != 1163
-					 && anim != 1164
-					 && anim != 1165
-					 && anim != 12806		// Defencive Stance, Possibly Ancient Prayer of Opponent
-					 ){
-				if(prayerlvl >= 43 && lastPrayerSet != 19){
+			} else if (anim != -1			// Idle
+					&& anim != 9012		// Using TeleOrb
+					&& anim != 710			// Magic Spells to lower stats/freeze
+					&& anim != 716
+					&& anim != 717
+					&& anim != 718
+					&& anim != 1161
+					&& anim != 1163
+					&& anim != 1164
+					&& anim != 1165
+					&& anim != 12806		// Defencive Stance, Possibly Ancient Prayer of Opponent
+					) {
+				if (prayerlvl >= 43 && lastPrayerSet != 19) {
 					status = "Setting Prayer...";
-					game.openTab(game.TAB_PRAYER);
+					game.openTab(Game.TAB_PRAYER);
 					mouse.setSpeed(mouseSpeed);
 					sleep(101);
 					mouse.move(718, 340);
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(setPrayer(19, true)) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (setPrayer(19, true)) {
 							prayerSet = true;
 							lastPrayerSet = 19;
 						}
@@ -7435,24 +7590,24 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 	}
-	
-	public void setSkinPrayer() {
-		prayerlvl = skills.getRealLevel(skills.PRAYER);
-		if(useSkinPrayers) {
+
+	void setSkinPrayer() {
+		prayerlvl = skills.getRealLevel(Skills.PRAYER);
+		if (useSkinPrayers) {
 			// prayer 0 = Thick Skin +5% Defence
 			// prayer 5 = Rock Skin +10% Defence
 			// prayer 13 = Steel Skin +15% Defence
-			if(prayerlvl >= 28) {
-				if(lastSkinPrayerSet != 13){
+			if (prayerlvl >= 28) {
+				if (lastSkinPrayerSet != 13) {
 					status = "Setting Defence Prayer...";
-					game.openTab(game.TAB_PRAYER);
+					game.openTab(Game.TAB_PRAYER);
 					mouse.setSpeed(mouseSpeed);
 					sleep(101);
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(setPrayer(13, true)) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (setPrayer(13, true)) {
 							prayerSet = true;
 							lastSkinPrayerSet = 13;
 						}
@@ -7460,17 +7615,17 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					}
 					mouse.setSpeed(mouseSpeed);
 				}
-			} else if(prayerlvl >= 10){
-				if(lastSkinPrayerSet != 5){
+			} else if (prayerlvl >= 10) {
+				if (lastSkinPrayerSet != 5) {
 					status = "Setting Defence Prayer...";
-					game.openTab(game.TAB_PRAYER);
+					game.openTab(Game.TAB_PRAYER);
 					mouse.setSpeed(mouseSpeed);
 					sleep(101);
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(setPrayer(5, true)) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (setPrayer(5, true)) {
 							prayerSet = true;
 							lastSkinPrayerSet = 5;
 						}
@@ -7479,16 +7634,16 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 					mouse.setSpeed(mouseSpeed);
 				}
 			} else {
-				if(lastSkinPrayerSet != 0){
+				if (lastSkinPrayerSet != 0) {
 					status = "Setting Defence Prayer...";
-					game.openTab(game.TAB_PRAYER);
+					game.openTab(Game.TAB_PRAYER);
 					mouse.setSpeed(mouseSpeed);
 					sleep(101);
 					int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
-					while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-						if(setPrayer(0, true)) {
+					while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+						if (setPrayer(0, true)) {
 							prayerSet = true;
 							lastSkinPrayerSet = 0;
 						}
@@ -7499,34 +7654,34 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 	}
-	
+
 	public void turnOffSkinPrayer() {
-		if(lastSkinPrayerSet == 0 ||
-		   lastSkinPrayerSet == 5 ||
-		   lastSkinPrayerSet == 13
-		   ) {
+		if (lastSkinPrayerSet == 0 ||
+				lastSkinPrayerSet == 5 ||
+				lastSkinPrayerSet == 13
+				) {
 			status = "Turning Off Defence Prayer...";
-			game.openTab(game.TAB_PRAYER);
+			game.openTab(Game.TAB_PRAYER);
 			sleep(101);
 			int thisRound = round;
 			int tries = 0;
 			boolean prayerSet = false;
-			while(!prayerSet && tries < 10 && inGame() && round == thisRound){
-				if(setPrayer(lastSkinPrayerSet, false)) {
+			while (!prayerSet && tries < 10 && inGame() && round == thisRound) {
+				if (setPrayer(lastSkinPrayerSet, false)) {
 					prayerSet = true;
 					lastSkinPrayerSet = -1;
 				}
 				tries++;
 			}
-			game.openTab(game.TAB_INVENTORY);
+			game.openTab(Game.TAB_INVENTORY);
 		}
 	}
-	
-	public void turnCamera() {
-		final char[] LR = new char[] { KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT };
-		final char[] UD = new char[] { KeyEvent.VK_DOWN, KeyEvent.VK_UP };
-		final char[] LRUD = new char[] { KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
-				KeyEvent.VK_UP, KeyEvent.VK_DOWN };
+
+	void turnCamera() {
+		final char[] LR = new char[]{KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT};
+		final char[] UD = new char[]{KeyEvent.VK_DOWN, KeyEvent.VK_UP};
+		final char[] LRUD = new char[]{KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
+				KeyEvent.VK_UP, KeyEvent.VK_DOWN};
 		final int random2 = random(0, 2);
 		final int random1 = random(0, 2);
 		final int random4 = random(0, 4);
@@ -7553,44 +7708,44 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 			}
 		}
 	}
-	
-	public void lookAtLevels() {
-		if(inLobby() || inWaitingRoom()) {
-			game.openTab(game.TAB_STATS);
-			sleep(random(400,750));
-			if(currentStyle.equals("Melee")) {
-				int rand = random(1,400);
-				if(rand > 0 && rand < 101) {
-					skills.doHover(skills.INTERFACE_ATTACK);
-				} else if(rand > 100 && rand < 201) {
-					skills.doHover(skills.INTERFACE_STRENGTH);
-				} else if(rand > 200 && rand < 301) {
-					skills.doHover(skills.INTERFACE_DEFENSE);
-				} else if(rand > 300 && rand < 401) {
-					skills.doHover(skills.INTERFACE_CONSTITUTION);
+
+	void lookAtLevels() {
+		if (inLobby() || inWaitingRoom()) {
+			game.openTab(Game.TAB_STATS);
+			sleep(random(400, 750));
+			if (currentStyle.equals("Melee")) {
+				int rand = random(1, 400);
+				if (rand > 0 && rand < 101) {
+					skills.doHover(Skills.INTERFACE_ATTACK);
+				} else if (rand > 100 && rand < 201) {
+					skills.doHover(Skills.INTERFACE_STRENGTH);
+				} else if (rand > 200 && rand < 301) {
+					skills.doHover(Skills.INTERFACE_DEFENSE);
+				} else if (rand > 300 && rand < 401) {
+					skills.doHover(Skills.INTERFACE_CONSTITUTION);
 				}
-			} else if(currentStyle.equals("Magic")) {
-				int rand = random(1,200);
-				if(rand > 0 && rand < 101) {
-						skills.doHover(skills.INTERFACE_MAGIC);
-				} else if(rand > 100 && rand < 201) {
-						skills.doHover(skills.INTERFACE_CONSTITUTION);
+			} else if (currentStyle.equals("Magic")) {
+				int rand = random(1, 200);
+				if (rand > 0 && rand < 101) {
+					skills.doHover(Skills.INTERFACE_MAGIC);
+				} else if (rand > 100 && rand < 201) {
+					skills.doHover(Skills.INTERFACE_CONSTITUTION);
 				}
-			} else if(currentStyle.equals("Range")) {
-				int rand = random(1,200);
-				if(rand > 0 && rand < 101) {
-						skills.doHover(skills.INTERFACE_RANGE);
-				} else if(rand > 100 && rand < 201) {
-						skills.doHover(skills.INTERFACE_CONSTITUTION);
+			} else if (currentStyle.equals("Range")) {
+				int rand = random(1, 200);
+				if (rand > 0 && rand < 101) {
+					skills.doHover(Skills.INTERFACE_RANGE);
+				} else if (rand > 100 && rand < 201) {
+					skills.doHover(Skills.INTERFACE_CONSTITUTION);
 				}
 			}
-			sleep(random(1200,1750));
-			game.openTab(game.TAB_INVENTORY);
+			sleep(random(1200, 1750));
+			game.openTab(Game.TAB_INVENTORY);
 		}
 	}
-	
-	public void antiBan() {
-		switch(random(1, 50)) {
+
+	void antiBan() {
+		switch (random(1, 50)) {
 			case 1:
 				turnCamera();
 				break;
@@ -7604,154 +7759,167 @@ public class FOGRunner extends Script implements PaintListener, MessageListener,
 				turnCamera();
 				break;
 			case 5:
-				mouse.move(random(50,700),random(50,450));
+				mouse.move(random(50, 700), random(50, 450));
 				break;
 			case 6:
-				mouse.move(random(50,700),random(50,450));
+				mouse.move(random(50, 700), random(50, 450));
 				break;
 			case 7:
-				mouse.move(random(50,700),random(50,450));
+				mouse.move(random(50, 700), random(50, 450));
 				break;
 			case 8:
-				mouse.move(random(50,700),random(50,450));
+				mouse.move(random(50, 700), random(50, 450));
 				break;
 			case 9:
 				lookAtLevels();
 				break;
 		}
 	}
-	
-	public boolean mouseInArea(Rectangle rec) {
+
+	boolean mouseInArea(Rectangle rec) {
 		return mouseInArea(rec.x, rec.y, rec.width, rec.height);
 	}
-	
-	public boolean mouseInArea(int x, int y, int w, int h) {
+
+	boolean mouseInArea(int x, int y, int w, int h) {
 		int x2 = x + w;
 		int y2 = y + h;
-    	if(userMouseX >= x && userMouseX <= x2 && userMouseY >= y && userMouseY <= y2) {
-    		return true;
-    	}
-    	return false;
-    }
-	
-	public void mousePressed(MouseEvent e) {
-		switch(e.getButton()) {
-    		case MouseEvent.BUTTON1:
-				userMousePressed = true;
-	        break;
+		if (userMouseX >= x && userMouseX <= x2 && userMouseY >= y && userMouseY <= y2) {
+			return true;
 		}
-    }
+		return false;
+	}
 
-    public void mouseReleased(MouseEvent e) {
-    	switch(e.getButton()) {
-    		case MouseEvent.BUTTON1:
+	public void mousePressed(MouseEvent e) {
+		switch (e.getButton()) {
+			case MouseEvent.BUTTON1:
+				userMousePressed = true;
+				break;
+		}
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		switch (e.getButton()) {
+			case MouseEvent.BUTTON1:
 				userMousePressed = false;
-				if(mouseInArea(statusButtonRec)) {
-					if(statusPaint == 1 || statusPaint == 2) {
+				if (mouseInArea(statusButtonRec)) {
+					if (statusPaint == 1 || statusPaint == 2) {
 						statusPaint = 3;
 					} else {
 						statusPaint = 1;
 					}
-				} else if(mouseInArea(expButtonRec)) {
-					if(expPaint == 1 || expPaint == 2) {
+				} else if (mouseInArea(expButtonRec)) {
+					if (expPaint == 1 || expPaint == 2) {
 						expPaint = 3;
 					} else {
 						expPaint = 1;
 					}
-				} else if(mouseInArea(statsButtonRec)) {
-					if(statsPaint == 1 || statsPaint == 2) {
+				} else if (mouseInArea(statsButtonRec)) {
+					if (statsPaint == 1 || statsPaint == 2) {
 						statsPaint = 3;
 					} else {
 						statsPaint = 1;
 					}
-				} else if(mouseInArea(moreStatsButtonRec)) {
-					if(statsPaint == 1 || statsPaint == 2) {
-						if(moreStats == 0 || moreStats == 3) {
+				} else if (mouseInArea(moreStatsButtonRec)) {
+					if (statsPaint == 1 || statsPaint == 2) {
+						if (moreStats == 0 || moreStats == 3) {
 							moreStats = 1;
-						} else if(moreStats == 2 || moreStats == 1) {
+						} else if (moreStats == 2 || moreStats == 1) {
 							moreStats = 3;
 						}
 					}
 				}
-	        break;
+				break;
 		}
-    }
-    
-    public void mouseMoved(MouseEvent e) {
-    	userMouseX = e.getX();
-    	userMouseY = e.getY();
-    }
-    
-    public void mouseClicked(MouseEvent e) {}
-    public void mouseDragged(MouseEvent e) {}
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
-    
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		userMouseX = e.getX();
+		userMouseY = e.getY();
+	}
+
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	public void mouseDragged(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
 	int[] concat(int[] A, int[] B) {
-		int[] C= new int[A.length + B.length];
+		int[] C = new int[A.length + B.length];
 		System.arraycopy(A, 0, C, 0, A.length);
 		System.arraycopy(B, 0, C, A.length, B.length);
 		return C;
 	}
-	
+
 	FOGItem[] concat(FOGItem[] A, FOGItem[] B) {
-		FOGItem[] C= new FOGItem[A.length + B.length];
+		FOGItem[] C = new FOGItem[A.length + B.length];
 		System.arraycopy(A, 0, C, 0, A.length);
 		System.arraycopy(B, 0, C, A.length, B.length);
 		return C;
 	}
-	
-	public int maxInArray(int[] array) {
+
+	int maxInArray(int[] array) {
 		int max = 0;
-		for(int i = 0; i < array.length; i++) {
-			max = Math.max(max, array[i]);
+		for (int anArray : array) {
+			max = Math.max(max, anArray);
 		}
 		return max;
 	}
-	
+
 	public boolean hoverMenuIndex(int menuIndex) {
-		if (!menu.isOpen())
+		if (!menu.isOpen()) {
 			return false;
+		}
 		try {
 			String[] itemStringsArray = menu.getItems();
-			if (itemStringsArray.length <= menuIndex)
+			if (itemStringsArray.length <= menuIndex) {
 				return false;
+			}
 			Point menuLocation = menu.getLocation();
 			int i = random(4, itemStringsArray[menuIndex].length() * 4);
 			int j = 21 + (15 * menuIndex) + random(3, 12);
-			mouse.move((int)menuLocation.getX() + i, (int)menuLocation.getY() + j, 2, 2);
-			if (!menu.isOpen())
+			mouse.move((int) menuLocation.getX() + i, (int) menuLocation.getY() + j, 2, 2);
+			if (!menu.isOpen()) {
 				return false;
+			}
 			return true;
 		} catch (Exception e) {
-			if(dmode)
+			if (dmode) {
 				e.printStackTrace();
+			}
 		}
 		return false;
 	}
-	
-	public void dlog(String s) {
-		if(dmode) {
+
+	void dlog(String s) {
+		if (dmode) {
 			log(s);
 		}
 	}
-    
+
 	// Sets a prayer - returns false instead of throwing an ArrayIndexOutOfBoundsException at you
-    public boolean setPrayer(int pray, boolean activate) {
-    	RSComponent prayerComp = interfaces.getComponent(271, 7);
-    	RSComponent[] prayerComps = prayerComp.getComponents();
-    	int tries = 0;
-    	while(prayerComps.length <= pray && tries < 75){
-    		prayerComp = interfaces.getComponent(271, 7);
-    		prayerComps = prayerComp.getComponents();
+	boolean setPrayer(int pray, boolean activate) {
+		RSComponent prayerComp = interfaces.getComponent(271, 7);
+		RSComponent[] prayerComps = prayerComp.getComponents();
+		int tries = 0;
+		while (prayerComps.length <= pray && tries < 75) {
+			prayerComp = interfaces.getComponent(271, 7);
+			prayerComps = prayerComp.getComponents();
 			tries++;
 			sleep(1);
-    	}
-    	if(prayerComps.length > pray){
-	    	return prayerComps[pray].doAction(activate ? "Activate" : "Deactivate");
-    	} else {
-    		if(dmode){ log("Prayer Array Too Short"); }
-    	}
+		}
+		if (prayerComps.length > pray) {
+			return prayerComps[pray].doAction(activate ? "Activate" : "Deactivate");
+		} else {
+			if (dmode) {
+				log("Prayer Array Too Short");
+			}
+		}
 		return false;
 	}
 }
