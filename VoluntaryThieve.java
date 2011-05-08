@@ -3,23 +3,23 @@
  * Copyright 2010 vilon@powerbot.org. All rights reserved.
  */
 
-import org.rsbot.event.events.MessageEvent;
-import org.rsbot.event.listeners.MessageListener;
-import org.rsbot.event.listeners.PaintListener;
-import org.rsbot.script.Script;
-import org.rsbot.script.ScriptManifest;
-import org.rsbot.script.methods.Game;
-import org.rsbot.script.methods.Skills;
-import org.rsbot.script.util.Timer;
-import org.rsbot.script.util.WindowUtil;
-import org.rsbot.script.wrappers.*;
-import org.rsbot.util.GlobalConfiguration;
-
-import javax.swing.*;
-import javax.swing.event.MouseInputListener;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.NumberFormat;
@@ -29,6 +29,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.prefs.Preferences;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.event.MouseInputListener;
+
+import org.rsbot.event.events.MessageEvent;
+import org.rsbot.event.listeners.MessageListener;
+import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.script.Script;
+import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Game;
+import org.rsbot.script.methods.Methods;
+import org.rsbot.script.methods.Skills;
+import org.rsbot.script.util.Timer;
+import org.rsbot.script.util.WindowUtil;
+import org.rsbot.script.wrappers.RSArea;
+import org.rsbot.script.wrappers.RSInterface;
+import org.rsbot.script.wrappers.RSItem;
+import org.rsbot.script.wrappers.RSNPC;
+import org.rsbot.script.wrappers.RSObject;
+import org.rsbot.script.wrappers.RSTile;
+import org.rsbot.util.GlobalConfiguration;
 
 @ScriptManifest(authors = "vilon", name = "Voluntary Thieve", keywords = "Thieving", version = 1.13, description = "Blackjacks/pickpockets the trainers and volunteers in the Thieves' Guild.")
 public final class VoluntaryThieve extends Script implements
@@ -40,6 +64,15 @@ public final class VoluntaryThieve extends Script implements
 	 * finally verify that the result of the action matches the desired result.
 	 */
 	private static abstract class Action {
+
+		/**
+		 * The states which tells if an action was completed, failed or is still
+		 * in progress.
+		 */
+		enum State {
+
+			COMPLETED, FAILED, PROGRESSING
+		}
 
 		/**
 		 * Represents the steps of an action.
@@ -76,15 +109,17 @@ public final class VoluntaryThieve extends Script implements
 			/**
 			 * The current step in the action-process.
 			 */
-			private int currentStep = PERFORM;
+			private int currentStep = Steps.PERFORM;
 
 			/**
 			 * Creates a new instance representing the steps of an action.
-			 *
-			 * @param maximumTimes The maximum times of the individual steps, in the
-			 *                     order: PERFORM, CONFIRM, FINISH.
-			 * @throws IllegalArgumentException If the length of <tt>maximumTimes</tt> wasn't three,
-			 *                                  or if any of the maximum times were below zero.
+			 * 
+			 * @param maximumTimes
+			 *            The maximum times of the individual steps, in the
+			 *            order: PERFORM, CONFIRM, FINISH.
+			 * @throws IllegalArgumentException
+			 *             If the length of <tt>maximumTimes</tt> wasn't three,
+			 *             or if any of the maximum times were below zero.
 			 */
 			private Steps(final long... maximumTimes)
 					throws IllegalArgumentException {
@@ -104,7 +139,7 @@ public final class VoluntaryThieve extends Script implements
 
 			/**
 			 * Gets the current step in the action-process.
-			 *
+			 * 
 			 * @return The current step in the action-process.
 			 */
 			private int getCurrent() {
@@ -112,15 +147,8 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			/**
-			 * Sets the starting time to that of the systems current time.
-			 */
-			private void setStartingTime() {
-				startingTimes[getCurrent()] = System.currentTimeMillis();
-			}
-
-			/**
 			 * Gets the starting time of the current step.
-			 *
+			 * 
 			 * @return The starting time of the current step, or <tt>0</tt> if
 			 *         not set.
 			 */
@@ -129,23 +157,41 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			/**
+			 * Checks if the maximum time set has passed, i.e. if it's now
+			 * obsolete to continue doing the action.
+			 * 
+			 * @return <tt>true</tt> if the maximum time has passed; otherwise
+			 *         <tt>false</tt>.
+			 * @throws IllegalStateException
+			 *             If the starting time has not been set.
+			 */
+			private boolean isObsolete() throws IllegalStateException {
+				if (!isStartingTimeSet()) {
+					throw new IllegalStateException(
+							"Starting time has not been set.");
+				}
+				return System.currentTimeMillis() - getStartingTime() >= maximumTimes[getCurrent()];
+			}
+
+			/**
 			 * Checks whether the starting time has been set or not.
-			 *
+			 * 
 			 * @return <tt>true</tt> if the starting time has been set;
 			 *         otherwise <tt>false</tt>.
 			 */
 			private boolean isStartingTimeSet() {
-				return (getStartingTime() > 0);
+				return getStartingTime() > 0;
 			}
 
 			/**
 			 * Sets the current step to the next step in the set order.
-			 *
-			 * @throws IllegalStateException If the method is called when the current step is the
-			 *                               <tt>FINISH</tt>-step.
+			 * 
+			 * @throws IllegalStateException
+			 *             If the method is called when the current step is the
+			 *             <tt>FINISH</tt>-step.
 			 */
 			private void next() throws IllegalStateException {
-				if (getCurrent() >= FINISH) {
+				if (getCurrent() >= Steps.FINISH) {
 					throw new IllegalStateException(
 							"Unable to switch step, current step is: "
 									+ getCurrent());
@@ -154,29 +200,11 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			/**
-			 * Checks if the maximum time set has passed, i.e. if it's now
-			 * obsolete to continue doing the action.
-			 *
-			 * @return <tt>true</tt> if the maximum time has passed; otherwise
-			 *         <tt>false</tt>.
-			 * @throws IllegalStateException If the starting time has not been set.
+			 * Sets the starting time to that of the systems current time.
 			 */
-			private boolean isObsolete() throws IllegalStateException {
-				if (!isStartingTimeSet()) {
-					throw new IllegalStateException(
-							"Starting time has not been set.");
-				}
-				return (System.currentTimeMillis() - getStartingTime() >= maximumTimes[getCurrent()]);
+			private void setStartingTime() {
+				startingTimes[getCurrent()] = System.currentTimeMillis();
 			}
-		}
-
-		/**
-		 * The states which tells if an action was completed, failed or is still
-		 * in progress.
-		 */
-		enum State {
-
-			COMPLETED, FAILED, PROGRESSING
 		}
 
 		/**
@@ -203,14 +231,17 @@ public final class VoluntaryThieve extends Script implements
 		/**
 		 * Creates a new <tt>Action</tt> with the maximum times for the three
 		 * steps of the action, namely the perform-, confirm- and finish-step.
-		 *
-		 * @param name         The user-friendly name of this action.
-		 * @param id           The identification for this action.
-		 * @param maximumTimes The maximum times for the steps, in the order: PERFORM,
-		 *                     CONFIRM, FINISH.
+		 * 
+		 * @param name
+		 *            The user-friendly name of this action.
+		 * @param id
+		 *            The identification for this action.
+		 * @param maximumTimes
+		 *            The maximum times for the steps, in the order: PERFORM,
+		 *            CONFIRM, FINISH.
 		 */
 		private Action(final String name, final int id,
-		               final long... maximumTimes) {
+				final long... maximumTimes) {
 			this.id = id;
 			this.name = name;
 			steps = new Steps(maximumTimes);
@@ -221,33 +252,29 @@ public final class VoluntaryThieve extends Script implements
 		 * three steps of the action, namely the perform-, and finish-step. The
 		 * confirm-step defaults to completed but can be overridden and will in
 		 * that case be called once before failing.
-		 *
-		 * @param name    The user-friendly name of this action.
-		 * @param id      The identification for this action.
-		 * @param perform The maximum time before the perform-step is obsolete.
-		 * @param finish  The maximum time before the finish-step is obsolete.
+		 * 
+		 * @param name
+		 *            The user-friendly name of this action.
+		 * @param id
+		 *            The identification for this action.
+		 * @param perform
+		 *            The maximum time before the perform-step is obsolete.
+		 * @param finish
+		 *            The maximum time before the finish-step is obsolete.
 		 */
 		private Action(final String name, final int id, final long perform,
-		               final long finish) {
+				final long finish) {
 			this(name, id, perform, 0, finish);
 		}
 
 		/**
-		 * Gets the user-friendly name of this action.
-		 *
-		 * @return The user-friendly name of the action.
+		 * Confirms the selected action, e.x. the click on the object.
+		 * 
+		 * @return The <tt>State</tt>, telling if the operation was successful
+		 *         or not, or if the action is still in progress.
 		 */
-		private String getName() {
-			return name;
-		}
-
-		/**
-		 * Gets the identification for this action.
-		 *
-		 * @return The identification for this action.
-		 */
-		private int getId() {
-			return id;
+		State confirm() {
+			return State.COMPLETED;
 		}
 
 		/**
@@ -255,7 +282,7 @@ public final class VoluntaryThieve extends Script implements
 		 * <tt>State.PROGRESSING</tt>. No matter how low a maximum time for a
 		 * step is set, the corresponding method will always be called once,
 		 * before making any conclusions.
-		 *
+		 * 
 		 * @return One of the following states: State.PROGRESSING - The action
 		 *         is still in progress. State.COMPLETED - The action completed
 		 *         successfully. State.FAILED - The action did not complete
@@ -271,58 +298,66 @@ public final class VoluntaryThieve extends Script implements
 
 			State returnState;
 			switch (steps.getCurrent()) {
-				case Steps.PERFORM:
-					if ((returnState = perform()) == State.COMPLETED) {
-						steps.next();
-						return State.PROGRESSING;
-					}
-					break;
-				case Steps.CONFIRM:
-					if ((returnState = confirm()) == State.COMPLETED) {
-						steps.next();
-						return State.PROGRESSING;
-					}
-					break;
-				case Steps.FINISH:
-					if ((returnState = finish()) == State.COMPLETED) {
-						return (actionDoneState = State.COMPLETED);
-					}
-					break;
-				default:
-					throw new AssertionError("Unsupported step: "
-							+ steps.getCurrent());
+			case Steps.PERFORM:
+				if ((returnState = perform()) == State.COMPLETED) {
+					steps.next();
+					return State.PROGRESSING;
+				}
+				break;
+			case Steps.CONFIRM:
+				if ((returnState = confirm()) == State.COMPLETED) {
+					steps.next();
+					return State.PROGRESSING;
+				}
+				break;
+			case Steps.FINISH:
+				if ((returnState = finish()) == State.COMPLETED) {
+					return actionDoneState = State.COMPLETED;
+				}
+				break;
+			default:
+				throw new AssertionError("Unsupported step: "
+						+ steps.getCurrent());
 			}
 
-			return (returnState == State.FAILED || steps.isObsolete()) ? (actionDoneState = State.FAILED)
+			return returnState == State.FAILED || steps.isObsolete() ? (actionDoneState = State.FAILED)
 					: State.PROGRESSING;
-		}
-
-		/**
-		 * Performs the selected action, e.x. clicking on an object.
-		 *
-		 * @return The <tt>State</tt>, telling if the operation was successful
-		 *         or not, or if the action is still in progress.
-		 */
-		abstract State perform();
-
-		/**
-		 * Confirms the selected action, e.x. the click on the object.
-		 *
-		 * @return The <tt>State</tt>, telling if the operation was successful
-		 *         or not, or if the action is still in progress.
-		 */
-		State confirm() {
-			return State.COMPLETED;
 		}
 
 		/**
 		 * Checks if the actions result matches the desired result of the
 		 * action.
-		 *
+		 * 
 		 * @return The <tt>State</tt>, telling if the operation was successful
 		 *         or not, or if the action is still in progress.
 		 */
 		abstract State finish();
+
+		/**
+		 * Gets the identification for this action.
+		 * 
+		 * @return The identification for this action.
+		 */
+		private int getId() {
+			return id;
+		}
+
+		/**
+		 * Gets the user-friendly name of this action.
+		 * 
+		 * @return The user-friendly name of the action.
+		 */
+		private String getName() {
+			return name;
+		}
+
+		/**
+		 * Performs the selected action, e.x. clicking on an object.
+		 * 
+		 * @return The <tt>State</tt>, telling if the operation was successful
+		 *         or not, or if the action is still in progress.
+		 */
+		abstract State perform();
 	}
 
 	/**
@@ -336,72 +371,9 @@ public final class VoluntaryThieve extends Script implements
 		private final class Methods {
 
 			/**
-			 * Checks if the the player is logged in and has passed the welcome
-			 * screen. Also makes sure that skill levels and such are loaded, so
-			 * no misreadings happen.
-			 *
-			 * @return <tt>true</tt> if the player is logged in and has passed
-			 *         the welcome screen; otherwise <tt>false</tt>.
-			 */
-			private boolean isLoggedIn() {
-				return (game.isLoggedIn() && skills
-						.getRealLevel(Skills.THIEVING) > 1);
-			}
-
-			/**
-			 * Gets the identifications for the trainers to use in the current
-			 * mode. Excludes trainers that have explicitly been marked as not
-			 * to be included.
-			 *
-			 * @return The identifications for the trainers to use.
-			 */
-			private int[] getTrainers() {
-				final int[] allTrainers = options.isBlackjacking ? new int[]{
-						11289, 11291, 11293, 11297} : new int[]{11281,
-						11283, 11285, 11287};
-
-				final List<Integer> validTrainers = new ArrayList<Integer>();
-				for (final Integer trainer : allTrainers) {
-					final Boolean isIncluded = trainerInclusions.get(trainer);
-					if (isIncluded == null || isIncluded) {
-						validTrainers.add(trainer);
-					}
-				}
-
-				final int[] resultTrainers = new int[validTrainers.size()];
-				for (int i = 0; i < validTrainers.size(); i++) {
-					resultTrainers[i] = validTrainers.get(i);
-				}
-				return resultTrainers;
-			}
-
-			/**
-			 * Gets if the door to the bank is open or closed.
-			 *
-			 * @return <tt>true</tt> if the door could be found and is open;
-			 *         <tt>false</tt> if the door could not be found or is
-			 *         closed.
-			 */
-			private boolean isDoorOpen() {
-				final RSObject door = getOpenDoor();
-				return (door != null && door.getID() == Values.OBJECT_DOOR_OPEN);
-			}
-
-			/**
-			 * Gets the object at the position where the door to the bank should
-			 * be if it is currently open.
-			 *
-			 * @return The <tt>RSObject</tt> at the position of the open door.
-			 */
-			private RSObject getOpenDoor() {
-				return objects.getTopAt(new RSTile(4755 + tileOffset.x,
-						5795 + tileOffset.y));
-			}
-
-			/**
 			 * Gets the object at the position where the door to the bank should
 			 * be if it is currently closed.
-			 *
+			 * 
 			 * @return The <tt>RSObject</tt> at the position of the closed door.
 			 */
 			private RSObject getClosedDoor() {
@@ -410,91 +382,16 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			/**
-			 * Gets if any of the interfaces for the conversation when luring is
-			 * valid or not.
-			 *
-			 * @return <tt>true</tt> if any of the interfaces for the
-			 *         conversation when luring is valid; otherwise
-			 *         <tt>false</tt>.
-			 */
-			private boolean isLureScreenValid() {
-				if (hasKnockoutFailed()) {
-					return false;
-				}
-				final int[] screens = {Values.INTERFACE_LURE_FIRST,
-						Values.INTERFACE_LURE_SECOND};
-				for (final int screen : screens) {
-					final RSInterface screenInterface = interfaces.get(screen);
-					if (screenInterface != null && screenInterface.isValid()) {
-						return true;
-					}
-				}
-
-				return false;
-			}
-
-			/**
-			 * Gets if the knock-out attempt has failed and the npc needs to be
-			 * lured again.
-			 *
-			 * @return <tt>true</tt> if the knock-out attempt has failed;
-			 *         otherwise <tt>false</tt>.
-			 */
-			private boolean hasKnockoutFailed() {
-				final RSInterface failScreen = interfaces
-						.get(Values.INTERFACE_LURE_FIRST);
-				return (failScreen != null && failScreen.isValid() && failScreen
-						.getComponent(4).containsText("divert"));
-			}
-
-			/**
-			 * Gets if the player is considered to be stunned.
-			 *
-			 * @return <tt>true</tt> if the player is stunned; otherwise
-			 *         <tt>false</tt>.
-			 */
-			private boolean isStunned() {
-				return (stunnedTimer != null && stunnedTimer.isRunning());
-			}
-
-			/**
 			 * Gets the appropriate action to do in order to handle the opening
 			 * of a door.
-			 *
+			 * 
 			 * @return The appropriate {@link VoluntaryThieve.Action} to take
 			 *         when opening the door.
 			 */
 			private Action getDoorAction() {
 				final RSObject door = methods.getClosedDoor();
-				return (door != null && calc.distanceTo(door.getLocation()) < 5) ? get(Values.ACTION_BANK_DOOR_OPEN)
+				return door != null && calc.distanceTo(door.getLocation()) < 5 ? get(Values.ACTION_BANK_DOOR_OPEN)
 						: get(Values.ACTION_BANK_DOOR_WALK);
-			}
-
-			/**
-			 * Gets if the player is inside the bank-area.
-			 *
-			 * @return <tt>true</tt> if the player is in the bank-area;
-			 *         otherwise <tt>false</tt>.
-			 */
-			private boolean isInBank() {
-				return new RSArea(new RSTile(4747 + tileOffset.x,
-						5793 + tileOffset.y), new RSTile(4754 + tileOffset.x,
-						5797 + tileOffset.y)).contains(getMyPlayer()
-						.getLocation());
-			}
-
-			/**
-			 * Gets if the player is located inside the thieves guild or not.
-			 *
-			 * @return <tt>true</tt> if the player is inside the thieves guild;
-			 *         otherwise <tt>false</tt>.
-			 */
-			private boolean isInGuild() {
-				return new RSArea(new RSTile(4745 + tileOffset.x,
-						5762 + tileOffset.y), new RSTile(4794 + tileOffset.x,
-						5806 + tileOffset.y)).contains(getMyPlayer()
-						.getLocation())
-						&& game.getPlane() == 0;
 			}
 
 			/**
@@ -502,7 +399,7 @@ public final class VoluntaryThieve extends Script implements
 			 * used because, depending on how many capers the user has
 			 * completed, the guild will be placed differently in the runescape
 			 * world.
-			 *
+			 * 
 			 * @return The offset to be used for locations in the script.
 			 */
 			private Point getOffset() {
@@ -520,6 +417,144 @@ public final class VoluntaryThieve extends Script implements
 				}
 
 				return offset;
+			}
+
+			/**
+			 * Gets the object at the position where the door to the bank should
+			 * be if it is currently open.
+			 * 
+			 * @return The <tt>RSObject</tt> at the position of the open door.
+			 */
+			private RSObject getOpenDoor() {
+				return objects.getTopAt(new RSTile(4755 + tileOffset.x,
+						5795 + tileOffset.y));
+			}
+
+			/**
+			 * Gets the identifications for the trainers to use in the current
+			 * mode. Excludes trainers that have explicitly been marked as not
+			 * to be included.
+			 * 
+			 * @return The identifications for the trainers to use.
+			 */
+			private int[] getTrainers() {
+				final int[] allTrainers = options.isBlackjacking ? new int[] {
+						11289, 11291, 11293, 11297 } : new int[] { 11281,
+						11283, 11285, 11287 };
+
+				final List<Integer> validTrainers = new ArrayList<Integer>();
+				for (final Integer trainer : allTrainers) {
+					final Boolean isIncluded = trainerInclusions.get(trainer);
+					if (isIncluded == null || isIncluded) {
+						validTrainers.add(trainer);
+					}
+				}
+
+				final int[] resultTrainers = new int[validTrainers.size()];
+				for (int i = 0; i < validTrainers.size(); i++) {
+					resultTrainers[i] = validTrainers.get(i);
+				}
+				return resultTrainers;
+			}
+
+			/**
+			 * Gets if the knock-out attempt has failed and the npc needs to be
+			 * lured again.
+			 * 
+			 * @return <tt>true</tt> if the knock-out attempt has failed;
+			 *         otherwise <tt>false</tt>.
+			 */
+			private boolean hasKnockoutFailed() {
+				final RSInterface failScreen = interfaces
+						.get(Values.INTERFACE_LURE_FIRST);
+				return failScreen != null && failScreen.isValid()
+						&& failScreen.getComponent(4).containsText("divert");
+			}
+
+			/**
+			 * Gets if the door to the bank is open or closed.
+			 * 
+			 * @return <tt>true</tt> if the door could be found and is open;
+			 *         <tt>false</tt> if the door could not be found or is
+			 *         closed.
+			 */
+			private boolean isDoorOpen() {
+				final RSObject door = getOpenDoor();
+				return door != null && door.getID() == Values.OBJECT_DOOR_OPEN;
+			}
+
+			/**
+			 * Gets if the player is inside the bank-area.
+			 * 
+			 * @return <tt>true</tt> if the player is in the bank-area;
+			 *         otherwise <tt>false</tt>.
+			 */
+			private boolean isInBank() {
+				return new RSArea(new RSTile(4747 + tileOffset.x,
+						5793 + tileOffset.y), new RSTile(4754 + tileOffset.x,
+						5797 + tileOffset.y)).contains(getMyPlayer()
+						.getLocation());
+			}
+
+			/**
+			 * Gets if the player is located inside the thieves guild or not.
+			 * 
+			 * @return <tt>true</tt> if the player is inside the thieves guild;
+			 *         otherwise <tt>false</tt>.
+			 */
+			private boolean isInGuild() {
+				return new RSArea(new RSTile(4745 + tileOffset.x,
+						5762 + tileOffset.y), new RSTile(4794 + tileOffset.x,
+						5806 + tileOffset.y)).contains(getMyPlayer()
+						.getLocation())
+						&& game.getPlane() == 0;
+			}
+
+			/**
+			 * Checks if the the player is logged in and has passed the welcome
+			 * screen. Also makes sure that skill levels and such are loaded, so
+			 * no misreadings happen.
+			 * 
+			 * @return <tt>true</tt> if the player is logged in and has passed
+			 *         the welcome screen; otherwise <tt>false</tt>.
+			 */
+			private boolean isLoggedIn() {
+				return game.isLoggedIn()
+						&& skills.getRealLevel(Skills.THIEVING) > 1;
+			}
+
+			/**
+			 * Gets if any of the interfaces for the conversation when luring is
+			 * valid or not.
+			 * 
+			 * @return <tt>true</tt> if any of the interfaces for the
+			 *         conversation when luring is valid; otherwise
+			 *         <tt>false</tt>.
+			 */
+			private boolean isLureScreenValid() {
+				if (hasKnockoutFailed()) {
+					return false;
+				}
+				final int[] screens = { Values.INTERFACE_LURE_FIRST,
+						Values.INTERFACE_LURE_SECOND };
+				for (final int screen : screens) {
+					final RSInterface screenInterface = interfaces.get(screen);
+					if (screenInterface != null && screenInterface.isValid()) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+			/**
+			 * Gets if the player is considered to be stunned.
+			 * 
+			 * @return <tt>true</tt> if the player is stunned; otherwise
+			 *         <tt>false</tt>.
+			 */
+			private boolean isStunned() {
+				return stunnedTimer != null && stunnedTimer.isRunning();
 			}
 		}
 
@@ -724,8 +759,599 @@ public final class VoluntaryThieve extends Script implements
 		private final Map<Integer, Boolean> trainerInclusions = new HashMap<Integer, Boolean>();
 
 		/**
+		 * Gets the already defined action for the specified identifier,
+		 * <tt>action</tt>.
+		 * 
+		 * @param action
+		 *            The unique identifier for a predefined action, identifying
+		 *            a valid action.
+		 * @param args
+		 *            Any arguments that should be passed to the action, see
+		 *            identifiers.
+		 * @return The already defined action for the specified identifier.
+		 * @throws IllegalArgumentException
+		 *             If an invalid action was specified.
+		 */
+		private Action get(final int action, final Object... args)
+				throws IllegalArgumentException {
+			if (0 > action || action >= Values.ACTIONS_TOTAL_COUNT) {
+				throw new IllegalArgumentException("Invalid action: " + action);
+			}
+
+			if (action == Values.ACTION_WALK_TO_TRAINER) {
+				return new Action("Walking to trainer",
+						Values.ACTION_WALK_TO_TRAINER, random(1425,
+								1635), random(1645, 1850),
+						random(4925, 5135)) {
+
+					RSNPC trainer;
+
+					@Override
+					State confirm() {
+						return getMyPlayer().isMoving() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State finish() {
+						if (calc.distanceTo(trainer) > random(4, 7)) {
+							antibans.perform(
+									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
+									random(17, 23));
+						}
+						return trainer.isOnScreen() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						if (trainer == null) {
+							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
+								throw new IllegalArgumentException();
+							}
+							trainer = (RSNPC) args[0];
+						}
+
+						if (!calc.tileOnMap(trainer.getLocation())) {
+							return State.FAILED;
+						}
+						return walking.walkTileMM(trainer.getLocation(), 2, 2) ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_PICKPOCKET_TRAINER) {
+				return new Action("Pickpocketing the trainer",
+						Values.ACTION_PICKPOCKET_TRAINER, random(250,
+								1250), random(515, 725)) {
+
+					RSNPC trainer;
+
+					@Override
+					State finish() {
+						if (hasThieved) {
+							hasThieved = false;
+							return State.COMPLETED;
+						}
+
+						return State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						if (trainer == null) {
+							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
+								throw new IllegalArgumentException();
+							}
+							trainer = (RSNPC) args[0];
+						}
+
+						if (!trainer.isOnScreen()) {
+							return State.FAILED;
+						}
+						return trainer.doAction(options.isBlackjacking ? "Loot"
+								: "Pickpocket Pickpocketing") ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_STUNNED_WAIT) {
+				return new Action("Waiting while being stunned",
+						Values.ACTION_STUNNED_WAIT, 0, random(4820,
+								5210)) {
+
+					@Override
+					State finish() {
+						antibans.perform(
+								new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, 21);
+						antibans.perform(new int[] { Antibans.ALL_ANTIBANS },
+								65);
+						return stunnedTimer.isRunning() ? State.PROGRESSING
+								: State.COMPLETED;
+					}
+
+					@Override
+					State perform() {
+						return stunnedTimer != null ? State.COMPLETED
+								: State.FAILED;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_EQUIP_GLOVES) {
+				return new Action("Equipping a new pair of gloves",
+						Values.ACTION_EQUIP_GLOVES, random(2345, 2745),
+						random(3215, 3445)) {
+
+					int inventoryCount;
+
+					@Override
+					State finish() {
+						if (inventory.getCount() != inventoryCount) {
+							hasGloves = true;
+							return State.COMPLETED;
+						}
+
+						return State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						if (inventoryCount == 0) {
+							inventoryCount = inventory.getCount();
+						}
+
+						final RSItem gloves = inventory
+								.getItem(Values.ITEM_GLOVES_OF_SILENCE);
+						if (gloves == null) {
+							return State.FAILED;
+						}
+
+						return gloves.doAction("Wear") ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_LURE_TRAINER) {
+				return new Action("Luring the trainer",
+						Values.ACTION_LURE_TRAINER, random(250, 1250),
+						random(1455, 2135)) {
+
+					RSNPC trainer;
+
+					@Override
+					State finish() {
+						return methods.isLureScreenValid() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						if (trainer == null) {
+							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
+								throw new IllegalArgumentException();
+							}
+							trainer = (RSNPC) args[0];
+						}
+
+						return trainer.doAction("Lure") ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_LURE_TALK_TRAINER) {
+				return new Action("Luring/talking to the trainer",
+						Values.ACTION_LURE_TALK_TRAINER, random(5550,
+								6750), random(3225, 4475)) {
+
+					boolean isFirstDone;
+
+					@Override
+					State finish() {
+						final RSInterface secondTalkScreen = interfaces
+								.get(241);
+						if (secondTalkScreen == null
+								|| !secondTalkScreen.isValid()) {
+							isLured = true;
+							return State.COMPLETED;
+						}
+
+						return State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						if (!isFirstDone) {
+							final RSInterface secondTalkScreen = interfaces
+									.get(Values.INTERFACE_LURE_SECOND);
+							isFirstDone = secondTalkScreen != null
+									&& secondTalkScreen.isValid();
+						}
+
+						if (isFirstDone) {
+							final RSInterface secondTalkScreen = interfaces
+									.get(Values.INTERFACE_LURE_SECOND);
+							if (secondTalkScreen != null
+									&& secondTalkScreen.isValid()) {
+								if (secondTalkScreen.getComponent(5).doClick()) {
+									return State.COMPLETED;
+								}
+							}
+						} else {
+							final RSInterface firstTalkScreen = interfaces
+									.get(Values.INTERFACE_LURE_FIRST);
+							if (firstTalkScreen != null
+									&& firstTalkScreen.isValid()) {
+								isFirstDone = firstTalkScreen.getComponent(5)
+										.doClick();
+							}
+						}
+
+						return State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_KNOCK_TRAINER) {
+				return new Action("Knocking the trainer",
+						Values.ACTION_KNOCK_TRAINER, random(250, 1250),
+						random(2145, 2625)) {
+
+					RSNPC trainer;
+
+					@Override
+					State finish() {
+						if (trainer.getAnimation() == Values.ANIMATION_KNOCKED_OUT
+								|| methods.isStunned() || isForcingBlackjack) {
+							isLured = false;
+							return State.COMPLETED;
+						}
+
+						return State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						if (trainer == null) {
+							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
+								throw new IllegalArgumentException();
+							}
+							trainer = (RSNPC) args[0];
+						}
+
+						return trainer.doAction("Knock-out") ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_BANK_DOOR_WALK) {
+				return new Action("Walking to the door",
+						Values.ACTION_BANK_DOOR_WALK,
+						random(1245, 1485), random(2145, 2675),
+						random(4595, 5780)) {
+
+					@Override
+					State confirm() {
+						final RSTile destination = walking.getDestination();
+						return destination != null && getMyPlayer().isMoving() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State finish() {
+						final RSTile destination = walking.getDestination();
+						if (destination == null) {
+							return State.FAILED;
+						}
+
+						final RSObject door = methods.getOpenDoor();
+						if (door != null && door.isOnScreen()) {
+							return State.COMPLETED;
+						}
+
+						if (calc.distanceTo(destination) > random(5, 7)) {
+							antibans.perform(
+									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
+									random(17, 23));
+						}
+						return calc.distanceTo(destination) < random(3,
+								6) ? State.COMPLETED : State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						return walking.walkTo(new RSTile(4755 + tileOffset.x,
+								5795 + tileOffset.y)) ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_BANK_DOOR_OPEN) {
+				return new Action("Opening the door",
+						Values.ACTION_BANK_DOOR_OPEN,
+						random(4525, 4895), random(2975, 3225)) {
+
+					boolean isCameraSet;
+
+					@Override
+					State finish() {
+						return methods.isDoorOpen() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						final RSObject door = methods.getClosedDoor();
+						if (door == null) {
+							return State.FAILED;
+						}
+
+						if (!door.isOnScreen()) {
+							if (!isCameraSet) {
+								camera.turnTo(door);
+								isCameraSet = true;
+							} else {
+								return State.FAILED;
+							}
+						}
+
+						return door.doAction("Open") ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_BANK_WALK) {
+				return new Action("Walking to the bank",
+						Values.ACTION_BANK_WALK, random(1425, 1635),
+						random(2345, 2755), random(5255, 5825)) {
+
+					RSObject bankBooth;
+
+					@Override
+					State confirm() {
+						final RSTile destination = walking.getDestination();
+						if (destination != null) {
+							if (calc.distanceBetween(destination,
+									bankBooth.getLocation()) > 3) {
+								return State.FAILED;
+							}
+
+							if (getMyPlayer().isMoving()) {
+								return State.COMPLETED;
+							}
+						}
+
+						return State.PROGRESSING;
+					}
+
+					@Override
+					State finish() {
+						if (calc.distanceTo(bankBooth) > random(4, 7)) {
+							antibans.perform(
+									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
+									random(17, 23));
+						}
+						return bankBooth.isOnScreen() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						bankBooth = objects
+								.getNearest(Values.OBJECT_BANK_BOOTH);
+						if (bankBooth == null
+								|| !calc.tileOnMap(bankBooth.getLocation())) {
+							return State.FAILED;
+						}
+
+						return walking
+								.walkTileMM(bankBooth.getLocation(), 2, 2) ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_BANK_OPEN) {
+				return new Action("Opening the bank", Values.ACTION_BANK_OPEN,
+						random(1425, 1625), random(2452, 2855)) {
+
+					boolean isCameraSet;
+
+					@Override
+					State finish() {
+						return bank.isOpen() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						final RSObject bankBooth = objects
+								.getNearest(Values.OBJECT_BANK_BOOTH);
+						if (bankBooth == null) {
+							return State.FAILED;
+						}
+
+						if (!bankBooth.isOnScreen()) {
+							if (!isCameraSet) {
+								camera.turnTo(bankBooth);
+								isCameraSet = true;
+							} else {
+								return State.FAILED;
+							}
+						}
+
+						return bankBooth.doAction("Use-quickly") ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_BANK_BANKING) {
+				return new Action("Banking", Values.ACTION_BANK_BANKING,
+						random(6445, 7125), random(2745, 3465)) {
+
+					Timer withdrawTimer;
+					boolean hasDeposited;
+
+					@Override
+					State finish() {
+						if (withdrawTimer.isRunning()) {
+							if (inventory
+									.contains(Values.ITEM_GLOVES_OF_SILENCE)) {
+								withdrawTimer.setEndIn(0);
+							} else {
+								return State.PROGRESSING;
+							}
+						}
+
+						if (inventory.contains(Values.ITEM_GLOVES_OF_SILENCE)) {
+							return bank.close() ? State.COMPLETED
+									: State.PROGRESSING;
+						}
+
+						return State.FAILED;
+					}
+
+					@Override
+					State perform() {
+						if (withdrawTimer == null) {
+							withdrawTimer = new Timer(
+									random(1045, 1425));
+						}
+						if (withdrawTimer.isRunning()) {
+							return State.PROGRESSING;
+						}
+
+						if (!bank.isOpen()) {
+							return State.FAILED;
+						}
+
+						if (!hasDeposited && inventory.getCount() > 0) {
+							hasDeposited = bank.depositAll();
+						}
+
+						final RSItem gloves = bank
+								.getItem(Values.ITEM_GLOVES_OF_SILENCE);
+						if (gloves == null) {
+							if (bank.close()) {
+								log("Character is out of gloves of silence.");
+								isUsingGloves = false;
+								return State.COMPLETED;
+							} else {
+								return State.PROGRESSING;
+							}
+						}
+
+						bank.withdraw(Values.ITEM_GLOVES_OF_SILENCE, 0);
+						withdrawTimer = new Timer(random(2545, 2895));
+						return State.COMPLETED;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_BANK_WALK_AREA) {
+				return new Action("Walking to the bank area",
+						Values.ACTION_BANK_WALK_AREA,
+						random(1245, 1475), random(2345, 2765),
+						random(4985, 5375)) {
+
+					State confirm() {
+						return getMyPlayer().isMoving() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State finish() {
+						final RSObject bankBooth = objects
+								.getNearest(Values.OBJECT_BANK_BOOTH);
+						if (bankBooth == null) {
+							antibans.perform(
+									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
+									random(17, 23));
+						}
+
+						return bankBooth != null
+								&& calc.tileOnMap(bankBooth.getLocation()) ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						return walking.walkTo(new RSTile(4747 + tileOffset.x,
+								5795 + tileOffset.y)) ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_WALK_TO_TRAINING_AREA) {
+				return new Action("Walking to the training area",
+						Values.ACTION_WALK_TO_TRAINING_AREA, random(
+								1245, 1475), random(2345, 2765),
+						random(4985, 5375)) {
+
+					State confirm() {
+						return getMyPlayer().isMoving() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State finish() {
+						final RSNPC nearestTrainer = npcs.getNearest(methods
+								.getTrainers());
+						if (nearestTrainer == null) {
+							antibans.perform(
+									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
+									random(17, 23));
+						}
+
+						return nearestTrainer != null
+								&& calc.tileOnMap(nearestTrainer.getLocation()) ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						return walking.walkTo(new RSTile(4763 + tileOffset.x,
+								5793 + tileOffset.y)) ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+				};
+			}
+
+			if (action == Values.ACTION_FAILSAFE_TIMEOUT) {
+				return new Action("Failsafe timeout",
+						Values.ACTION_FAILSAFE_TIMEOUT, 0, random(7200,
+								13250)) {
+
+					@Override
+					State finish() {
+						return methods.isInGuild() ? State.COMPLETED
+								: State.PROGRESSING;
+					}
+
+					@Override
+					State perform() {
+						log.fine("Failsafe timeout initiated, time: "
+								+ steps.maximumTimes[Steps.FINISH]);
+						return State.COMPLETED;
+					}
+				};
+			}
+
+			throw new AssertionError("Unsupported action: " + action);
+		}
+
+		/**
 		 * Gets the next action to be performed.
-		 *
+		 * 
 		 * @return The next <tt>Action</tt> to be performed or <tt>null</tt> if
 		 *         unable to get the next step.
 		 */
@@ -782,7 +1408,7 @@ public final class VoluntaryThieve extends Script implements
 				return methods.getDoorAction();
 			}
 
-			final int[] trainerIds = (currentTrainerId != 0) ? new int[]{currentTrainerId}
+			final int[] trainerIds = currentTrainerId != 0 ? new int[] { currentTrainerId }
 					: methods.getTrainers();
 
 			if (trainerIds.length == 0) {
@@ -826,7 +1452,7 @@ public final class VoluntaryThieve extends Script implements
 					if (!isLured) {
 						return methods.isLureScreenValid() ? get(Values.ACTION_LURE_TALK_TRAINER)
 								: get(Values.ACTION_LURE_TRAINER,
-								nearestTrainer);
+										nearestTrainer);
 					}
 				} else {
 					isForcingBlackjack = false;
@@ -836,588 +1462,6 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			return get(Values.ACTION_PICKPOCKET_TRAINER, nearestTrainer);
-		}
-
-		/**
-		 * Gets the already defined action for the specified identifier,
-		 * <tt>action</tt>.
-		 *
-		 * @param action The unique identifier for a predefined action, identifying
-		 *               a valid action.
-		 * @param args   Any arguments that should be passed to the action, see
-		 *               identifiers.
-		 * @return The already defined action for the specified identifier.
-		 * @throws IllegalArgumentException If an invalid action was specified.
-		 */
-		private Action get(final int action, final Object... args)
-				throws IllegalArgumentException {
-			if (0 > action || action >= Values.ACTIONS_TOTAL_COUNT) {
-				throw new IllegalArgumentException("Invalid action: " + action);
-			}
-
-			if (action == Values.ACTION_WALK_TO_TRAINER) {
-				return new Action("Walking to trainer",
-						Values.ACTION_WALK_TO_TRAINER, random(1425, 1635),
-						random(1645, 1850), random(4925, 5135)) {
-
-					RSNPC trainer;
-
-					@Override
-					State perform() {
-						if (trainer == null) {
-							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
-								throw new IllegalArgumentException();
-							}
-							trainer = (RSNPC) args[0];
-						}
-
-						if (!calc.tileOnMap(trainer.getLocation())) {
-							return State.FAILED;
-						}
-						return walking.walkTileMM(trainer.getLocation(), 2, 2) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State confirm() {
-						return getMyPlayer().isMoving() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						if (calc.distanceTo(trainer) > random(4, 7)) {
-							antibans.perform(
-									new int[]{Antibans.MOUSE_MOVE_RANDOMLY},
-									random(17, 23));
-						}
-						return trainer.isOnScreen() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_PICKPOCKET_TRAINER) {
-				return new Action("Pickpocketing the trainer",
-						Values.ACTION_PICKPOCKET_TRAINER, random(250, 1250),
-						random(515, 725)) {
-
-					RSNPC trainer;
-
-					@Override
-					State perform() {
-						if (trainer == null) {
-							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
-								throw new IllegalArgumentException();
-							}
-							trainer = (RSNPC) args[0];
-						}
-
-						if (!trainer.isOnScreen()) {
-							return State.FAILED;
-						}
-						return trainer.doAction(options.isBlackjacking ? "Loot"
-								: "Pickpocket Pickpocketing") ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						if (hasThieved) {
-							hasThieved = false;
-							return State.COMPLETED;
-						}
-
-						return State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_STUNNED_WAIT) {
-				return new Action("Waiting while being stunned",
-						Values.ACTION_STUNNED_WAIT, 0, random(4820, 5210)) {
-
-					@Override
-					State perform() {
-						return (stunnedTimer != null) ? State.COMPLETED
-								: State.FAILED;
-					}
-
-					@Override
-					State finish() {
-						antibans.perform(
-								new int[]{Antibans.MOUSE_MOVE_RANDOMLY}, 21);
-						antibans.perform(new int[]{Antibans.ALL_ANTIBANS},
-								65);
-						return stunnedTimer.isRunning() ? State.PROGRESSING
-								: State.COMPLETED;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_EQUIP_GLOVES) {
-				return new Action("Equipping a new pair of gloves",
-						Values.ACTION_EQUIP_GLOVES, random(2345, 2745), random(
-						3215, 3445)) {
-
-					int inventoryCount;
-
-					@Override
-					State perform() {
-						if (inventoryCount == 0) {
-							inventoryCount = inventory.getCount();
-						}
-
-						final RSItem gloves = inventory
-								.getItem(Values.ITEM_GLOVES_OF_SILENCE);
-						if (gloves == null) {
-							return State.FAILED;
-						}
-
-						return gloves.doAction("Wear") ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						if (inventory.getCount() != inventoryCount) {
-							hasGloves = true;
-							return State.COMPLETED;
-						}
-
-						return State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_LURE_TRAINER) {
-				return new Action("Luring the trainer",
-						Values.ACTION_LURE_TRAINER, random(250, 1250), random(
-						1455, 2135)) {
-
-					RSNPC trainer;
-
-					@Override
-					State perform() {
-						if (trainer == null) {
-							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
-								throw new IllegalArgumentException();
-							}
-							trainer = (RSNPC) args[0];
-						}
-
-						return trainer.doAction("Lure") ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						return methods.isLureScreenValid() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_LURE_TALK_TRAINER) {
-				return new Action("Luring/talking to the trainer",
-						Values.ACTION_LURE_TALK_TRAINER, random(5550, 6750),
-						random(3225, 4475)) {
-
-					boolean isFirstDone;
-
-					@Override
-					State perform() {
-						if (!isFirstDone) {
-							final RSInterface secondTalkScreen = interfaces
-									.get(Values.INTERFACE_LURE_SECOND);
-							isFirstDone = (secondTalkScreen != null && secondTalkScreen
-									.isValid());
-						}
-
-						if (isFirstDone) {
-							final RSInterface secondTalkScreen = interfaces
-									.get(Values.INTERFACE_LURE_SECOND);
-							if (secondTalkScreen != null
-									&& secondTalkScreen.isValid()) {
-								if (secondTalkScreen.getComponent(5).doClick()) {
-									return State.COMPLETED;
-								}
-							}
-						} else {
-							final RSInterface firstTalkScreen = interfaces
-									.get(Values.INTERFACE_LURE_FIRST);
-							if (firstTalkScreen != null
-									&& firstTalkScreen.isValid()) {
-								isFirstDone = firstTalkScreen.getComponent(5)
-										.doClick();
-							}
-						}
-
-						return State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						final RSInterface secondTalkScreen = interfaces
-								.get(241);
-						if (secondTalkScreen == null
-								|| !secondTalkScreen.isValid()) {
-							isLured = true;
-							return State.COMPLETED;
-						}
-
-						return State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_KNOCK_TRAINER) {
-				return new Action("Knocking the trainer",
-						Values.ACTION_KNOCK_TRAINER, random(250, 1250), random(
-						2145, 2625)) {
-
-					RSNPC trainer;
-
-					@Override
-					State perform() {
-						if (trainer == null) {
-							if (args.length != 1 || !(args[0] instanceof RSNPC)) {
-								throw new IllegalArgumentException();
-							}
-							trainer = (RSNPC) args[0];
-						}
-
-						return trainer.doAction("Knock-out") ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						if (trainer.getAnimation() == Values.ANIMATION_KNOCKED_OUT
-								|| methods.isStunned() || isForcingBlackjack) {
-							isLured = false;
-							return State.COMPLETED;
-						}
-
-						return State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_BANK_DOOR_WALK) {
-				return new Action("Walking to the door",
-						Values.ACTION_BANK_DOOR_WALK, random(1245, 1485),
-						random(2145, 2675), random(4595, 5780)) {
-
-					@Override
-					State perform() {
-						return walking.walkTo(new RSTile(4755 + tileOffset.x,
-								5795 + tileOffset.y)) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State confirm() {
-						final RSTile destination = walking.getDestination();
-						return (destination != null && getMyPlayer().isMoving()) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						final RSTile destination = walking.getDestination();
-						if (destination == null) {
-							return State.FAILED;
-						}
-
-						final RSObject door = methods.getOpenDoor();
-						if (door != null && door.isOnScreen()) {
-							return State.COMPLETED;
-						}
-
-						if (calc.distanceTo(destination) > random(5, 7)) {
-							antibans.perform(
-									new int[]{Antibans.MOUSE_MOVE_RANDOMLY},
-									random(17, 23));
-						}
-						return calc.distanceTo(destination) < random(3, 6) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_BANK_DOOR_OPEN) {
-				return new Action("Opening the door",
-						Values.ACTION_BANK_DOOR_OPEN, random(4525, 4895),
-						random(2975, 3225)) {
-
-					boolean isCameraSet;
-
-					@Override
-					State perform() {
-						final RSObject door = methods.getClosedDoor();
-						if (door == null) {
-							return State.FAILED;
-						}
-
-						if (!door.isOnScreen()) {
-							if (!isCameraSet) {
-								camera.turnTo(door);
-								isCameraSet = true;
-							} else {
-								return State.FAILED;
-							}
-						}
-
-						return door.doAction("Open") ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						return methods.isDoorOpen() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_BANK_WALK) {
-				return new Action("Walking to the bank",
-						Values.ACTION_BANK_WALK, random(1425, 1635), random(
-						2345, 2755), random(5255, 5825)) {
-
-					RSObject bankBooth;
-
-					@Override
-					State perform() {
-						bankBooth = objects
-								.getNearest(Values.OBJECT_BANK_BOOTH);
-						if (bankBooth == null
-								|| !calc.tileOnMap(bankBooth.getLocation())) {
-							return State.FAILED;
-						}
-
-						return walking
-								.walkTileMM(bankBooth.getLocation(), 2, 2) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State confirm() {
-						final RSTile destination = walking.getDestination();
-						if (destination != null) {
-							if (calc.distanceBetween(destination,
-									bankBooth.getLocation()) > 3) {
-								return State.FAILED;
-							}
-
-							if (getMyPlayer().isMoving()) {
-								return State.COMPLETED;
-							}
-						}
-
-						return State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						if (calc.distanceTo(bankBooth) > random(4, 7)) {
-							antibans.perform(
-									new int[]{Antibans.MOUSE_MOVE_RANDOMLY},
-									random(17, 23));
-						}
-						return bankBooth.isOnScreen() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_BANK_OPEN) {
-				return new Action("Opening the bank", Values.ACTION_BANK_OPEN,
-						random(1425, 1625), random(2452, 2855)) {
-
-					boolean isCameraSet;
-
-					@Override
-					State perform() {
-						final RSObject bankBooth = objects
-								.getNearest(Values.OBJECT_BANK_BOOTH);
-						if (bankBooth == null) {
-							return State.FAILED;
-						}
-
-						if (!bankBooth.isOnScreen()) {
-							if (!isCameraSet) {
-								camera.turnTo(bankBooth);
-								isCameraSet = true;
-							} else {
-								return State.FAILED;
-							}
-						}
-
-						return bankBooth.doAction("Use-quickly") ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						return bank.isOpen() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_BANK_BANKING) {
-				return new Action("Banking", Values.ACTION_BANK_BANKING,
-						random(6445, 7125), random(2745, 3465)) {
-
-					Timer withdrawTimer;
-					boolean hasDeposited;
-
-					@Override
-					State perform() {
-						if (withdrawTimer == null) {
-							withdrawTimer = new Timer(random(1045, 1425));
-						}
-						if (withdrawTimer.isRunning()) {
-							return State.PROGRESSING;
-						}
-
-						if (!bank.isOpen()) {
-							return State.FAILED;
-						}
-
-						if (!hasDeposited && inventory.getCount() > 0) {
-							hasDeposited = bank.depositAll();
-						}
-
-						final RSItem gloves = bank
-								.getItem(Values.ITEM_GLOVES_OF_SILENCE);
-						if (gloves == null) {
-							if (bank.close()) {
-								log("Character is out of gloves of silence.");
-								isUsingGloves = false;
-								return State.COMPLETED;
-							} else {
-								return State.PROGRESSING;
-							}
-						}
-
-						bank.withdraw(Values.ITEM_GLOVES_OF_SILENCE, 0);
-						withdrawTimer = new Timer(random(2545, 2895));
-						return State.COMPLETED;
-					}
-
-					@Override
-					State finish() {
-						if (withdrawTimer.isRunning()) {
-							if (inventory
-									.contains(Values.ITEM_GLOVES_OF_SILENCE)) {
-								withdrawTimer.setEndIn(0);
-							} else {
-								return State.PROGRESSING;
-							}
-						}
-
-						if (inventory.contains(Values.ITEM_GLOVES_OF_SILENCE)) {
-							return bank.close() ? State.COMPLETED
-									: State.PROGRESSING;
-						}
-
-						return State.FAILED;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_BANK_WALK_AREA) {
-				return new Action("Walking to the bank area",
-						Values.ACTION_BANK_WALK_AREA, random(1245, 1475),
-						random(2345, 2765), random(4985, 5375)) {
-
-					@Override
-					State perform() {
-						return walking.walkTo(new RSTile(4747 + tileOffset.x,
-								5795 + tileOffset.y)) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					State confirm() {
-						return getMyPlayer().isMoving() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						final RSObject bankBooth = objects
-								.getNearest(Values.OBJECT_BANK_BOOTH);
-						if (bankBooth == null) {
-							antibans.perform(
-									new int[]{Antibans.MOUSE_MOVE_RANDOMLY},
-									random(17, 23));
-						}
-
-						return (bankBooth != null && calc.tileOnMap(bankBooth
-								.getLocation())) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_WALK_TO_TRAINING_AREA) {
-				return new Action("Walking to the training area",
-						Values.ACTION_WALK_TO_TRAINING_AREA,
-						random(1245, 1475), random(2345, 2765), random(4985,
-						5375)) {
-
-					@Override
-					State perform() {
-						return walking.walkTo(new RSTile(4763 + tileOffset.x,
-								5793 + tileOffset.y)) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					State confirm() {
-						return getMyPlayer().isMoving() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-
-					@Override
-					State finish() {
-						final RSNPC nearestTrainer = npcs.getNearest(methods
-								.getTrainers());
-						if (nearestTrainer == null) {
-							antibans.perform(
-									new int[]{Antibans.MOUSE_MOVE_RANDOMLY},
-									random(17, 23));
-						}
-
-						return (nearestTrainer != null && calc
-								.tileOnMap(nearestTrainer.getLocation())) ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			if (action == Values.ACTION_FAILSAFE_TIMEOUT) {
-				return new Action("Failsafe timeout",
-						Values.ACTION_FAILSAFE_TIMEOUT, 0, random(7200, 13250)) {
-
-					@Override
-					State perform() {
-						log.fine("Failsafe timeout initiated, time: "
-								+ steps.maximumTimes[Steps.FINISH]);
-						return State.COMPLETED;
-					}
-
-					@Override
-					State finish() {
-						return methods.isInGuild() ? State.COMPLETED
-								: State.PROGRESSING;
-					}
-				};
-			}
-
-			throw new AssertionError("Unsupported action: " + action);
 		}
 	}
 
@@ -1470,18 +1514,21 @@ public final class VoluntaryThieve extends Script implements
 		/**
 		 * Generates a random number, and if it's the <tt>1/probability</tt>, it
 		 * performs a randomly selected antiban from the <tt>selection</tt>.
-		 *
-		 * @param selection   The identifiers of the possible antibans to perform. To
-		 *                    include all antibans, use only the value of
-		 *                    <tt>ALL_ANTIBANS</tt>.
-		 * @param probability The probability for an antiban to be performed, read as
-		 *                    "1 in probability", where probability is the specified
-		 *                    value. The minimum allowed probability is 1.
+		 * 
+		 * @param selection
+		 *            The identifiers of the possible antibans to perform. To
+		 *            include all antibans, use only the value of
+		 *            <tt>ALL_ANTIBANS</tt>.
+		 * @param probability
+		 *            The probability for an antiban to be performed, read as
+		 *            "1 in probability", where probability is the specified
+		 *            value. The minimum allowed probability is 1.
 		 * @return <tt>true</tt> if an antiban was, and still is, being
 		 *         performed; otherwise <tt>false</tt>.
-		 * @throws IllegalArgumentException If the selection is null or if the probability is below
-		 *                                  one. Also if an invalid antiban was found in the
-		 *                                  selection.
+		 * @throws IllegalArgumentException
+		 *             If the selection is null or if the probability is below
+		 *             one. Also if an invalid antiban was found in the
+		 *             selection.
 		 */
 		private boolean perform(final int[] selection, final int probability)
 				throws IllegalArgumentException {
@@ -1495,14 +1542,17 @@ public final class VoluntaryThieve extends Script implements
 							"The probability is below one: " + probability);
 				}
 
-				if (selection.length == 0 || random(0, probability) != 0) {
+				if (selection.length == 0
+						|| random(0, probability) != 0) {
 					return false;
 				}
 
-				currentAntiban = (selection.length == 1 && selection[0] == ALL_ANTIBANS) ? random(
-						0, ALL_ANTIBANS)
-						: selection[random(0, selection.length)];
-				if (0 > currentAntiban || currentAntiban >= ALL_ANTIBANS) {
+				currentAntiban = selection.length == 1
+						&& selection[0] == Antibans.ALL_ANTIBANS ? Methods
+						.random(0, Antibans.ALL_ANTIBANS) : selection[Methods
+						.random(0, selection.length)];
+				if (0 > currentAntiban
+						|| currentAntiban >= Antibans.ALL_ANTIBANS) {
 					throw new IllegalArgumentException(
 							"Invalid antiban in selection: " + currentAntiban);
 				}
@@ -1513,52 +1563,52 @@ public final class VoluntaryThieve extends Script implements
 			mouse.setSpeed(random(4, 11));
 
 			switch (currentAntiban) {
-				case MOUSE_MOVE_RANDOMLY:
-					if (timer.isRunning()) {
-						break;
-					}
-					timer.setEndIn(random(755, 2345));
+			case MOUSE_MOVE_RANDOMLY:
+				if (timer.isRunning()) {
+					break;
+				}
+				timer.setEndIn(random(755, 2345));
 
-					if (++counter < random(2, 5)) {
-						mouse.move(random(5, game.getWidth() - 253),
-								random(5, game.getHeight() - 169));
-					} else {
-						currentAntiban = 0;
-					}
-					break;
-				case CAMERA_MOVE_SLIGHTLY:
-					camera.setAngle(camera.getAngle() + random(-80, 80));
+				if (++counter < random(2, 5)) {
+					mouse.move(random(5, game.getWidth() - 253),
+							random(5, game.getHeight() - 169));
+				} else {
 					currentAntiban = 0;
+				}
+				break;
+			case CAMERA_MOVE_SLIGHTLY:
+				camera.setAngle(camera.getAngle() + random(-80, 80));
+				currentAntiban = 0;
+				break;
+			case SKILLS_HOVER_THIEVING:
+				if (timer.isRunning()) {
 					break;
-				case SKILLS_HOVER_THIEVING:
-					if (timer.isRunning()) {
-						break;
-					}
-					if (counter == 0) {
-						skills.doHover(Skills.INTERFACE_THIEVING);
-						timer.setEndIn(random(1735, 2865));
-						counter++;
-					} else {
-						currentAntiban = 0;
-					}
-					break;
-				case TABS_SELECT_RANDOM:
-					final int[] tabs = {Game.TAB_ATTACK, Game.TAB_CLAN_CHAT,
-							Game.TAB_CONTROLS, Game.TAB_EQUIPMENT,
-							Game.TAB_FRIENDS, Game.TAB_FRIENDS_CHAT,
-							Game.TAB_INVENTORY, Game.TAB_MAGIC, Game.TAB_MUSIC,
-							Game.TAB_NOTES, Game.TAB_OPTIONS, Game.TAB_PRAYER,
-							Game.TAB_QUESTS, Game.TAB_STATS, Game.TAB_SUMMONING};
-					game.openTab(tabs[random(0, tabs.length)]);
+				}
+				if (counter == 0) {
+					skills.doHover(Skills.INTERFACE_THIEVING);
+					timer.setEndIn(random(1735, 2865));
+					counter++;
+				} else {
 					currentAntiban = 0;
-					break;
-				default:
-					throw new AssertionError("Unsupported antiban in selection: "
-							+ currentAntiban);
+				}
+				break;
+			case TABS_SELECT_RANDOM:
+				final int[] tabs = { Game.TAB_ATTACK, Game.TAB_CLAN_CHAT,
+						Game.TAB_CONTROLS, Game.TAB_EQUIPMENT,
+						Game.TAB_FRIENDS, Game.TAB_FRIENDS_CHAT,
+						Game.TAB_INVENTORY, Game.TAB_MAGIC, Game.TAB_MUSIC,
+						Game.TAB_NOTES, Game.TAB_OPTIONS, Game.TAB_PRAYER,
+						Game.TAB_QUESTS, Game.TAB_STATS, Game.TAB_SUMMONING };
+				game.openTab(tabs[random(0, tabs.length)]);
+				currentAntiban = 0;
+				break;
+			default:
+				throw new AssertionError("Unsupported antiban in selection: "
+						+ currentAntiban);
 			}
 
 			mouse.setSpeed(mouseSpeed);
-			return (currentAntiban != 0);
+			return currentAntiban != 0;
 		}
 	}
 
@@ -1573,9 +1623,9 @@ public final class VoluntaryThieve extends Script implements
 		 */
 		private abstract class Condition {
 
-			abstract boolean isMet();
-
 			abstract String getMessage();
+
+			abstract boolean isMet();
 		}
 
 		/**
@@ -1588,59 +1638,61 @@ public final class VoluntaryThieve extends Script implements
 		 * predefined conditions.
 		 */
 		private Conditions() {
-			conditions = new Condition[]{new Condition() {
-
-				@Override
-				boolean isMet() {
-					return (options.maximumTime > 0 && System
-							.currentTimeMillis() - progress.startingTime >= options.maximumTime);
-				}
+			conditions = new Condition[] { new Condition() {
 
 				@Override
 				String getMessage() {
 					return "The maximum time to run has been reached.";
 				}
+
+				@Override
+				boolean isMet() {
+					return options.maximumTime > 0
+							&& System.currentTimeMillis()
+									- progress.startingTime >= options.maximumTime;
+				}
 			},
 
-					new Condition() {
+			new Condition() {
 
-						@Override
-						boolean isMet() {
-							return (options.maximumPickpockets > 0 && progress.pickpocketCount >= options.maximumPickpockets);
-						}
+				@Override
+				String getMessage() {
+					return "The maximum pickpockets to perform has been reached.";
+				}
 
-						@Override
-						String getMessage() {
-							return "The maximum pickpockets to perform has been reached.";
-						}
-					},
+				@Override
+				boolean isMet() {
+					return options.maximumPickpockets > 0
+							&& progress.pickpocketCount >= options.maximumPickpockets;
+				}
+			},
 
-					new Condition() {
+			new Condition() {
 
-						@Override
-						boolean isMet() {
-							return (options.maximumLevels > 0 && skills
-									.getRealLevel(progress.skill)
-									- Skills.getLevelAt(progress.startingExp) >= options.maximumLevels);
-						}
+				@Override
+				String getMessage() {
+					return "The maximum levels to gain has been reached.";
+				}
 
-						@Override
-						String getMessage() {
-							return "The maximum levels to gain has been reached.";
-						}
-					}};
+				@Override
+				boolean isMet() {
+					return options.maximumLevels > 0
+							&& skills.getRealLevel(progress.skill)
+									- Skills.getLevelAt(progress.startingExp) >= options.maximumLevels;
+				}
+			} };
 		}
 
 		/**
 		 * Gets if any of the conditions in this script has been met and if that
 		 * is the case - returns the message associated with that condition.
-		 *
+		 * 
 		 * @return The message (String) associated with the {@link Condition}
 		 *         that has been met; or <tt>null</tt> if no condition has been
 		 *         met.
 		 */
 		private String getAnyMet() {
-			for (Condition condition : conditions) {
+			for (final Condition condition : conditions) {
 				if (condition.isMet()) {
 					return condition.getMessage();
 				}
@@ -1665,7 +1717,7 @@ public final class VoluntaryThieve extends Script implements
 		 * A configuration key - checks if the user has allowed storage of
 		 * configuration.
 		 */
-		private static final String KEY_ROOT_ALLOW_STORAGE = NODE_PATH_NAME
+		private static final String KEY_ROOT_ALLOW_STORAGE = Configuration.NODE_PATH_NAME
 				+ "/AllowStorage";
 
 		/**
@@ -1686,13 +1738,49 @@ public final class VoluntaryThieve extends Script implements
 		private boolean hasDeniedOnce;
 
 		/**
+		 * Asks the user to confirm/allow that configuration can be stored on
+		 * the individuals system. If the user has denied storage once, the user
+		 * won't be asked again.
+		 * 
+		 * @return <tt>true</tt> if storage of configuration data is allowed by
+		 *         the user; otherwise <tt>false</tt>.
+		 */
+		private boolean confirmStorage() {
+			if (hasDeniedOnce) {
+				return false;
+			}
+
+			final Preferences defaultNode = Preferences.userRoot().node("");
+			if (Boolean.parseBoolean(defaultNode.get(
+					Configuration.KEY_ROOT_ALLOW_STORAGE, "false"))) {
+				return true;
+			}
+
+			final int storageAnswer = WindowUtil
+					.showConfirmDialog(
+							"Do you give your permission to let the script "
+									+ "store configuration data?\nThis is used to save your selected options for later usage.",
+							WindowUtil.YES_NO_CANCEL);
+
+			if (storageAnswer == WindowUtil.YES_OPTION) {
+				defaultNode.put(Configuration.KEY_ROOT_ALLOW_STORAGE, "true");
+				return true;
+			}
+
+			hasDeniedOnce = storageAnswer == WindowUtil.NO_OPTION;
+			return false;
+		}
+
+		/**
 		 * Returns the value associated with the specified key in the preference
 		 * node. Returns the specified default if there is no value associated
 		 * with the key, the backing store is inaccessible, or if the user has
 		 * explicitly denied any storage of configuration details.
-		 *
-		 * @param key Key whose associated value is to be returned.
-		 * @param def The default value to return if unable to retrieve a stored
+		 * 
+		 * @param key
+		 *            Key whose associated value is to be returned.
+		 * @param def
+		 *            The default value to return if unable to retrieve a stored
 		 *            value.
 		 * @return the value associated with the specified key in the preference
 		 *         node. Returns the specified default if there is no value
@@ -1708,24 +1796,9 @@ public final class VoluntaryThieve extends Script implements
 		}
 
 		/**
-		 * Associates the specified value with the specified key in the
-		 * preference node. Only stores the value if the permission has been
-		 * given by the user.
-		 *
-		 * @param key   Key with which the specified value is to be associated.
-		 * @param value The value to be associated with the specified key.
-		 */
-		private void put(final String key, final String value) {
-			if (!initialize()) {
-				return;
-			}
-			preferences.put(key, value);
-		}
-
-		/**
 		 * Tries to initialize the preferences-object, based on permission from
 		 * the user. Returns if the preferences object is initialized.
-		 *
+		 * 
 		 * @return <tt>true</tt> if the preferences object is initialized;
 		 *         otherwise <tt>false</tt>.
 		 */
@@ -1735,9 +1808,27 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (preferences == null) {
-				preferences = Preferences.userRoot().node(NODE_PATH_NAME);
+				preferences = Preferences.userRoot().node(
+						Configuration.NODE_PATH_NAME);
 			}
 			return true;
+		}
+
+		/**
+		 * Associates the specified value with the specified key in the
+		 * preference node. Only stores the value if the permission has been
+		 * given by the user.
+		 * 
+		 * @param key
+		 *            Key with which the specified value is to be associated.
+		 * @param value
+		 *            The value to be associated with the specified key.
+		 */
+		private void put(final String key, final String value) {
+			if (!initialize()) {
+				return;
+			}
+			preferences.put(key, value);
 		}
 
 		/**
@@ -1746,9 +1837,10 @@ public final class VoluntaryThieve extends Script implements
 		 */
 		private void removeAll() {
 			Preferences currentPreferences = Preferences.userRoot().node("");
-			currentPreferences.remove(KEY_ROOT_ALLOW_STORAGE);
+			currentPreferences.remove(Configuration.KEY_ROOT_ALLOW_STORAGE);
 
-			currentPreferences = Preferences.userRoot().node(NODE_PATH_NAME);
+			currentPreferences = Preferences.userRoot().node(
+					Configuration.NODE_PATH_NAME);
 			try {
 				currentPreferences.removeNode();
 			} catch (final Exception ignored) {
@@ -1756,40 +1848,6 @@ public final class VoluntaryThieve extends Script implements
 
 			preferences = null;
 			hasDeniedOnce = false;
-		}
-
-		/**
-		 * Asks the user to confirm/allow that configuration can be stored on
-		 * the individuals system. If the user has denied storage once, the user
-		 * won't be asked again.
-		 *
-		 * @return <tt>true</tt> if storage of configuration data is allowed by
-		 *         the user; otherwise <tt>false</tt>.
-		 */
-		private boolean confirmStorage() {
-			if (hasDeniedOnce) {
-				return false;
-			}
-
-			final Preferences defaultNode = Preferences.userRoot().node("");
-			if (Boolean.parseBoolean(defaultNode.get(KEY_ROOT_ALLOW_STORAGE,
-					"false"))) {
-				return true;
-			}
-
-			final int storageAnswer = WindowUtil
-					.showConfirmDialog(
-							"Do you give your permission to let the script "
-									+ "store configuration data?\nThis is used to save your selected options for later usage.",
-							WindowUtil.YES_NO_CANCEL);
-
-			if (storageAnswer == WindowUtil.YES_OPTION) {
-				defaultNode.put(KEY_ROOT_ALLOW_STORAGE, "true");
-				return true;
-			}
-
-			hasDeniedOnce = (storageAnswer == WindowUtil.NO_OPTION);
-			return false;
 		}
 	}
 
@@ -1808,6 +1866,52 @@ public final class VoluntaryThieve extends Script implements
 		 */
 		private boolean shouldStart;
 
+		/* Declaration of the frames components. */
+		private javax.swing.JMenuItem aboutMenuItem;
+
+		private javax.swing.JMenu editMenu;
+
+		private javax.swing.JCheckBox enableDebugCheckBox;
+
+		private javax.swing.JMenuItem exitMenuItem;
+
+		private javax.swing.JPopupMenu.Separator exitSeparator;
+
+		private javax.swing.JMenu fileMenu;
+
+		private javax.swing.JLabel generalLabel;
+
+		private javax.swing.JSeparator generalSeparator;
+
+		private javax.swing.JCheckBox getNewGlovesCheckBox;
+
+		private javax.swing.JMenu helpMenu;
+
+		private javax.swing.JMenuBar mainMenuBar;
+		private javax.swing.JLabel maxHoursLabel;
+		private javax.swing.JSpinner maxHoursSpinner;
+		private javax.swing.JLabel maxLevelsLabel;
+		private javax.swing.JSpinner maxLevelsSpinner;
+		private javax.swing.JLabel maxMinutesLabel;
+		private javax.swing.JSpinner maxMinutesSpinner;
+		private javax.swing.JLabel maxPickpocketsLabel;
+		private javax.swing.JSpinner maxPickpocketsSpinner;
+		private javax.swing.JLabel maxSecondsLabel;
+		private javax.swing.JSpinner maxSecondsSpinner;
+		private javax.swing.JLabel maximumRuntimeLabel;
+		private javax.swing.JComboBox modeComboBox;
+		private javax.swing.JLabel modeLabel;
+		private javax.swing.JLabel otherLabel;
+		private javax.swing.JSeparator otherSeparator;
+		private javax.swing.JMenuItem resetMenuItem;
+		private javax.swing.JMenu runMenu;
+		private javax.swing.JButton saveButton;
+		private javax.swing.JMenuItem saveMenuItem;
+		private javax.swing.JButton startButton;
+		private javax.swing.JMenuItem startMenuItem;
+		private javax.swing.JLabel stopConditionsLabel;
+		private javax.swing.JSeparator stopConditionsSeparator;
+
 		/**
 		 * Creates a new instance of the graphical interface.
 		 */
@@ -1817,12 +1921,68 @@ public final class VoluntaryThieve extends Script implements
 			try {
 				javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager
 						.getSystemLookAndFeelClassName());
-			} catch (Exception ignored) {
+			} catch (final Exception ignored) {
 			}
 
 			/* Initialize the frames components. */
 			initComponents();
 			initSettings();
+		}
+
+		/**
+		 * Shows a basic informational message in an about-box.
+		 * 
+		 * @param evt
+		 *            The semantic event which indicates that a component-
+		 *            defined action occurred.
+		 */
+		private void aboutMenuItemActionPerformed(
+				final java.awt.event.ActionEvent evt) {
+			JOptionPane.showMessageDialog(this,
+					VoluntaryThieve.scriptManifest.name() + " v"
+							+ VoluntaryThieve.scriptManifest.version()
+							+ " by vilon.\n" + "Visit http://www.powerbot.org/"
+							+ " for more information.", "About",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		/**
+		 * Closes the frame without setting the <tt>shouldStart</tt>-flag.
+		 * 
+		 * @param evt
+		 *            The semantic event which indicates that a component-
+		 *            defined action occurred.
+		 */
+		private void exitActionPerformed(final java.awt.event.ActionEvent evt) {
+			setVisible(false);
+			dispose();
+		}
+
+		/**
+		 * Gets the options the user has selected in the graphical interface.
+		 * 
+		 * @return A <tt>Map</tt> containing the selected options, where the
+		 *         components have been mapped against their respective values.
+		 */
+		private Map<String, String> getOptions() {
+			final Map<String, String> options = new java.util.HashMap<String, String>();
+			options.put(modeComboBox.getName(), modeComboBox.getSelectedItem()
+					.toString());
+			options.put(getNewGlovesCheckBox.getName(),
+					String.valueOf(getNewGlovesCheckBox.isSelected()));
+			options.put(maxHoursSpinner.getName(), maxHoursSpinner.getValue()
+					.toString());
+			options.put(maxMinutesSpinner.getName(), maxMinutesSpinner
+					.getValue().toString());
+			options.put(maxSecondsSpinner.getName(), maxSecondsSpinner
+					.getValue().toString());
+			options.put(maxPickpocketsSpinner.getName(), maxPickpocketsSpinner
+					.getValue().toString());
+			options.put(maxLevelsSpinner.getName(), maxLevelsSpinner.getValue()
+					.toString());
+			options.put(enableDebugCheckBox.getName(),
+					String.valueOf(enableDebugCheckBox.isSelected()));
+			return options;
 		}
 
 		/**
@@ -1866,10 +2026,11 @@ public final class VoluntaryThieve extends Script implements
 			aboutMenuItem = new javax.swing.JMenuItem();
 
 			setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-			setTitle(scriptManifest.name() + " v" + scriptManifest.version());
+			setTitle(VoluntaryThieve.scriptManifest.name() + " v"
+					+ VoluntaryThieve.scriptManifest.version());
 			setResizable(false);
 			addWindowListener(new java.awt.event.WindowAdapter() {
-				public void windowClosing(java.awt.event.WindowEvent e) {
+				public void windowClosing(final java.awt.event.WindowEvent e) {
 					exitActionPerformed(null);
 				}
 			});
@@ -1884,13 +2045,13 @@ public final class VoluntaryThieve extends Script implements
 			modeLabel.setName("modeLabel");
 
 			modeComboBox.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[]{"Blackjack", "Pickpocket"}));
+					new String[] { "Blackjack", "Pickpocket" }));
 			modeComboBox.setName("modeComboBox");
 			modeComboBox.addItemListener(new java.awt.event.ItemListener() {
-				public void itemStateChanged(java.awt.event.ItemEvent e) {
+				public void itemStateChanged(final java.awt.event.ItemEvent e) {
 					if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
-						final boolean selected = (modeComboBox
-								.getSelectedIndex() != 0);
+						final boolean selected = modeComboBox
+								.getSelectedIndex() != 0;
 						getNewGlovesCheckBox.setEnabled(selected);
 						if (!selected) {
 							getNewGlovesCheckBox.setSelected(selected);
@@ -1961,7 +2122,7 @@ public final class VoluntaryThieve extends Script implements
 			startButton.setText("Start");
 			startButton.setName("startButton");
 			startButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					startActionPerformed(evt);
 				}
 			});
@@ -1969,7 +2130,7 @@ public final class VoluntaryThieve extends Script implements
 			saveButton.setText("Save");
 			saveButton.setName("saveButton");
 			saveButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					saveActionPerformed(evt);
 				}
 			});
@@ -1979,7 +2140,7 @@ public final class VoluntaryThieve extends Script implements
 			fileMenu.setText("File");
 			fileMenu.setName("fileMenu");
 			fileMenu.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					saveActionPerformed(evt);
 				}
 			});
@@ -1997,7 +2158,7 @@ public final class VoluntaryThieve extends Script implements
 			exitMenuItem.setText("Exit");
 			exitMenuItem.setName("exitMenuItem");
 			exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					exitActionPerformed(evt);
 				}
 			});
@@ -2013,7 +2174,7 @@ public final class VoluntaryThieve extends Script implements
 			resetMenuItem
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
+								final java.awt.event.ActionEvent evt) {
 							resetMenuItemActionPerformed(evt);
 						}
 					});
@@ -2033,7 +2194,7 @@ public final class VoluntaryThieve extends Script implements
 			startMenuItem
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
+								final java.awt.event.ActionEvent evt) {
 							startActionPerformed(evt);
 						}
 					});
@@ -2049,7 +2210,7 @@ public final class VoluntaryThieve extends Script implements
 			aboutMenuItem
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
+								final java.awt.event.ActionEvent evt) {
 							aboutMenuItemActionPerformed(evt);
 						}
 					});
@@ -2059,7 +2220,7 @@ public final class VoluntaryThieve extends Script implements
 
 			setJMenuBar(mainMenuBar);
 
-			javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
 					getContentPane());
 			getContentPane().setLayout(layout);
 			layout.setHorizontalGroup(layout
@@ -2342,7 +2503,7 @@ public final class VoluntaryThieve extends Script implements
 						null);
 
 				if (storedValue != null) {
-					for (Component component : components) {
+					for (final Component component : components) {
 						if (entry.getKey().equals(component.getName())) {
 							if (component instanceof JComboBox) {
 								((JComboBox) component)
@@ -2351,7 +2512,7 @@ public final class VoluntaryThieve extends Script implements
 								try {
 									((JSpinner) component).setValue(Integer
 											.parseInt(storedValue));
-								} catch (NumberFormatException ignored) {
+								} catch (final NumberFormatException ignored) {
 								}
 							} else if (component instanceof JCheckBox) {
 								((JCheckBox) component).setSelected(Boolean
@@ -2368,38 +2529,39 @@ public final class VoluntaryThieve extends Script implements
 		}
 
 		/**
-		 * Gets the options the user has selected in the graphical interface.
-		 *
-		 * @return A <tt>Map</tt> containing the selected options, where the
-		 *         components have been mapped against their respective values.
+		 * Resets any given permissions and thereby deletes all saved
+		 * configurations.
+		 * 
+		 * @param evt
+		 *            The semantic event which indicates that a component-
+		 *            defined action occurred.
 		 */
-		private Map<String, String> getOptions() {
-			Map<String, String> options = new java.util.HashMap<String, String>();
-			options.put(modeComboBox.getName(), modeComboBox.getSelectedItem()
-					.toString());
-			options.put(getNewGlovesCheckBox.getName(),
-					String.valueOf(getNewGlovesCheckBox.isSelected()));
-			options.put(maxHoursSpinner.getName(), maxHoursSpinner.getValue()
-					.toString());
-			options.put(maxMinutesSpinner.getName(), maxMinutesSpinner
-					.getValue().toString());
-			options.put(maxSecondsSpinner.getName(), maxSecondsSpinner
-					.getValue().toString());
-			options.put(maxPickpocketsSpinner.getName(), maxPickpocketsSpinner
-					.getValue().toString());
-			options.put(maxLevelsSpinner.getName(), maxLevelsSpinner.getValue()
-					.toString());
-			options.put(enableDebugCheckBox.getName(),
-					String.valueOf(enableDebugCheckBox.isSelected()));
-			return options;
+		private void resetMenuItemActionPerformed(
+				final java.awt.event.ActionEvent evt) {
+			configuration.removeAll();
+		}
+
+		/**
+		 * Saves the user-selected options using the configuration-instance.
+		 * 
+		 * @param evt
+		 *            The semantic event which indicates that a component-
+		 *            defined action occurred.
+		 */
+		private void saveActionPerformed(final java.awt.event.ActionEvent evt) {
+			for (final Map.Entry<String, String> entry : getOptions()
+					.entrySet()) {
+				configuration.put(entry.getKey(), entry.getValue());
+			}
 		}
 
 		/**
 		 * Gets if the user has chosen to start the script or not.
-		 *
+		 * 
 		 * @return <tt>true</tt> if the script should start; otherwise
 		 *         <tt>false</tt>.
-		 * @throws IllegalStateException If the frame is still visible.
+		 * @throws IllegalStateException
+		 *             If the frame is still visible.
 		 */
 		private boolean shouldStart() throws IllegalStateException {
 			if (isVisible()) {
@@ -2409,100 +2571,16 @@ public final class VoluntaryThieve extends Script implements
 		}
 
 		/**
-		 * Saves the user-selected options using the configuration-instance.
-		 *
-		 * @param evt The semantic event which indicates that a component-
-		 *            defined action occurred.
-		 */
-		private void saveActionPerformed(java.awt.event.ActionEvent evt) {
-			for (final Map.Entry<String, String> entry : getOptions()
-					.entrySet()) {
-				configuration.put(entry.getKey(), entry.getValue());
-			}
-		}
-
-		/**
 		 * Closes the frame and sets the <tt>shouldStart</tt>-flag.
-		 *
-		 * @param evt The semantic event which indicates that a component-
+		 * 
+		 * @param evt
+		 *            The semantic event which indicates that a component-
 		 *            defined action occurred.
 		 */
-		private void startActionPerformed(java.awt.event.ActionEvent evt) {
+		private void startActionPerformed(final java.awt.event.ActionEvent evt) {
 			shouldStart = true;
 			exitActionPerformed(evt);
 		}
-
-		/**
-		 * Shows a basic informational message in an about-box.
-		 *
-		 * @param evt The semantic event which indicates that a component-
-		 *            defined action occurred.
-		 */
-		private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-			JOptionPane.showMessageDialog(this, scriptManifest.name() + " v"
-					+ scriptManifest.version() + " by vilon.\n"
-					+ "Visit http://www.powerbot.org/"
-					+ " for more information.", "About",
-					JOptionPane.INFORMATION_MESSAGE);
-		}
-
-		/**
-		 * Resets any given permissions and thereby deletes all saved
-		 * configurations.
-		 *
-		 * @param evt The semantic event which indicates that a component-
-		 *            defined action occurred.
-		 */
-		private void resetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-			configuration.removeAll();
-		}
-
-		/**
-		 * Closes the frame without setting the <tt>shouldStart</tt>-flag.
-		 *
-		 * @param evt The semantic event which indicates that a component-
-		 *            defined action occurred.
-		 */
-		private void exitActionPerformed(java.awt.event.ActionEvent evt) {
-			setVisible(false);
-			dispose();
-		}
-
-		/* Declaration of the frames components. */
-		private javax.swing.JMenuItem aboutMenuItem;
-		private javax.swing.JMenu editMenu;
-		private javax.swing.JCheckBox enableDebugCheckBox;
-		private javax.swing.JMenuItem exitMenuItem;
-		private javax.swing.JPopupMenu.Separator exitSeparator;
-		private javax.swing.JMenu fileMenu;
-		private javax.swing.JLabel generalLabel;
-		private javax.swing.JSeparator generalSeparator;
-		private javax.swing.JCheckBox getNewGlovesCheckBox;
-		private javax.swing.JMenu helpMenu;
-		private javax.swing.JMenuBar mainMenuBar;
-		private javax.swing.JLabel maxHoursLabel;
-		private javax.swing.JSpinner maxHoursSpinner;
-		private javax.swing.JLabel maxLevelsLabel;
-		private javax.swing.JSpinner maxLevelsSpinner;
-		private javax.swing.JLabel maxMinutesLabel;
-		private javax.swing.JSpinner maxMinutesSpinner;
-		private javax.swing.JLabel maxPickpocketsLabel;
-		private javax.swing.JSpinner maxPickpocketsSpinner;
-		private javax.swing.JLabel maxSecondsLabel;
-		private javax.swing.JSpinner maxSecondsSpinner;
-		private javax.swing.JLabel maximumRuntimeLabel;
-		private javax.swing.JComboBox modeComboBox;
-		private javax.swing.JLabel modeLabel;
-		private javax.swing.JLabel otherLabel;
-		private javax.swing.JSeparator otherSeparator;
-		private javax.swing.JMenuItem resetMenuItem;
-		private javax.swing.JMenu runMenu;
-		private javax.swing.JButton saveButton;
-		private javax.swing.JMenuItem saveMenuItem;
-		private javax.swing.JButton startButton;
-		private javax.swing.JMenuItem startMenuItem;
-		private javax.swing.JLabel stopConditionsLabel;
-		private javax.swing.JSeparator stopConditionsSeparator;
 	}
 
 	/**
@@ -2543,22 +2621,23 @@ public final class VoluntaryThieve extends Script implements
 
 		/**
 		 * Creates a new <tt>Options</tt>-class using the passed arguments.
-		 *
-		 * @param args The arguments passed from a graphical user interface. The
-		 *             arguments should always be pre-verified, as no type- or
-		 *             null-checks are done.
+		 * 
+		 * @param args
+		 *            The arguments passed from a graphical user interface. The
+		 *            arguments should always be pre-verified, as no type- or
+		 *            null-checks are done.
 		 */
 		private Options(final Map<String, String> args) {
 
 			/* Get the general options and store them. */
 			isBlackjacking = args.get("modeComboBox").equals("Blackjack");
-			isBanking = (!isBlackjacking && Boolean.valueOf(args
-					.get("getNewGlovesCheckBox")));
+			isBanking = !isBlackjacking
+					&& Boolean.valueOf(args.get("getNewGlovesCheckBox"));
 
 			/* Read the maximum runtime as entered by the user. */
 			long maximumTime = 0;
-			final String[] maxLabels = {"maxHoursSpinner",
-					"maxMinutesSpinner", "maxSecondsSpinner"};
+			final String[] maxLabels = { "maxHoursSpinner",
+					"maxMinutesSpinner", "maxSecondsSpinner" };
 			for (int n = 0; n < maxLabels.length; n++) {
 				maximumTime += Integer.parseInt(args.get(maxLabels[n])) * 1000
 						* Math.pow(60, 2 - n);
@@ -2597,15 +2676,15 @@ public final class VoluntaryThieve extends Script implements
 				String printMessage = isUsingMaximumTime ? "run a maximum "
 						+ Timer.format(maximumTime) : "";
 				if (isUsingMaximumLevels) {
-					printMessage += ((printMessage.length() > 0) ? " or " : "")
+					printMessage += (printMessage.length() > 0 ? " or " : "")
 							+ "gain " + maximumLevels + " levels";
 				}
 				if (isUsingMaximumPickpockets) {
-					printMessage += ((printMessage.length() > 0) ? " or " : "")
+					printMessage += (printMessage.length() > 0 ? " or " : "")
 							+ "perform "
 							+ maximumPickpockets
 							+ (options.isBlackjacking ? " loots"
-							: " pickpockets");
+									: " pickpockets");
 				}
 				log.config("Will " + printMessage + " before stopping.");
 			}
@@ -2709,9 +2788,10 @@ public final class VoluntaryThieve extends Script implements
 
 		/**
 		 * Paints a progress-report on the specified graphics-object.
-		 *
-		 * @param g The graphics-object to paint on. Should always be the
-		 *          graphics object of the Runescape-client.
+		 * 
+		 * @param g
+		 *            The graphics-object to paint on. Should always be the
+		 *            graphics object of the Runescape-client.
 		 */
 		private void paint(final Graphics g) {
 
@@ -2765,13 +2845,13 @@ public final class VoluntaryThieve extends Script implements
 			if (percentToNextLevel < 30) {
 				graphics2d.setColor(Color.RED);
 			} else {
-				graphics2d.setColor((percentToNextLevel < 70) ? Color.YELLOW
+				graphics2d.setColor(percentToNextLevel < 70 ? Color.YELLOW
 						: Color.GREEN);
 			}
 
 			/* Draw the content of the experience progress-bar. */
 			final int innerProgressWidth = (int) Math
-					.round(((percentToNextLevel / 100D) * progressWidth));
+					.round((percentToNextLevel / 100D * progressWidth));
 			graphics2d.setComposite(AlphaComposite.getInstance(
 					AlphaComposite.SRC_OVER, 0.50F));
 			graphics2d.fillRect(startX + paddingSize + 1, startY + paddingSize
@@ -2789,7 +2869,7 @@ public final class VoluntaryThieve extends Script implements
 			final long timeRunning = System.currentTimeMillis() - startingTime;
 			final int currentExp = skills.getCurrentExp(skill), gainedExp = currentExp
 					- startingExp;
-			final double expPerMillis = gainedExp * (1.0D / timeRunning);
+			final double expPerMillis = gainedExp * 1.0D / timeRunning;
 
 			/* Check if the user is hovering the experience progress-bar. */
 			if (isHovering) {
@@ -2799,17 +2879,18 @@ public final class VoluntaryThieve extends Script implements
 
 					/* Calculate statistics common for both modes. */
 					final int pickpocketRatio = (int) Math
-							.round(pickpocketCount
-									* (100D / (pickpocketCount + pickpocketFailCount))), pickpocketsPerHour = (int) Math
-							.round(pickpocketCount * (3600000D / timeRunning)), knockoutRatio = (int) Math
+							.round(pickpocketCount * 100D
+									/ (pickpocketCount + pickpocketFailCount)), pickpocketsPerHour = (int) Math
+							.round(pickpocketCount * 3600000D / timeRunning), knockoutRatio = (int) Math
 							.round(blackjackKnockCount
-									* (100D / (blackjackKnockCount + blackjackFailCount)));
+									* 100D
+									/ (blackjackKnockCount + blackjackFailCount));
 
 					/* Show different strings for different modes. */
 					if (options.isBlackjacking) {
 						final int blackjacksPerHour = (int) Math
-								.round(blackjackKnockCount
-										* (3600000D / timeRunning));
+								.round(blackjackKnockCount * 3600000D
+										/ timeRunning);
 
 						drawingString = "SL: " + pickpocketCount + " ("
 								+ pickpocketRatio + " %) | LH: "
@@ -2819,8 +2900,7 @@ public final class VoluntaryThieve extends Script implements
 								+ blackjacksPerHour;
 					} else {
 						final int glovesPerHour = (int) Math
-								.round(glovesUsedCount
-										* (3600000D / timeRunning));
+								.round(glovesUsedCount * 3600000D / timeRunning);
 
 						drawingString = "SP: "
 								+ pickpocketCount
@@ -2835,7 +2915,7 @@ public final class VoluntaryThieve extends Script implements
 								+ " | GH: "
 								+ glovesPerHour
 								+ (options.isBanking ? " | TB: "
-								+ timesBankedCount : "");
+										+ timesBankedCount : "");
 					}
 
 					adjustmentX = -1;
@@ -2906,38 +2986,40 @@ public final class VoluntaryThieve extends Script implements
 					+ numberFormat.format(pickpocketCount) + " ";
 
 			if (options.isBlackjacking) {
-				print += (pickpocketCount == 1) ? "loot" : "loots";
+				print += pickpocketCount == 1 ? "loot" : "loots";
 			} else {
-				print += (pickpocketCount == 1) ? "pickpocket" : "pickpockets";
+				print += pickpocketCount == 1 ? "pickpocket" : "pickpockets";
 			}
 			log(print + ".");
 		}
 
 		/**
 		 * Processes the {@link java.awt.event.MouseEvent} occurring when the
-		 * user presses the mouse.
-		 *
-		 * @param e The {@link java.awt.event.MouseEvent} occurring when the
-		 *          user presses the mouse.
+		 * user moves the mouse.
+		 * 
+		 * @param e
+		 *            The {@link java.awt.event.MouseEvent} occurring when the
+		 *            user moves the mouse.
 		 */
-		private void processMousePressed(final MouseEvent e) {
-			if (isHovering) {
-				isToggled = !isToggled;
+		private void processMouseMoved(final MouseEvent e) {
+			isHovering = experienceProgressBar != null
+					&& experienceProgressBar.contains(e.getPoint());
+			if (!isHovering) {
+				isToggled = false;
 			}
 		}
 
 		/**
 		 * Processes the {@link java.awt.event.MouseEvent} occurring when the
-		 * user moves the mouse.
-		 *
-		 * @param e The {@link java.awt.event.MouseEvent} occurring when the
-		 *          user moves the mouse.
+		 * user presses the mouse.
+		 * 
+		 * @param e
+		 *            The {@link java.awt.event.MouseEvent} occurring when the
+		 *            user presses the mouse.
 		 */
-		private void processMouseMoved(final MouseEvent e) {
-			isHovering = (experienceProgressBar != null && experienceProgressBar
-					.contains(e.getPoint()));
-			if (!isHovering) {
-				isToggled = false;
+		private void processMousePressed(final MouseEvent e) {
+			if (isHovering) {
+				isToggled = !isToggled;
 			}
 		}
 	}
@@ -2962,38 +3044,62 @@ public final class VoluntaryThieve extends Script implements
 				+ VoluntaryThieve.class.getName().toLowerCase() + "/.latest";
 
 		/**
-		 * Gets the latest version from a predefined internet resource.
-		 *
-		 * @return The latest available version of the script, or <tt>-1</tt> if
-		 *         unable to retrieve the latest version.
+		 * Checks for any updates to this specific script. Handles all
+		 * associated user-interactions.
+		 * 
+		 * @return <tt>true</tt> if the latest version was downloaded and the
+		 *         script should be stopped (not start); otherwise
+		 *         <tt>false</tt>.
 		 */
-		private double getVersion() {
-			double latestVersion = -1;
-			BufferedReader bufferedReader = null;
+		private boolean check() {
+			String allowUpdates = configuration.get(
+					Configuration.KEY_ALLOW_UPDATES, null);
+			if (allowUpdates == null) {
+				final int answerAllowUpdates = WindowUtil.showConfirmDialog(
+						"Do you give your permission to let the script "
+								+ "check for updates?",
+						WindowUtil.YES_NO_CANCEL);
 
-			try {
-				final URLConnection latestVersionCheck = new URL(
-						URL_VERSION_CHECK).openConnection();
-				bufferedReader = new BufferedReader(new InputStreamReader(
-						latestVersionCheck.getInputStream()));
-				latestVersion = Double.parseDouble(bufferedReader.readLine());
-			} catch (final Exception ignored) {
-			} finally {
-				if (bufferedReader != null) {
-					try {
-						bufferedReader.close();
-					} catch (final IOException ignored) {
-					}
+				if (answerAllowUpdates == WindowUtil.YES_OPTION) {
+					configuration.put(Configuration.KEY_ALLOW_UPDATES,
+							String.valueOf(true));
+					allowUpdates = String.valueOf(true);
+				} else if (answerAllowUpdates == WindowUtil.NO_OPTION) {
+					configuration.put(Configuration.KEY_ALLOW_UPDATES,
+							String.valueOf(false));
 				}
 			}
 
-			return latestVersion;
+			if (!Boolean.parseBoolean(allowUpdates)) {
+				return false;
+			}
+
+			log("Checking for available updates...");
+			final double latestVersion = getVersion();
+			if (latestVersion == -1) {
+				log.warning("Unable to retrieve information about latest version.");
+			} else if (latestVersion <= VoluntaryThieve.scriptManifest
+					.version()) {
+				log("Script is fully up to date (version "
+						+ VoluntaryThieve.scriptManifest.version() + ").");
+			} else {
+				final int answerUpdate = WindowUtil.showConfirmDialog(
+						"A new version (v" + latestVersion
+								+ ") is available.\n"
+								+ "Would you like to update now?",
+						WindowUtil.YES_NO_CANCEL);
+				if (answerUpdate == WindowUtil.YES_OPTION) {
+					return downloadUpdate();
+				}
+			}
+
+			return false;
 		}
 
 		/**
 		 * Downloads any new updates (i.e. the latest version). Handles all
 		 * associated user-interactions.
-		 *
+		 * 
 		 * @return <tt>true</tt> if the latest version was downloaded
 		 *         successfully; otherwise <tt>false</tt>.
 		 */
@@ -3008,7 +3114,7 @@ public final class VoluntaryThieve extends Script implements
 			boolean isSuccessful = false;
 
 			try {
-				URLConnection latestVersion = new URL(URL_LATEST_VERSION)
+				final URLConnection latestVersion = new URL(URL_LATEST_VERSION)
 						.openConnection();
 				bufferedReader = new BufferedReader(new InputStreamReader(
 						latestVersion.getInputStream()));
@@ -3091,55 +3197,32 @@ public final class VoluntaryThieve extends Script implements
 		}
 
 		/**
-		 * Checks for any updates to this specific script. Handles all
-		 * associated user-interactions.
-		 *
-		 * @return <tt>true</tt> if the latest version was downloaded and the
-		 *         script should be stopped (not start); otherwise
-		 *         <tt>false</tt>.
+		 * Gets the latest version from a predefined internet resource.
+		 * 
+		 * @return The latest available version of the script, or <tt>-1</tt> if
+		 *         unable to retrieve the latest version.
 		 */
-		private boolean check() {
-			String allowUpdates = configuration.get(
-					Configuration.KEY_ALLOW_UPDATES, null);
-			if (allowUpdates == null) {
-				final int answerAllowUpdates = WindowUtil.showConfirmDialog(
-						"Do you give your permission to let the script "
-								+ "check for updates?",
-						WindowUtil.YES_NO_CANCEL);
+		private double getVersion() {
+			double latestVersion = -1;
+			BufferedReader bufferedReader = null;
 
-				if (answerAllowUpdates == WindowUtil.YES_OPTION) {
-					configuration.put(Configuration.KEY_ALLOW_UPDATES,
-							String.valueOf(true));
-					allowUpdates = String.valueOf(true);
-				} else if (answerAllowUpdates == WindowUtil.NO_OPTION) {
-					configuration.put(Configuration.KEY_ALLOW_UPDATES,
-							String.valueOf(false));
+			try {
+				final URLConnection latestVersionCheck = new URL(
+						URL_VERSION_CHECK).openConnection();
+				bufferedReader = new BufferedReader(new InputStreamReader(
+						latestVersionCheck.getInputStream()));
+				latestVersion = Double.parseDouble(bufferedReader.readLine());
+			} catch (final Exception ignored) {
+			} finally {
+				if (bufferedReader != null) {
+					try {
+						bufferedReader.close();
+					} catch (final IOException ignored) {
+					}
 				}
 			}
 
-			if (!Boolean.parseBoolean(allowUpdates)) {
-				return false;
-			}
-
-			log("Checking for available updates...");
-			final double latestVersion = getVersion();
-			if (latestVersion == -1) {
-				log.warning("Unable to retrieve information about latest version.");
-			} else if (latestVersion <= scriptManifest.version()) {
-				log("Script is fully up to date (version "
-						+ scriptManifest.version() + ").");
-			} else {
-				final int answerUpdate = WindowUtil.showConfirmDialog(
-						"A new version (v" + latestVersion
-								+ ") is available.\n"
-								+ "Would you like to update now?",
-						WindowUtil.YES_NO_CANCEL);
-				if (answerUpdate == WindowUtil.YES_OPTION) {
-					return downloadUpdate();
-				}
-			}
-
-			return false;
+			return latestVersion;
 		}
 	}
 
@@ -3195,103 +3278,6 @@ public final class VoluntaryThieve extends Script implements
 	 */
 	private boolean isStartupActionsDone;
 
-	public void messageReceived(final MessageEvent e) {
-		if (e.getID() != MessageEvent.MESSAGE_SERVER) {
-			return;
-		}
-
-		final String message = e.getMessage();
-		if (message != null) {
-			if (message.contains("attempt to")) {
-				actions.hasThieved = true;
-			} else if (message.contains("handkerchief")) {
-				progress.pickpocketCount++;
-			} else if (message.contains("smack")) {
-				progress.blackjackKnockCount++;
-			} else if (message.contains("been stunned")
-					|| message.contains("glances")) {
-				if (options.isBlackjacking) {
-					progress.blackjackFailCount++;
-					actions.isForcingBlackjack = true;
-				} else {
-					progress.pickpocketFailCount++;
-					if (actions.stunnedTimer == null) {
-						actions.stunnedTimer = new Timer(random(4320, 4765));
-					} else {
-						actions.stunnedTimer.setEndIn(random(4320, 4765));
-					}
-				}
-			} else if (message.contains("worn out")) {
-				progress.glovesUsedCount++;
-				actions.hasGloves = false;
-			} else if (message.contains("can't reach")) {
-				actions.isUnableToReach = true;
-			}
-		}
-	}
-
-	public void mousePressed(MouseEvent e) {
-		if (progress != null && actions.methods.isLoggedIn()) {
-			progress.processMousePressed(e);
-		}
-	}
-
-	public void mouseMoved(MouseEvent e) {
-		if (progress != null && actions.methods.isLoggedIn()) {
-			progress.processMouseMoved(e);
-		}
-	}
-
-	public void onRepaint(final Graphics render) {
-		if (options != null && actions.methods.isLoggedIn()) {
-			if (progress == null) {
-				progress = new Progress();
-			}
-			progress.paint(render);
-		}
-	}
-
-	@Override
-	public boolean onStart() {
-		if (new Update().check()) {
-			return false;
-		}
-
-		final GraphicalInterface graphicalInterface = new GraphicalInterface();
-		WindowUtil.position(graphicalInterface);
-		graphicalInterface.setVisible(true);
-
-		while (graphicalInterface.isVisible()) {
-			sleep(1000);
-		}
-		boolean shouldStart = false;
-
-		try {
-			shouldStart = graphicalInterface.shouldStart();
-		} catch (IllegalStateException ignored) {
-		}
-		if (!shouldStart) {
-			return false;
-		}
-
-		try {
-			options = new Options(graphicalInterface.getOptions());
-		} catch (IllegalArgumentException exception) {
-			log.warning(exception.getMessage());
-			return false;
-		}
-
-		options.print();
-		return true;
-	}
-
-	@Override
-	public void onFinish() {
-		if (progress != null) {
-			progress.print();
-		}
-	}
-
 	public int loop() {
 
 		/* Make sure the player is logged in before continuing. */
@@ -3338,9 +3324,9 @@ public final class VoluntaryThieve extends Script implements
 		/* If the current action is null, the script has failed. */
 		if (currentAction == null) {
 			log.severe("Script failed "
-					+ ((previousAction != null) ? "when "
-					+ previousAction.getName().toLowerCase()
-					: "unexpectedly") + ".");
+					+ (previousAction != null ? "when "
+							+ previousAction.getName().toLowerCase()
+							: "unexpectedly") + ".");
 			stopScript(true);
 		}
 
@@ -3388,19 +3374,118 @@ public final class VoluntaryThieve extends Script implements
 		return random(20, 85);
 	}
 
+	public void messageReceived(final MessageEvent e) {
+		if (e.getID() != MessageEvent.MESSAGE_SERVER) {
+			return;
+		}
+
+		final String message = e.getMessage();
+		if (message != null) {
+			if (message.contains("attempt to")) {
+				actions.hasThieved = true;
+			} else if (message.contains("handkerchief")) {
+				progress.pickpocketCount++;
+			} else if (message.contains("smack")) {
+				progress.blackjackKnockCount++;
+			} else if (message.contains("been stunned")
+					|| message.contains("glances")) {
+				if (options.isBlackjacking) {
+					progress.blackjackFailCount++;
+					actions.isForcingBlackjack = true;
+				} else {
+					progress.pickpocketFailCount++;
+					if (actions.stunnedTimer == null) {
+						actions.stunnedTimer = new Timer(random(4320,
+								4765));
+					} else {
+						actions.stunnedTimer.setEndIn(Methods
+								.random(4320, 4765));
+					}
+				}
+			} else if (message.contains("worn out")) {
+				progress.glovesUsedCount++;
+				actions.hasGloves = false;
+			} else if (message.contains("can't reach")) {
+				actions.isUnableToReach = true;
+			}
+		}
+	}
+
 	/* Unused mouse-listeners. */
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(final MouseEvent e) {
 	}
 
-	public void mouseReleased(MouseEvent e) {
+	public void mouseDragged(final MouseEvent e) {
 	}
 
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(final MouseEvent e) {
 	}
 
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(final MouseEvent e) {
 	}
 
-	public void mouseDragged(MouseEvent e) {
+	public void mouseMoved(final MouseEvent e) {
+		if (progress != null && actions.methods.isLoggedIn()) {
+			progress.processMouseMoved(e);
+		}
+	}
+
+	public void mousePressed(final MouseEvent e) {
+		if (progress != null && actions.methods.isLoggedIn()) {
+			progress.processMousePressed(e);
+		}
+	}
+
+	public void mouseReleased(final MouseEvent e) {
+	}
+
+	@Override
+	public void onFinish() {
+		if (progress != null) {
+			progress.print();
+		}
+	}
+
+	public void onRepaint(final Graphics render) {
+		if (options != null && actions.methods.isLoggedIn()) {
+			if (progress == null) {
+				progress = new Progress();
+			}
+			progress.paint(render);
+		}
+	}
+
+	@Override
+	public boolean onStart() {
+		if (new Update().check()) {
+			return false;
+		}
+
+		final GraphicalInterface graphicalInterface = new GraphicalInterface();
+		WindowUtil.position(graphicalInterface);
+		graphicalInterface.setVisible(true);
+
+		while (graphicalInterface.isVisible()) {
+			Methods.sleep(1000);
+		}
+		boolean shouldStart = false;
+
+		try {
+			shouldStart = graphicalInterface.shouldStart();
+		} catch (final IllegalStateException ignored) {
+		}
+		if (!shouldStart) {
+			return false;
+		}
+
+		try {
+			options = new Options(graphicalInterface.getOptions());
+		} catch (final IllegalArgumentException exception) {
+			log.warning(exception.getMessage());
+			return false;
+		}
+
+		options.print();
+		return true;
 	}
 }

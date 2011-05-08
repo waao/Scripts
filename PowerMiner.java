@@ -1,20 +1,26 @@
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Methods;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.wrappers.RSItem;
 import org.rsbot.script.wrappers.RSObject;
 
-import java.awt.*;
-
-@ScriptManifest(authors = {"LastCoder"}, name = "Iron PowerMiner", version = 1.0, description = "Any Location, just start near rocks.")
+@ScriptManifest(authors = { "LastCoder" }, name = "Iron PowerMiner", version = 1.0, description = "Any Location, just start near rocks.")
 public class PowerMiner extends Script implements PaintListener {
 
 	private static enum State {
 		MINE, DROP
 	}
 
-	private static final int[] ROCKS = new int[]{11956, 11954, 11955, 37307, 37308, 37309};
+	private static final int[] ROCKS = new int[] { 11956, 11954, 11955, 37307,
+			37308, 37309 };
 	private static final int IRON_ITEM = 440;
 
 	private static final int TRAINING_SKILL = Skills.MINING;
@@ -44,77 +50,86 @@ public class PowerMiner extends Script implements PaintListener {
 	@Override
 	public int loop() {
 		switch (getState()) {
-			case MINE:
-				RSObject rock = objects.getNearest(ROCKS);
-				if (rock != null) {
-					if (!rock.isOnScreen()) {
-						camera.turnTo(rock);
-						for (int i = 0; i < 100 && !rock.isOnScreen(); i++)
-							sleep(20);
-					} else {
-						for (int i = 0; i < 100 && getMyPlayer().isMoving(); i++)
-							sleep(20);
-						rock.doAction("Mine");
-						for (int i = 0; i < 100
-								&& getMyPlayer().getAnimation() != -1; i++)
-							sleep(20);
+		case MINE:
+			final RSObject rock = objects.getNearest(PowerMiner.ROCKS);
+			if (rock != null) {
+				if (!rock.isOnScreen()) {
+					camera.turnTo(rock);
+					for (int i = 0; i < 100 && !rock.isOnScreen(); i++) {
+						Methods.sleep(20);
+					}
+				} else {
+					for (int i = 0; i < 100 && getMyPlayer().isMoving(); i++) {
+						Methods.sleep(20);
+					}
+					rock.doAction("Mine");
+					for (int i = 0; i < 100
+							&& getMyPlayer().getAnimation() != -1; i++) {
+						Methods.sleep(20);
 					}
 				}
-				break;
-			case DROP:
-				RSItem[] all = inventory.getItems();
-				for (RSItem item : all) {
-					if (item == null)
-						continue;
-					if (item.getID() == IRON_ITEM) {
-						item.doAction("Drop");
-						sleep(100);
-					}
+			}
+			break;
+		case DROP:
+			final RSItem[] all = inventory.getItems();
+			for (final RSItem item : all) {
+				if (item == null) {
+					continue;
 				}
-				break;
+				if (item.getID() == PowerMiner.IRON_ITEM) {
+					item.doAction("Drop");
+					Methods.sleep(100);
+				}
+			}
+			break;
 
 		}
 		return 0;
 	}
 
-	public boolean onStart() {
-		startExp = (long) skills.getCurrentExp(Skills.MINING);
-		startLevel = (long) skills.getRealLevel(Skills.MINING);
-		startTime = System.currentTimeMillis();
-		return game.isLoggedIn();
-	}
-
-	public void onRepaint(Graphics g1) {
-		Graphics2D g = (Graphics2D) g1;
+	@Override
+	public void onRepaint(final Graphics g1) {
+		final Graphics2D g = (Graphics2D) g1;
 		long millis = System.currentTimeMillis() - startTime;
-		long totalseconds = millis / 1000;
-		long hours = millis / (1000 * 60 * 60);
+		final long totalseconds = millis / 1000;
+		final long hours = millis / (1000 * 60 * 60);
 		millis -= hours * 1000 * 60 * 60;
-		long minutes = millis / (1000 * 60);
+		final long minutes = millis / (1000 * 60);
 		millis -= minutes * 1000 * 60;
-		long seconds = millis / 1000;
-		if ((skills.getCurrentExp(Skills.MINING) - startExp) > 0
-				&& startExp > 0) {
+		final long seconds = millis / 1000;
+		if (skills.getCurrentExp(Skills.MINING) - startExp > 0 && startExp > 0) {
 			expGained = skills.getCurrentExp(Skills.MINING) - startExp;
 		}
 		if (expGained > 0 && totalseconds > 0) {
 			expHour = (int) (3600 * expGained / totalseconds);
 		}
-		g.setColor(COLOR_1);
+		g.setColor(PowerMiner.COLOR_1);
 		g.fillRect(366, 4, 135, 106);
-		g.setColor(COLOR_2);
-		g.setStroke(STROKE_1);
+		g.setColor(PowerMiner.COLOR_2);
+		g.setStroke(PowerMiner.STROKE_1);
 		g.drawRect(366, 4, 135, 106);
-		g.setFont(FONT_1);
-		g.setColor(COLOR_3);
+		g.setFont(PowerMiner.FONT_1);
+		g.setColor(PowerMiner.COLOR_3);
 		g.drawString("Iron PowerMiner", 393, 22);
-		g.setFont(FONT_2);
-		g.drawString("Time Run: " + hours + " : " + minutes + " : "
-				+ seconds, 370, 40);
+		g.setFont(PowerMiner.FONT_2);
+		g.drawString("Time Run: " + hours + " : " + minutes + " : " + seconds,
+				370, 40);
 		g.drawString("EXP Gained: " + expGained, 370, 55);
 		g.drawString("EXP/Hr: " + expHour, 370, 70);
-		g.drawString("Levels Gained: (" + startLevel + ") Gained: "
-				+ (skills.getRealLevel(TRAINING_SKILL) - startLevel), 370, 85);
+		g.drawString(
+				"Levels Gained: ("
+						+ startLevel
+						+ ") Gained: "
+						+ (skills.getRealLevel(PowerMiner.TRAINING_SKILL) - startLevel),
+				370, 85);
+	}
+
+	@Override
+	public boolean onStart() {
+		startExp = skills.getCurrentExp(Skills.MINING);
+		startLevel = skills.getRealLevel(Skills.MINING);
+		startTime = System.currentTimeMillis();
+		return game.isLoggedIn();
 	}
 
 }

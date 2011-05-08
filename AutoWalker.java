@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Methods;
 import org.rsbot.script.wrappers.RSInterface;
 import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.script.wrappers.Web;
@@ -19,138 +20,13 @@ import org.rsbot.script.wrappers.Web;
 @ScriptManifest(authors = { "SpeedWing" }, website = "http://www.powerbot.org/vb/showthread.php?t=734531", name = "AutoWalking Simplified", version = 1.04, description = "Simply type your Destination!")
 public class AutoWalker extends Script implements PaintListener, MouseListener {
 
-	Location CURRENT = null;
-	Location TEMP = null;
-	Locations locations = new Locations();
-	Web WP = null;
-	RSTile[] PATH = null;
-	boolean SETTING_LOCATION = true;
-	boolean REMOVED_TEXT = false;
-
-	public void drawLocations(Graphics g) {
-		int x = 10, y = 5, width = 0;
-		g.setColor(new Color(255, 255, 255));
-		g.setFont(new Font("Verdana", Font.PLAIN, 10));
-		for (int i = 0; i < locations.ALL_LOCATIONS.length; i++) {
-			drawStringWithShadow(locations.ALL_LOCATIONS[i].NAME, x, y += 12, g);
-			int tempWidth = g.getFontMetrics().stringWidth(
-					locations.ALL_LOCATIONS[i].NAME);
-			width = ((tempWidth > width) ? tempWidth : width);
-			if (i < locations.ALL_LOCATIONS.length - 1
-					&& (y > game.getHeight() - 60)) {
-				y = 5;
-				x += width + 16;
-				width = 0;
-
-				g.setColor(new Color(255, 255, 255, 120));
-				g.drawLine(x - 8, y, x - 8, game.getHeight() - 55);
-				g.setColor(new Color(255, 255, 255));
-			}
-		}
-	}
-
-	public void drawMouse(Graphics g) {
-		Point m = mouse.getLocation();
-		long mpt = System.currentTimeMillis() - mouse.getPressTime();
-		if (mpt < 80 && mpt > 0 && mpt != -1)
-			drawSqaure(g, m, 7);
-		else if (mpt >= 80 && mpt < 160)
-			drawSqaure(g, m, 6);
-		else if (mpt >= 160 && mpt < 240)
-			drawSqaure(g, m, 5);
-		else if (mpt >= 240 && mpt < 320)
-			drawSqaure(g, m, 4);
-		else if (mpt >= 320 && mpt < 400)
-			drawSqaure(g, m, 3);
-		else if (mpt >= 480 && mpt < 560)
-			drawSqaure(g, m, 2);
-		else if (mpt >= 560 && mpt < 640)
-			drawSqaure(g, m, 2);
-		else if (mpt >= 640 && mpt < 720)
-			drawSqaure(g, m, 2);
-		else if (mpt >= 720 && mpt < 800)
-			drawSqaure(g, m, 3);
-		else if (mpt >= 800 && mpt < 880)
-			drawSqaure(g, m, 4);
-		else if (mpt >= 880 && mpt < 960)
-			drawSqaure(g, m, 5);
-		else if (mpt >= 960 && mpt < 1040)
-			drawSqaure(g, m, 6);
-		if (mpt >= 1040)
-			drawSqaure(g, m, 7);
-	}
-
-	public void drawSqaure(Graphics g, Point p, int size) {
-		int size2 = size - 1;
-		Polygon poly = new Polygon(), poly2 = new Polygon();
-		poly.addPoint(p.x - size, p.y);
-		poly.addPoint(p.x, p.y + size);
-		poly.addPoint(p.x + size, p.y);
-		poly.addPoint(p.x, p.y - size);
-		poly2.addPoint(p.x - size2, p.y);
-		poly2.addPoint(p.x, p.y + size2 + 1);
-		poly2.addPoint(p.x + size2 + 1, p.y);
-		poly2.addPoint(p.x, p.y - size2);
-
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setColor(new Color(255, 0, 0, 175));
-		g.fillPolygon(poly2);
-		g.setColor(Color.black);
-		g.drawPolygon(poly);
-		int line = 5;
-		g.setColor(Color.white);
-		g.drawLine(poly.xpoints[0], poly.ypoints[0], poly.xpoints[0] - line,
-				poly.ypoints[0]);
-		g.drawLine(poly.xpoints[2], poly.ypoints[0], poly.xpoints[2] + line,
-				poly.ypoints[0]);
-		g.drawLine(poly.xpoints[1], poly.ypoints[1], poly.xpoints[1],
-				poly.ypoints[1] + line);
-		g.drawLine(poly.xpoints[3], poly.ypoints[3], poly.xpoints[3],
-				poly.ypoints[3] - line);
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_OFF);
-	}
-
-	public void drawStartButton(Graphics g) {
-		g.setColor(new Color(0, 255, 0, 190));
-		g.fillRoundRect(340, game.getHeight() - 25, 170, 22, 5, 5);
-		g.setColor(new Color(255, 255, 255));
-		g.drawRoundRect(340, game.getHeight() - 25, 170, 22, 5, 5);
-
-		g.setColor(new Color(255, 255, 255));
-		g.setFont(new Font("Verdana", Font.BOLD, 12));
-		drawStringWithShadow("Click here to Start", 365, game.getHeight() - 10,
-				g);
-	}
-
-	public void drawStringWithShadow(final String text, final int x,
-			final int y, final Graphics g) {
-		final Color col = g.getColor();
-		g.setColor(new Color(0, 0, 0));
-		g.drawString(text, x + 1, y + 1);
-		g.setColor(col);
-		g.drawString(text, x, y);
-	}
-
-	public String getTextBox() {
-		RSInterface chatBox = interfaces.get(137);
-		for (int i = 0; i < 280; i++) {
-			String text = chatBox.getComponent(i).getText();
-			if (!text.isEmpty()
-					&& text.contains(getMyPlayer().getName() + "<img"))
-				return text;
-		}
-		return "";
-	}
-
 	public class Location {
 		RSTile TILE;
 		String NAME;
 
-		public Location(RSTile tile, String name) {
-			this.TILE = tile;
-			this.NAME = name;
+		public Location(final RSTile tile, final String name) {
+			TILE = tile;
+			NAME = name;
 		}
 	}
 
@@ -283,28 +159,158 @@ public class AutoWalker extends Script implements PaintListener, MouseListener {
 				WIZARDS_TOWER, YANILLE_BANK };
 	}
 
+	Location CURRENT = null;
+	Location TEMP = null;
+	Locations locations = new Locations();
+	Web WP = null;
+	RSTile[] PATH = null;
+
+	boolean SETTING_LOCATION = true;
+
+	boolean REMOVED_TEXT = false;
+
+	public void drawLocations(final Graphics g) {
+		int x = 10, y = 5, width = 0;
+		g.setColor(new Color(255, 255, 255));
+		g.setFont(new Font("Verdana", Font.PLAIN, 10));
+		for (int i = 0; i < locations.ALL_LOCATIONS.length; i++) {
+			drawStringWithShadow(locations.ALL_LOCATIONS[i].NAME, x, y += 12, g);
+			final int tempWidth = g.getFontMetrics().stringWidth(
+					locations.ALL_LOCATIONS[i].NAME);
+			width = tempWidth > width ? tempWidth : width;
+			if (i < locations.ALL_LOCATIONS.length - 1
+					&& y > game.getHeight() - 60) {
+				y = 5;
+				x += width + 16;
+				width = 0;
+
+				g.setColor(new Color(255, 255, 255, 120));
+				g.drawLine(x - 8, y, x - 8, game.getHeight() - 55);
+				g.setColor(new Color(255, 255, 255));
+			}
+		}
+	}
+
+	public void drawMouse(final Graphics g) {
+		final Point m = mouse.getLocation();
+		final long mpt = System.currentTimeMillis() - mouse.getPressTime();
+		if (mpt < 80 && mpt > 0 && mpt != -1) {
+			drawSqaure(g, m, 7);
+		} else if (mpt >= 80 && mpt < 160) {
+			drawSqaure(g, m, 6);
+		} else if (mpt >= 160 && mpt < 240) {
+			drawSqaure(g, m, 5);
+		} else if (mpt >= 240 && mpt < 320) {
+			drawSqaure(g, m, 4);
+		} else if (mpt >= 320 && mpt < 400) {
+			drawSqaure(g, m, 3);
+		} else if (mpt >= 480 && mpt < 560) {
+			drawSqaure(g, m, 2);
+		} else if (mpt >= 560 && mpt < 640) {
+			drawSqaure(g, m, 2);
+		} else if (mpt >= 640 && mpt < 720) {
+			drawSqaure(g, m, 2);
+		} else if (mpt >= 720 && mpt < 800) {
+			drawSqaure(g, m, 3);
+		} else if (mpt >= 800 && mpt < 880) {
+			drawSqaure(g, m, 4);
+		} else if (mpt >= 880 && mpt < 960) {
+			drawSqaure(g, m, 5);
+		} else if (mpt >= 960 && mpt < 1040) {
+			drawSqaure(g, m, 6);
+		}
+		if (mpt >= 1040) {
+			drawSqaure(g, m, 7);
+		}
+	}
+
+	public void drawSqaure(final Graphics g, final Point p, final int size) {
+		final int size2 = size - 1;
+		final Polygon poly = new Polygon(), poly2 = new Polygon();
+		poly.addPoint(p.x - size, p.y);
+		poly.addPoint(p.x, p.y + size);
+		poly.addPoint(p.x + size, p.y);
+		poly.addPoint(p.x, p.y - size);
+		poly2.addPoint(p.x - size2, p.y);
+		poly2.addPoint(p.x, p.y + size2 + 1);
+		poly2.addPoint(p.x + size2 + 1, p.y);
+		poly2.addPoint(p.x, p.y - size2);
+
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setColor(new Color(255, 0, 0, 175));
+		g.fillPolygon(poly2);
+		g.setColor(Color.black);
+		g.drawPolygon(poly);
+		final int line = 5;
+		g.setColor(Color.white);
+		g.drawLine(poly.xpoints[0], poly.ypoints[0], poly.xpoints[0] - line,
+				poly.ypoints[0]);
+		g.drawLine(poly.xpoints[2], poly.ypoints[0], poly.xpoints[2] + line,
+				poly.ypoints[0]);
+		g.drawLine(poly.xpoints[1], poly.ypoints[1], poly.xpoints[1],
+				poly.ypoints[1] + line);
+		g.drawLine(poly.xpoints[3], poly.ypoints[3], poly.xpoints[3],
+				poly.ypoints[3] - line);
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_OFF);
+	}
+
+	public void drawStartButton(final Graphics g) {
+		g.setColor(new Color(0, 255, 0, 190));
+		g.fillRoundRect(340, game.getHeight() - 25, 170, 22, 5, 5);
+		g.setColor(new Color(255, 255, 255));
+		g.drawRoundRect(340, game.getHeight() - 25, 170, 22, 5, 5);
+
+		g.setColor(new Color(255, 255, 255));
+		g.setFont(new Font("Verdana", Font.BOLD, 12));
+		drawStringWithShadow("Click here to Start", 365, game.getHeight() - 10,
+				g);
+	}
+
+	public void drawStringWithShadow(final String text, final int x,
+			final int y, final Graphics g) {
+		final Color col = g.getColor();
+		g.setColor(new Color(0, 0, 0));
+		g.drawString(text, x + 1, y + 1);
+		g.setColor(col);
+		g.drawString(text, x, y);
+	}
+
+	public String getTextBox() {
+		final RSInterface chatBox = interfaces.get(137);
+		for (int i = 0; i < 280; i++) {
+			final String text = chatBox.getComponent(i).getText();
+			if (!text.isEmpty()
+					&& text.contains(getMyPlayer().getName() + "<img")) {
+				return text;
+			}
+		}
+		return "";
+	}
+
 	@Override
 	public int loop() {
 		if (SETTING_LOCATION) {
 			String text = getTextBox();
 			text = text.substring(text.indexOf(">") + 1);
 			text = text.substring(text.indexOf(">") + 1).toLowerCase();
-			if (!text.equals(""))
-				for (int i = 0; i < locations.ALL_LOCATIONS.length; i++) {
-					Location temp = locations.ALL_LOCATIONS[i];
+			if (!text.equals("")) {
+				for (final Location temp : locations.ALL_LOCATIONS) {
 					if (temp.NAME.toLowerCase().contains(text)) {
 						TEMP = temp;
 						break;
 					}
 				}
-			else
+			} else {
 				TEMP = null;
+			}
 		} else {
 			if (!REMOVED_TEXT) {
-				int length = getTextBox().length();
+				final int length = getTextBox().length();
 				for (int i = 0; i < length; i++) {
 					keyboard.pressKey((char) KeyEvent.VK_BACK_SPACE);
-					sleep(50);
+					Methods.sleep(50);
 				}
 				REMOVED_TEXT = true;
 			}
@@ -313,15 +319,15 @@ public class AutoWalker extends Script implements PaintListener, MouseListener {
 				try {
 					WP = walking.getWebPath(CURRENT.TILE);
 					PATH = WP.path.getTiles();
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					log.warning("The Walking web was unable to generate a path.");
 					stopScript();
 				}
 			}
 
-			if (!WP.atDestination())
+			if (!WP.atDestination()) {
 				WP.traverse();
-			else {
+			} else {
 				log.warning("- " + CURRENT.NAME + " - reached.");
 				stopScript();
 			}
@@ -331,11 +337,11 @@ public class AutoWalker extends Script implements PaintListener, MouseListener {
 
 	@Override
 	@SuppressWarnings("static-access")
-	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() == e.BUTTON1)
+	public void mouseClicked(final MouseEvent e) {
+		if (e.getButton() == e.BUTTON1) {
 			if (SETTING_LOCATION) {
-				Point p = e.getPoint();
-				int x = p.x, y = p.y;
+				final Point p = e.getPoint();
+				final int x = p.x, y = p.y;
 				if (x > 340 && x < 500 && y > game.getHeight() - 25
 						&& y < game.getHeight() - 3) {
 					if (TEMP == null) {
@@ -347,40 +353,42 @@ public class AutoWalker extends Script implements PaintListener, MouseListener {
 					SETTING_LOCATION = false;
 				}
 			}
+		}
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(final MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(final MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(final MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(final MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void onRepaint(Graphics g) {
+	public void onRepaint(final Graphics g) {
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		if (SETTING_LOCATION) {
 			// filling everything except the chat line
 			g.setColor(new Color(0, 0, 0, 200));
-			int gameWidth = game.getWidth(), gameHeight = game.getHeight();
+			final int gameWidth = game.getWidth(), gameHeight = game
+					.getHeight();
 
 			// top part
 			g.fillRect(0, 0, gameWidth, gameHeight - 44);
@@ -398,14 +406,14 @@ public class AutoWalker extends Script implements PaintListener, MouseListener {
 			g.setColor(new Color(255, 0, 0));
 			g.setFont(new Font("Verdana", Font.BOLD, 12));
 			drawStringWithShadow("Found location: "
-					+ ((TEMP == null) ? "None" : TEMP.NAME), 8,
-					gameHeight - 11, g);
+					+ (TEMP == null ? "None" : TEMP.NAME), 8, gameHeight - 11,
+					g);
 
 		} else {
 			drawMouse(g);
 
-			for (RSTile t : PATH) {
-				Point p = calc.tileToMinimap(t);
+			for (final RSTile t : PATH) {
+				final Point p = calc.tileToMinimap(t);
 				if (p.x != -1) {
 					g.setColor(new Color(255, 255, 255));
 					g.fillRect(p.x - 1, p.y - 1, 3, 3);

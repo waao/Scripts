@@ -1,172 +1,23 @@
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.HashMap;
+
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Methods;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.Timer;
 import org.rsbot.script.wrappers.RSItem;
 
-import java.awt.*;
-import java.util.HashMap;
-
-@ScriptManifest(authors = {"LastCoder"}, keywords = " Auto", name = "AutoFletch", version = 1.0, description = "Start, all options are in GUI.")
+@ScriptManifest(authors = { "LastCoder" }, keywords = " Auto", name = "AutoFletch", version = 1.0, description = "Start, all options are in GUI.")
 public class AutoFletch extends Script implements MessageListener,
 		PaintListener {
-
-	private static final Log[] LOGS = new Log[]{
-			new Log("Normal Log", 0, 1511), new Log("Oak Log", 0, 1521),
-			new Log("Willow Log", 0, 1519), new Log("Maple Log", 0, 1517),
-			new Log("Yew Log", 0, 1515), new Log("Magic Log", 0, 1513)};
-	private static final int KNIFE_ID = 946;
-	private static final Color COLOR_1 = new Color(0, 0, 0, 155);
-	private static final Color COLOR_2 = new Color(0, 0, 0);
-	private static final Color COLOR_3 = new Color(255, 255, 255);
-	private static final BasicStroke STROKE = new BasicStroke(1);
-	private static final Font FONT_1 = new Font("Arial", 0, 17);
-	private static final Font FONT_2 = new Font("Arial", 0, 9);
-
-	private static boolean guiOn = false;
-
-	private static Log single_log;
-
-	private long activityTime;
-	private long startExp;
-	private long expGained;
-	private long startTime;
-
-	private int expHour;
-
-	private enum state {
-		BANK, CUT, INTERFACE, SLEEP
-	}
-
-	@Override
-	public boolean onStart() {
-		new Gui().setVisible(true);
-		while (guiOn) {
-			sleep(20);
-		}
-		startExp = (long) skills.getCurrentExp(Skills.FLETCHING);
-		startTime = System.currentTimeMillis();
-		return game.isLoggedIn();
-	}
-
-	private boolean busy() {
-		if (System.currentTimeMillis() - activityTime < 8000) {
-			return true;
-		}
-		return false;
-	}
-
-	private void antiBan() {
-		int random = random(1, 5);
-		switch (random) {
-			case 1:
-				if (random(1, 25) != 1)
-					return;
-				mouse.move(random(10, 750), random(10, 495));
-				return;
-			case 2:
-				if (random(1, 6) != 1)
-					return;
-				int angle = camera.getAngle() + random(-45, 45);
-				if (angle < 0) {
-					angle = random(0, 10);
-				}
-				if (angle > 359) {
-					angle = random(0, 10);
-				}
-				char whichDir = 37; // left
-				if (random(0, 100) < 50)
-					whichDir = 39; // right
-				keyboard.pressKey(whichDir);
-				sleep(random(100, 500));
-				keyboard.releaseKey(whichDir);
-				return;
-			case 3:
-				if (random(1, 15) != 1)
-					return;
-				mouse.moveSlightly();
-				return;
-			default:
-				return;
-		}
-	}
-
-	private state getState() {
-		if (interfaces.get(905).isValid()) {
-			return state.INTERFACE;
-		} else if (inventory.contains(single_log.id)) {
-			if (!busy()) {
-				return state.CUT;
-			} else {
-				return state.SLEEP;
-			}
-		} else {
-			return state.BANK;
-		}
-	}
-
-	@Override
-	public int loop() {
-		switch (getState()) {
-			case BANK:
-				if (!bank.isOpen()) {
-					bank.open();
-					for (int i = 0; i < 100 && !bank.isOpen(); i++)
-						sleep(10);
-					sleep(random(800, 1200));
-				} else {
-					if (!inventory.contains(single_log.id)) {
-						if (inventory.getCount() > 2) {
-							bank.depositAllExcept(KNIFE_ID);
-							for (int i = 0; i < 100 && inventory.getCount() > 2; i++)
-								sleep(20);
-						}
-						if (bank.getItem(single_log.id) == null)
-							return -1;
-						bank.withdraw(single_log.id, 0);
-						for (int i = 0; i < 100
-								&& !inventory.contains(single_log.id); i++)
-							sleep(10);
-						bank.close();
-						for (int i = 0; i < 100 && bank.isOpen(); i++)
-							sleep(10);
-					}
-				}
-				break;
-			case CUT:
-				if (!inventory.isItemSelected()) {
-					RSItem item = inventory.getItem(KNIFE_ID);
-					if (item != null) {
-						item.doAction("Use");
-						for (int i = 0; i < 100 && !inventory.isItemSelected(); i++)
-							sleep(10);
-					}
-				} else if (inventory.isItemSelected()
-						&& inventory.getSelectedItem().getID() != KNIFE_ID) {
-					inventory.clickSelectedItem();
-					for (int i = 0; i < 100 && inventory.isItemSelected(); i++)
-						sleep(10);
-				} else {
-					RSItem Log = inventory.getItem(single_log.id);
-					if (Log != null) {
-						Log.doAction("Use");
-					}
-				}
-				break;
-			case INTERFACE:
-				interfaces.get(905).getComponent(15).doAction("All");
-				activityTime = System.currentTimeMillis();
-				break;
-			case SLEEP:
-				sleep(200);
-				antiBan();
-				break;
-		}
-		return random(600, 1200);
-	}
 
 	static class Gui extends javax.swing.JFrame {
 
@@ -175,8 +26,18 @@ public class AutoFletch extends Script implements MessageListener,
 		 */
 		private static final long serialVersionUID = 1L;
 		public HashMap<String, Log> hideOptMap = new HashMap<String, Log>();
-		public String[] hideOpt = new String[LOGS.length];
+		public String[] hideOpt = new String[AutoFletch.LOGS.length];
 
+		// Variables declaration - do not modify
+		private javax.swing.JButton jButton1;
+
+		private javax.swing.JComboBox jComboBox1;
+
+		private javax.swing.JLabel jLabel1;
+
+		private javax.swing.JLabel jLabel3;
+
+		// End of variables declaration
 		/**
 		 * Creates new form Gui
 		 */
@@ -191,10 +52,10 @@ public class AutoFletch extends Script implements MessageListener,
 		 */
 		private void initComponents() {
 
-			guiOn = true;
-			for (int i = 0; i < LOGS.length; i++) {
-				hideOpt[i] = LOGS[i].name;
-				hideOptMap.put(hideOpt[i], LOGS[i]);
+			AutoFletch.guiOn = true;
+			for (int i = 0; i < AutoFletch.LOGS.length; i++) {
+				hideOpt[i] = AutoFletch.LOGS[i].name;
+				hideOptMap.put(hideOpt[i], AutoFletch.LOGS[i]);
 			}
 			jLabel1 = new javax.swing.JLabel();
 			jLabel3 = new javax.swing.JLabel();
@@ -210,14 +71,15 @@ public class AutoFletch extends Script implements MessageListener,
 
 			jButton1.setText("START");
 			jButton1.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				@Override
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					jButton1ActionPerformed(evt);
 				}
 			});
 
 			jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(hideOpt));
 
-			javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
 					getContentPane());
 			getContentPane().setLayout(layout);
 			layout.setHorizontalGroup(layout
@@ -286,54 +148,13 @@ public class AutoFletch extends Script implements MessageListener,
 			pack();
 		}// </editor-fold>
 
-		private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+		private void jButton1ActionPerformed(
+				final java.awt.event.ActionEvent evt) {
 			setVisible(false);
-			single_log = hideOptMap
-					.get(jComboBox1.getSelectedItem().toString());
-			guiOn = false;
+			AutoFletch.single_log = hideOptMap.get(jComboBox1.getSelectedItem()
+					.toString());
+			AutoFletch.guiOn = false;
 		}
-
-		// Variables declaration - do not modify
-		private javax.swing.JButton jButton1;
-		private javax.swing.JComboBox jComboBox1;
-		private javax.swing.JLabel jLabel1;
-		private javax.swing.JLabel jLabel3;
-		// End of variables declaration
-
-	}
-
-	public void messageReceived(MessageEvent e) {
-		String msg = e.getMessage();
-		if (msg.contains("You")) {
-			activityTime = System.currentTimeMillis();
-		}
-
-	}
-
-	public void onRepaint(Graphics g1) {
-		Graphics2D g = (Graphics2D) g1;
-		long millis = System.currentTimeMillis() - startTime;
-		String time = Timer.format(millis);
-		if ((skills.getCurrentExp(Skills.FLETCHING) - startExp) > 0
-				&& startExp > 0) {
-			expGained = skills.getCurrentExp(Skills.FLETCHING) - startExp;
-		}
-		if (expGained > 0 && millis > 0) {
-			expHour = (int) (3600 * expGained / millis);
-		}
-		g.setColor(COLOR_1);
-		g.fillRect(14, 350, 474, 99);
-		g.setColor(COLOR_2);
-		g.setStroke(STROKE);
-		g.drawRect(14, 350, 474, 99);
-		g.setFont(FONT_1);
-		g.setColor(COLOR_3);
-		g.drawString("AutoFletch", 209, 374);
-		g.setFont(FONT_2);
-		g.drawString("EXP/Hr: " + expHour + "k", 18, 390);
-		g.drawString("EXP Gained: " + expGained, 18, 400);
-		g.drawString("Time Ran: " + time, 182, 390);
-		g.drawString("Status: " + getState().toString(), 182, 400);
 
 	}
 
@@ -342,11 +163,216 @@ public class AutoFletch extends Script implements MessageListener,
 		public int req_lvl;
 		public int id;
 
-		public Log(String name, int req_lvl, int id) {
+		public Log(final String name, final int req_lvl, final int id) {
 			this.name = name;
 			this.req_lvl = req_lvl;
 			this.id = id;
 		}
+	}
+
+	private enum state {
+		BANK, CUT, INTERFACE, SLEEP
+	}
+
+	private static final Log[] LOGS = new Log[] {
+			new Log("Normal Log", 0, 1511), new Log("Oak Log", 0, 1521),
+			new Log("Willow Log", 0, 1519), new Log("Maple Log", 0, 1517),
+			new Log("Yew Log", 0, 1515), new Log("Magic Log", 0, 1513) };
+	private static final int KNIFE_ID = 946;
+	private static final Color COLOR_1 = new Color(0, 0, 0, 155);
+	private static final Color COLOR_2 = new Color(0, 0, 0);
+	private static final Color COLOR_3 = new Color(255, 255, 255);
+
+	private static final BasicStroke STROKE = new BasicStroke(1);
+
+	private static final Font FONT_1 = new Font("Arial", 0, 17);
+
+	private static final Font FONT_2 = new Font("Arial", 0, 9);
+	private static boolean guiOn = false;
+	private static Log single_log;
+	private long activityTime;
+
+	private long startExp;
+
+	private long expGained;
+
+	private long startTime;
+
+	private int expHour;
+
+	private void antiBan() {
+		final int random = Methods.random(1, 5);
+		switch (random) {
+		case 1:
+			if (Methods.random(1, 25) != 1) {
+				return;
+			}
+			mouse.move(Methods.random(10, 750), Methods.random(10, 495));
+			return;
+		case 2:
+			if (Methods.random(1, 6) != 1) {
+				return;
+			}
+			int angle = camera.getAngle() + Methods.random(-45, 45);
+			if (angle < 0) {
+				angle = Methods.random(0, 10);
+			}
+			if (angle > 359) {
+				angle = Methods.random(0, 10);
+			}
+			char whichDir = 37; // left
+			if (Methods.random(0, 100) < 50) {
+				whichDir = 39; // right
+			}
+			keyboard.pressKey(whichDir);
+			Methods.sleep(Methods.random(100, 500));
+			keyboard.releaseKey(whichDir);
+			return;
+		case 3:
+			if (Methods.random(1, 15) != 1) {
+				return;
+			}
+			mouse.moveSlightly();
+			return;
+		default:
+			return;
+		}
+	}
+
+	private boolean busy() {
+		if (System.currentTimeMillis() - activityTime < 8000) {
+			return true;
+		}
+		return false;
+	}
+
+	private state getState() {
+		if (interfaces.get(905).isValid()) {
+			return state.INTERFACE;
+		} else if (inventory.contains(AutoFletch.single_log.id)) {
+			if (!busy()) {
+				return state.CUT;
+			} else {
+				return state.SLEEP;
+			}
+		} else {
+			return state.BANK;
+		}
+	}
+
+	@Override
+	public int loop() {
+		switch (getState()) {
+		case BANK:
+			if (!bank.isOpen()) {
+				bank.open();
+				for (int i = 0; i < 100 && !bank.isOpen(); i++) {
+					Methods.sleep(10);
+				}
+				Methods.sleep(Methods.random(800, 1200));
+			} else {
+				if (!inventory.contains(AutoFletch.single_log.id)) {
+					if (inventory.getCount() > 2) {
+						bank.depositAllExcept(AutoFletch.KNIFE_ID);
+						for (int i = 0; i < 100 && inventory.getCount() > 2; i++) {
+							Methods.sleep(20);
+						}
+					}
+					if (bank.getItem(AutoFletch.single_log.id) == null) {
+						return -1;
+					}
+					bank.withdraw(AutoFletch.single_log.id, 0);
+					for (int i = 0; i < 100
+							&& !inventory.contains(AutoFletch.single_log.id); i++) {
+						Methods.sleep(10);
+					}
+					bank.close();
+					for (int i = 0; i < 100 && bank.isOpen(); i++) {
+						Methods.sleep(10);
+					}
+				}
+			}
+			break;
+		case CUT:
+			if (!inventory.isItemSelected()) {
+				final RSItem item = inventory.getItem(AutoFletch.KNIFE_ID);
+				if (item != null) {
+					item.doAction("Use");
+					for (int i = 0; i < 100 && !inventory.isItemSelected(); i++) {
+						Methods.sleep(10);
+					}
+				}
+			} else if (inventory.isItemSelected()
+					&& inventory.getSelectedItem().getID() != AutoFletch.KNIFE_ID) {
+				inventory.clickSelectedItem();
+				for (int i = 0; i < 100 && inventory.isItemSelected(); i++) {
+					Methods.sleep(10);
+				}
+			} else {
+				final RSItem Log = inventory.getItem(AutoFletch.single_log.id);
+				if (Log != null) {
+					Log.doAction("Use");
+				}
+			}
+			break;
+		case INTERFACE:
+			interfaces.get(905).getComponent(15).doAction("All");
+			activityTime = System.currentTimeMillis();
+			break;
+		case SLEEP:
+			Methods.sleep(200);
+			antiBan();
+			break;
+		}
+		return Methods.random(600, 1200);
+	}
+
+	@Override
+	public void messageReceived(final MessageEvent e) {
+		final String msg = e.getMessage();
+		if (msg.contains("You")) {
+			activityTime = System.currentTimeMillis();
+		}
+
+	}
+
+	@Override
+	public void onRepaint(final Graphics g1) {
+		final Graphics2D g = (Graphics2D) g1;
+		final long millis = System.currentTimeMillis() - startTime;
+		final String time = Timer.format(millis);
+		if (skills.getCurrentExp(Skills.FLETCHING) - startExp > 0
+				&& startExp > 0) {
+			expGained = skills.getCurrentExp(Skills.FLETCHING) - startExp;
+		}
+		if (expGained > 0 && millis > 0) {
+			expHour = (int) (3600 * expGained / millis);
+		}
+		g.setColor(AutoFletch.COLOR_1);
+		g.fillRect(14, 350, 474, 99);
+		g.setColor(AutoFletch.COLOR_2);
+		g.setStroke(AutoFletch.STROKE);
+		g.drawRect(14, 350, 474, 99);
+		g.setFont(AutoFletch.FONT_1);
+		g.setColor(AutoFletch.COLOR_3);
+		g.drawString("AutoFletch", 209, 374);
+		g.setFont(AutoFletch.FONT_2);
+		g.drawString("EXP/Hr: " + expHour + "k", 18, 390);
+		g.drawString("EXP Gained: " + expGained, 18, 400);
+		g.drawString("Time Ran: " + time, 182, 390);
+		g.drawString("Status: " + getState().toString(), 182, 400);
+
+	}
+
+	@Override
+	public boolean onStart() {
+		new Gui().setVisible(true);
+		while (AutoFletch.guiOn) {
+			Methods.sleep(20);
+		}
+		startExp = skills.getCurrentExp(Skills.FLETCHING);
+		startTime = System.currentTimeMillis();
+		return game.isLoggedIn();
 	}
 
 }
