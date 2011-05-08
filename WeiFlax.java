@@ -40,7 +40,7 @@ import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Wei Su" }, name = "AIO Flaxer", version = 0.09, description = "Picks and spins flax.. or both! by Wei Su", keywords = {
+@ScriptManifest(authors = { "Wei Su" }, name = "AIO Flaxer", version = 0.11, description = "Picks and spins flax.. or both! by Wei Su", keywords = {
 		"Lumbridge", "flax", "admin" })
 /* Save as script.java - who could get that wrong! :) */
 public class WeiFlax extends Script implements PaintListener, MessageListener,
@@ -162,6 +162,11 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		}
 	}
 
+	// this is the point on screen you click in to turn pain on and off.
+	Rectangle close = new Rectangle(7, 344, 499, 465);
+	Point p;
+
+	boolean hide = false;
 	public String option;
 	public int flaxPicked;
 	public int nullcheck = 0;
@@ -376,8 +381,6 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 			break;
 		}
 	}
-
-	// END: Code generated using Enfilade's Easel
 
 	public void door() {
 		final RSObject door = objects.getNearest(25819);
@@ -696,10 +699,18 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 	}
 
 	@Override
-	public void mouseClicked(final MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseClicked(final MouseEvent e) {
+		// this is the mouse listener, it listen's for the click.
+		p = e.getPoint();
+		if (close.contains(p) && !hide) {
+			hide = true;
+		} else if (close.contains(p) && hide) {
+			hide = false;
+		}
 
 	}
+
+	// END: Code generated using Enfilade's Easel
 
 	@Override
 	public void mouseDragged(final MouseEvent arg0) {
@@ -796,22 +807,35 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		seconds = millis / 1000;
 
 		final Graphics2D g = (Graphics2D) g1;
+		if (!hide) {
+			g.drawImage(img1, 2, 304, null);
+			g.setFont(font1);
+			g.setColor(color1);
+			g.drawString("Version: 0.09", 217, 330);
+			g.drawString("Time elapsed: " + hours + ":" + minutes + ":"
+					+ seconds + "        EXP Gained: " + xpGaineded, 24, 376);
+			g.drawString("Spinning Profit: " + totalProfit + "   " + flaxSpan
+					+ " Span,   " + flaxPicked + " Picked", 24, 409);
+			g.drawString("Picking Profit: " + pckProf + "        Total Profit "
+					+ totalGain, 23, 440);
+			g.drawImage(img2, 304, 344, null);
+			g.drawImage(img2, 342, 335, null);
+			g.drawImage(img2, 357, 356, null);
+			g.drawImage(img2, 306, 369, null);
+			g.drawImage(img2, 345, 372, null);
+		}
+		if (hide) {
+			new Color(255, 0, 0);
+			final Color color2 = new Color(102, 255, 0);
+			final Color color3 = new Color(255, 255, 255, 0);
+			g.setFont(font1);
+			g.setColor(color2);
+			g.drawString("SHOW", 203, 367);
+			g.setColor(color3);
+			// this is a clear square box i made for the close box in the ints
+			g.fillRect(198, 134, 80, 43);
 
-		g.drawImage(img1, 2, 304, null);
-		g.setFont(font1);
-		g.setColor(color1);
-		g.drawString("Version: 0.09", 217, 330);
-		g.drawString("Time elapsed: " + hours + ":" + minutes + ":" + seconds
-				+ "        EXP Gained: " + xpGaineded, 24, 376);
-		g.drawString("Spinning Profit: " + totalProfit + "   " + flaxSpan
-				+ " Span,   " + flaxPicked + " Picked", 24, 409);
-		g.drawString("Picking Profit: " + pckProf + "        Total Profit "
-				+ totalGain, 23, 440);
-		g.drawImage(img2, 304, 344, null);
-		g.drawImage(img2, 342, 335, null);
-		g.drawImage(img2, 357, 356, null);
-		g.drawImage(img2, 306, 369, null);
-		g.drawImage(img2, 345, 372, null);
+		}
 	}
 
 	@Override
