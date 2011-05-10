@@ -10,17 +10,16 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.gui.BotGUI;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.methods.Equipment;
@@ -30,7 +29,7 @@ import org.rsbot.script.methods.Methods;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.wrappers.RSItem;
 
-@ScriptManifest(authors = { "iPhQ" }, keywords = { "Magic" }, name = "iPhQ's Alcher", version = 2.01, description = "Alch it baby")
+@ScriptManifest(authors = { "iPhQ" }, keywords = { "Magic" }, name = "iPhQ's Alcher", version = 2.1, description = "Alch it baby - Now works with the new version of powerbot.")
 public class Alcher extends Script implements PaintListener, MouseListener,
 		MessageListener {
 
@@ -665,6 +664,7 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 	private int fade = 0; // 0 - fade in, 1 - fade out, 2 - stay still
 
 	private boolean showing = true;
+    private String link = "http://www.powerbot.org/vb/showthread.php?t=607582";
 
 	public void afk(final int chance, final int length) {
 		if (chance == 1) {
@@ -812,9 +812,9 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 
 			case WAIT_FOR_GUI:
 				if (guiOpen == false) {
-					final NewFrame nf = new NewFrame();
-					nf.getjList1Model().removeAllElements();
-					nf.getjList1().setSelectionMode(
+					createAndWaitforGUI();
+					gui.getjList1Model().removeAllElements();
+					gui.getjList1().setSelectionMode(
 							ListSelectionModel.SINGLE_SELECTION);
 					for (int i = 0; i < inventory.getItems().length; i++) {
 						final RSItem[] itemI = inventory.getItems();
@@ -825,17 +825,17 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 						if (itemid != -1) {
 							message = "<html><body>Slot: " + slot + " Name: "
 									+ itemname + "</body></html>";
-							nf.getjList1Model().addElement(message);
+							gui.getjList1Model().addElement(message);
 						} else {
 							if (slot <= 28) {
 								message = "<html><body><i>No item in slot: "
 										+ slot + "</i></body></html>";
-								nf.getjList1Model().addElement(message);
+								gui.getjList1Model().addElement(message);
 							}
 						}
 
 					}
-					nf.setVisible(true);
+					gui.setVisible(true);
 					guiOpen = true;
 				}
 				break;
@@ -1007,7 +1007,23 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 
 	@Override
 	public void onFinish() {
-		log("Thank you for using this script");
+        final Object[] options = { "Visit the thread", "Stop the script" };
+					final int n = JOptionPane.showOptionDialog(null,
+							"Thank you for using iPhQ's Alcher.\n Did you find any errors or you want to give me some feedback\n on the script please visit my thread on PowerBot's forums.",
+							"iPhQ's Alcher | Thank you!",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, // do not use a
+																// custom Icon
+							options, // the titles of buttons
+							options[0]); // default button title
+
+					boolean high = true;
+
+					if (n == 0) {
+                           BotGUI.openURL(link);
+					} else {
+
+					}
 		env.takeScreenshot(false);
 
 	}
@@ -1062,5 +1078,29 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 		}
 		return 0;
 	}
+
+    private NewFrame gui;
+
+    private void createAndWaitforGUI() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            gui = new NewFrame();
+            gui.setVisible(true);
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        gui = new NewFrame();
+                        gui.setVisible(true);
+                    }
+                });
+            } catch (InvocationTargetException ite) {
+            } catch (InterruptedException ie) {
+            }
+        }
+        sleep(100);
+        while (gui.isVisible()) {
+            sleep(100);
+        }
+    }
 
 }
