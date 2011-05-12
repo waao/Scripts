@@ -34,7 +34,7 @@ import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Wei Su" }, name = "AIO Flaxer", version = 0.11, description = "Picks and spins flax.. or both! by Wei Su", keywords = {
+@ScriptManifest(authors = { "Wei Su" }, name = "AIO Flaxer", version = 0.13, description = "Picks and spins flax.. or both! by Wei Su", keywords = {
 		"Lumbridge", "flax", "admin" })
 /* Save as script.java - who could get that wrong! :) */
 public class WeiFlax extends Script implements PaintListener, MessageListener,
@@ -443,6 +443,9 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 					}
 				} else {
 					bank.depositAll();
+					if (bank.getCount(flax) < 28) {
+						game.logout(true);
+					}
 				}
 			}
 
@@ -500,6 +503,7 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 					}
 				} else {
 					bank.depositAll();
+
 				}
 			} else {
 				if (getMyPlayer().getLocation().getX() < 2736) {
@@ -633,6 +637,9 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 							bank.depositAll();
 						} else {
 							bank.withdraw(flax, 28);
+							if (bank.getCount(flax) < 28) {
+								game.logout(true);
+							}
 						}
 					}
 				}
@@ -755,6 +762,9 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 							bank.depositAll();
 						} else {
 							bank.withdraw(flax, 28);
+							if (bank.getCount(flax) < 28) {
+								game.logout(true);
+							}
 						}
 					}
 				}
