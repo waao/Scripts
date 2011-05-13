@@ -33,22 +33,21 @@ public class godFlax extends Script implements PaintListener {
 					}
 				}
 			}
-		} else {
-			if (FLAX_FIELD.contains(getMyPlayer().getLocation())) {
-				RSObject flax = objects.getNearest(2646);
-				if (flax != null) {
-					if (flax.doAction("Pick")) {
-						ob = flax;
-						return random(800, 1800);
-					}
+		}
+		if (!FLAX_FIELD.contains(getMyPlayer().getLocation())) {
+			RSWeb walkingWeb = web.getWeb(getMyPlayer().getLocation(), FLAX_TILE);
+			while (!walkingWeb.finished()) {
+				if (!walkingWeb.step()) {
+					break;
 				}
-			} else {
-				RSWeb walkingWeb = web.getWeb(getMyPlayer().getLocation(), FLAX_TILE);
-				while (!walkingWeb.finished()) {
-					if (!walkingWeb.step()) {
-						break;
-					}
-				}
+			}
+			return 300;
+		}
+		RSObject flax = objects.getNearest(2646);
+		if (flax != null) {
+			if (flax.doAction("Pick")) {
+				ob = flax;
+				return random(800, 1800);
 			}
 		}
 		return 0;
