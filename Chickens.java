@@ -101,8 +101,7 @@ public class Chickens extends Script implements PaintListener {
 			if (!feather.isOnScreen()) {
 				camera.turnTo(feather.getLocation(), 15);
 				if (!feather.isOnScreen()) {
-					walking.walkTileMM(walking.getClosestTileOnMap(feather
-							.getLocation()));
+					walking.walkTileMM(walking.getClosestTileOnMap(feather.getLocation()));
 					return Methods.random(900, 1200);
 				}
 			}
@@ -126,8 +125,7 @@ public class Chickens extends Script implements PaintListener {
 		if (!chicken.isOnScreen()) {
 			turnTo(camera.getCharacterAngle(chicken), chicken);
 			if (!chicken.isOnScreen()) {
-				walking.walkTileMM(walking.getClosestTileOnMap(chicken
-						.getLocation()));
+				walking.walkTileMM(walking.getClosestTileOnMap(chicken.getLocation()));
 				return Methods.random(800, 1000);
 			}
 		}
@@ -137,8 +135,8 @@ public class Chickens extends Script implements PaintListener {
 
 	private RSNPC newNPC() {
 		final RSNPC interacting = interactingNPC();
-		return interacting != null ? interacting : npcs
-				.getNearest(new Filter<RSNPC>() {
+		return interacting != null ? interacting
+				: npcs.getNearest(new Filter<RSNPC>() {
 					@Override
 					public boolean accept(final RSNPC npc) {
 						return npc.getName().equals("Chicken")
@@ -154,15 +152,11 @@ public class Chickens extends Script implements PaintListener {
 		final int w = 196, x = 201;
 		final Graphics2D g = (Graphics2D) render;
 		final long runTime = System.currentTimeMillis() - start;
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		final Point m = mouse.getLocation();
-		g.drawLine((int) m.getX() - 3, (int) m.getY(), (int) m.getX() + 3,
-				(int) m.getY());
-		g.drawLine((int) m.getX(), (int) m.getY() - 3, (int) m.getX(),
-				(int) m.getY() + 3);
+		g.drawLine((int) m.getX() - 3, (int) m.getY(), (int) m.getX() + 3, (int) m.getY());
+		g.drawLine((int) m.getX(), (int) m.getY() - 3, (int) m.getX(), (int) m.getY() + 3);
 		g.setFont(new Font("Comic Sans MS", Font.PLAIN, 10));
 		g.setColor(Color.BLACK);
 		g.drawRect(w, 345, 300, 11);
@@ -184,12 +178,10 @@ public class Chickens extends Script implements PaintListener {
 				g.setColor(new Color(0, 0, 0, 220));
 				g.fillRect(w, z, 300, 11);
 				g.setColor(Chickens.skillColors[i]);
-				g.drawString(
-						Chickens.skillNames[i] + ": "
-								+ Chickens.k.format(exp / 1000D)
-								+ " K Earned - "
-								+ Chickens.k.format(eph / 1000) + " K P/H - "
-								+ format(ttl) + " TTL", x, y);
+				g.drawString(Chickens.skillNames[i] + ": "
+						+ Chickens.k.format(exp / 1000D) + " K Earned - "
+						+ Chickens.k.format(eph / 1000) + " K P/H - "
+						+ format(ttl) + " TTL", x, y);
 				y += 11;
 				z += 11;
 			}

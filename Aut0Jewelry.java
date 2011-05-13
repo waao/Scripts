@@ -155,97 +155,60 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 						{
 							panel1.setLayout(null);
 							// @START CRAFTINGTYPE
-							craftingType
-									.setModel(new javax.swing.DefaultComboBoxModel(
-											new String[] { "",
-													"Gold Jewellery",
-													"Silver Jewellery",
-													"Cut Gems" }));
+							craftingType.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+									"", "Gold Jewellery", "Silver Jewellery",
+									"Cut Gems" }));
 							panel1.add(craftingType);
-							craftingType.setBounds(5, 30, 115,
-									type.getPreferredSize().height);
-							craftingType
-									.addActionListener(new ActionListener() {
-										@Override
-										public void actionPerformed(
-												final ActionEvent evt) {
-											final String co = (String) craftingType
-													.getSelectedItem();
-											if (co == "Gold Jewellery") {
-												craftObj.setModel(new javax.swing.DefaultComboBoxModel(
-														new String[] { "Gold",
-																"Sapphire",
-																"Emerald",
-																"Ruby",
-																"Diamond" }));
-												type.setModel(new javax.swing.DefaultComboBoxModel(
-														new String[] { "",
-																"Ring",
-																"Necklace",
-																"Bracelet",
-																"Amulet" }));
-												loc.setModel(new DefaultComboBoxModel(
-														new String[] {
-																"Al Kharid",
-																"Edgeville",
-																"Neitiznot(not operational)" }));
-												// @START - COMBOBOX - TYPE
-												panel1.add(type);
-												type.setBounds(
-														170,
-														70,
-														115,
-														type.getPreferredSize().height);
-												// @END - COMBOBOX - TYPE
-												label6.setText("Make what?");
-												label6.setFont(new Font(
-														"Tahoma", Font.BOLD, 11));
-												panel1.add(label6);
-												label6.setBounds(170, 45, 120,
-														35);
-											} else if (co == "Silver Jewellery") {
-												craftObj.setModel(new javax.swing.DefaultComboBoxModel(
-														new String[] { "Silver" }));
-												type.setModel(new javax.swing.DefaultComboBoxModel(
-														new String[] { "",
-																"Holy Symbol",
-																"Tiara" }));
-												loc.setModel(new DefaultComboBoxModel(
-														new String[] {
-																"Al Kharid",
-																"Edgeville",
-																"Neitiznot(not operational)" }));
-												// @START - COMBOBOX - TYPE
-												panel1.add(type);
-												type.setBounds(
-														170,
-														70,
-														115,
-														type.getPreferredSize().height);
-												// @END - COMBOBOX - TYPE
-												label6.setText("Make what?");
-												label6.setFont(new Font(
-														"Tahoma", Font.BOLD, 11));
-												panel1.add(label6);
-												label6.setBounds(170, 45, 120,
-														35);
-											} else if (co == "Cut Gems") {
-												craftObj.setModel(new javax.swing.DefaultComboBoxModel(
-														new String[] {
-																"Sapphire",
-																"Emerald",
-																"Ruby",
-																"Diamond",
-																"Dragonstone" }));
-												loc.setModel(new DefaultComboBoxModel(
-														new String[] { "Any Location" }));
-											}
-										}
-									});
+							craftingType.setBounds(5, 30, 115, type.getPreferredSize().height);
+							craftingType.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(
+										final ActionEvent evt) {
+									final String co = (String) craftingType.getSelectedItem();
+									if (co == "Gold Jewellery") {
+										craftObj.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+												"Gold", "Sapphire", "Emerald",
+												"Ruby", "Diamond" }));
+										type.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+												"", "Ring", "Necklace",
+												"Bracelet", "Amulet" }));
+										loc.setModel(new DefaultComboBoxModel(new String[] {
+												"Al Kharid", "Edgeville",
+												"Neitiznot(not operational)" }));
+										// @START - COMBOBOX - TYPE
+										panel1.add(type);
+										type.setBounds(170, 70, 115, type.getPreferredSize().height);
+										// @END - COMBOBOX - TYPE
+										label6.setText("Make what?");
+										label6.setFont(new Font("Tahoma", Font.BOLD, 11));
+										panel1.add(label6);
+										label6.setBounds(170, 45, 120, 35);
+									} else if (co == "Silver Jewellery") {
+										craftObj.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Silver" }));
+										type.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+												"", "Holy Symbol", "Tiara" }));
+										loc.setModel(new DefaultComboBoxModel(new String[] {
+												"Al Kharid", "Edgeville",
+												"Neitiznot(not operational)" }));
+										// @START - COMBOBOX - TYPE
+										panel1.add(type);
+										type.setBounds(170, 70, 115, type.getPreferredSize().height);
+										// @END - COMBOBOX - TYPE
+										label6.setText("Make what?");
+										label6.setFont(new Font("Tahoma", Font.BOLD, 11));
+										panel1.add(label6);
+										label6.setBounds(170, 45, 120, 35);
+									} else if (co == "Cut Gems") {
+										craftObj.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+												"Sapphire", "Emerald", "Ruby",
+												"Diamond", "Dragonstone" }));
+										loc.setModel(new DefaultComboBoxModel(new String[] { "Any Location" }));
+									}
+								}
+							});
 							// @START CRAFTOBJ
 							panel1.add(craftObj);
-							craftObj.setBounds(170, 30, 115,
-									type.getPreferredSize().height);
+							craftObj.setBounds(170, 30, 115, type.getPreferredSize().height);
 
 							// @START - COMBOBOX - LOCATION
 							panel1.add(loc);
@@ -253,16 +216,13 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 							// @END - COMBOBOX - LOCATION
 
 							// @START - COMBOBOX - MOUSESPEED
-							mouseSpeed
-									.setModel(new javax.swing.DefaultComboBoxModel(
-											new String[] { "Slow",
-													"Slow-Medium",
-													"Medium(Recommended)",
-													"Medium-Fast(Recommended)",
-													"Fast**", "Super Fast**" }));
+							mouseSpeed.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+									"Slow", "Slow-Medium",
+									"Medium(Recommended)",
+									"Medium-Fast(Recommended)", "Fast**",
+									"Super Fast**" }));
 							panel1.add(mouseSpeed);
-							mouseSpeed.setBounds(170, 110, 115,
-									mouseSpeed.getPreferredSize().height);
+							mouseSpeed.setBounds(170, 110, 115, mouseSpeed.getPreferredSize().height);
 							// @END - COMBOBOX - MOUSESPEED
 
 							// @START LABELS(PANEL 1)
@@ -289,14 +249,11 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel1.getComponentCount(); i++) {
-									final Rectangle bounds = panel1
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel1.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel1.getInsets();
 								preferredSize.width += insets.right;
@@ -315,27 +272,22 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 							label3.setText("http://aut0rprogramming.net");
 							label3.setFont(new Font("Cambria", Font.BOLD, 12));
 							panel2.add(label3);
-							label3.setBounds(5, 5,
-									label3.getPreferredSize().width, 15);
+							label3.setBounds(5, 5, label3.getPreferredSize().width, 15);
 
 							// ---- label4 ----
 							label4.setText("Ver." + version);
 							label4.setFont(new Font("Cambria", Font.BOLD, 10));
 							panel2.add(label4);
-							label4.setBounds(5, 15,
-									label4.getPreferredSize().width, 20);
+							label4.setBounds(5, 15, label4.getPreferredSize().width, 20);
 
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel2.getComponentCount(); i++) {
-									final Rectangle bounds = panel2
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel2.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel2.getInsets();
 								preferredSize.width += insets.right;
@@ -353,8 +305,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 					{ // compute preferred size
 						final Dimension preferredSize = new Dimension();
 						for (int i = 0; i < contentPanel.getComponentCount(); i++) {
-							final Rectangle bounds = contentPanel.getComponent(
-									i).getBounds();
+							final Rectangle bounds = contentPanel.getComponent(i).getBounds();
 							preferredSize.width = Math.max(bounds.x
 									+ bounds.width, preferredSize.width);
 							preferredSize.height = Math.max(bounds.y
@@ -380,10 +331,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 
 					// ---- okButton ----
 					okButton.setText("Start " + scriptName);
-					buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1,
-							0.0, 0.0, GridBagConstraints.CENTER,
-							GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0,
-							0));
+					buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
 					okButton.addActionListener(new java.awt.event.ActionListener() {
 
 						@Override
@@ -395,19 +343,15 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 
 					// ---- cancelButton ----
 					cancelButton.setText("Cancel");
-					buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1,
-							1, 0.0, 0.0, GridBagConstraints.CENTER,
-							GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0,
-							0));
-					cancelButton
-							.addActionListener(new java.awt.event.ActionListener() {
+					buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+					cancelButton.addActionListener(new java.awt.event.ActionListener() {
 
-								@Override
-								public void actionPerformed(
-										final java.awt.event.ActionEvent evt) {
-									CancelActionPerformed(evt);
-								}
-							});
+						@Override
+						public void actionPerformed(
+								final java.awt.event.ActionEvent evt) {
+							CancelActionPerformed(evt);
+						}
+					});
 				}
 				dialogPane.add(buttonBar, BorderLayout.SOUTH);
 			}
@@ -445,10 +389,8 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 						new Line(3275, 3172, 3279, 3174),
 						new Line(3269, 3164, 3269, 3170) };
 				AREAS = new RSArea[] {
-						new RSArea(new RSTile(3269, 3164), new RSTile(3271,
-								3170)),
-						new RSArea(new RSTile(3274, 3184), new RSTile(3277,
-								3188)) };
+						new RSArea(new RSTile(3269, 3164), new RSTile(3271, 3170)),
+						new RSArea(new RSTile(3274, 3184), new RSTile(3277, 3188)) };
 				bankID = 35647;
 				smithID = 11666;
 				craftLoc = "Al Kharid";
@@ -458,10 +400,8 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 				pathToBank = new Line[] { new Line(3103, 3498, 3105, 3500),
 						new Line(3096, 3496, 3098, 3497) };
 				AREAS = new RSArea[] {
-						new RSArea(new RSTile(3095, 3496), new RSTile(3098,
-								3498)),
-						new RSArea(new RSTile(3107, 3498), new RSTile(3113,
-								3503)) };
+						new RSArea(new RSTile(3095, 3496), new RSTile(3098, 3498)),
+						new RSArea(new RSTile(3107, 3498), new RSTile(3113, 3503)) };
 				bankID = 26972;
 				smithID = 26814;
 				craftLoc = "Edgeville";
@@ -473,10 +413,8 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 						new Line(2335, 3803, 2337, 3804),
 						new Line(2335, 3807, 2338, 3807) };
 				AREAS = new RSArea[] {
-						new RSArea(new RSTile(2334, 3805), new RSTile(2339,
-								3808)),
-						new RSArea(new RSTile(2343, 3809), new RSTile(2345,
-								3811)) };
+						new RSArea(new RSTile(2334, 3805), new RSTile(2339, 3808)),
+						new RSArea(new RSTile(2343, 3809), new RSTile(2345, 3811)) };
 				bankID = 21301;
 				smithID = 21303;
 				craftLoc = "Neitiznot";
@@ -898,14 +836,14 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 		}
 
 		public RSTile translate(final double length) {
-			return new RSTile((int) Math.round(length * xdist / dist) + x,
-					(int) Math.round(length * ydist / dist) + y);
+			return new RSTile((int) Math.round(length * xdist / dist) + x, (int) Math.round(length
+					* ydist / dist)
+					+ y);
 		}
 
 		public RSTile translateFromCenter(final double length) {
-			return new RSTile(
-					(int) Math.round(centerX - xdist / dist * length),
-					(int) Math.round(centerY - ydist / dist * length));
+			return new RSTile((int) Math.round(centerX - xdist / dist * length), (int) Math.round(centerY
+					- ydist / dist * length));
 		}
 	}
 
@@ -1041,8 +979,8 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 					if (i > 0 && i < h - 1) {
 						j = h - 1;
 					}
-					final RSTile tile = new RSTile(start.getX() - offset + i,
-							start.getY() - offset + j);
+					final RSTile tile = new RSTile(start.getX() - offset + i, start.getY()
+							- offset + j);
 					final RSObject objectToList = objects.getTopAt(tile);
 					if (objectToList != null
 							&& calc.tileOnScreen(objectToList.getLocation())) {
@@ -1055,8 +993,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 			return null;
 		}
 		if (possibleTiles.size() > 0 && possibleTiles != null) {
-			final RSTile objectLoc = possibleTiles.get(Methods.random(0,
-					possibleTiles.size()));
+			final RSTile objectLoc = possibleTiles.get(Methods.random(0, possibleTiles.size()));
 			final Point objectPoint = calc.tileToScreen(objectLoc);
 			if (objectPoint != null) {
 				try {
@@ -1179,61 +1116,54 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 				for (int j = 0; j < dist; j++) {
 					if (objects.getTopAt(new RSTile((int) Math.round(xdist * j
 							+ lastX), (int) Math.round(ydist * j + lastY))) == null) {
-						path.add(new RSTile(
-								(int) Math.round(xdist * j + lastX), (int) Math
-										.round(ydist * j + lastY)));
+						path.add(new RSTile((int) Math.round(xdist * j + lastX), (int) Math.round(ydist
+								* j + lastY)));
 					} else {
 						RSTile ran = null;
-						ran = new RSTile(
-								(int) Math.round(xdist * j + lastX) + 1,
-								(int) Math.round(ydist * j + lastY));
+						ran = new RSTile((int) Math.round(xdist * j + lastX) + 1, (int) Math.round(ydist
+								* j + lastY));
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
 						}
-						ran = new RSTile(
-								(int) Math.round(xdist * j + lastX) - 1,
-								(int) Math.round(ydist * j + lastY));
+						ran = new RSTile((int) Math.round(xdist * j + lastX) - 1, (int) Math.round(ydist
+								* j + lastY));
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
 						}
-						ran = new RSTile((int) Math.round(xdist * j + lastX),
-								(int) Math.round(ydist * j + lastY) + 1);
+						ran = new RSTile((int) Math.round(xdist * j + lastX), (int) Math.round(ydist
+								* j + lastY) + 1);
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
 						}
-						ran = new RSTile((int) Math.round(xdist * j + lastX),
-								(int) Math.round(ydist * j + lastY) - 1);
+						ran = new RSTile((int) Math.round(xdist * j + lastX), (int) Math.round(ydist
+								* j + lastY) - 1);
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
 						}
-						ran = new RSTile(
-								(int) Math.round(xdist * j + lastX) + 1,
-								(int) Math.round(ydist * j + lastY) + 1);
+						ran = new RSTile((int) Math.round(xdist * j + lastX) + 1, (int) Math.round(ydist
+								* j + lastY) + 1);
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
 						}
-						ran = new RSTile(
-								(int) Math.round(xdist * j + lastX) + 1,
-								(int) Math.round(ydist * j + lastY) - 1);
+						ran = new RSTile((int) Math.round(xdist * j + lastX) + 1, (int) Math.round(ydist
+								* j + lastY) - 1);
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
 						}
-						ran = new RSTile(
-								(int) Math.round(xdist * j + lastX) - 1,
-								(int) Math.round(ydist * j + lastY) + 1);
+						ran = new RSTile((int) Math.round(xdist * j + lastX) - 1, (int) Math.round(ydist
+								* j + lastY) + 1);
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
 						}
-						ran = new RSTile(
-								(int) Math.round(xdist * j + lastX) - 1,
-								(int) Math.round(ydist * j + lastY) - 1);
+						ran = new RSTile((int) Math.round(xdist * j + lastX) - 1, (int) Math.round(ydist
+								* j + lastY) - 1);
 						if (objects.getTopAt(ran) == null) {
 							path.add(ran);
 							continue;
@@ -1420,9 +1350,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 	public int loop() {
 		try {
 			if (bank.isOpen()) {
-				if (inventory.containsOneOf(Aut0Jewelry.BOX_ID,
-						Aut0Jewelry.BOOK_KNOWLEDGE_ID, Aut0Jewelry.LAMP_ID,
-						Aut0Jewelry.MYSTERY_BOX_ID)) {
+				if (inventory.containsOneOf(Aut0Jewelry.BOX_ID, Aut0Jewelry.BOOK_KNOWLEDGE_ID, Aut0Jewelry.LAMP_ID, Aut0Jewelry.MYSTERY_BOX_ID)) {
 					bank.close();
 					Methods.sleep(Methods.random(300, 500));
 					log("Rewards-Box failsafed.");
@@ -1490,8 +1418,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 				status = "Cutting " + barName;
 				if (!isCutting()
 						&& interfaces.getComponent(ifParent, ifChild).isValid()) {
-					interfaces.getComponent(ifParent, ifChild).doAction(
-							"Cut All");
+					interfaces.getComponent(ifParent, ifChild).doAction("Cut All");
 				}
 				if (isCutting() && inventory.contains(uncutGemID)) {
 					Methods.sleep(Methods.random(500, 750));
@@ -1510,8 +1437,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 						if (inventory.isItemSelected()) {
 							if (RSI_uncut != null) {
 								RSI_uncut.doAction("Use Chisel -> " + barName);
-								waitForIF(interfaces.get(ifParent),
-										Methods.random(2000, 3000));
+								waitForIF(interfaces.get(ifParent), Methods.random(2000, 3000));
 							}
 						}
 						Methods.sleep(Methods.random(300, 600));
@@ -1595,8 +1521,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 			case CRAFT:
 				status = "Crafting " + itemName;
 				if (interfaces.getComponent(ifParent, ifChild).isValid()) {
-					interfaces.getComponent(ifParent, ifChild).doAction(
-							"Make All");
+					interfaces.getComponent(ifParent, ifChild).doAction("Make All");
 					Methods.sleep(Methods.random(400, 700));
 				} else if (!isIdle() && inventory.contains(barID)) {
 					if (!gem) {
@@ -1605,8 +1530,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 						Methods.sleep(Methods.random(500, 750));
 					}
 				} else if (isIdle()
-						&& !interfaces.getComponent(ifParent, ifChild)
-								.isValid()) {
+						&& !interfaces.getComponent(ifParent, ifChild).isValid()) {
 					final RSObject smithObj = objects.getNearest(smithID);
 					final RSItem itemOnFurn = inventory.getItem(barID);
 					if (smithObj != null && itemOnFurn != null
@@ -1625,8 +1549,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 								break;
 							}
 							if (doActionAtModel(furModel, furnaceAction)) {
-								waitForIF(interfaces.get(ifParent),
-										Methods.random(2000, 3000));
+								waitForIF(interfaces.get(ifParent), Methods.random(2000, 3000));
 								break;
 							} else {
 								camera.turnTo(smithObj);
@@ -1773,10 +1696,8 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 		gainedXp = currentExp - startExp;
 		gainedLvl = currentLvl - startLvl;
 		itemsMade = gainedXp / exp;
-		final int cutPerHour = (int) (itemsMade * 3600000D / (System
-				.currentTimeMillis() - startTime));
-		final int expPerHour = (int) (gainedXp * 3600000D / (System
-				.currentTimeMillis() - startTime));
+		final int cutPerHour = (int) (itemsMade * 3600000D / (System.currentTimeMillis() - startTime));
+		final int expPerHour = (int) (gainedXp * 3600000D / (System.currentTimeMillis() - startTime));
 		double profit, r__pph;
 		if (gem) {
 			profit = (double) (itemsMade * itemsPrice - (barPrice * itemsMade + gemPrice
@@ -1860,10 +1781,8 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 				pathToBank[i].drawTo(a, pathToBank[i - 1]);
 			}
 		}
-		final int currentCraftingLevel = skills
-				.getCurrentLevel(Skills.CRAFTING);
-		final int percentToNextCraftingLevel = skills
-				.getPercentToNextLevel(Skills.CRAFTING);
+		final int currentCraftingLevel = skills.getCurrentLevel(Skills.CRAFTING);
+		final int percentToNextCraftingLevel = skills.getPercentToNextLevel(Skills.CRAFTING);
 		final float t = skills.getPercentToNextLevel(Skills.CRAFTING);
 		final float h = t / 100;
 
@@ -1885,8 +1804,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 				+ ss + seconds, 8, 102);
 		g.drawString(itemName + "s " + action + ": " + itemsMade + " ("
 				+ cutPerHour + " p/h)", 8, 113);
-		g.drawString("Profit: " + profit + "k (" + profitPerHour + "k p/h)", 8,
-				124);
+		g.drawString("Profit: " + profit + "k (" + profitPerHour + "k p/h)", 8, 124);
 		g.drawString("Xp/Lvls Gained: " + gainedXp + " xp (" + gainedLvl
 				+ " lvls)", 8, 135);
 		g.drawString("Xp/Hr: " + expPerHour + " p/h", 8, 146);
@@ -2001,8 +1919,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 	}
 
 	private int step(final ArrayList<RSTile> path) {
-		if (calc.distanceBetween(getMyPlayer().getLocation(),
-				path.get(path.size() - 1)) < 2) {
+		if (calc.distanceBetween(getMyPlayer().getLocation(), path.get(path.size() - 1)) < 2) {
 			return path.size();
 		}
 		final RSTile dest = walking.getDestination();
@@ -2024,15 +1941,13 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 			}
 		}
 		if (index >= 0
-				&& (dest == null || index > shortest || !getMyPlayer()
-						.isMoving())) {
+				&& (dest == null || index > shortest || !getMyPlayer().isMoving())) {
 			if (walking.walkTileMM(path.get(index))) {
 				waitToMove(Methods.random(600, 900));
 			}
 			nextStep = Methods.random(13, 15);
 			while (walking.getDestination() != null
-					&& calc.distanceBetween(walking.getDestination(),
-							getMyPlayer().getLocation()) >= 5) {
+					&& calc.distanceBetween(walking.getDestination(), getMyPlayer().getLocation()) >= 5) {
 				Methods.sleep(Methods.random(50, 100));
 			}
 			restructPath();

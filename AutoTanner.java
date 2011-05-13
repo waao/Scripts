@@ -82,71 +82,10 @@ public class AutoTanner extends Script implements MessageListener,
 
 			jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(hideOpt));
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(103,
-																			103,
-																			103)
-																	.addComponent(
-																			jLabel1))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addContainerGap()
-																	.addComponent(
-																			jButton1,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			275,
-																			Short.MAX_VALUE))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addContainerGap()
-																	.addComponent(
-																			jLabel3)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																	.addComponent(
-																			jComboBox1,
-																			javax.swing.GroupLayout.PREFERRED_SIZE,
-																			102,
-																			javax.swing.GroupLayout.PREFERRED_SIZE)))
-									.addContainerGap()));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addComponent(jLabel1)
-									.addGap(27, 27, 27)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(jLabel3)
-													.addComponent(
-															jComboBox1,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addGap(37, 37, 37)
-									.addComponent(
-											jButton1,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											59,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addContainerGap(
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											Short.MAX_VALUE)));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(103, 103, 103).addComponent(jLabel1)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel3).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))).addContainerGap()));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel1).addGap(27, 27, 27).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel3).addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(37, 37, 37).addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 			pack();
 		}// </editor-fold>
@@ -223,14 +162,12 @@ public class AutoTanner extends Script implements MessageListener,
 	private long startTime;
 
 	public boolean atBank() {
-		final RSArea a = new RSArea(new RSTile(3264, 3159), new RSTile(3274,
-				3174));
+		final RSArea a = new RSArea(new RSTile(3264, 3159), new RSTile(3274, 3174));
 		return a.contains(getMyPlayer().getLocation());
 	}
 
 	public boolean atTanner() {
-		final RSArea a = new RSArea(new RSTile(3270, 3189), new RSTile(3277,
-				3195));
+		final RSArea a = new RSArea(new RSTile(3270, 3189), new RSTile(3277, 3195));
 		return a.contains(getMyPlayer().getLocation());
 	}
 

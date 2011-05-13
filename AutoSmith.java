@@ -82,8 +82,7 @@ public class AutoSmith extends Script implements MessageListener, PaintListener 
 
 			jLabel2.setText("Where:");
 
-			jComboBox1
-					.setModel(new javax.swing.DefaultComboBoxModel(locations));
+			jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(locations));
 
 			jLabel3.setText("Type:");
 
@@ -97,109 +96,18 @@ public class AutoSmith extends Script implements MessageListener, PaintListener 
 				}
 			});
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(147,
-																			147,
-																			147)
-																	.addComponent(
-																			jLabel1))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(37,
-																			37,
-																			37)
-																	.addGroup(
-																			layout.createParallelGroup(
-																					javax.swing.GroupLayout.Alignment.LEADING,
-																					false)
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addComponent(
-																											jLabel3)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																									.addComponent(
-																											jComboBox2,
-																											0,
-																											javax.swing.GroupLayout.DEFAULT_SIZE,
-																											Short.MAX_VALUE))
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addComponent(
-																											jLabel2)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																									.addComponent(
-																											jComboBox1,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											86,
-																											javax.swing.GroupLayout.PREFERRED_SIZE))))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addContainerGap()
-																	.addComponent(
-																			jButton1,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			352,
-																			Short.MAX_VALUE)))
-									.addContainerGap()));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addComponent(jLabel1)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(jLabel2)
-													.addComponent(
-															jComboBox1,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(jLabel3)
-													.addComponent(
-															jComboBox2,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addGap(26, 26, 26)
-									.addComponent(
-											jButton1,
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											43, Short.MAX_VALUE)
-									.addContainerGap()));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(147, 147, 147).addComponent(jLabel1)).addGroup(layout.createSequentialGroup().addGap(37, 37, 37).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addGroup(layout.createSequentialGroup().addComponent(jLabel3).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addComponent(jLabel2).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))).addContainerGap()));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel1).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel2).addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel3).addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(26, 26, 26).addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE).addContainerGap()));
 
 			pack();
 		}// </editor-fold>
 
 		private void jButton1ActionPerformed(
 				final java.awt.event.ActionEvent evt) {
-			AutoSmith.location = locMap.get(jComboBox1.getSelectedItem()
-					.toString());
-			AutoSmith.MATERIAL = matMap.get(jComboBox2.getSelectedItem()
-					.toString());
+			AutoSmith.location = locMap.get(jComboBox1.getSelectedItem().toString());
+			AutoSmith.MATERIAL = matMap.get(jComboBox2.getSelectedItem().toString());
 			AutoSmith.gui_on = false;
 			setVisible(false);
 		}
@@ -245,17 +153,15 @@ public class AutoSmith extends Script implements MessageListener, PaintListener 
 		BANK, WALK, SMITH, INTERFACE, SLEEP
 	}
 
-	private static final SMLoc[] LOCATIONS = new SMLoc[] { new SMLoc(
-			"AL_KHARID", 11666, new RSArea(new RSTile(3275, 3175), new RSTile(
-					3264, 3160)), new RSTile[] { new RSTile(3271, 3166),
-					new RSTile(3273, 3166), new RSTile(3274, 3167),
-					new RSTile(3274, 3169), new RSTile(3275, 3172),
-					new RSTile(3276, 3174), new RSTile(3276, 3177),
-					new RSTile(3277, 3178), new RSTile(3278, 3180),
-					new RSTile(3280, 3182), new RSTile(3281, 3183),
-					new RSTile(3281, 3185), new RSTile(3280, 3185),
-					new RSTile(3278, 3185), new RSTile(3277, 3186),
-					new RSTile(3276, 3186) }) };
+	private static final SMLoc[] LOCATIONS = new SMLoc[] { new SMLoc("AL_KHARID", 11666, new RSArea(new RSTile(3275, 3175), new RSTile(3264, 3160)), new RSTile[] {
+			new RSTile(3271, 3166), new RSTile(3273, 3166),
+			new RSTile(3274, 3167), new RSTile(3274, 3169),
+			new RSTile(3275, 3172), new RSTile(3276, 3174),
+			new RSTile(3276, 3177), new RSTile(3277, 3178),
+			new RSTile(3278, 3180), new RSTile(3280, 3182),
+			new RSTile(3281, 3183), new RSTile(3281, 3185),
+			new RSTile(3280, 3185), new RSTile(3278, 3185),
+			new RSTile(3277, 3186), new RSTile(3276, 3186) }) };
 	private static final Color COLOR_1 = new Color(0, 0, 0, 155);
 	private static final Color COLOR_2 = new Color(0, 0, 0);
 	private static final Color COLOR_3 = new Color(255, 255, 255);
@@ -353,20 +259,16 @@ public class AutoSmith extends Script implements MessageListener, PaintListener 
 						if (inventory.getCount() > 1) {
 							bank.depositAll();
 						}
-						bank.withdraw(AutoSmith.MATERIAL.inv_id,
-								AutoSmith.MATERIAL.primary);
+						bank.withdraw(AutoSmith.MATERIAL.inv_id, AutoSmith.MATERIAL.primary);
 						for (int i = 0; i < 100
-								&& !inventory
-										.contains(AutoSmith.MATERIAL.inv_id); i++) {
+								&& !inventory.contains(AutoSmith.MATERIAL.inv_id); i++) {
 							Methods.sleep(20);
 						}
 					}
 					if (!inventory.contains(AutoSmith.MATERIAL.inv_second_id)) {
-						bank.withdraw(AutoSmith.MATERIAL.inv_second_id,
-								AutoSmith.MATERIAL.secondary);
+						bank.withdraw(AutoSmith.MATERIAL.inv_second_id, AutoSmith.MATERIAL.secondary);
 						for (int i = 0; i < 100
-								&& !inventory
-										.contains(AutoSmith.MATERIAL.inv_second_id); i++) {
+								&& !inventory.contains(AutoSmith.MATERIAL.inv_second_id); i++) {
 							Methods.sleep(20);
 						}
 					}
@@ -375,11 +277,9 @@ public class AutoSmith extends Script implements MessageListener, PaintListener 
 						if (inventory.getCount() > 1) {
 							bank.depositAll();
 						}
-						bank.withdraw(AutoSmith.MATERIAL.inv_id,
-								AutoSmith.MATERIAL.primary);
+						bank.withdraw(AutoSmith.MATERIAL.inv_id, AutoSmith.MATERIAL.primary);
 						for (int i = 0; i < 100
-								&& !inventory
-										.contains(AutoSmith.MATERIAL.inv_id); i++) {
+								&& !inventory.contains(AutoSmith.MATERIAL.inv_id); i++) {
 							Methods.sleep(20);
 						}
 					}
@@ -405,8 +305,7 @@ public class AutoSmith extends Script implements MessageListener, PaintListener 
 			}
 			break;
 		case SMITH:
-			final RSObject furnace = objects
-					.getNearest(AutoSmith.location.furnace_id);
+			final RSObject furnace = objects.getNearest(AutoSmith.location.furnace_id);
 			if (furnace != null) {
 				if (!furnace.isOnScreen()) {
 					camera.turnTo(furnace);
@@ -415,8 +314,7 @@ public class AutoSmith extends Script implements MessageListener, PaintListener 
 					}
 				} else {
 					if (!inventory.isItemSelected()) {
-						final RSItem ore = inventory
-								.getItem(AutoSmith.MATERIAL.inv_id);
+						final RSItem ore = inventory.getItem(AutoSmith.MATERIAL.inv_id);
 						if (ore != null) {
 							ore.doAction("Use");
 						}

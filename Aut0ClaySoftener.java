@@ -110,18 +110,16 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 			apimethods.setEnabled(false);
 
 			beziercurves.setSelected(true);
-			beziercurves
-					.setText("Cubic Bezier Curves (A basic curve with 4 control points)");
+			beziercurves.setText("Cubic Bezier Curves (A basic curve with 4 control points)");
 
 			shortsplines.setSelected(true);
-			shortsplines
-					.setText("<html><body><font size=\\\"3\\\">Short Splines to and from points on a straight line (Generates<br/>the splines with RSBot's methods. The mouse moves fairly straight<br/>and very squiggly)</font></body></html>");
+			shortsplines.setText("<html><body><font size=\\\"3\\\">Short Splines to and from points on a straight line (Generates<br/>the splines with RSBot's methods. The mouse moves fairly straight<br/>and very squiggly)</font></body></html>");
 
 			jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 			jLabel2.setText("<html><body><font size=\\\"3\\\">Number of Antiban Threads: <br/>(1-2 is Recommended.)</font></body></html>");
 
-			numABthreads.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[] { "0", "1", "2", "3", "4", "5" }));
+			numABthreads.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"0", "1", "2", "3", "4", "5" }));
 			numABthreads.setSelectedIndex(2);
 
 			ok.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -133,98 +131,10 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				}
 			});
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.TRAILING)
-													.addComponent(
-															ok,
-															javax.swing.GroupLayout.Alignment.LEADING,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															343,
-															Short.MAX_VALUE)
-													.addComponent(
-															jLabel1,
-															javax.swing.GroupLayout.Alignment.LEADING)
-													.addComponent(
-															apimethods,
-															javax.swing.GroupLayout.Alignment.LEADING)
-													.addComponent(
-															beziercurves,
-															javax.swing.GroupLayout.Alignment.LEADING)
-													.addComponent(
-															shortsplines,
-															javax.swing.GroupLayout.Alignment.LEADING,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-													.addGroup(
-															javax.swing.GroupLayout.Alignment.LEADING,
-															layout.createSequentialGroup()
-																	.addComponent(
-																			jLabel2,
-																			javax.swing.GroupLayout.PREFERRED_SIZE,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			javax.swing.GroupLayout.PREFERRED_SIZE)
-																	.addGap(10,
-																			10,
-																			10)
-																	.addComponent(
-																			numABthreads,
-																			0,
-																			177,
-																			Short.MAX_VALUE)))
-									.addContainerGap()));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addComponent(jLabel1)
-									.addGap(10, 10, 10)
-									.addComponent(apimethods)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(beziercurves)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-									.addComponent(
-											shortsplines,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addGap(35, 35, 35)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addComponent(
-															jLabel2,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-													.addComponent(
-															numABthreads,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															32,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addGap(28, 28, 28)
-									.addComponent(
-											ok,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											37,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addContainerGap(
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											Short.MAX_VALUE)));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addComponent(ok, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE).addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING).addComponent(apimethods, javax.swing.GroupLayout.Alignment.LEADING).addComponent(beziercurves, javax.swing.GroupLayout.Alignment.LEADING).addComponent(shortsplines, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup().addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(10, 10, 10).addComponent(numABthreads, 0, 177, Short.MAX_VALUE))).addContainerGap()));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel1).addGap(10, 10, 10).addComponent(apimethods).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(beziercurves).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(shortsplines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(35, 35, 35).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(numABthreads, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(28, 28, 28).addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 			pack();
 		}
@@ -317,18 +227,15 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				break;
 			}
 			case 7: {
-				cameraHandler.moveRandomly(Methods.random(600, 900),
-						(Methods.random(1, 4) >= 2));
+				cameraHandler.moveRandomly(Methods.random(600, 900), (Methods.random(1, 4) >= 2));
 				break;
 			}
 			case 8: {
-				cameraHandler.moveRandomly(Methods.random(300, 600),
-						(Methods.random(1, 4) >= 2));
+				cameraHandler.moveRandomly(Methods.random(300, 600), (Methods.random(1, 4) >= 2));
 				break;
 			}
 			case 9: {
-				cameraHandler.moveRandomly(Methods.random(950, 1475),
-						(Methods.random(1, 5) >= 2));
+				cameraHandler.moveRandomly(Methods.random(950, 1475), (Methods.random(1, 5) >= 2));
 				break;
 			}
 			case 10: {
@@ -400,11 +307,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				if (Methods.random(1, 2) == Methods.random(1, 2)
 						|| Methods.random(1, 3) == Methods.random(1, 3)
 						|| !calc.pointOnScreen(mouse.getLocation())) {
-					final Point dest = new Point(Methods.random(
-							Methods.random(0, game.getWidth()),
-							Methods.random(game.getWidth() / 2, 150)),
-							Methods.random(Methods.random(0, game.getHeight()),
-									Methods.random(game.getHeight() / 2, 150)));
+					final Point dest = new Point(Methods.random(Methods.random(0, game.getWidth()), Methods.random(game.getWidth() / 2, 150)), Methods.random(Methods.random(0, game.getHeight()), Methods.random(game.getHeight() / 2, 150)));
 					mouseMove(dest);
 				} else {
 					mouse.moveRandomly(Methods.random(15, 300));
@@ -413,16 +316,14 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				break;
 			}
 			case 3: {
-				final Point p = new Point(Methods.random(175, 325),
-						Methods.random(75, 225));
+				final Point p = new Point(Methods.random(175, 325), Methods.random(75, 225));
 				mouseMove(p);
 				mousemovet = System.currentTimeMillis();
 				break;
 			}
 			case 4: {
 				mouse.moveSlightly();
-				mouse.moveRandomly(Methods.random(30, 39),
-						Methods.random(40, 60));
+				mouse.moveRandomly(Methods.random(30, 39), Methods.random(40, 60));
 				mousemovet = System.currentTimeMillis();
 				break;
 			}
@@ -435,11 +336,9 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				break;
 			}
 			case 6: {
-				final Point p = new Point(Methods.random(120, 350),
-						Methods.random(50, 300));
+				final Point p = new Point(Methods.random(120, 350), Methods.random(50, 300));
 				mouseMove(p);
-				mouse.moveRandomly(Methods.random(5, 10),
-						Methods.random(20, 30));
+				mouse.moveRandomly(Methods.random(5, 10), Methods.random(20, 30));
 				mousemovet = System.currentTimeMillis();
 				break;
 			}
@@ -450,23 +349,20 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				break;
 			}
 			case 8: {
-				mouse.moveRandomly(Methods.random(5, 10),
-						Methods.random(20, 30));
+				mouse.moveRandomly(Methods.random(5, 10), Methods.random(20, 30));
 				mouse.moveOffScreen();
 				mousemovet = System.currentTimeMillis();
 				break;
 			}
 			case 9: {
 				mouse.moveSlightly();
-				mouse.moveRandomly(Methods.random(5, 10),
-						Methods.random(20, 30));
+				mouse.moveRandomly(Methods.random(5, 10), Methods.random(20, 30));
 				mouse.moveSlightly();
 				mousemovet = System.currentTimeMillis();
 				break;
 			}
 			case 10: {
-				final Point p = new Point(Methods.random(40, 200),
-						Methods.random(10, 200));
+				final Point p = new Point(Methods.random(40, 200), Methods.random(10, 200));
 				mouseMove(p);
 				mousemovet = System.currentTimeMillis();
 				break;
@@ -483,20 +379,17 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 					break;
 				}
 				case 3: {
-					final Point p = new Point(Methods.random(40, 200),
-							Methods.random(10, 200));
+					final Point p = new Point(Methods.random(40, 200), Methods.random(10, 200));
 					mouseMove(p);
 					break;
 				}
 				case 4: {
-					final Point p = new Point(Methods.random(175, 325),
-							Methods.random(75, 225));
+					final Point p = new Point(Methods.random(175, 325), Methods.random(75, 225));
 					mouseMove(p);
 					break;
 				}
 				case 5: {
-					mouse.moveRandomly(Methods.random(5, 10),
-							Methods.random(20, 30));
+					mouse.moveRandomly(Methods.random(5, 10), Methods.random(20, 30));
 					break;
 				}
 				}
@@ -704,31 +597,23 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 		public void lookAtRandThings() {
 			try {
-				final RSObject[] allPossibleObjects = objects
-						.getAll(new Filter<RSObject>() {
+				final RSObject[] allPossibleObjects = objects.getAll(new Filter<RSObject>() {
 
-							@Override
-							public boolean accept(final RSObject o) {
-								return calc.distanceTo(o) <= 8
-										&& (o.getType().equals(
-												RSObject.Type.INTERACTABLE) || o
-												.getType().equals(
-														RSObject.Type.BOUNDARY));
-							}
-						});
-				RSObject objecttochoose = allPossibleObjects[Methods.random(0,
-						allPossibleObjects.length - 1)];
-				final RSNPC[] allPossibleNPCs = npcs
-						.getAll(new Filter<RSNPC>() {
+					@Override
+					public boolean accept(final RSObject o) {
+						return calc.distanceTo(o) <= 8
+								&& (o.getType().equals(RSObject.Type.INTERACTABLE) || o.getType().equals(RSObject.Type.BOUNDARY));
+					}
+				});
+				RSObject objecttochoose = allPossibleObjects[Methods.random(0, allPossibleObjects.length - 1)];
+				final RSNPC[] allPossibleNPCs = npcs.getAll(new Filter<RSNPC>() {
 
-							@Override
-							public boolean accept(final RSNPC npc) {
-								return calc.distanceTo(npc) <= 8
-										&& npc.isValid();
-							}
-						});
-				RSNPC npctochoose = allPossibleNPCs[Methods.random(0,
-						allPossibleNPCs.length - 1)];
+					@Override
+					public boolean accept(final RSNPC npc) {
+						return calc.distanceTo(npc) <= 8 && npc.isValid();
+					}
+				});
+				RSNPC npctochoose = allPossibleNPCs[Methods.random(0, allPossibleNPCs.length - 1)];
 				if (npctochoose == null || objecttochoose == null) {
 					npctochoose = allPossibleNPCs[0];
 					objecttochoose = allPossibleObjects[0];
@@ -759,10 +644,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 		public void moveRandomly(final long averageTimeout,
 				final boolean doubledir) {
 			try {
-				final int sleep = Math.abs((int) Methods.random(
-						averageTimeout - 200, averageTimeout + 200));
-				final int sleep2 = Math.abs((int) Methods.random(
-						averageTimeout - 200, averageTimeout + 200));
+				final int sleep = Math.abs((int) Methods.random(averageTimeout - 200, averageTimeout + 200));
+				final int sleep2 = Math.abs((int) Methods.random(averageTimeout - 200, averageTimeout + 200));
 				char begin = 0;
 				char next = 0;
 				final int rand = Methods.random(1, 4);
@@ -830,8 +713,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 		private void setAngle(final int angle) {
 			if (camera.getAngleTo(angle) > 5) {
-				final charpresser presser = new charpresser(
-						(char) KeyEvent.VK_LEFT);
+				final charpresser presser = new charpresser((char) KeyEvent.VK_LEFT);
 				new Thread(presser).start();
 				while (camera.getAngleTo(angle) >= Methods.random(5, 8)) {
 					Methods.sleep(10);
@@ -840,8 +722,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				presser.stopThread();
 				keyboard.releaseKey((char) KeyEvent.VK_LEFT);
 			} else if (camera.getAngleTo(angle) <= -5) {
-				final charpresser presser = new charpresser(
-						(char) KeyEvent.VK_RIGHT);
+				final charpresser presser = new charpresser((char) KeyEvent.VK_RIGHT);
 				new Thread(presser).start();
 				while (camera.getAngleTo(angle) <= -6) {
 					Methods.sleep(10);
@@ -855,8 +736,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 		}
 
 		public void turnRandomly(final long averageTimeout) {
-			final int sleep = Math.abs((int) Methods.random(
-					averageTimeout - 200, averageTimeout + 200));
+			final int sleep = Math.abs((int) Methods.random(averageTimeout - 200, averageTimeout + 200));
 			final char dir = Methods.random(1, 2) == Methods.random(1, 2) ? left
 					: right;
 			new Thread(new charpresser(sleep, dir)).start();
@@ -1038,10 +918,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 	/* Falador West */
 	private class Falador extends Locations {
 
-		private final RSArea object = new RSArea(new RSTile(2948, 3382),
-				new RSTile(2950, 3384));
-		private final RSArea bank = new RSArea(new RSTile(2945, 3368),
-				new RSTile(2947, 3370));
+		private final RSArea object = new RSArea(new RSTile(2948, 3382), new RSTile(2950, 3384));
+		private final RSArea bank = new RSArea(new RSTile(2945, 3368), new RSTile(2947, 3370));
 		private final RSTile bankTile = new RSTile(2946, 3368);
 		private final RSTile objectTile = new RSTile(2949, 3382);
 		private final int objectId = 11661;
@@ -1160,8 +1038,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 			jLabel2.setText("Location:");
 
 			location.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-			location.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[] { "West Falador", "Edgeville" }));
+			location.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"West Falador", "Edgeville" }));
 
 			jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 			jLabel3.setText("Mouse Lo / Mouse Hi:");
@@ -1217,163 +1095,10 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				}
 			});
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(55,
-																			55,
-																			55)
-																	.addComponent(
-																			jLabel1))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addContainerGap()
-																	.addComponent(
-																			jLabel2)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addComponent(
-																			location,
-																			0,
-																			199,
-																			Short.MAX_VALUE))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addContainerGap()
-																	.addGroup(
-																			layout.createParallelGroup(
-																					javax.swing.GroupLayout.Alignment.TRAILING,
-																					false)
-																					.addComponent(
-																							antiban,
-																							javax.swing.GroupLayout.Alignment.LEADING,
-																							javax.swing.GroupLayout.DEFAULT_SIZE,
-																							javax.swing.GroupLayout.DEFAULT_SIZE,
-																							Short.MAX_VALUE)
-																					.addComponent(
-																							jLabel3,
-																							javax.swing.GroupLayout.Alignment.LEADING,
-																							javax.swing.GroupLayout.DEFAULT_SIZE,
-																							javax.swing.GroupLayout.DEFAULT_SIZE,
-																							Short.MAX_VALUE))
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addGroup(
-																			layout.createParallelGroup(
-																					javax.swing.GroupLayout.Alignment.LEADING)
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addComponent(
-																											mouselo,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											52,
-																											javax.swing.GroupLayout.PREFERRED_SIZE)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																									.addComponent(
-																											jLabel4,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											11,
-																											javax.swing.GroupLayout.PREFERRED_SIZE)
-																									.addGap(3,
-																											3,
-																											3)
-																									.addComponent(
-																											mousehi,
-																											0,
-																											50,
-																											Short.MAX_VALUE))
-																					.addComponent(
-																							paint,
-																							javax.swing.GroupLayout.DEFAULT_SIZE,
-																							126,
-																							Short.MAX_VALUE))))
-									.addContainerGap())
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGap(45, 45, 45)
-									.addComponent(
-											start,
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											193, Short.MAX_VALUE)
-									.addGap(48, 48, 48))
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGap(76, 76, 76)
-									.addComponent(
-											cancel,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											130,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addContainerGap(80, Short.MAX_VALUE)));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addComponent(
-											jLabel1,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											28,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addGap(18, 18, 18)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(jLabel2)
-													.addComponent(
-															location,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addGap(11, 11, 11)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(jLabel3)
-													.addComponent(
-															mouselo,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-													.addComponent(
-															mousehi,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-													.addComponent(
-															jLabel4,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															24,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addGap(11, 11, 11)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(antiban)
-													.addComponent(paint))
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-											35, Short.MAX_VALUE)
-									.addComponent(
-											start,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											39,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-									.addComponent(cancel).addGap(18, 18, 18)));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(55, 55, 55).addComponent(jLabel1)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel2).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(location, 0, 199, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(antiban, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(mouselo, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(3, 3, 3).addComponent(mousehi, 0, 50, Short.MAX_VALUE)).addComponent(paint, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)))).addContainerGap()).addGroup(layout.createSequentialGroup().addGap(45, 45, 45).addComponent(start, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE).addGap(48, 48, 48)).addGroup(layout.createSequentialGroup().addGap(76, 76, 76).addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap(80, Short.MAX_VALUE)));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel2).addComponent(location, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(11, 11, 11).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel3).addComponent(mouselo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(mousehi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(11, 11, 11).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(antiban).addComponent(paint)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE).addComponent(start, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(cancel).addGap(18, 18, 18)));
 
 			pack();
 		}
@@ -1631,8 +1356,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 			buttonGroup1.add(defaultmouse);
 			defaultmouse.setSelected(true);
-			defaultmouse
-					.setText("Mouse Type: Wacky colors and lines. Best with rotation");
+			defaultmouse.setText("Mouse Type: Wacky colors and lines. Best with rotation");
 
 			buttonGroup1.add(nexusmouse);
 			nexusmouse.setText("Mouse Type: iBot (NeXus) mouse");
@@ -1649,82 +1373,10 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				}
 			});
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap(
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											Short.MAX_VALUE)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addComponent(showmouse)
-													.addComponent(showstats)
-													.addComponent(showclicks)
-													.addComponent(showpaths))
-									.addGap(32, 32, 32)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING,
-													false)
-													.addComponent(nexusmouse)
-													.addComponent(rotatemouse)
-													.addComponent(defaultmouse)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addComponent(
-																			ok,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			Short.MAX_VALUE)
-																	.addContainerGap()))));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addContainerGap()
-																	.addComponent(
-																			showmouse)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addComponent(
-																			showstats)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addComponent(
-																			showclicks)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addComponent(
-																			showpaths))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addComponent(
-																			defaultmouse)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addComponent(
-																			nexusmouse)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addComponent(
-																			rotatemouse)
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																	.addComponent(
-																			ok)))
-									.addContainerGap(11, Short.MAX_VALUE)));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(showmouse).addComponent(showstats).addComponent(showclicks).addComponent(showpaths)).addGap(32, 32, 32).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(nexusmouse).addComponent(rotatemouse).addComponent(defaultmouse).addGroup(layout.createSequentialGroup().addComponent(ok, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addContainerGap()))));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(showmouse).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(showstats).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(showclicks).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(showpaths)).addGroup(layout.createSequentialGroup().addComponent(defaultmouse).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(nexusmouse).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(rotatemouse).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(ok))).addContainerGap(11, Short.MAX_VALUE)));
 
 			pack();
 		}
@@ -1766,10 +1418,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				}
 				softClayPrice = softprice;
 				clayPrice = price;
-				final URL mouseurl = new URL(
-						"http://i49.tinypic.com/35bh2rq.png");
-				final URL clickedurl = new URL(
-						"http://i50.tinypic.com/rk0b3r.png");
+				final URL mouseurl = new URL("http://i49.tinypic.com/35bh2rq.png");
+				final URL clickedurl = new URL("http://i50.tinypic.com/rk0b3r.png");
 				nmouse = ImageIO.read(mouseurl);
 				nclicked = ImageIO.read(clickedurl);
 			} catch (final MalformedURLException mue) {
@@ -1820,18 +1470,15 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 						continue;
 					}
 					if (pair.component instanceof JComboBox) {
-						((JComboBox) pair.component).setSelectedIndex(Integer
-								.parseInt(value));
+						((JComboBox) pair.component).setSelectedIndex(Integer.parseInt(value));
 					} else if (pair.component instanceof JCheckBox) {
-						((JCheckBox) pair.component).setSelected(Boolean
-								.parseBoolean(value));
+						((JCheckBox) pair.component).setSelected(Boolean.parseBoolean(value));
 					} else if (pair.component instanceof JTextField) {
 						((JTextField) pair.component).setText(value);
 					} else if (pair.component instanceof JTextArea) {
 						((JTextArea) pair.component).setText(value);
 					} else if (pair.component instanceof JRadioButton) {
-						((JRadioButton) pair.component).setSelected(Boolean
-								.parseBoolean(value));
+						((JRadioButton) pair.component).setSelected(Boolean.parseBoolean(value));
 					}
 				}
 				rd.close();
@@ -1847,25 +1494,19 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				for (final Pair pair : pairs) {
 					String value = "";
 					if (pair.component instanceof JComboBox) {
-						value = Integer.toString(((JComboBox) pair.component)
-								.getSelectedIndex());
+						value = Integer.toString(((JComboBox) pair.component).getSelectedIndex());
 					} else if (pair.component instanceof JCheckBox) {
-						value = Boolean.toString(((JCheckBox) pair.component)
-								.isSelected());
+						value = Boolean.toString(((JCheckBox) pair.component).isSelected());
 					} else if (pair.component instanceof JTextField) {
 						value = ((JTextField) pair.component).getText();
 					} else if (pair.component instanceof JTextArea) {
 						value = ((JTextArea) pair.component).getText();
 					} else if (pair.component instanceof JRadioButton) {
-						value = Boolean
-								.toString(((JRadioButton) pair.component)
-										.isSelected());
+						value = Boolean.toString(((JRadioButton) pair.component).isSelected());
 					}
 					prop.setProperty(pair.key, value);
 				}
-				prop.store(
-						wr,
-						"SettingsManager by NoEffex, edited by icnhzabot. Feel free to use with credits.");
+				prop.store(wr, "SettingsManager by NoEffex, edited by icnhzabot. Feel free to use with credits.");
 				wr.close();
 			} catch (final Exception e) {
 			}
@@ -1887,8 +1528,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 		private waypoint[] adaptivemids(final waypoint[] points1) {
 			int i = 0;
-			final ArrayList<waypoint> points = new ArrayList<waypoint>(
-					Arrays.asList(points1));
+			final ArrayList<waypoint> points = new ArrayList<waypoint>(Arrays.asList(points1));
 			while (i < points.size() - 1) {
 				final waypoint a = points.get(i++);
 				final waypoint b = points.get(i);
@@ -1899,10 +1539,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 						final double incpt = a.y - slope * a.x;
 						for (double c = a.x < b.x ? a.x + 1 : b.x - 1; a.x < b.x ? c < b.x
 								: c > a.x; c += a.x < b.x ? 1 : -1) {
-							points.add(
-									i++,
-									new waypoint(c, Math.round(incpt + slope
-											* c)));
+							points.add(i++, new waypoint(c, Math.round(incpt
+									+ slope * c)));
 						}
 					} else {
 						for (double c = a.y < b.y ? a.y + 1 : b.y - 1; a.y < b.y ? c < b.y
@@ -2007,10 +1645,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 						+ coordlist[3].y * t * t * t;
 				points.add(new waypoint(x2, y2));
 			}
-			if (!points.get(points.size() - 1).equals(
-					new waypoint(coordlist[3].getX(), coordlist[3].getY()))) {
-				points.add(new waypoint(coordlist[3].getX(), coordlist[3]
-						.getY()));
+			if (!points.get(points.size() - 1).equals(new waypoint(coordlist[3].getX(), coordlist[3].getY()))) {
+				points.add(new waypoint(coordlist[3].getX(), coordlist[3].getY()));
 			}
 			return adaptivemids(points.toArray(new waypoint[points.size()]));
 		}
@@ -2079,9 +1715,9 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				percent = percent > 0.5 ? percent - 0.5 : percent;
 				percent += 0.25;
 				final int curVariance = (int) (Methods.random(115, 130) * percent);
-				cur.setLocation(
-						(int) (cur.y + curVariance * 2 * rand.nextDouble() - curVariance),
-						(int) (cur.x + curVariance * 2 * rand.nextDouble() - curVariance));
+				cur.setLocation((int) (cur.y + curVariance * 2
+						* rand.nextDouble() - curVariance), (int) (cur.x
+						+ curVariance * 2 * rand.nextDouble() - curVariance));
 				result.add(cur);
 			}
 			if (numofcontrols == 3) {
@@ -2093,8 +1729,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 		private void hop(final Point hopdest) {
 			final Point mloc = mouse.getLocation();
-			final Point[] controls = MouseHandler.generateControls(mloc.x,
-					mloc.y, hopdest.x, hopdest.y, 50, 100);
+			final Point[] controls = MouseHandler.generateControls(mloc.x, mloc.y, hopdest.x, hopdest.y, 50, 100);
 			final Point[] spline = MouseHandler.generateSpline(controls);
 			final ArrayList<Point> path = new ArrayList<Point>();
 			path.addAll(Arrays.asList(spline));
@@ -2105,21 +1740,20 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 		}
 
 		private void mouseTo(final Point dest) {
-			final waypoint[] path = genBezier(genControls(mouse.getLocation(),
-					dest));
+			final waypoint[] path = genBezier(genControls(mouse.getLocation(), dest));
 			final int x1 = mouse.getLocation().x, y1 = mouse.getLocation().y, x2 = dest.x, y2 = dest.y;
-			final int timeToMove = (int) MouseHandler.fittsLaw(
-					Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)), 10);
-			final waypoint[] curve1 = applyDynamism(path, timeToMove,
-					mouse.getSpeed() + 1);
-			final Point[] curve = clean(new ArrayList<waypoint>(
-					Arrays.asList(curve1)));
+			final int timeToMove = (int) MouseHandler.fittsLaw(Math.sqrt(Math.pow(x2
+					- x1, 2)
+					+ Math.pow(y2 - y1, 2)), 10);
+			final waypoint[] curve1 = applyDynamism(path, timeToMove, mouse.getSpeed() + 1);
+			final Point[] curve = clean(new ArrayList<waypoint>(Arrays.asList(curve1)));
 			for (final Point curr : curve) {
 				hop(curr);
 				try {
-					Thread.sleep(Methods.random(1, 3) >= 2 ? Math.max(1,
-							mouse.getSpeed() - 2 + rand.nextInt(4)) : Math.max(
-							1, mouse.getSpeed() - 3 + rand.nextInt(6)));
+					Thread.sleep(Methods.random(1, 3) >= 2 ? Math.max(1, mouse.getSpeed()
+							- 2 + rand.nextInt(4))
+							: Math.max(1, mouse.getSpeed() - 3
+									+ rand.nextInt(6)));
 				} catch (final InterruptedException ie) {
 				}
 			}
@@ -2512,27 +2146,23 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 						continue;
 					}
 				}
-				if (!cleanpath.get(cleanpath.size() - 1).equals(
-						path[path.length - 1])) {
+				if (!cleanpath.get(cleanpath.size() - 1).equals(path[path.length - 1])) {
 					cleanpath.add(path[path.length - 1]);
 				}
-				final RSTile[] cleaned = cleanpath.toArray(new RSTile[cleanpath
-						.size()]);
+				final RSTile[] cleaned = cleanpath.toArray(new RSTile[cleanpath.size()]);
 				return cleaned != null ? cleaned : path;
 			}
 
 			public RSTile[] generatePath(final RSTile destination,
 					final int randomize) {
 				try {
-					RSTile[] path = pfinder.findPath(getMyPlayer()
-							.getLocation(), destination);
+					RSTile[] path = pfinder.findPath(getMyPlayer().getLocation(), destination);
 					if (randomize != 0) {
 						path = randPath(path, randomize);
 					}
 					path = lengthenPath(path);
 					path = clean(path);
-					final ArrayList<RSTile> tiles = new ArrayList<RSTile>(
-							Arrays.asList(path));
+					final ArrayList<RSTile> tiles = new ArrayList<RSTile>(Arrays.asList(path));
 					if (!tiles.get(tiles.size() - 1).equals(destination)) {
 						tiles.add(destination);
 					}
@@ -2554,8 +2184,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 						final RSTile next = path[i + 1];
 						if (next != null && walking.isLocal(current)
 								&& walking.isLocal(next)) {
-							RSTile[] pathTo = pfinder.findPath(current, next,
-									false);
+							RSTile[] pathTo = pfinder.findPath(current, next, false);
 							if (pathTo != null) {
 								tiles.addAll(Arrays.asList(pathTo));
 							} else {
@@ -2595,8 +2224,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 					randomized.add(new RSTile(x, y, z));
 				}
 				randomized.add(finish);
-				final RSTile[] randPath = randomized
-						.toArray(new RSTile[randomized.size()]);
+				final RSTile[] randPath = randomized.toArray(new RSTile[randomized.size()]);
 				return lengthenPath(randPath);
 			}
 		}
@@ -2728,9 +2356,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 	private long mousemovet = System.currentTimeMillis();
 	private final Walking walker = new Walking();
 	private RSTile[] drawPath = null;
-	private SettingsManager sm = new SettingsManager(
-			GlobalConfiguration.Paths.getSettingsDirectory() + File.separator
-					+ "Aut0ClaySoftener.SETTINGS");
+	private SettingsManager sm = new SettingsManager(GlobalConfiguration.Paths.getSettingsDirectory()
+			+ File.separator + "Aut0ClaySoftener.SETTINGS");
 	BufferedImage nmouse = null;
 	BufferedImage nclicked = null;
 	/* GUI Options */
@@ -2758,8 +2385,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 	private int mouseHi = 10;
 
-	private final RenderingHints antialiasing = new RenderingHints(
-			RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	private final RenderingHints antialiasing = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 	private final BasicStroke stroke = new BasicStroke(1);
 
@@ -2780,8 +2406,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 	}
 
 	private boolean atObject() {
-		return loc.getObjectArea()
-				.contains(players.getMyPlayer().getLocation());
+		return loc.getObjectArea().contains(players.getMyPlayer().getLocation());
 	}
 
 	private boolean clickmenuidx(final int idx) {
@@ -2831,9 +2456,8 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 	private void createAndWaitforGUI() {
 		if (sm == null) {
-			sm = new SettingsManager(
-					GlobalConfiguration.Paths.getSettingsDirectory()
-							+ File.separator + "Aut0ClaySoftener.dat");
+			sm = new SettingsManager(GlobalConfiguration.Paths.getSettingsDirectory()
+					+ File.separator + "Aut0ClaySoftener.dat");
 		}
 		if (SwingUtilities.isEventDispatchThread()) {
 			gui = new GUI(sm);
@@ -3190,12 +2814,9 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				canAB = false;
 				Methods.sleep(Methods.random(800, 1000));
 				if (interfaces.getComponent(905, 14).isValid()) {
-					final Rectangle area = interfaces.getComponent(905, 14)
-							.getArea();
-					final int randx = (int) Methods.random(area.getMinX(),
-							area.getMaxX());
-					final int randy = (int) Methods.random(area.getMinY(),
-							area.getMaxY());
+					final Rectangle area = interfaces.getComponent(905, 14).getArea();
+					final int randx = (int) Methods.random(area.getMinX(), area.getMaxX());
+					final int randy = (int) Methods.random(area.getMinY(), area.getMaxY());
 					mouseMove(new Point(randx, randy));
 					interfaces.getComponent(905, 14).doClick();
 					Methods.sleep(Methods.random(400, 1000));
@@ -3231,12 +2852,9 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 							&& inventory.contains(clay)) {
 						canAB = false;
 						if (!inventory.isItemSelected()) {
-							final Rectangle area = clayItem.getComponent()
-									.getArea();
-							final int randx = (int) Methods.random(
-									area.getMinX(), area.getMaxX());
-							final int randy = (int) Methods.random(
-									area.getMinY(), area.getMaxY());
+							final Rectangle area = clayItem.getComponent().getArea();
+							final int randx = (int) Methods.random(area.getMinX(), area.getMaxX());
+							final int randy = (int) Methods.random(area.getMinY(), area.getMaxY());
 							mouseMove(new Point(randx, randy));
 							clayItem.doAction("Use");
 							for (int i = 0; i < 100
@@ -3251,12 +2869,9 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 						canAB = true;
 						if (inventory.isItemSelected()
 								&& inventory.getSelectedItem().getID() != clay) {
-							final Rectangle area = inventory.getSelectedItem()
-									.getComponent().getArea();
-							final int randx = (int) Methods.random(
-									area.getMinX(), area.getMaxX());
-							final int randy = (int) Methods.random(
-									area.getMinY(), area.getMaxY());
+							final Rectangle area = inventory.getSelectedItem().getComponent().getArea();
+							final int randx = (int) Methods.random(area.getMinX(), area.getMaxX());
+							final int randy = (int) Methods.random(area.getMinY(), area.getMaxY());
 							canAB = false;
 							mouseMove(new Point(randx, randy));
 							inventory.getSelectedItem().doClick(true);
@@ -3268,12 +2883,9 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 								Methods.sleep(20);
 							}
 							Methods.sleep(20);
-							final Rectangle area2 = clayItem.getComponent()
-									.getArea();
-							final int randx2 = (int) Methods.random(
-									area2.getMinX(), area2.getMaxX());
-							final int randy2 = (int) Methods.random(
-									area2.getMinY(), area2.getMaxY());
+							final Rectangle area2 = clayItem.getComponent().getArea();
+							final int randx2 = (int) Methods.random(area2.getMinX(), area2.getMaxX());
+							final int randy2 = (int) Methods.random(area2.getMinY(), area2.getMaxY());
 							mouseMove(new Point(randx2, randy2));
 							clayItem.doAction("Use");
 							for (int i = 0; i < 100
@@ -3295,8 +2907,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 							}
 								break;
 							case 2: {
-								camera.setPitch(Methods.random(94,
-										Methods.random(98, 100)));
+								camera.setPitch(Methods.random(94, Methods.random(98, 100)));
 							}
 								break;
 							case 3: {
@@ -3331,11 +2942,9 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 								break;
 							}
 							canAB = false;
-							if (doAction(loc.getRSObject(), "Use", "Clay",
-									loc.getObjectName())) {
+							if (doAction(loc.getRSObject(), "Use", "Clay", loc.getObjectName())) {
 								for (int i = 0; i < 100
-										&& !interfaces.getComponent(905, 14)
-												.isValid(); i++) {
+										&& !interfaces.getComponent(905, 14).isValid(); i++) {
 									Methods.sleep(35);
 								}
 								if (isPaused() || !isActive() || !isRunning()) {
@@ -3345,17 +2954,13 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 								Methods.sleep(Methods.random(160, 250));
 								canAB = false;
 								if (interfaces.getComponent(905, 14).isValid()) {
-									final Rectangle area = interfaces
-											.getComponent(905, 14).getArea();
-									final int randx = (int) Methods.random(
-											area.getMinX(), area.getMaxX());
-									final int randy = (int) Methods.random(
-											area.getMinY(), area.getMaxY());
+									final Rectangle area = interfaces.getComponent(905, 14).getArea();
+									final int randx = (int) Methods.random(area.getMinX(), area.getMaxX());
+									final int randy = (int) Methods.random(area.getMinY(), area.getMaxY());
 									mouseMove(new Point(randx, randy));
 									interfaces.getComponent(905, 14).doClick();
 									Methods.sleep(Methods.random(400, 1000));
-									if (Methods.random(1, 2) == Methods.random(
-											1, 2)) {
+									if (Methods.random(1, 2) == Methods.random(1, 2)) {
 										Antiban.antibanmouse();
 									}
 									canAB = true;
@@ -3373,11 +2978,10 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 								break;
 							} else {
 								canAB = false;
-								final Point ploc = getLocation(loc
-										.getRSObject());
+								final Point ploc = getLocation(loc.getRSObject());
 								mouseMove(ploc);
-								if (!loc.getRSObject().doAction(
-										"Use Clay -> " + loc.getObjectName())) {
+								if (!loc.getRSObject().doAction("Use Clay -> "
+										+ loc.getObjectName())) {
 									if (isPaused() || !isActive()
 											|| !isRunning()) {
 										break;
@@ -3388,9 +2992,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 									break;
 								} else {
 									for (int i = 0; i < 200
-											&& !interfaces
-													.getComponent(905, 14)
-													.isValid(); i++) {
+											&& !interfaces.getComponent(905, 14).isValid(); i++) {
 										Methods.sleep(35);
 									}
 									if (isPaused() || !isActive()
@@ -3400,21 +3002,14 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 									canAB = true;
 									Methods.sleep(Methods.random(160, 250));
 									canAB = false;
-									if (interfaces.getComponent(905, 14)
-											.isValid()) {
-										final Rectangle area = interfaces
-												.getComponent(905, 14)
-												.getArea();
-										final int randx = (int) Methods.random(
-												area.getMinX(), area.getMaxX());
-										final int randy = (int) Methods.random(
-												area.getMinY(), area.getMaxY());
+									if (interfaces.getComponent(905, 14).isValid()) {
+										final Rectangle area = interfaces.getComponent(905, 14).getArea();
+										final int randx = (int) Methods.random(area.getMinX(), area.getMaxX());
+										final int randy = (int) Methods.random(area.getMinY(), area.getMaxY());
 										mouseMove(new Point(randx, randy));
-										interfaces.getComponent(905, 14)
-												.doClick();
+										interfaces.getComponent(905, 14).doClick();
 										Methods.sleep(Methods.random(400, 1000));
-										if (Methods.random(1, 2) == Methods
-												.random(1, 2)) {
+										if (Methods.random(1, 2) == Methods.random(1, 2)) {
 											Antiban.antibanmouse();
 										}
 										canAB = true;
@@ -3506,8 +3101,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 			} else if (beziers && shortsplines) {
 				int rand = Methods.random(1, 18);
 				if (rand <= 3
-						&& calc.distanceBetween(mouse.getLocation(),
-								destination) >= 300) {
+						&& calc.distanceBetween(mouse.getLocation(), destination) >= 300) {
 					rand = Methods.random(4, 18);
 				}
 				switch (rand) {
@@ -3552,8 +3146,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 			} else {
 				int rand = Methods.random(1, 13);
 				if (rand <= 2
-						&& calc.distanceBetween(mouse.getLocation(),
-								destination) >= 300) {
+						&& calc.distanceBetween(mouse.getLocation(), destination) >= 300) {
 					rand = Methods.random(3, 13);
 				}
 				switch (rand) {
@@ -3676,18 +3269,14 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 		if (stats) {
 			g.setColor(Color.WHITE);
 			g.setFont(calibri20);
-			g.drawString(
-					"Runtime: "
-							+ (timekeeper.getState() == 0 ? timekeeper
-									.getRuntimeString() : "Paused"), 30, 195);
+			g.drawString("Runtime: "
+					+ (timekeeper.getState() == 0 ? timekeeper.getRuntimeString()
+							: "Paused"), 30, 195);
 			g.drawString("Clay Softened: " + numDone, 15, 220);
-			g.drawString(
-					"Soft Clay / Hour: " + timekeeper.calcPerHour(numDone), 10,
-					245);
+			g.drawString("Soft Clay / Hour: " + timekeeper.calcPerHour(numDone), 10, 245);
 			g.drawString("Total Profit: " + totalProfit, 20, 270);
-			g.drawString(
-					"Profit / Hour: " + timekeeper.calcPerHour(totalProfit),
-					30, 295);
+			g.drawString("Profit / Hour: "
+					+ timekeeper.calcPerHour(totalProfit), 30, 295);
 		}
 		if (paths) {
 			drawPath(g);
@@ -3790,8 +3379,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 				final int dist = calc.distanceTo(bankBooth);
 				if (banker != null && bankBooth != null
 						&& calc.distanceTo(banker) < dist) {
-					if (calc.distanceBetween(banker.getLocation(),
-							bankBooth.getLocation()) <= 1) {
+					if (calc.distanceBetween(banker.getLocation(), bankBooth.getLocation()) <= 1) {
 						if (Methods.random(1, 3) >= 2) {
 							banker = null;
 						} else {
@@ -3921,8 +3509,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 	/* Calculations for paint */
 	private Point pointInMiddle(final Point start, final Point end) {
-		return new Point((int) ((start.x + end.x) / 2),
-				(int) ((start.y + end.y) / 2));
+		return new Point((int) ((start.x + end.x) / 2), (int) ((start.y + end.y) / 2));
 	}
 
 	/*
@@ -3975,8 +3562,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 			return false;
 		}
 		while (comp.getRelativeX() == 0 && bank.getCurrentTab() != 0) {
-			interfaces.getComponent(Bank.INTERFACE_BANK,
-					Bank.INTERFACE_BANK_TAB[0]).doClick();
+			interfaces.getComponent(Bank.INTERFACE_BANK, Bank.INTERFACE_BANK_TAB[0]).doClick();
 			Methods.sleep(Methods.random(600, 1100));
 		}
 		if (!interfaces.scrollTo(comp, (Bank.INTERFACE_BANK << 16)

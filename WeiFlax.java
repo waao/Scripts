@@ -40,13 +40,85 @@ import org.rsbot.script.wrappers.RSTile;
 public class WeiFlax extends Script implements PaintListener, MessageListener,
 		ActionListener, MouseMotionListener, MouseListener {
 
-	Rectangle close = new Rectangle(7, 344, 499, 465);// this is the point on
-														// screen you click in
-														// to turn pain on and
-														// off.
-	Point p;
-	boolean hide = false;
+	public class FlaxerGUI extends JFrame {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
+		// JFormDesigner - Variables declaration - DO NOT MODIFY
+		// //GEN-BEGIN:variables
+		private JButton button1;
+
+		private JComboBox comboBox1;
+
+		// JFormDesigner - End of variables declaration //GEN-END:variables
+
+		public FlaxerGUI() {
+			initComponents();
+		}
+
+		private void button1ActionPerformed(final ActionEvent e) {
+			option = comboBox1.getSelectedItem().toString();
+		}
+
+		private void initComponents() {
+			// JFormDesigner - Component initialization - DO NOT MODIFY
+			// //GEN-BEGIN:initComponents
+			button1 = new JButton();
+			comboBox1 = new JComboBox();
+
+			// ======== this ========
+			setTitle("Wei Su's AIO Flaxer!");
+			final Container contentPane = getContentPane();
+			contentPane.setLayout(null);
+
+			// ---- button1 ----
+			button1.setText("Get FLAXING!");
+			button1.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					button1ActionPerformed(e);
+				}
+			});
+			contentPane.add(button1);
+			button1.setBounds(0, 40, 190, button1.getPreferredSize().height);
+
+			// ---- comboBox1 ----
+
+			comboBox1.setModel(new DefaultComboBoxModel(new String[] {
+					"Lumbridge Spinning", "Camelot Spinning",
+					"Camelot Picking", "Camelot Hybrid", }));
+			contentPane.add(comboBox1);
+			comboBox1.setBounds(0, 0, 190, 40);
+
+			{ // compute preferred size
+				final Dimension preferredSize = new Dimension();
+				for (int i = 0; i < contentPane.getComponentCount(); i++) {
+					final Rectangle bounds = contentPane.getComponent(i).getBounds();
+					preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+					preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+				}
+				final Insets insets = contentPane.getInsets();
+				preferredSize.width += insets.right;
+				preferredSize.height += insets.bottom;
+				contentPane.setMinimumSize(preferredSize);
+				contentPane.setPreferredSize(preferredSize);
+			}
+			pack();
+			setLocationRelativeTo(getOwner());
+			// JFormDesigner - End of component initialization
+			// //GEN-END:initComponents
+		}
+	}
+
+	Rectangle close = new Rectangle(7, 344, 499, 465);// this is the point on
+	// screen you click in
+	// to turn pain on and
+	// off.
+	Point p;
+
+	boolean hide = false;
 	public String option;
 	public int flaxPicked;
 	public int nullcheck = 0;
@@ -65,242 +137,16 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 	public RSArea camelot = new RSArea(2722, 3490, 2730, 3494);
 	public RSArea lumbridges = new RSArea(3206, 3214, 3210, 3223);
 	public boolean mayBegin = false;
+
 	public int totalGain;
-
-	@Override
-	public boolean onStart() {
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				img1 = getImage("http://fc09.deviantart.net/fs71/f/2011/122/f/1/wei_su__s_paint_by_skyhigh1958-d3feox5.png");
-				img2 = getImage("http://services.runescape.com/m=itemdb_rs/3338_obj_big.gif?id=1779");
-
-			}
-		}).start();
-
-		final FlaxerGUI GUI = new FlaxerGUI();
-		GUI.setVisible(true);
-		while (GUI.isVisible()) {
-			sleep(50);
-		}
-
-		startTime = System.currentTimeMillis();
-		sleep(random(1000, 1100));
-
-		startExp = skills.getCurrentExp(Skills.getIndex("Crafting"));
-		bsPrice = grandExchange.lookup(1777).getGuidePrice();
-		flaxPrice = grandExchange.lookup(1779).getGuidePrice();
-		sngProfit = bsPrice - flaxPrice;
-
-		return true;
-	}
-
-	public void profitmade() {
-		currExp = skills.getCurrentExp(Skills.getIndex("Crafting"));
-		flaxSpan = (currExp - startExp) / 15;
-		totalProfit = flaxSpan * sngProfit;
-		pckProf = flaxPrice * flaxPicked;
-		xpGaineded = currExp - startExp;
-		totalGain = pckProf + totalProfit;
-	}
-
-	@Override
-	public int loop() {
-		antibanlist();
-		profitmade();
-
-		new RSArea(2722, 3490, 2730, 3494);
-		new RSArea(3206, 3214, 3210, 3223);
-
-		if (getMyPlayer().getAnimation() == -1) {
-			nullcheck++;
-		} else {
-			nullcheck = 0;
-		}
-
-		// camelot hybrid
-		if (option == "Camelot Hybrid") {
-			CamelotHybrid();
-			MiddleFloor2C();
-			door();
-			hybridtop();
-			hybridground();
-			hybridstairs();
-
-		}
-
-		// camelot picking
-		if (option == "Camelot Picking") {
-			camelotwalking();
-			door();
-
-		}
-
-		if (option == "Lumbridge Spinning") {
-			// Lumbridge
-			final RSObject Banker = objects.getNearest(36786);
-
-			final RSObject Topstairs = objects.getNearest(36775);
-			final RSObject Downstairs = objects.getNearest(36774);
-			final RSObject Spinner = objects.getNearest(36970);
-
-			try {
-
-				if (getMyPlayer().getAnimation() == -1) {
-					nullcheck++;
-				} else {
-					nullcheck = 0;
-				}
-				if (Topstairs != null || Banker != null) {
-					TopFloor();
-					TopFloor2();
-				}
-				if (Downstairs != null || Spinner != null) {
-					MiddleFloor();
-					MiddleFloor2();
-				}
-			} catch (final Exception ignore) {
-			}
-		}
-
-		if (option == "Camelot Spinning") {
-			// Camelot spinning
-			door();
-			final RSObject Banker = objects.getNearest(25808);
-
-			final RSObject Topstairs = objects.getNearest(25939);
-			final RSObject Downstairs = objects.getNearest(25938);
-			final RSObject Spinner = objects.getNearest(25824);
-
-			try {
-
-				if (Topstairs != null || Banker != null) {
-					TopFloorC();
-					TopFloor2C();
-				}
-				if (Downstairs != null || Spinner != null) {
-					MiddleFloorC();
-					MiddleFloor2C();
-				}
-			} catch (final Exception ignore) {
-			}
-		}
-		return random(300, 400);
-	}
-
-	@Override
-	public void onFinish() {
-
-	}
-
-	// START: Code generated using Enfilade's Easel
-	private Image getImage(final String url) {
-		try {
-			return ImageIO.read(new URL(url));
-		} catch (final IOException e) {
-			return null;
-		}
-	}
 
 	private final Color color1 = new Color(0, 0, 0);
 
 	private final Font font1 = new Font("Arial Rounded MT Bold", 0, 14);
 
 	private Image img1;
+
 	private Image img2;
-
-	@Override
-	public void onRepaint(final Graphics g1) {
-		millis = System.currentTimeMillis() - startTime;
-		hours = millis / (1000 * 60 * 60);
-		millis -= hours * 1000 * 60 * 60;
-		minutes = millis / (1000 * 60);
-		millis -= minutes * 1000 * 60;
-		seconds = millis / 1000;
-
-		final Graphics2D g = (Graphics2D) g1;
-		if (!hide) {
-			g.drawImage(img1, 2, 304, null);
-			g.setFont(font1);
-			g.setColor(color1);
-			g.drawString("Version: 0.09", 217, 330);
-			g.drawString("Time elapsed: " + hours + ":" + minutes + ":"
-					+ seconds + "        EXP Gained: " + xpGaineded, 24, 376);
-			g.drawString("Spinning Profit: " + totalProfit + "   " + flaxSpan
-					+ " Span,   " + flaxPicked + " Picked", 24, 409);
-			g.drawString("Picking Profit: " + pckProf + "        Total Profit "
-					+ totalGain, 23, 440);
-			g.drawImage(img2, 304, 344, null);
-			g.drawImage(img2, 342, 335, null);
-			g.drawImage(img2, 357, 356, null);
-			g.drawImage(img2, 306, 369, null);
-			g.drawImage(img2, 345, 372, null);
-		}
-		if (hide) {
-			new Color(255, 0, 0);
-			final Color color2 = new Color(102, 255, 0);
-			final Color color3 = new Color(255, 255, 255, 0);
-			g.setFont(font1);
-			g.setColor(color2);
-			g.drawString("SHOW", 203, 367);
-			g.setColor(color3);
-			g.fillRect(198, 134, 80, 43);// this is a clear square box i made
-											// for the close box in the ints
-
-		}
-	}
-
-	@Override
-	public void mouseClicked(final MouseEvent e) {// this is the mouse listener,
-													// it listen's for the
-													// click.
-		p = e.getPoint();
-		if (close.contains(p) && !hide) {
-			hide = true;
-		} else if (close.contains(p) && hide) {
-			hide = false;
-		}
-
-	}
-
-	// END: Code generated using Enfilade's Easel
-
-	@Override
-	public void mouseEntered(final MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseExited(final MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mousePressed(final MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseReleased(final MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseDragged(final MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseMoved(final MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void actionPerformed(final ActionEvent arg0) {
@@ -308,104 +154,53 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 
 	}
 
-	@Override
-	public void messageReceived(final MessageEvent arg0) {
-
-		if (arg0.getMessage().equals("You pick some flax.")) {
-
-			flaxPicked++;
+	public int antibanlist() {
+		switch (random(0, 300)) {
+		case 0:
+			chooserandomAFK();
+			break;
+		case 1:
+		case 2:
+		case 3:
+			chooserandomAFK();
+			break;
+		case 4:
+			mouse.moveSlightly();
+			break;
+		case 5:
+			chooserandomAFK();
+			break;
+		case 6:
+		case 7:
+			mouseHandler();
+			break;
+		case 8:
+			superAntiMoveMouse();
+			break;
+		case 9:
+			randomXPcheck();
+			break;
+		case 10:
+			randomtab();
+			break;
+		case 11:
+		case 12:
+			randomtab();
+			break;
+		case 13:
+			superAntiMoveMouse();
+			break;
+		case 14:
+			randomXPcheck();
+			break;
+		case 15:
+		case 16:
+		case 17:
+			break;
+		default:
+			break;
 		}
-
-	}
-
-	// hybrid voids
-
-	public void hybridground() {
-		try {
-			final RSTile b2s = new RSTile(2716, 3472);
-			final RSTile s2b = new RSTile(2724, 3492);
-			objects.getNearest(1278, 1276);
-			final int flax = 1779;
-			if (inventory.isFull() && inventory.containsAll(flax)) {
-				if (getMyPlayer().getLocation().getX() > 2717) {
-					RSPath path = null;
-					if (path == null) {
-						path = walking.getPath(b2s);
-					}
-					path.traverse();
-
-				}
-			}
-
-			if (inventory.isFull() && !inventory.contains(flax)) {
-				if (getMyPlayer().getLocation().getX() > 2713) {
-					if (getMyPlayer().getLocation().getY() < 3489) {
-
-						RSPath path = null;
-						if (path == null) {
-							path = walking.getPath(s2b);
-						}
-						path.traverse();
-					}
-				}
-			}
-
-		} catch (final Exception ignore) {
-		}
-
-	}
-
-	public void hybridtop() {
-		try {
-			final int flax = 1779;
-			final RSTile s2b = new RSTile(2715, 3471);
-			final RSTile b2s = new RSTile(2711, 3471);
-
-			final RSObject Spinner = objects.getNearest(25824);
-			if (Spinner != null) {
-				if (getMyPlayer().getLocation().getX() < 2716) {
-					if (inventory.isFull() && !inventory.contains(flax)) {
-						RSPath path = null;
-						if (path == null) {
-							path = walking.getPath(s2b);
-						}
-						path.traverse();
-					}
-				}
-				if (inventory.contains(flax) && inventory.isFull()) {
-					RSPath path = null;
-					if (path == null) {
-						path = walking.getPath(b2s);
-					}
-					path.traverse();
-				}
-			}
-		} catch (final Exception ignore) {
-		}
-
-	}
-
-	public void hybridstairs() {
-		final int flax = 1779;
-		final RSObject stairs = objects.getNearest(25938);
-		objects.getNearest(25808);
-		objects.getNearest(25819);
-		final RSObject opendoor = objects.getNearest(25820);
-		try {
-			if (inventory.isFull() && inventory.contains(flax)) {
-
-				if (stairs.isOnScreen()) {
-
-					if (getMyPlayer().getLocation().getY() < 3484) {
-						if (opendoor.isOnScreen()) {
-							stairs.doAction("Climb");
-							sleep(random(1000, 1200));
-						}
-					}
-				}
-			}
-		} catch (final Exception ignore) {
-		}
+		return 500;
 	}
 
 	// ///Camelot hybrid
@@ -523,19 +318,25 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		}
 	}
 
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// //Camelot spinning BELOWWWWWWWWW!//////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	// ////////////////////////////////////////////
-	/* WALKING ON FLOORS */
+	public void chooserandomAFK() {
+		switch (random(0, 4)) {
+		case 0:
+			sleep(random(500, 900));
+			break;
+		case 1:
+			sleep(random(400, 1000));
+			break;
+		case 2:
+			sleep(random(1000, 2000));
+			break;
+		case 3:
+			sleep(random(1000, 3000));
+			break;
+		case 4:
+			log("Not doing AFK");
+			break;
+		}
+	}
 
 	public void door() {
 		final RSObject door = objects.getNearest(25819);
@@ -552,30 +353,271 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		}
 	}
 
-	public void TopFloorC() {
+	// END: Code generated using Enfilade's Easel
+
+	// START: Code generated using Enfilade's Easel
+	private Image getImage(final String url) {
 		try {
-			final RSTile b2s = new RSTile(2715, 3471);
-			final RSTile s2b = new RSTile(2724, 3493);
-			final RSObject Spinner = objects.getNearest(25824);
+			return ImageIO.read(new URL(url));
+		} catch (final IOException e) {
+			return null;
+		}
+	}
+
+	public void hybridground() {
+		try {
+			final RSTile b2s = new RSTile(2716, 3472);
+			final RSTile s2b = new RSTile(2724, 3492);
+			objects.getNearest(1278, 1276);
 			final int flax = 1779;
+			if (inventory.isFull() && inventory.containsAll(flax)) {
+				if (getMyPlayer().getLocation().getX() > 2717) {
+					RSPath path = null;
+					if (path == null) {
+						path = walking.getPath(b2s);
+					}
+					path.traverse();
 
-			if (Spinner == null) {
+				}
+			}
 
-				if (inventory.contains(flax)) {
+			if (inventory.isFull() && !inventory.contains(flax)) {
+				if (getMyPlayer().getLocation().getX() > 2713) {
+					if (getMyPlayer().getLocation().getY() < 3489) {
+
+						RSPath path = null;
+						if (path == null) {
+							path = walking.getPath(s2b);
+						}
+						path.traverse();
+					}
+				}
+			}
+
+		} catch (final Exception ignore) {
+		}
+
+	}
+
+	public void hybridstairs() {
+		final int flax = 1779;
+		final RSObject stairs = objects.getNearest(25938);
+		objects.getNearest(25808);
+		objects.getNearest(25819);
+		final RSObject opendoor = objects.getNearest(25820);
+		try {
+			if (inventory.isFull() && inventory.contains(flax)) {
+
+				if (stairs.isOnScreen()) {
+
+					if (getMyPlayer().getLocation().getY() < 3484) {
+						if (opendoor.isOnScreen()) {
+							stairs.doAction("Climb");
+							sleep(random(1000, 1200));
+						}
+					}
+				}
+			}
+		} catch (final Exception ignore) {
+		}
+	}
+
+	public void hybridtop() {
+		try {
+			final int flax = 1779;
+			final RSTile s2b = new RSTile(2715, 3471);
+			final RSTile b2s = new RSTile(2711, 3471);
+
+			final RSObject Spinner = objects.getNearest(25824);
+			if (Spinner != null) {
+				if (getMyPlayer().getLocation().getX() < 2716) {
+					if (inventory.isFull() && !inventory.contains(flax)) {
+						RSPath path = null;
+						if (path == null) {
+							path = walking.getPath(s2b);
+						}
+						path.traverse();
+					}
+				}
+				if (inventory.contains(flax) && inventory.isFull()) {
 					RSPath path = null;
 					if (path == null) {
 						path = walking.getPath(b2s);
 					}
 					path.traverse();
 				}
+			}
+		} catch (final Exception ignore) {
+		}
 
-				if (!inventory.contains(flax)) {
-					RSPath path = null;
-					if (path == null) {
-						path = walking.getPath(s2b);
+	}
+
+	@Override
+	public int loop() {
+		antibanlist();
+		profitmade();
+
+		new RSArea(2722, 3490, 2730, 3494);
+		new RSArea(3206, 3214, 3210, 3223);
+
+		if (getMyPlayer().getAnimation() == -1) {
+			nullcheck++;
+		} else {
+			nullcheck = 0;
+		}
+
+		// camelot hybrid
+		if (option == "Camelot Hybrid") {
+			CamelotHybrid();
+			MiddleFloor2C();
+			door();
+			hybridtop();
+			hybridground();
+			hybridstairs();
+
+		}
+
+		// camelot picking
+		if (option == "Camelot Picking") {
+			camelotwalking();
+			door();
+
+		}
+
+		if (option == "Lumbridge Spinning") {
+			// Lumbridge
+			final RSObject Banker = objects.getNearest(36786);
+
+			final RSObject Topstairs = objects.getNearest(36775);
+			final RSObject Downstairs = objects.getNearest(36774);
+			final RSObject Spinner = objects.getNearest(36970);
+
+			try {
+
+				if (getMyPlayer().getAnimation() == -1) {
+					nullcheck++;
+				} else {
+					nullcheck = 0;
+				}
+				if (Topstairs != null || Banker != null) {
+					TopFloor();
+					TopFloor2();
+				}
+				if (Downstairs != null || Spinner != null) {
+					MiddleFloor();
+					MiddleFloor2();
+				}
+			} catch (final Exception ignore) {
+			}
+		}
+
+		if (option == "Camelot Spinning") {
+			// Camelot spinning
+			door();
+			final RSObject Banker = objects.getNearest(25808);
+
+			final RSObject Topstairs = objects.getNearest(25939);
+			final RSObject Downstairs = objects.getNearest(25938);
+			final RSObject Spinner = objects.getNearest(25824);
+
+			try {
+
+				if (Topstairs != null || Banker != null) {
+					TopFloorC();
+					TopFloor2C();
+				}
+				if (Downstairs != null || Spinner != null) {
+					MiddleFloorC();
+					MiddleFloor2C();
+				}
+			} catch (final Exception ignore) {
+			}
+		}
+		return random(300, 400);
+	}
+
+	@Override
+	public void messageReceived(final MessageEvent arg0) {
+
+		if (arg0.getMessage().equals("You pick some flax.")) {
+
+			flaxPicked++;
+		}
+
+	}
+
+	public void MiddleFloor() {
+		try {
+			final int flax = 1779;
+			final RSTile b2s = new RSTile(3205, 3209);
+			final RSTile s2b = new RSTile(3209, 3213);
+			if (inventory.containsAll(flax)) {
+				RSPath path = null;
+				if (path == null) {
+					path = walking.getPath(s2b);
+				}
+				path.traverse();
+			} else {
+				RSPath path = null;
+				if (path == null) {
+					path = walking.getPath(b2s);
+				}
+				path.traverse();
+
+			}
+		} catch (final Exception ignore) {
+		}
+	}
+
+	public void MiddleFloor2() {
+		try {
+
+			final int flax = 1779;
+			final RSObject Stairs = objects.getNearest(36774);
+			final RSObject Spinner = objects.getNearest(36970);
+			if (inventory.contains(flax)) {
+				if (nullcheck >= 15) {
+					Spinner.doAction("Spin");
+					nullcheck = 0;
+				} else {
+					if (interfaces.getComponent(905, 16).getComponent(57).isValid()) {
+						interfaces.getComponent(905, 16).getComponent(57).doClick();
 					}
-					path.traverse();
+				}
+			} else {
+				if (!inventory.containsOneOf(flax)) {
+					if (Stairs.isOnScreen()) {
+						Stairs.doAction("Climb-up");
+					}
+				}
+			}
+		} catch (final Exception ignore) {
+		}
+	}
 
+	// hybrid voids
+
+	public void MiddleFloor2C() {
+		try {
+
+			final int flax = 1779;
+			final RSObject Stairs = objects.getNearest(25939);
+			final RSObject Spinner = objects.getNearest(25824);
+			if (inventory.contains(flax)) {
+				if (nullcheck >= 5) {
+					Spinner.doAction("Spin");
+					nullcheck = 0;
+				} else {
+					if (interfaces.getComponent(905, 16).getComponent(57).isValid()) {
+						interfaces.getComponent(905, 16).getComponent(57).doClick();
+					}
+				}
+			} else {
+				if (!inventory.containsOneOf(flax)) {
+					if (Stairs.isOnScreen()) {
+						Stairs.doAction("Climb-down");
+						sleep(random(1000, 2000));
+					}
 				}
 			}
 		} catch (final Exception ignore) {
@@ -610,73 +652,29 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 
 	}
 
-	/* Functioning */
-	/* Top Floor */
-
-	public void TopFloor2C() {
-		new RSTile(2715, 3471);
-		final int flax = 1779;
-		final RSObject stairs = objects.getNearest(25938);
-		final RSObject Banker = objects.getNearest(25808);
-		objects.getNearest(25819);
-		try {
-			if (inventory.contains(flax)) {
-
-				if (stairs.isOnScreen()) {
-					if (getMyPlayer().getLocation().getY() < 3484) {
-						stairs.doAction("Climb");
-						sleep(random(1000, 1200));
-					}
-				}
-			} else {
-				if (Banker.isOnScreen()) {
-					if (!bank.isOpen()) {
-						Banker.doAction("Use-quickly");
-					} else {
-						if (inventory.isFull()) {
-							bank.depositAll();
-						} else {
-							bank.withdraw(flax, 28);
-							if (bank.getCount(flax) < 28) {
-								game.logout(true);
-							}
-						}
-					}
-				}
-
-			}
-
-		} catch (final Exception ignore) {
+	@Override
+	public void mouseClicked(final MouseEvent e) {// this is the mouse listener,
+													// it listen's for the
+													// click.
+		p = e.getPoint();
+		if (close.contains(p) && !hide) {
+			hide = true;
+		} else if (close.contains(p) && hide) {
+			hide = false;
 		}
+
 	}
 
-	public void MiddleFloor2C() {
-		try {
+	@Override
+	public void mouseDragged(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
 
-			final int flax = 1779;
-			final RSObject Stairs = objects.getNearest(25939);
-			final RSObject Spinner = objects.getNearest(25824);
-			if (inventory.contains(flax)) {
-				if (nullcheck >= 5) {
-					Spinner.doAction("Spin");
-					nullcheck = 0;
-				} else {
-					if (interfaces.getComponent(905, 16).getComponent(57)
-							.isValid()) {
-						interfaces.getComponent(905, 16).getComponent(57)
-								.doClick();
-					}
-				}
-			} else {
-				if (!inventory.containsOneOf(flax)) {
-					if (Stairs.isOnScreen()) {
-						Stairs.doAction("Climb-down");
-						sleep(random(1000, 2000));
-					}
-				}
-			}
-		} catch (final Exception ignore) {
-		}
+	}
+
+	@Override
+	public void mouseEntered(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
 	}
 
 	// ////////////////////////////////////////////
@@ -684,7 +682,7 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 	// ////////////////////////////////////////////
 	// ////////////////////////////////////////////
 	// ////////////////////////////////////////////
-	// //LUMBRIDGE BELOWWWWWWWWW!//////////////////
+	// //Camelot spinning BELOWWWWWWWWW!//////////////////
 	// ////////////////////////////////////////////
 	// ////////////////////////////////////////////
 	// ////////////////////////////////////////////
@@ -692,138 +690,11 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 	// ////////////////////////////////////////////
 	// ////////////////////////////////////////////
 	/* WALKING ON FLOORS */
-	public void TopFloor() {
-		try {
-			final RSTile b2s = new RSTile(3205, 3209);
-			final RSTile s2b = new RSTile(3208, 3220);
-			final int flax = 1779;
 
-			if (inventory.containsAll(flax)) {
-				RSPath path = null;
-				if (path == null) {
-					path = walking.getPath(b2s);
-				}
-				path.traverse();
-			} else {
-				RSPath path = null;
-				if (path == null) {
-					path = walking.getPath(s2b);
-				}
-				path.traverse();
+	@Override
+	public void mouseExited(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
 
-			}
-		} catch (final Exception ignore) {
-		}
-	}
-
-	public void MiddleFloor() {
-		try {
-			final int flax = 1779;
-			final RSTile b2s = new RSTile(3205, 3209);
-			final RSTile s2b = new RSTile(3209, 3213);
-			if (inventory.containsAll(flax)) {
-				RSPath path = null;
-				if (path == null) {
-					path = walking.getPath(s2b);
-				}
-				path.traverse();
-			} else {
-				RSPath path = null;
-				if (path == null) {
-					path = walking.getPath(b2s);
-				}
-				path.traverse();
-
-			}
-		} catch (final Exception ignore) {
-		}
-	}
-
-	/* Functioning */
-	/* Top Floor */
-	public void TopFloor2() {
-		new RSTile(3205, 3209);
-		final int flax = 1779;
-		final RSObject stairs = objects.getNearest(36775);
-		final RSObject Banker = objects.getNearest(36786);
-
-		try {
-			if (inventory.containsAll(flax)) {
-				if (stairs.isOnScreen()) {
-					stairs.doAction("Climb");
-					sleep(random(500, 800));
-				}
-			} else {
-				if (Banker.isOnScreen()) {
-					if (!bank.isOpen()) {
-						Banker.doAction("Use-quickly");
-					} else {
-						if (inventory.isFull()) {
-							bank.depositAll();
-						} else {
-							bank.withdraw(flax, 28);
-							if (bank.getCount(flax) < 28) {
-								game.logout(true);
-							}
-						}
-					}
-				}
-
-			}
-		} catch (final Exception ignore) {
-		}
-	}
-
-	public void MiddleFloor2() {
-		try {
-
-			final int flax = 1779;
-			final RSObject Stairs = objects.getNearest(36774);
-			final RSObject Spinner = objects.getNearest(36970);
-			if (inventory.contains(flax)) {
-				if (nullcheck >= 15) {
-					Spinner.doAction("Spin");
-					nullcheck = 0;
-				} else {
-					if (interfaces.getComponent(905, 16).getComponent(57)
-							.isValid()) {
-						interfaces.getComponent(905, 16).getComponent(57)
-								.doClick();
-					}
-				}
-			} else {
-				if (!inventory.containsOneOf(flax)) {
-					if (Stairs.isOnScreen()) {
-						Stairs.doAction("Climb-up");
-					}
-				}
-			}
-		} catch (final Exception ignore) {
-		}
-	}
-
-	/*
-	 * ANTIBAN MADE BY CHKENMUFFIN THANKS FOR USING
-	 */
-
-	public void chooserandomAFK() {
-		switch (random(0, 4)) {
-		case 0:
-			sleep(random(500, 900));
-			break;
-		case 1:
-			sleep(random(400, 1000));
-			break;
-		case 2:
-			sleep(random(1000, 2000));
-			break;
-		case 3:
-			sleep(random(1000, 3000));
-			break;
-		case 4:
-			log("Not doing AFK");
-			break;
-		}
 	}
 
 	public void mouseHandler() {
@@ -853,33 +724,114 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		}
 	}
 
-	public void superAntiMoveMouse() {
-		switch (random(0, 10)) {
-		case 0:
-			log("Doing superAnti! Wiggling mouse a lot");
-			mouse.setSpeed(random(6, 9));
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			break;
-		case 1:
-			log("Doing superAnti! Wiggling mouse ");
-			mouse.setSpeed(random(6, 9));
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			break;
-		case 2:
-			log("Doing superAnti! Wiggling mouse a lot");
-			mouse.setSpeed(random(6, 9));
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			break;
+	@Override
+	public void mouseMoved(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/* Functioning */
+	/* Top Floor */
+
+	@Override
+	public void mousePressed(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onFinish() {
+
+	}
+
+	@Override
+	public void onRepaint(final Graphics g1) {
+		millis = System.currentTimeMillis() - startTime;
+		hours = millis / (1000 * 60 * 60);
+		millis -= hours * 1000 * 60 * 60;
+		minutes = millis / (1000 * 60);
+		millis -= minutes * 1000 * 60;
+		seconds = millis / 1000;
+
+		final Graphics2D g = (Graphics2D) g1;
+		if (!hide) {
+			g.drawImage(img1, 2, 304, null);
+			g.setFont(font1);
+			g.setColor(color1);
+			g.drawString("Version: 0.09", 217, 330);
+			g.drawString("Time elapsed: " + hours + ":" + minutes + ":"
+					+ seconds + "        EXP Gained: " + xpGaineded, 24, 376);
+			g.drawString("Spinning Profit: " + totalProfit + "   " + flaxSpan
+					+ " Span,   " + flaxPicked + " Picked", 24, 409);
+			g.drawString("Picking Profit: " + pckProf + "        Total Profit "
+					+ totalGain, 23, 440);
+			g.drawImage(img2, 304, 344, null);
+			g.drawImage(img2, 342, 335, null);
+			g.drawImage(img2, 357, 356, null);
+			g.drawImage(img2, 306, 369, null);
+			g.drawImage(img2, 345, 372, null);
+		}
+		if (hide) {
+			new Color(255, 0, 0);
+			final Color color2 = new Color(102, 255, 0);
+			final Color color3 = new Color(255, 255, 255, 0);
+			g.setFont(font1);
+			g.setColor(color2);
+			g.drawString("SHOW", 203, 367);
+			g.setColor(color3);
+			g.fillRect(198, 134, 80, 43);// this is a clear square box i made
+											// for the close box in the ints
+
 		}
 	}
+
+	@Override
+	public boolean onStart() {
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				img1 = getImage("http://fc09.deviantart.net/fs71/f/2011/122/f/1/wei_su__s_paint_by_skyhigh1958-d3feox5.png");
+				img2 = getImage("http://services.runescape.com/m=itemdb_rs/3338_obj_big.gif?id=1779");
+
+			}
+		}).start();
+
+		final FlaxerGUI GUI = new FlaxerGUI();
+		GUI.setVisible(true);
+		while (GUI.isVisible()) {
+			sleep(50);
+		}
+
+		startTime = System.currentTimeMillis();
+		sleep(random(1000, 1100));
+
+		startExp = skills.getCurrentExp(Skills.getIndex("Crafting"));
+		bsPrice = grandExchange.lookup(1777).getGuidePrice();
+		flaxPrice = grandExchange.lookup(1779).getGuidePrice();
+		sngProfit = bsPrice - flaxPrice;
+
+		return true;
+	}
+
+	public void profitmade() {
+		currExp = skills.getCurrentExp(Skills.getIndex("Crafting"));
+		flaxSpan = (currExp - startExp) / 15;
+		totalProfit = flaxSpan * sngProfit;
+		pckProf = flaxPrice * flaxPicked;
+		xpGaineded = currExp - startExp;
+		totalGain = pckProf + totalProfit;
+	}
+
+	/*
+	 * ANTIBAN MADE BY CHKENMUFFIN THANKS FOR USING
+	 */
 
 	public void randomtab() {
 		switch (random(0, 12)) {
@@ -1040,125 +992,170 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		}
 	}
 
-	public int antibanlist() {
-		switch (random(0, 300)) {
+	public void superAntiMoveMouse() {
+		switch (random(0, 10)) {
 		case 0:
-			chooserandomAFK();
-			break;
-		case 1:
-		case 2:
-		case 3:
-			chooserandomAFK();
-			break;
-		case 4:
+			log("Doing superAnti! Wiggling mouse a lot");
+			mouse.setSpeed(random(6, 9));
+			mouse.moveSlightly();
+			mouse.moveSlightly();
 			mouse.moveSlightly();
 			break;
-		case 5:
-			chooserandomAFK();
+		case 1:
+			log("Doing superAnti! Wiggling mouse ");
+			mouse.setSpeed(random(6, 9));
+			mouse.moveSlightly();
+			mouse.moveSlightly();
 			break;
-		case 6:
-		case 7:
-			mouseHandler();
-			break;
-		case 8:
-			superAntiMoveMouse();
-			break;
-		case 9:
-			randomXPcheck();
-			break;
-		case 10:
-			randomtab();
-			break;
-		case 11:
-		case 12:
-			randomtab();
-			break;
-		case 13:
-			superAntiMoveMouse();
-			break;
-		case 14:
-			randomXPcheck();
-			break;
-		case 15:
-		case 16:
-		case 17:
-			break;
-		default:
+		case 2:
+			log("Doing superAnti! Wiggling mouse a lot");
+			mouse.setSpeed(random(6, 9));
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
 			break;
 		}
-		return 500;
 	}
 
-	public class FlaxerGUI extends JFrame {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// //LUMBRIDGE BELOWWWWWWWWW!//////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	// ////////////////////////////////////////////
+	/* WALKING ON FLOORS */
+	public void TopFloor() {
+		try {
+			final RSTile b2s = new RSTile(3205, 3209);
+			final RSTile s2b = new RSTile(3208, 3220);
+			final int flax = 1779;
 
-		public FlaxerGUI() {
-			initComponents();
-		}
-
-		private void button1ActionPerformed(final ActionEvent e) {
-			option = comboBox1.getSelectedItem().toString();
-		}
-
-		private void initComponents() {
-			// JFormDesigner - Component initialization - DO NOT MODIFY
-			// //GEN-BEGIN:initComponents
-			button1 = new JButton();
-			comboBox1 = new JComboBox();
-
-			// ======== this ========
-			setTitle("Wei Su's AIO Flaxer!");
-			final Container contentPane = getContentPane();
-			contentPane.setLayout(null);
-
-			// ---- button1 ----
-			button1.setText("Get FLAXING!");
-			button1.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent e) {
-					button1ActionPerformed(e);
+			if (inventory.containsAll(flax)) {
+				RSPath path = null;
+				if (path == null) {
+					path = walking.getPath(b2s);
 				}
-			});
-			contentPane.add(button1);
-			button1.setBounds(0, 40, 190, button1.getPreferredSize().height);
-
-			// ---- comboBox1 ----
-
-			comboBox1.setModel(new DefaultComboBoxModel(new String[] {
-					"Lumbridge Spinning", "Camelot Spinning",
-					"Camelot Picking", "Camelot Hybrid", }));
-			contentPane.add(comboBox1);
-			comboBox1.setBounds(0, 0, 190, 40);
-
-			{ // compute preferred size
-				final Dimension preferredSize = new Dimension();
-				for (int i = 0; i < contentPane.getComponentCount(); i++) {
-					final Rectangle bounds = contentPane.getComponent(i)
-							.getBounds();
-					preferredSize.width = Math.max(bounds.x + bounds.width,
-							preferredSize.width);
-					preferredSize.height = Math.max(bounds.y + bounds.height,
-							preferredSize.height);
+				path.traverse();
+			} else {
+				RSPath path = null;
+				if (path == null) {
+					path = walking.getPath(s2b);
 				}
-				final Insets insets = contentPane.getInsets();
-				preferredSize.width += insets.right;
-				preferredSize.height += insets.bottom;
-				contentPane.setMinimumSize(preferredSize);
-				contentPane.setPreferredSize(preferredSize);
+				path.traverse();
+
 			}
-			pack();
-			setLocationRelativeTo(getOwner());
-			// JFormDesigner - End of component initialization
-			// //GEN-END:initComponents
+		} catch (final Exception ignore) {
 		}
+	}
 
-		// JFormDesigner - Variables declaration - DO NOT MODIFY
-		// //GEN-BEGIN:variables
-		private JButton button1;
-		private JComboBox comboBox1;
-		// JFormDesigner - End of variables declaration //GEN-END:variables
+	/* Functioning */
+	/* Top Floor */
+	public void TopFloor2() {
+		new RSTile(3205, 3209);
+		final int flax = 1779;
+		final RSObject stairs = objects.getNearest(36775);
+		final RSObject Banker = objects.getNearest(36786);
+
+		try {
+			if (inventory.containsAll(flax)) {
+				if (stairs.isOnScreen()) {
+					stairs.doAction("Climb");
+					sleep(random(500, 800));
+				}
+			} else {
+				if (Banker.isOnScreen()) {
+					if (!bank.isOpen()) {
+						Banker.doAction("Use-quickly");
+					} else {
+						if (inventory.isFull()) {
+							bank.depositAll();
+						} else {
+							bank.withdraw(flax, 28);
+							if (bank.getCount(flax) < 28) {
+								game.logout(true);
+							}
+						}
+					}
+				}
+
+			}
+		} catch (final Exception ignore) {
+		}
+	}
+
+	public void TopFloor2C() {
+		new RSTile(2715, 3471);
+		final int flax = 1779;
+		final RSObject stairs = objects.getNearest(25938);
+		final RSObject Banker = objects.getNearest(25808);
+		objects.getNearest(25819);
+		try {
+			if (inventory.contains(flax)) {
+
+				if (stairs.isOnScreen()) {
+					if (getMyPlayer().getLocation().getY() < 3484) {
+						stairs.doAction("Climb");
+						sleep(random(1000, 1200));
+					}
+				}
+			} else {
+				if (Banker.isOnScreen()) {
+					if (!bank.isOpen()) {
+						Banker.doAction("Use-quickly");
+					} else {
+						if (inventory.isFull()) {
+							bank.depositAll();
+						} else {
+							bank.withdraw(flax, 28);
+							if (bank.getCount(flax) < 28) {
+								game.logout(true);
+							}
+						}
+					}
+				}
+
+			}
+
+		} catch (final Exception ignore) {
+		}
+	}
+
+	public void TopFloorC() {
+		try {
+			final RSTile b2s = new RSTile(2715, 3471);
+			final RSTile s2b = new RSTile(2724, 3493);
+			final RSObject Spinner = objects.getNearest(25824);
+			final int flax = 1779;
+
+			if (Spinner == null) {
+
+				if (inventory.contains(flax)) {
+					RSPath path = null;
+					if (path == null) {
+						path = walking.getPath(b2s);
+					}
+					path.traverse();
+				}
+
+				if (!inventory.contains(flax)) {
+					RSPath path = null;
+					if (path == null) {
+						path = walking.getPath(s2b);
+					}
+					path.traverse();
+
+				}
+			}
+		} catch (final Exception ignore) {
+		}
 	}
 }

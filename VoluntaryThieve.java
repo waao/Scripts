@@ -124,14 +124,13 @@ public final class VoluntaryThieve extends Script implements
 			private Steps(final long... maximumTimes)
 					throws IllegalArgumentException {
 				if (maximumTimes.length != 3) {
-					throw new IllegalArgumentException(
-							"Invalid argument length, expected 3 was "
-									+ maximumTimes.length + ".");
+					throw new IllegalArgumentException("Invalid argument length, expected 3 was "
+							+ maximumTimes.length + ".");
 				}
 				for (final long maximumTime : maximumTimes) {
 					if (maximumTime < 0) {
-						throw new IllegalArgumentException(
-								"Maximum time was below zero: " + maximumTime);
+						throw new IllegalArgumentException("Maximum time was below zero: "
+								+ maximumTime);
 					}
 				}
 				this.maximumTimes = maximumTimes;
@@ -167,8 +166,7 @@ public final class VoluntaryThieve extends Script implements
 			 */
 			private boolean isObsolete() throws IllegalStateException {
 				if (!isStartingTimeSet()) {
-					throw new IllegalStateException(
-							"Starting time has not been set.");
+					throw new IllegalStateException("Starting time has not been set.");
 				}
 				return System.currentTimeMillis() - getStartingTime() >= maximumTimes[getCurrent()];
 			}
@@ -192,9 +190,8 @@ public final class VoluntaryThieve extends Script implements
 			 */
 			private void next() throws IllegalStateException {
 				if (getCurrent() >= Steps.FINISH) {
-					throw new IllegalStateException(
-							"Unable to switch step, current step is: "
-									+ getCurrent());
+					throw new IllegalStateException("Unable to switch step, current step is: "
+							+ getCurrent());
 				}
 				currentStep++;
 			}
@@ -377,8 +374,7 @@ public final class VoluntaryThieve extends Script implements
 			 * @return The <tt>RSObject</tt> at the position of the closed door.
 			 */
 			private RSObject getClosedDoor() {
-				return objects.getTopAt(new RSTile(4754 + tileOffset.x,
-						5795 + tileOffset.y));
+				return objects.getTopAt(new RSTile(4754 + tileOffset.x, 5795 + tileOffset.y));
 			}
 
 			/**
@@ -426,8 +422,7 @@ public final class VoluntaryThieve extends Script implements
 			 * @return The <tt>RSObject</tt> at the position of the open door.
 			 */
 			private RSObject getOpenDoor() {
-				return objects.getTopAt(new RSTile(4755 + tileOffset.x,
-						5795 + tileOffset.y));
+				return objects.getTopAt(new RSTile(4755 + tileOffset.x, 5795 + tileOffset.y));
 			}
 
 			/**
@@ -465,8 +460,7 @@ public final class VoluntaryThieve extends Script implements
 			 *         otherwise <tt>false</tt>.
 			 */
 			private boolean hasKnockoutFailed() {
-				final RSInterface failScreen = interfaces
-						.get(Values.INTERFACE_LURE_FIRST);
+				final RSInterface failScreen = interfaces.get(Values.INTERFACE_LURE_FIRST);
 				return failScreen != null && failScreen.isValid()
 						&& failScreen.getComponent(4).containsText("divert");
 			}
@@ -490,10 +484,7 @@ public final class VoluntaryThieve extends Script implements
 			 *         otherwise <tt>false</tt>.
 			 */
 			private boolean isInBank() {
-				return new RSArea(new RSTile(4747 + tileOffset.x,
-						5793 + tileOffset.y), new RSTile(4754 + tileOffset.x,
-						5797 + tileOffset.y)).contains(getMyPlayer()
-						.getLocation());
+				return new RSArea(new RSTile(4747 + tileOffset.x, 5793 + tileOffset.y), new RSTile(4754 + tileOffset.x, 5797 + tileOffset.y)).contains(getMyPlayer().getLocation());
 			}
 
 			/**
@@ -503,10 +494,7 @@ public final class VoluntaryThieve extends Script implements
 			 *         otherwise <tt>false</tt>.
 			 */
 			private boolean isInGuild() {
-				return new RSArea(new RSTile(4745 + tileOffset.x,
-						5762 + tileOffset.y), new RSTile(4794 + tileOffset.x,
-						5806 + tileOffset.y)).contains(getMyPlayer()
-						.getLocation())
+				return new RSArea(new RSTile(4745 + tileOffset.x, 5762 + tileOffset.y), new RSTile(4794 + tileOffset.x, 5806 + tileOffset.y)).contains(getMyPlayer().getLocation())
 						&& game.getPlane() == 0;
 			}
 
@@ -779,10 +767,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_WALK_TO_TRAINER) {
-				return new Action("Walking to trainer",
-						Values.ACTION_WALK_TO_TRAINER, random(1425,
-								1635), random(1645, 1850),
-						random(4925, 5135)) {
+				return new Action("Walking to trainer", Values.ACTION_WALK_TO_TRAINER, random(1425, 1635), random(1645, 1850), random(4925, 5135)) {
 
 					RSNPC trainer;
 
@@ -795,9 +780,7 @@ public final class VoluntaryThieve extends Script implements
 					@Override
 					State finish() {
 						if (calc.distanceTo(trainer) > random(4, 7)) {
-							antibans.perform(
-									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
-									random(17, 23));
+							antibans.perform(new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, random(17, 23));
 						}
 						return trainer.isOnScreen() ? State.COMPLETED
 								: State.PROGRESSING;
@@ -822,9 +805,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_PICKPOCKET_TRAINER) {
-				return new Action("Pickpocketing the trainer",
-						Values.ACTION_PICKPOCKET_TRAINER, random(250,
-								1250), random(515, 725)) {
+				return new Action("Pickpocketing the trainer", Values.ACTION_PICKPOCKET_TRAINER, random(250, 1250), random(515, 725)) {
 
 					RSNPC trainer;
 
@@ -858,16 +839,12 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_STUNNED_WAIT) {
-				return new Action("Waiting while being stunned",
-						Values.ACTION_STUNNED_WAIT, 0, random(4820,
-								5210)) {
+				return new Action("Waiting while being stunned", Values.ACTION_STUNNED_WAIT, 0, random(4820, 5210)) {
 
 					@Override
 					State finish() {
-						antibans.perform(
-								new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, 21);
-						antibans.perform(new int[] { Antibans.ALL_ANTIBANS },
-								65);
+						antibans.perform(new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, 21);
+						antibans.perform(new int[] { Antibans.ALL_ANTIBANS }, 65);
 						return stunnedTimer.isRunning() ? State.PROGRESSING
 								: State.COMPLETED;
 					}
@@ -881,9 +858,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_EQUIP_GLOVES) {
-				return new Action("Equipping a new pair of gloves",
-						Values.ACTION_EQUIP_GLOVES, random(2345, 2745),
-						random(3215, 3445)) {
+				return new Action("Equipping a new pair of gloves", Values.ACTION_EQUIP_GLOVES, random(2345, 2745), random(3215, 3445)) {
 
 					int inventoryCount;
 
@@ -903,8 +878,7 @@ public final class VoluntaryThieve extends Script implements
 							inventoryCount = inventory.getCount();
 						}
 
-						final RSItem gloves = inventory
-								.getItem(Values.ITEM_GLOVES_OF_SILENCE);
+						final RSItem gloves = inventory.getItem(Values.ITEM_GLOVES_OF_SILENCE);
 						if (gloves == null) {
 							return State.FAILED;
 						}
@@ -916,9 +890,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_LURE_TRAINER) {
-				return new Action("Luring the trainer",
-						Values.ACTION_LURE_TRAINER, random(250, 1250),
-						random(1455, 2135)) {
+				return new Action("Luring the trainer", Values.ACTION_LURE_TRAINER, random(250, 1250), random(1455, 2135)) {
 
 					RSNPC trainer;
 
@@ -944,16 +916,13 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_LURE_TALK_TRAINER) {
-				return new Action("Luring/talking to the trainer",
-						Values.ACTION_LURE_TALK_TRAINER, random(5550,
-								6750), random(3225, 4475)) {
+				return new Action("Luring/talking to the trainer", Values.ACTION_LURE_TALK_TRAINER, random(5550, 6750), random(3225, 4475)) {
 
 					boolean isFirstDone;
 
 					@Override
 					State finish() {
-						final RSInterface secondTalkScreen = interfaces
-								.get(241);
+						final RSInterface secondTalkScreen = interfaces.get(241);
 						if (secondTalkScreen == null
 								|| !secondTalkScreen.isValid()) {
 							isLured = true;
@@ -966,15 +935,13 @@ public final class VoluntaryThieve extends Script implements
 					@Override
 					State perform() {
 						if (!isFirstDone) {
-							final RSInterface secondTalkScreen = interfaces
-									.get(Values.INTERFACE_LURE_SECOND);
+							final RSInterface secondTalkScreen = interfaces.get(Values.INTERFACE_LURE_SECOND);
 							isFirstDone = secondTalkScreen != null
 									&& secondTalkScreen.isValid();
 						}
 
 						if (isFirstDone) {
-							final RSInterface secondTalkScreen = interfaces
-									.get(Values.INTERFACE_LURE_SECOND);
+							final RSInterface secondTalkScreen = interfaces.get(Values.INTERFACE_LURE_SECOND);
 							if (secondTalkScreen != null
 									&& secondTalkScreen.isValid()) {
 								if (secondTalkScreen.getComponent(5).doClick()) {
@@ -982,12 +949,10 @@ public final class VoluntaryThieve extends Script implements
 								}
 							}
 						} else {
-							final RSInterface firstTalkScreen = interfaces
-									.get(Values.INTERFACE_LURE_FIRST);
+							final RSInterface firstTalkScreen = interfaces.get(Values.INTERFACE_LURE_FIRST);
 							if (firstTalkScreen != null
 									&& firstTalkScreen.isValid()) {
-								isFirstDone = firstTalkScreen.getComponent(5)
-										.doClick();
+								isFirstDone = firstTalkScreen.getComponent(5).doClick();
 							}
 						}
 
@@ -997,9 +962,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_KNOCK_TRAINER) {
-				return new Action("Knocking the trainer",
-						Values.ACTION_KNOCK_TRAINER, random(250, 1250),
-						random(2145, 2625)) {
+				return new Action("Knocking the trainer", Values.ACTION_KNOCK_TRAINER, random(250, 1250), random(2145, 2625)) {
 
 					RSNPC trainer;
 
@@ -1030,10 +993,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_BANK_DOOR_WALK) {
-				return new Action("Walking to the door",
-						Values.ACTION_BANK_DOOR_WALK,
-						random(1245, 1485), random(2145, 2675),
-						random(4595, 5780)) {
+				return new Action("Walking to the door", Values.ACTION_BANK_DOOR_WALK, random(1245, 1485), random(2145, 2675), random(4595, 5780)) {
 
 					@Override
 					State confirm() {
@@ -1055,27 +1015,22 @@ public final class VoluntaryThieve extends Script implements
 						}
 
 						if (calc.distanceTo(destination) > random(5, 7)) {
-							antibans.perform(
-									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
-									random(17, 23));
+							antibans.perform(new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, random(17, 23));
 						}
-						return calc.distanceTo(destination) < random(3,
-								6) ? State.COMPLETED : State.PROGRESSING;
+						return calc.distanceTo(destination) < random(3, 6) ? State.COMPLETED
+								: State.PROGRESSING;
 					}
 
 					@Override
 					State perform() {
-						return walking.walkTo(new RSTile(4755 + tileOffset.x,
-								5795 + tileOffset.y)) ? State.COMPLETED
+						return walking.walkTo(new RSTile(4755 + tileOffset.x, 5795 + tileOffset.y)) ? State.COMPLETED
 								: State.PROGRESSING;
 					}
 				};
 			}
 
 			if (action == Values.ACTION_BANK_DOOR_OPEN) {
-				return new Action("Opening the door",
-						Values.ACTION_BANK_DOOR_OPEN,
-						random(4525, 4895), random(2975, 3225)) {
+				return new Action("Opening the door", Values.ACTION_BANK_DOOR_OPEN, random(4525, 4895), random(2975, 3225)) {
 
 					boolean isCameraSet;
 
@@ -1108,9 +1063,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_BANK_WALK) {
-				return new Action("Walking to the bank",
-						Values.ACTION_BANK_WALK, random(1425, 1635),
-						random(2345, 2755), random(5255, 5825)) {
+				return new Action("Walking to the bank", Values.ACTION_BANK_WALK, random(1425, 1635), random(2345, 2755), random(5255, 5825)) {
 
 					RSObject bankBooth;
 
@@ -1118,8 +1071,7 @@ public final class VoluntaryThieve extends Script implements
 					State confirm() {
 						final RSTile destination = walking.getDestination();
 						if (destination != null) {
-							if (calc.distanceBetween(destination,
-									bankBooth.getLocation()) > 3) {
+							if (calc.distanceBetween(destination, bankBooth.getLocation()) > 3) {
 								return State.FAILED;
 							}
 
@@ -1134,9 +1086,7 @@ public final class VoluntaryThieve extends Script implements
 					@Override
 					State finish() {
 						if (calc.distanceTo(bankBooth) > random(4, 7)) {
-							antibans.perform(
-									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
-									random(17, 23));
+							antibans.perform(new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, random(17, 23));
 						}
 						return bankBooth.isOnScreen() ? State.COMPLETED
 								: State.PROGRESSING;
@@ -1144,23 +1094,20 @@ public final class VoluntaryThieve extends Script implements
 
 					@Override
 					State perform() {
-						bankBooth = objects
-								.getNearest(Values.OBJECT_BANK_BOOTH);
+						bankBooth = objects.getNearest(Values.OBJECT_BANK_BOOTH);
 						if (bankBooth == null
 								|| !calc.tileOnMap(bankBooth.getLocation())) {
 							return State.FAILED;
 						}
 
-						return walking
-								.walkTileMM(bankBooth.getLocation(), 2, 2) ? State.COMPLETED
+						return walking.walkTileMM(bankBooth.getLocation(), 2, 2) ? State.COMPLETED
 								: State.PROGRESSING;
 					}
 				};
 			}
 
 			if (action == Values.ACTION_BANK_OPEN) {
-				return new Action("Opening the bank", Values.ACTION_BANK_OPEN,
-						random(1425, 1625), random(2452, 2855)) {
+				return new Action("Opening the bank", Values.ACTION_BANK_OPEN, random(1425, 1625), random(2452, 2855)) {
 
 					boolean isCameraSet;
 
@@ -1172,8 +1119,7 @@ public final class VoluntaryThieve extends Script implements
 
 					@Override
 					State perform() {
-						final RSObject bankBooth = objects
-								.getNearest(Values.OBJECT_BANK_BOOTH);
+						final RSObject bankBooth = objects.getNearest(Values.OBJECT_BANK_BOOTH);
 						if (bankBooth == null) {
 							return State.FAILED;
 						}
@@ -1194,8 +1140,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_BANK_BANKING) {
-				return new Action("Banking", Values.ACTION_BANK_BANKING,
-						random(6445, 7125), random(2745, 3465)) {
+				return new Action("Banking", Values.ACTION_BANK_BANKING, random(6445, 7125), random(2745, 3465)) {
 
 					Timer withdrawTimer;
 					boolean hasDeposited;
@@ -1203,8 +1148,7 @@ public final class VoluntaryThieve extends Script implements
 					@Override
 					State finish() {
 						if (withdrawTimer.isRunning()) {
-							if (inventory
-									.contains(Values.ITEM_GLOVES_OF_SILENCE)) {
+							if (inventory.contains(Values.ITEM_GLOVES_OF_SILENCE)) {
 								withdrawTimer.setEndIn(0);
 							} else {
 								return State.PROGRESSING;
@@ -1222,8 +1166,7 @@ public final class VoluntaryThieve extends Script implements
 					@Override
 					State perform() {
 						if (withdrawTimer == null) {
-							withdrawTimer = new Timer(
-									random(1045, 1425));
+							withdrawTimer = new Timer(random(1045, 1425));
 						}
 						if (withdrawTimer.isRunning()) {
 							return State.PROGRESSING;
@@ -1237,8 +1180,7 @@ public final class VoluntaryThieve extends Script implements
 							hasDeposited = bank.depositAll();
 						}
 
-						final RSItem gloves = bank
-								.getItem(Values.ITEM_GLOVES_OF_SILENCE);
+						final RSItem gloves = bank.getItem(Values.ITEM_GLOVES_OF_SILENCE);
 						if (gloves == null) {
 							if (bank.close()) {
 								log("Character is out of gloves of silence.");
@@ -1257,10 +1199,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (action == Values.ACTION_BANK_WALK_AREA) {
-				return new Action("Walking to the bank area",
-						Values.ACTION_BANK_WALK_AREA,
-						random(1245, 1475), random(2345, 2765),
-						random(4985, 5375)) {
+				return new Action("Walking to the bank area", Values.ACTION_BANK_WALK_AREA, random(1245, 1475), random(2345, 2765), random(4985, 5375)) {
 
 					State confirm() {
 						return getMyPlayer().isMoving() ? State.COMPLETED
@@ -1269,12 +1208,9 @@ public final class VoluntaryThieve extends Script implements
 
 					@Override
 					State finish() {
-						final RSObject bankBooth = objects
-								.getNearest(Values.OBJECT_BANK_BOOTH);
+						final RSObject bankBooth = objects.getNearest(Values.OBJECT_BANK_BOOTH);
 						if (bankBooth == null) {
-							antibans.perform(
-									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
-									random(17, 23));
+							antibans.perform(new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, random(17, 23));
 						}
 
 						return bankBooth != null
@@ -1284,18 +1220,14 @@ public final class VoluntaryThieve extends Script implements
 
 					@Override
 					State perform() {
-						return walking.walkTo(new RSTile(4747 + tileOffset.x,
-								5795 + tileOffset.y)) ? State.COMPLETED
+						return walking.walkTo(new RSTile(4747 + tileOffset.x, 5795 + tileOffset.y)) ? State.COMPLETED
 								: State.PROGRESSING;
 					}
 				};
 			}
 
 			if (action == Values.ACTION_WALK_TO_TRAINING_AREA) {
-				return new Action("Walking to the training area",
-						Values.ACTION_WALK_TO_TRAINING_AREA, random(
-								1245, 1475), random(2345, 2765),
-						random(4985, 5375)) {
+				return new Action("Walking to the training area", Values.ACTION_WALK_TO_TRAINING_AREA, random(1245, 1475), random(2345, 2765), random(4985, 5375)) {
 
 					State confirm() {
 						return getMyPlayer().isMoving() ? State.COMPLETED
@@ -1304,12 +1236,9 @@ public final class VoluntaryThieve extends Script implements
 
 					@Override
 					State finish() {
-						final RSNPC nearestTrainer = npcs.getNearest(methods
-								.getTrainers());
+						final RSNPC nearestTrainer = npcs.getNearest(methods.getTrainers());
 						if (nearestTrainer == null) {
-							antibans.perform(
-									new int[] { Antibans.MOUSE_MOVE_RANDOMLY },
-									random(17, 23));
+							antibans.perform(new int[] { Antibans.MOUSE_MOVE_RANDOMLY }, random(17, 23));
 						}
 
 						return nearestTrainer != null
@@ -1319,17 +1248,14 @@ public final class VoluntaryThieve extends Script implements
 
 					@Override
 					State perform() {
-						return walking.walkTo(new RSTile(4763 + tileOffset.x,
-								5793 + tileOffset.y)) ? State.COMPLETED
+						return walking.walkTo(new RSTile(4763 + tileOffset.x, 5793 + tileOffset.y)) ? State.COMPLETED
 								: State.PROGRESSING;
 					}
 				};
 			}
 
 			if (action == Values.ACTION_FAILSAFE_TIMEOUT) {
-				return new Action("Failsafe timeout",
-						Values.ACTION_FAILSAFE_TIMEOUT, 0, random(7200,
-								13250)) {
+				return new Action("Failsafe timeout", Values.ACTION_FAILSAFE_TIMEOUT, 0, random(7200, 13250)) {
 
 					@Override
 					State finish() {
@@ -1362,8 +1288,7 @@ public final class VoluntaryThieve extends Script implements
 
 			if (!options.isBlackjacking && isUsingGloves) {
 				if (!isEquipmentChecked) {
-					hasGloves = equipment
-							.containsAll(Values.ITEM_GLOVES_OF_SILENCE);
+					hasGloves = equipment.containsAll(Values.ITEM_GLOVES_OF_SILENCE);
 					isEquipmentChecked = true;
 				}
 
@@ -1379,8 +1304,7 @@ public final class VoluntaryThieve extends Script implements
 							return methods.getDoorAction();
 						}
 
-						final RSObject bankBooth = objects
-								.getNearest(Values.OBJECT_BANK_BOOTH);
+						final RSObject bankBooth = objects.getNearest(Values.OBJECT_BANK_BOOTH);
 						if (bankBooth == null) {
 							return get(Values.ACTION_BANK_WALK_AREA);
 						}
@@ -1436,8 +1360,7 @@ public final class VoluntaryThieve extends Script implements
 				}
 
 				isExtraCheckDone = false;
-				return calc.tileOnMap(nearestTrainer.getLocation()) ? get(
-						Values.ACTION_WALK_TO_TRAINER, nearestTrainer)
+				return calc.tileOnMap(nearestTrainer.getLocation()) ? get(Values.ACTION_WALK_TO_TRAINER, nearestTrainer)
 						: get(Values.ACTION_WALK_TO_TRAINING_AREA);
 			}
 
@@ -1451,8 +1374,7 @@ public final class VoluntaryThieve extends Script implements
 
 					if (!isLured) {
 						return methods.isLureScreenValid() ? get(Values.ACTION_LURE_TALK_TRAINER)
-								: get(Values.ACTION_LURE_TRAINER,
-										nearestTrainer);
+								: get(Values.ACTION_LURE_TRAINER, nearestTrainer);
 					}
 				} else {
 					isForcingBlackjack = false;
@@ -1534,27 +1456,24 @@ public final class VoluntaryThieve extends Script implements
 				throws IllegalArgumentException {
 			if (currentAntiban == 0) {
 				if (selection == null) {
-					throw new IllegalArgumentException(
-							"The selection of antibans is null.");
+					throw new IllegalArgumentException("The selection of antibans is null.");
 				}
 				if (probability < 1) {
-					throw new IllegalArgumentException(
-							"The probability is below one: " + probability);
+					throw new IllegalArgumentException("The probability is below one: "
+							+ probability);
 				}
 
-				if (selection.length == 0
-						|| random(0, probability) != 0) {
+				if (selection.length == 0 || random(0, probability) != 0) {
 					return false;
 				}
 
 				currentAntiban = selection.length == 1
-						&& selection[0] == Antibans.ALL_ANTIBANS ? Methods
-						.random(0, Antibans.ALL_ANTIBANS) : selection[Methods
-						.random(0, selection.length)];
+						&& selection[0] == Antibans.ALL_ANTIBANS ? Methods.random(0, Antibans.ALL_ANTIBANS)
+						: selection[Methods.random(0, selection.length)];
 				if (0 > currentAntiban
 						|| currentAntiban >= Antibans.ALL_ANTIBANS) {
-					throw new IllegalArgumentException(
-							"Invalid antiban in selection: " + currentAntiban);
+					throw new IllegalArgumentException("Invalid antiban in selection: "
+							+ currentAntiban);
 				}
 				timer.setEndIn(counter = 0);
 			}
@@ -1570,8 +1489,7 @@ public final class VoluntaryThieve extends Script implements
 				timer.setEndIn(random(755, 2345));
 
 				if (++counter < random(2, 5)) {
-					mouse.move(random(5, game.getWidth() - 253),
-							random(5, game.getHeight() - 169));
+					mouse.move(random(5, game.getWidth() - 253), random(5, game.getHeight() - 169));
 				} else {
 					currentAntiban = 0;
 				}
@@ -1751,16 +1669,12 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			final Preferences defaultNode = Preferences.userRoot().node("");
-			if (Boolean.parseBoolean(defaultNode.get(
-					Configuration.KEY_ROOT_ALLOW_STORAGE, "false"))) {
+			if (Boolean.parseBoolean(defaultNode.get(Configuration.KEY_ROOT_ALLOW_STORAGE, "false"))) {
 				return true;
 			}
 
-			final int storageAnswer = WindowUtil
-					.showConfirmDialog(
-							"Do you give your permission to let the script "
-									+ "store configuration data?\nThis is used to save your selected options for later usage.",
-							WindowUtil.YES_NO_CANCEL);
+			final int storageAnswer = WindowUtil.showConfirmDialog("Do you give your permission to let the script "
+					+ "store configuration data?\nThis is used to save your selected options for later usage.", WindowUtil.YES_NO_CANCEL);
 
 			if (storageAnswer == WindowUtil.YES_OPTION) {
 				defaultNode.put(Configuration.KEY_ROOT_ALLOW_STORAGE, "true");
@@ -1808,8 +1722,7 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			if (preferences == null) {
-				preferences = Preferences.userRoot().node(
-						Configuration.NODE_PATH_NAME);
+				preferences = Preferences.userRoot().node(Configuration.NODE_PATH_NAME);
 			}
 			return true;
 		}
@@ -1839,8 +1752,7 @@ public final class VoluntaryThieve extends Script implements
 			Preferences currentPreferences = Preferences.userRoot().node("");
 			currentPreferences.remove(Configuration.KEY_ROOT_ALLOW_STORAGE);
 
-			currentPreferences = Preferences.userRoot().node(
-					Configuration.NODE_PATH_NAME);
+			currentPreferences = Preferences.userRoot().node(Configuration.NODE_PATH_NAME);
 			try {
 				currentPreferences.removeNode();
 			} catch (final Exception ignored) {
@@ -1919,8 +1831,7 @@ public final class VoluntaryThieve extends Script implements
 
 			/* Sets the look and feel of the frame to system default. */
 			try {
-				javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager
-						.getSystemLookAndFeelClassName());
+				javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
 			} catch (final Exception ignored) {
 			}
 
@@ -1938,12 +1849,12 @@ public final class VoluntaryThieve extends Script implements
 		 */
 		private void aboutMenuItemActionPerformed(
 				final java.awt.event.ActionEvent evt) {
-			JOptionPane.showMessageDialog(this,
-					VoluntaryThieve.scriptManifest.name() + " v"
-							+ VoluntaryThieve.scriptManifest.version()
-							+ " by vilon.\n" + "Visit http://www.powerbot.org/"
-							+ " for more information.", "About",
-					JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, VoluntaryThieve.scriptManifest.name()
+					+ " v"
+					+ VoluntaryThieve.scriptManifest.version()
+					+ " by vilon.\n"
+					+ "Visit http://www.powerbot.org/"
+					+ " for more information.", "About", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		/**
@@ -1966,22 +1877,14 @@ public final class VoluntaryThieve extends Script implements
 		 */
 		private Map<String, String> getOptions() {
 			final Map<String, String> options = new java.util.HashMap<String, String>();
-			options.put(modeComboBox.getName(), modeComboBox.getSelectedItem()
-					.toString());
-			options.put(getNewGlovesCheckBox.getName(),
-					String.valueOf(getNewGlovesCheckBox.isSelected()));
-			options.put(maxHoursSpinner.getName(), maxHoursSpinner.getValue()
-					.toString());
-			options.put(maxMinutesSpinner.getName(), maxMinutesSpinner
-					.getValue().toString());
-			options.put(maxSecondsSpinner.getName(), maxSecondsSpinner
-					.getValue().toString());
-			options.put(maxPickpocketsSpinner.getName(), maxPickpocketsSpinner
-					.getValue().toString());
-			options.put(maxLevelsSpinner.getName(), maxLevelsSpinner.getValue()
-					.toString());
-			options.put(enableDebugCheckBox.getName(),
-					String.valueOf(enableDebugCheckBox.isSelected()));
+			options.put(modeComboBox.getName(), modeComboBox.getSelectedItem().toString());
+			options.put(getNewGlovesCheckBox.getName(), String.valueOf(getNewGlovesCheckBox.isSelected()));
+			options.put(maxHoursSpinner.getName(), maxHoursSpinner.getValue().toString());
+			options.put(maxMinutesSpinner.getName(), maxMinutesSpinner.getValue().toString());
+			options.put(maxSecondsSpinner.getName(), maxSecondsSpinner.getValue().toString());
+			options.put(maxPickpocketsSpinner.getName(), maxPickpocketsSpinner.getValue().toString());
+			options.put(maxLevelsSpinner.getName(), maxLevelsSpinner.getValue().toString());
+			options.put(enableDebugCheckBox.getName(), String.valueOf(enableDebugCheckBox.isSelected()));
 			return options;
 		}
 
@@ -2044,14 +1947,13 @@ public final class VoluntaryThieve extends Script implements
 			modeLabel.setText("Mode:");
 			modeLabel.setName("modeLabel");
 
-			modeComboBox.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[] { "Blackjack", "Pickpocket" }));
+			modeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"Blackjack", "Pickpocket" }));
 			modeComboBox.setName("modeComboBox");
 			modeComboBox.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(final java.awt.event.ItemEvent e) {
 					if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
-						final boolean selected = modeComboBox
-								.getSelectedIndex() != 0;
+						final boolean selected = modeComboBox.getSelectedIndex() != 0;
 						getNewGlovesCheckBox.setEnabled(selected);
 						if (!selected) {
 							getNewGlovesCheckBox.setSelected(selected);
@@ -2065,8 +1967,7 @@ public final class VoluntaryThieve extends Script implements
 			getNewGlovesCheckBox.setName("getNewGlovesCheckBox");
 			getNewGlovesCheckBox.setEnabled(false);
 
-			maxHoursSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0,
-					null, 1));
+			maxHoursSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 			maxHoursSpinner.setName("maxHoursSpinner");
 
 			maximumRuntimeLabel.setText("Maximum runtime:");
@@ -2084,19 +1985,16 @@ public final class VoluntaryThieve extends Script implements
 			maxHoursLabel.setText("H:");
 			maxHoursLabel.setName("maxHoursLabel");
 
-			maxMinutesSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0,
-					59, 1));
+			maxMinutesSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
 			maxMinutesSpinner.setName("maxMinutesSpinner");
 
 			maxPickpocketsLabel.setText("Maximum pickpockets:");
 			maxPickpocketsLabel.setName("maxPickpocketsLabel");
 
-			maxLevelsSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0,
-					99, 1));
+			maxLevelsSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 99, 1));
 			maxLevelsSpinner.setName("maxLevelsSpinner");
 
-			maxPickpocketsSpinner.setModel(new javax.swing.SpinnerNumberModel(
-					0, 0, null, 1));
+			maxPickpocketsSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 			maxPickpocketsSpinner.setName("maxPickpocketsSpinner");
 
 			maxSecondsLabel.setText("S");
@@ -2105,8 +2003,7 @@ public final class VoluntaryThieve extends Script implements
 			maxMinutesLabel.setText("M:");
 			maxMinutesLabel.setName("maxMinutesLabel");
 
-			maxSecondsSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0,
-					59, 1));
+			maxSecondsSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
 			maxSecondsSpinner.setName("maxSecondsSpinner");
 
 			otherLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
@@ -2145,9 +2042,7 @@ public final class VoluntaryThieve extends Script implements
 				}
 			});
 
-			saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-					java.awt.event.KeyEvent.VK_S,
-					java.awt.event.InputEvent.CTRL_MASK));
+			saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
 			saveMenuItem.setText("Save");
 			saveMenuItem.setName("saveMenuItem");
 			fileMenu.add(saveMenuItem);
@@ -2171,13 +2066,11 @@ public final class VoluntaryThieve extends Script implements
 
 			resetMenuItem.setText("Reset Permissions");
 			resetMenuItem.setName("resetMenuItem");
-			resetMenuItem
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								final java.awt.event.ActionEvent evt) {
-							resetMenuItemActionPerformed(evt);
-						}
-					});
+			resetMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
+					resetMenuItemActionPerformed(evt);
+				}
+			});
 			editMenu.add(resetMenuItem);
 
 			mainMenuBar.add(editMenu);
@@ -2185,19 +2078,15 @@ public final class VoluntaryThieve extends Script implements
 			runMenu.setText("Run");
 			runMenu.setName("runMenu");
 
-			startMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-					java.awt.event.KeyEvent.VK_S,
-					java.awt.event.InputEvent.ALT_MASK
-							| java.awt.event.InputEvent.CTRL_MASK));
+			startMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK
+					| java.awt.event.InputEvent.CTRL_MASK));
 			startMenuItem.setText("Start");
 			startMenuItem.setName("startMenuItem");
-			startMenuItem
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								final java.awt.event.ActionEvent evt) {
-							startActionPerformed(evt);
-						}
-					});
+			startMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
+					startActionPerformed(evt);
+				}
+			});
 			runMenu.add(startMenuItem);
 
 			mainMenuBar.add(runMenu);
@@ -2207,286 +2096,21 @@ public final class VoluntaryThieve extends Script implements
 
 			aboutMenuItem.setText("About");
 			aboutMenuItem.setName("aboutMenuItem");
-			aboutMenuItem
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								final java.awt.event.ActionEvent evt) {
-							aboutMenuItemActionPerformed(evt);
-						}
-					});
+			aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
+					aboutMenuItemActionPerformed(evt);
+				}
+			});
 			helpMenu.add(aboutMenuItem);
 
 			mainMenuBar.add(helpMenu);
 
 			setJMenuBar(mainMenuBar);
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.TRAILING,
-																	false)
-																	.addComponent(
-																			generalSeparator,
-																			javax.swing.GroupLayout.Alignment.LEADING)
-																	.addComponent(
-																			generalLabel,
-																			javax.swing.GroupLayout.Alignment.LEADING,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			Short.MAX_VALUE))
-													.addGroup(
-															layout.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.TRAILING,
-																	false)
-																	.addComponent(
-																			stopConditionsSeparator)
-																	.addComponent(
-																			stopConditionsLabel))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(10,
-																			10,
-																			10)
-																	.addGroup(
-																			layout.createParallelGroup(
-																					javax.swing.GroupLayout.Alignment.LEADING)
-																					.addComponent(
-																							getNewGlovesCheckBox)
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addComponent(
-																											modeLabel)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																									.addComponent(
-																											modeComboBox,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											javax.swing.GroupLayout.DEFAULT_SIZE,
-																											javax.swing.GroupLayout.PREFERRED_SIZE))))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(10,
-																			10,
-																			10)
-																	.addGroup(
-																			layout.createParallelGroup(
-																					javax.swing.GroupLayout.Alignment.LEADING)
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addComponent(
-																											maxPickpocketsLabel)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxPickpocketsSpinner,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											60,
-																											javax.swing.GroupLayout.PREFERRED_SIZE))
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addComponent(
-																											maximumRuntimeLabel)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxHoursSpinner,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											39,
-																											javax.swing.GroupLayout.PREFERRED_SIZE)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxHoursLabel)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxMinutesSpinner,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											39,
-																											javax.swing.GroupLayout.PREFERRED_SIZE)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxMinutesLabel)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxSecondsSpinner,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											39,
-																											javax.swing.GroupLayout.PREFERRED_SIZE)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxSecondsLabel))
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addComponent(
-																											maxLevelsLabel)
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addComponent(
-																											maxLevelsSpinner,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											39,
-																											javax.swing.GroupLayout.PREFERRED_SIZE)))))
-									.addContainerGap(
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											Short.MAX_VALUE))
-					.addGroup(
-							javax.swing.GroupLayout.Alignment.TRAILING,
-							layout.createSequentialGroup()
-									.addContainerGap(157, Short.MAX_VALUE)
-									.addComponent(saveButton)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(startButton)
-									.addContainerGap())
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(10,
-																			10,
-																			10)
-																	.addComponent(
-																			enableDebugCheckBox))
-													.addGroup(
-															layout.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.TRAILING,
-																	false)
-																	.addComponent(
-																			otherSeparator)
-																	.addComponent(
-																			otherLabel)))
-									.addContainerGap(184, Short.MAX_VALUE)));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addComponent(generalLabel)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(
-											generalSeparator,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											1,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(modeLabel)
-													.addComponent(
-															modeComboBox,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(getNewGlovesCheckBox)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-									.addComponent(stopConditionsLabel)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(
-											stopConditionsSeparator,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											1,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(
-															maximumRuntimeLabel)
-													.addComponent(
-															maxHoursSpinner,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-													.addComponent(maxHoursLabel)
-													.addComponent(
-															maxMinutesSpinner,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-													.addComponent(
-															maxMinutesLabel)
-													.addComponent(
-															maxSecondsSpinner,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE)
-													.addComponent(
-															maxSecondsLabel))
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(
-															maxPickpocketsLabel)
-													.addComponent(
-															maxPickpocketsSpinner,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(
-															maxLevelsLabel)
-													.addComponent(
-															maxLevelsSpinner,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-									.addComponent(otherLabel)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(
-											otherSeparator,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											1,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(enableDebugCheckBox)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											Short.MAX_VALUE)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(startButton)
-													.addComponent(saveButton))
-									.addContainerGap()));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(generalSeparator, javax.swing.GroupLayout.Alignment.LEADING).addComponent(generalLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(stopConditionsSeparator).addComponent(stopConditionsLabel)).addGroup(layout.createSequentialGroup().addGap(10, 10, 10).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(getNewGlovesCheckBox).addGroup(layout.createSequentialGroup().addComponent(modeLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))).addGroup(layout.createSequentialGroup().addGap(10, 10, 10).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(maxPickpocketsLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxPickpocketsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(layout.createSequentialGroup().addComponent(maximumRuntimeLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxHoursSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxHoursLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxMinutesSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxMinutesLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxSecondsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxSecondsLabel)).addGroup(layout.createSequentialGroup().addComponent(maxLevelsLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(maxLevelsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))))).addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addContainerGap(157, Short.MAX_VALUE).addComponent(saveButton).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(startButton).addContainerGap()).addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(10, 10, 10).addComponent(enableDebugCheckBox)).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(otherSeparator).addComponent(otherLabel))).addContainerGap(184, Short.MAX_VALUE)));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(generalLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(generalSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(modeLabel).addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(getNewGlovesCheckBox).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(stopConditionsLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(stopConditionsSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(maximumRuntimeLabel).addComponent(maxHoursSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(maxHoursLabel).addComponent(maxMinutesSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(maxMinutesLabel).addComponent(maxSecondsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(maxSecondsLabel)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(maxPickpocketsLabel).addComponent(maxPickpocketsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(maxLevelsLabel).addComponent(maxLevelsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(otherLabel).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(otherSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(enableDebugCheckBox).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(startButton).addComponent(saveButton)).addContainerGap()));
 
 			pack();
 		}
@@ -2497,26 +2121,21 @@ public final class VoluntaryThieve extends Script implements
 		 */
 		private void initSettings() {
 			final Component[] components = getContentPane().getComponents();
-			for (final Map.Entry<String, String> entry : getOptions()
-					.entrySet()) {
-				final String storedValue = configuration.get(entry.getKey(),
-						null);
+			for (final Map.Entry<String, String> entry : getOptions().entrySet()) {
+				final String storedValue = configuration.get(entry.getKey(), null);
 
 				if (storedValue != null) {
 					for (final Component component : components) {
 						if (entry.getKey().equals(component.getName())) {
 							if (component instanceof JComboBox) {
-								((JComboBox) component)
-										.setSelectedItem(storedValue);
+								((JComboBox) component).setSelectedItem(storedValue);
 							} else if (component instanceof JSpinner) {
 								try {
-									((JSpinner) component).setValue(Integer
-											.parseInt(storedValue));
+									((JSpinner) component).setValue(Integer.parseInt(storedValue));
 								} catch (final NumberFormatException ignored) {
 								}
 							} else if (component instanceof JCheckBox) {
-								((JCheckBox) component).setSelected(Boolean
-										.valueOf(storedValue));
+								((JCheckBox) component).setSelected(Boolean.valueOf(storedValue));
 							} else {
 								throw new AssertionError(entry.getKey() + ": "
 										+ storedValue);
@@ -2549,8 +2168,7 @@ public final class VoluntaryThieve extends Script implements
 		 *            defined action occurred.
 		 */
 		private void saveActionPerformed(final java.awt.event.ActionEvent evt) {
-			for (final Map.Entry<String, String> entry : getOptions()
-					.entrySet()) {
+			for (final Map.Entry<String, String> entry : getOptions().entrySet()) {
 				configuration.put(entry.getKey(), entry.getValue());
 			}
 		}
@@ -2645,13 +2263,11 @@ public final class VoluntaryThieve extends Script implements
 			this.maximumTime = maximumTime;
 
 			/* Read maximum pickpockets and levels. */
-			maximumPickpockets = Integer.valueOf(args
-					.get("maxPickpocketsSpinner"));
+			maximumPickpockets = Integer.valueOf(args.get("maxPickpocketsSpinner"));
 			maximumLevels = Integer.valueOf(args.get("maxLevelsSpinner"));
 
 			/* Get if debug is enabled, and set log-level. */
-			if (isDebugEnabled = Boolean.valueOf(args
-					.get("enableDebugCheckBox"))) {
+			if (isDebugEnabled = Boolean.valueOf(args.get("enableDebugCheckBox"))) {
 				log.setLevel(Level.FINE);
 			} else {
 				log.setLevel(Level.CONFIG);
@@ -2801,8 +2417,7 @@ public final class VoluntaryThieve extends Script implements
 			 */
 			final Graphics2D graphics2d = (Graphics2D) g;
 			final Composite originalComposite = graphics2d.getComposite();
-			graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 			/*
 			 * Declare the starting position (x, y) and height for the black
@@ -2816,10 +2431,8 @@ public final class VoluntaryThieve extends Script implements
 			 * progress-report.
 			 */
 			graphics2d.setPaint(Color.BLACK);
-			graphics2d.setComposite(AlphaComposite.getInstance(
-					AlphaComposite.SRC_OVER, 0.65F));
-			graphics2d.fill(new Rectangle(startX, startY,
-					game.getWidth() - 253, height));
+			graphics2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.65F));
+			graphics2d.fill(new Rectangle(startX, startY, game.getWidth() - 253, height));
 			graphics2d.setComposite(originalComposite);
 
 			/*
@@ -2828,9 +2441,9 @@ public final class VoluntaryThieve extends Script implements
 			 */
 			final int paddingSize = 2, progressWidth = 100;
 			if (experienceProgressBar == null) {
-				experienceProgressBar = new Rectangle(startX + paddingSize,
-						startY + paddingSize, progressWidth, height - 2
-								* paddingSize - 1);
+				experienceProgressBar = new Rectangle(startX + paddingSize, startY
+						+ paddingSize, progressWidth, height - 2 * paddingSize
+						- 1);
 			}
 
 			/* Draw the experience progress-bar outline on the black bar. */
@@ -2850,10 +2463,8 @@ public final class VoluntaryThieve extends Script implements
 			}
 
 			/* Draw the content of the experience progress-bar. */
-			final int innerProgressWidth = (int) Math
-					.round((percentToNextLevel / 100D * progressWidth));
-			graphics2d.setComposite(AlphaComposite.getInstance(
-					AlphaComposite.SRC_OVER, 0.50F));
+			final int innerProgressWidth = (int) Math.round((percentToNextLevel / 100D * progressWidth));
+			graphics2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.50F));
 			graphics2d.fillRect(startX + paddingSize + 1, startY + paddingSize
 					+ 1, innerProgressWidth, height - 2 * paddingSize - 2);
 			graphics2d.setComposite(originalComposite);
@@ -2878,19 +2489,15 @@ public final class VoluntaryThieve extends Script implements
 				if (isToggled) {
 
 					/* Calculate statistics common for both modes. */
-					final int pickpocketRatio = (int) Math
-							.round(pickpocketCount * 100D
-									/ (pickpocketCount + pickpocketFailCount)), pickpocketsPerHour = (int) Math
-							.round(pickpocketCount * 3600000D / timeRunning), knockoutRatio = (int) Math
-							.round(blackjackKnockCount
-									* 100D
-									/ (blackjackKnockCount + blackjackFailCount));
+					final int pickpocketRatio = (int) Math.round(pickpocketCount
+							* 100D / (pickpocketCount + pickpocketFailCount)), pickpocketsPerHour = (int) Math.round(pickpocketCount
+							* 3600000D / timeRunning), knockoutRatio = (int) Math.round(blackjackKnockCount
+							* 100D / (blackjackKnockCount + blackjackFailCount));
 
 					/* Show different strings for different modes. */
 					if (options.isBlackjacking) {
-						final int blackjacksPerHour = (int) Math
-								.round(blackjackKnockCount * 3600000D
-										/ timeRunning);
+						final int blackjacksPerHour = (int) Math.round(blackjackKnockCount
+								* 3600000D / timeRunning);
 
 						drawingString = "SL: " + pickpocketCount + " ("
 								+ pickpocketRatio + " %) | LH: "
@@ -2899,8 +2506,8 @@ public final class VoluntaryThieve extends Script implements
 								+ " %) | FK: " + blackjackFailCount + " | KH: "
 								+ blackjacksPerHour;
 					} else {
-						final int glovesPerHour = (int) Math
-								.round(glovesUsedCount * 3600000D / timeRunning);
+						final int glovesPerHour = (int) Math.round(glovesUsedCount
+								* 3600000D / timeRunning);
 
 						drawingString = "SP: "
 								+ pickpocketCount
@@ -2923,8 +2530,8 @@ public final class VoluntaryThieve extends Script implements
 
 					/* Calculate statistics that differ from other modes. */
 					final int expToNextLevel = skills.getExpToNextLevel(skill), expAtNextLevel = currentExp
-							+ expToNextLevel, timeToNextLevel = (int) Math
-							.round(expToNextLevel / expPerMillis);
+							+ expToNextLevel, timeToNextLevel = (int) Math.round(expToNextLevel
+							/ expPerMillis);
 
 					/*
 					 * Set the statistics that will be shown on the black
@@ -2940,8 +2547,7 @@ public final class VoluntaryThieve extends Script implements
 
 				/* Calculate information for display on the black bar. */
 				final int realLevel = skills.getRealLevel(skill), gainedLevels = realLevel
-						- Skills.getLevelAt(startingExp), expPerHour = (int) Math
-						.round(expPerMillis * 3600000D);
+						- Skills.getLevelAt(startingExp), expPerHour = (int) Math.round(expPerMillis * 3600000D);
 
 				/*
 				 * Set the statistics that will be shown on the black
@@ -2972,8 +2578,8 @@ public final class VoluntaryThieve extends Script implements
 
 			/* Get the information that is to be printed before finish. */
 			final long timeRunning = System.currentTimeMillis() - startingTime;
-			final int gainedExp = skills.getCurrentExp(skill) - startingExp, gainedLevels = skills
-					.getRealLevel(skill) - Skills.getLevelAt(startingExp);
+			final int gainedExp = skills.getCurrentExp(skill) - startingExp, gainedLevels = skills.getRealLevel(skill)
+					- Skills.getLevelAt(startingExp);
 
 			/*
 			 * Print the collected information on a single line, for the user to
@@ -3052,21 +2658,16 @@ public final class VoluntaryThieve extends Script implements
 		 *         <tt>false</tt>.
 		 */
 		private boolean check() {
-			String allowUpdates = configuration.get(
-					Configuration.KEY_ALLOW_UPDATES, null);
+			String allowUpdates = configuration.get(Configuration.KEY_ALLOW_UPDATES, null);
 			if (allowUpdates == null) {
-				final int answerAllowUpdates = WindowUtil.showConfirmDialog(
-						"Do you give your permission to let the script "
-								+ "check for updates?",
-						WindowUtil.YES_NO_CANCEL);
+				final int answerAllowUpdates = WindowUtil.showConfirmDialog("Do you give your permission to let the script "
+						+ "check for updates?", WindowUtil.YES_NO_CANCEL);
 
 				if (answerAllowUpdates == WindowUtil.YES_OPTION) {
-					configuration.put(Configuration.KEY_ALLOW_UPDATES,
-							String.valueOf(true));
+					configuration.put(Configuration.KEY_ALLOW_UPDATES, String.valueOf(true));
 					allowUpdates = String.valueOf(true);
 				} else if (answerAllowUpdates == WindowUtil.NO_OPTION) {
-					configuration.put(Configuration.KEY_ALLOW_UPDATES,
-							String.valueOf(false));
+					configuration.put(Configuration.KEY_ALLOW_UPDATES, String.valueOf(false));
 				}
 			}
 
@@ -3078,16 +2679,14 @@ public final class VoluntaryThieve extends Script implements
 			final double latestVersion = getVersion();
 			if (latestVersion == -1) {
 				log.warning("Unable to retrieve information about latest version.");
-			} else if (latestVersion <= VoluntaryThieve.scriptManifest
-					.version()) {
+			} else if (latestVersion <= VoluntaryThieve.scriptManifest.version()) {
 				log("Script is fully up to date (version "
 						+ VoluntaryThieve.scriptManifest.version() + ").");
 			} else {
-				final int answerUpdate = WindowUtil.showConfirmDialog(
-						"A new version (v" + latestVersion
-								+ ") is available.\n"
-								+ "Would you like to update now?",
-						WindowUtil.YES_NO_CANCEL);
+				final int answerUpdate = WindowUtil.showConfirmDialog("A new version (v"
+						+ latestVersion
+						+ ") is available.\n"
+						+ "Would you like to update now?", WindowUtil.YES_NO_CANCEL);
 				if (answerUpdate == WindowUtil.YES_OPTION) {
 					return downloadUpdate();
 				}
@@ -3104,20 +2703,16 @@ public final class VoluntaryThieve extends Script implements
 		 *         successfully; otherwise <tt>false</tt>.
 		 */
 		private boolean downloadUpdate() {
-			final String savePath = GlobalConfiguration.Paths
-					.getScriptsSourcesDirectory()
-					+ File.separator
-					+ VoluntaryThieve.class.getName();
+			final String savePath = GlobalConfiguration.Paths.getScriptsSourcesDirectory()
+					+ File.separator + VoluntaryThieve.class.getName();
 
 			BufferedReader bufferedReader = null;
 			BufferedWriter bufferedWriter = null;
 			boolean isSuccessful = false;
 
 			try {
-				final URLConnection latestVersion = new URL(URL_LATEST_VERSION)
-						.openConnection();
-				bufferedReader = new BufferedReader(new InputStreamReader(
-						latestVersion.getInputStream()));
+				final URLConnection latestVersion = new URL(URL_LATEST_VERSION).openConnection();
+				bufferedReader = new BufferedReader(new InputStreamReader(latestVersion.getInputStream()));
 				bufferedWriter = new BufferedWriter(new FileWriter(savePath
 						+ ".update"));
 
@@ -3207,10 +2802,8 @@ public final class VoluntaryThieve extends Script implements
 			BufferedReader bufferedReader = null;
 
 			try {
-				final URLConnection latestVersionCheck = new URL(
-						URL_VERSION_CHECK).openConnection();
-				bufferedReader = new BufferedReader(new InputStreamReader(
-						latestVersionCheck.getInputStream()));
+				final URLConnection latestVersionCheck = new URL(URL_VERSION_CHECK).openConnection();
+				bufferedReader = new BufferedReader(new InputStreamReader(latestVersionCheck.getInputStream()));
 				latestVersion = Double.parseDouble(bufferedReader.readLine());
 			} catch (final Exception ignored) {
 			} finally {
@@ -3230,8 +2823,7 @@ public final class VoluntaryThieve extends Script implements
 	 * The <tt>ScriptManifest</tt> for this script. Used for convenient access
 	 * to script information.
 	 */
-	private static final ScriptManifest scriptManifest = VoluntaryThieve.class
-			.getAnnotation(ScriptManifest.class);
+	private static final ScriptManifest scriptManifest = VoluntaryThieve.class.getAnnotation(ScriptManifest.class);
 
 	/**
 	 * Holds all the actions used throughout this script.
@@ -3295,10 +2887,8 @@ public final class VoluntaryThieve extends Script implements
 			camera.setPitch(true);
 			if (options.isBlackjacking) {
 				if (inventory.contains(Actions.Values.ITEM_RUBBER_BLACKJACK)) {
-					inventory.getItem(Actions.Values.ITEM_RUBBER_BLACKJACK)
-							.doAction("Wield");
-				} else if (!equipment
-						.containsAll(Actions.Values.ITEM_RUBBER_BLACKJACK)) {
+					inventory.getItem(Actions.Values.ITEM_RUBBER_BLACKJACK).doAction("Wield");
+				} else if (!equipment.containsAll(Actions.Values.ITEM_RUBBER_BLACKJACK)) {
 					log.warning("Character must have a rubber blackjack equipped before starting.");
 					return -1; /* No need to logout. */
 				}
@@ -3395,11 +2985,9 @@ public final class VoluntaryThieve extends Script implements
 				} else {
 					progress.pickpocketFailCount++;
 					if (actions.stunnedTimer == null) {
-						actions.stunnedTimer = new Timer(random(4320,
-								4765));
+						actions.stunnedTimer = new Timer(random(4320, 4765));
 					} else {
-						actions.stunnedTimer.setEndIn(Methods
-								.random(4320, 4765));
+						actions.stunnedTimer.setEndIn(Methods.random(4320, 4765));
 					}
 				}
 			} else if (message.contains("worn out")) {

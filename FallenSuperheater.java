@@ -356,8 +356,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			value = BarP - NatP - Ore1P - Ore2P;
 			name = grandExchange.getItemName(BarID);
 			JOptionPane.showMessageDialog(null, "Profit for each \"" + name
-					+ "\" is currently " + value + " GP.", "Profit checker",
-					JOptionPane.INFORMATION_MESSAGE, null);
+					+ "\" is currently " + value + " GP.", "Profit checker", JOptionPane.INFORMATION_MESSAGE, null);
 		}
 
 		private void exitButtonActionPerformed() {
@@ -418,10 +417,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 				@Override
 				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					if (loadOptions(OPTION_FILE)) {
-						JOptionPane.showMessageDialog(null,
-								"Options successfully loaded!",
-								"Option Loader",
-								JOptionPane.INFORMATION_MESSAGE, null);
+						JOptionPane.showMessageDialog(null, "Options successfully loaded!", "Option Loader", JOptionPane.INFORMATION_MESSAGE, null);
 					}
 				}
 			});
@@ -432,9 +428,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 				@Override
 				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					if (saveOptions(OPTION_FILE)) {
-						JOptionPane.showMessageDialog(null,
-								"Options successfully saved!", "Option Saver",
-								JOptionPane.INFORMATION_MESSAGE, null);
+						JOptionPane.showMessageDialog(null, "Options successfully saved!", "Option Saver", JOptionPane.INFORMATION_MESSAGE, null);
 					}
 				}
 			});
@@ -584,8 +578,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 
 			// INFO
 			TextPanel = new JTextPane();
-			TextPanel
-					.setText("Fallen's Superheater AIO - v5.99\n\n Start the script at any bank. Have natures in your inventory and a staff with unlimited fire runes equipped.\n Place the ores in your bank so that they can be seen.");
+			TextPanel.setText("Fallen's Superheater AIO - v5.99\n\n Start the script at any bank. Have natures in your inventory and a staff with unlimited fire runes equipped.\n Place the ores in your bank so that they can be seen.");
 			TextPanel.setEditable(false);
 			TextPanel.setFont(new Font("Verdana", Font.PLAIN, 12));
 			TextPanel.setBorder(new LineBorder(Color.black));
@@ -627,9 +620,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 
 		private boolean loadOptions(final Properties file) {
 			try {
-				file.load(new FileInputStream(new File(
-						GlobalConfiguration.Paths.getSettingsDirectory(),
-						"FallenSuperheater.ini")));
+				file.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSuperheater.ini")));
 			} catch (final FileNotFoundException e) {
 				return false;
 			} catch (final IOException e) {
@@ -747,11 +738,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			file.setProperty("Mouse", Mouse);
 			// Saving the file.
 			try {
-				file.store(
-						new FileWriter(new File(GlobalConfiguration.Paths
-								.getSettingsDirectory(),
-								"FallenSuperheater.ini")),
-						"Options for FallenSuperheater.");
+				file.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSuperheater.ini")), "Options for FallenSuperheater.");
 				return true;
 			} catch (final IOException e) {
 				return false;
@@ -916,8 +903,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 				DoTheMath = true;
 			}
 			if (Box1.isSelected()) {
-				FallenSuperheater.AmountOfCasts = Integer
-						.parseInt((String) GUIString2);
+				FallenSuperheater.AmountOfCasts = Integer.parseInt((String) GUIString2);
 			}
 			if (Box3.isSelected()) {
 				TakeAShot = true;
@@ -1111,8 +1097,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			return;
 		}
 		OpenedBank = 0;
-		final int ore1Count = inventory.getCount(Ore1), ore2Count = inventory
-				.getCount(Ore2), barCount = inventory.getCount(BarID);
+		final int ore1Count = inventory.getCount(Ore1), ore2Count = inventory.getCount(Ore2), barCount = inventory.getCount(BarID);
 		if (inventory.getCountExcept(Ore1, Ore2, nature, BarID) > 0) {
 			try {
 				depositAllExcept(Ore1, Ore2, nature, BarID);
@@ -1187,18 +1172,12 @@ public class FallenSuperheater extends Script implements PaintListener,
 	 */
 	public void AntiBan() {
 		try {
-			final int chckObj = Methods.random(1,
-					(15000 / FallenSuperheater.Percentage));
-			final int hover = Methods.random(1,
-					(10000 / FallenSuperheater.Percentage));
-			final int checkxp = Methods.random(1,
-					(13000 / FallenSuperheater.Percentage));
-			final int afk = Methods.random(1,
-					(10000 / FallenSuperheater.Percentage));
-			final int camerahh = Methods.random(1,
-					(2000 / FallenSuperheater.Percentage));
-			final int hoverObject = Methods.random(1,
-					(8000 / FallenSuperheater.Percentage));
+			final int chckObj = Methods.random(1, (15000 / FallenSuperheater.Percentage));
+			final int hover = Methods.random(1, (10000 / FallenSuperheater.Percentage));
+			final int checkxp = Methods.random(1, (13000 / FallenSuperheater.Percentage));
+			final int afk = Methods.random(1, (10000 / FallenSuperheater.Percentage));
+			final int camerahh = Methods.random(1, (2000 / FallenSuperheater.Percentage));
+			final int hoverObject = Methods.random(1, (8000 / FallenSuperheater.Percentage));
 
 			if (FallenSuperheater.Percentage != 0) {
 				if (chckObj == 5) {
@@ -1266,28 +1245,21 @@ public class FallenSuperheater extends Script implements PaintListener,
 					switch (Methods.random(1, 4)) {
 					case 1:
 						Status = "ANTIBAN - AFK'ing.";
-						Methods.sleep(Methods.random(FallenSuperheater.AFK1,
-								FallenSuperheater.AFK2));
+						Methods.sleep(Methods.random(FallenSuperheater.AFK1, FallenSuperheater.AFK2));
 						break;
 					case 2:
 						Status = "ANTIBAN - AFK'ing.";
-						Methods.sleep(Methods.random(
-								FallenSuperheater.AFK1 / 4,
-								FallenSuperheater.AFK2 / 10));
+						Methods.sleep(Methods.random(FallenSuperheater.AFK1 / 4, FallenSuperheater.AFK2 / 10));
 						mouse.moveRandomly(750);
-						Methods.sleep(Methods.random(FallenSuperheater.AFK1,
-								FallenSuperheater.AFK2));
+						Methods.sleep(Methods.random(FallenSuperheater.AFK1, FallenSuperheater.AFK2));
 						break;
 					case 3:
 						Status = "ANTIBAN - AFK'ing.";
 						Methods.sleep(Methods.random(0, 500));
 						mouse.moveRandomly(1000);
-						Methods.sleep(Methods.random(
-								FallenSuperheater.AFK1 / 4,
-								FallenSuperheater.AFK2 / 10));
+						Methods.sleep(Methods.random(FallenSuperheater.AFK1 / 4, FallenSuperheater.AFK2 / 10));
 						mouse.moveRandomly(1500);
-						Methods.sleep(Methods.random(FallenSuperheater.AFK1,
-								FallenSuperheater.AFK2));
+						Methods.sleep(Methods.random(FallenSuperheater.AFK1, FallenSuperheater.AFK2));
 						break;
 					}
 				} else if (camerahh == 5) {
@@ -1402,8 +1374,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 		if (game.getCurrentTab() != Game.TAB_INVENTORY) {
 			game.openTab(Game.TAB_INVENTORY);
 		}
-		int ore1Count = inventory.getCount(Ore1), ore2Count = inventory
-				.getCount(Ore2);
+		int ore1Count = inventory.getCount(Ore1), ore2Count = inventory.getCount(Ore2);
 		if (ore1Count < 1) {
 			ore1Count = inventory.getCount(Ore1);
 		}
@@ -1453,8 +1424,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			return;
 		}
 		OpenedBank = 0;
-		final int ore1Count = inventory.getCount(Ore1), ore2Count = inventory
-				.getCount(Ore2);
+		final int ore1Count = inventory.getCount(Ore1), ore2Count = inventory.getCount(Ore2);
 
 		if (inventory.getCountExcept(nature, cBag, Ore1, Ore2) > 0) {
 			try {
@@ -1549,8 +1519,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 						waitForDepositedItem(Methods.random(2000, 3000));
 					} else {
 						if (WD(Ore1, Ore1WD)) {
-							waitForWithdrawnItem(Ore1,
-									Methods.random(2000, 3000));
+							waitForWithdrawnItem(Ore1, Methods.random(2000, 3000));
 						}
 					}
 
@@ -1577,8 +1546,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 							waitForDepositedItem(Methods.random(2000, 3000));
 						} else {
 							if (WD(Ore2, Ore2WD)) {
-								waitForWithdrawnItem(Ore2,
-										Methods.random(2000, 3000));
+								waitForWithdrawnItem(Ore2, Methods.random(2000, 3000));
 							}
 						}
 
@@ -1641,12 +1609,12 @@ public class FallenSuperheater extends Script implements PaintListener,
 	public boolean depositAllExcept(final int... items) {
 		if (bank.isOpen() || bank.isDepositOpen()) {
 			boolean deposit = true;
-			int invCount = bank.isOpen() ? inventory.getCount(true) : bank
-					.getBoxCount();
-			outer: for (int i = 0; i < 28; i++) {
-				final RSComponent item = bank.isOpen() ? inventory.getItemAt(i)
-						.getComponent() : interfaces.get(11).getComponent(17)
-						.getComponent(i);
+			int invCount = bank.isOpen() ? inventory.getCount(true)
+					: bank.getBoxCount();
+			outer:
+			for (int i = 0; i < 28; i++) {
+				final RSComponent item = bank.isOpen() ? inventory.getItemAt(i).getComponent()
+						: interfaces.get(11).getComponent(17).getComponent(i);
 				if (item != null && item.getComponentID() != -1) {
 					for (final int id : items) {
 						if (item.getComponentID() == id) {
@@ -1654,12 +1622,11 @@ public class FallenSuperheater extends Script implements PaintListener,
 						}
 					}
 					for (int tries = 0; tries < 5; tries++) {
-						if (item.doAction(inventory.getCount(true,
-								item.getComponentID()) > 1 ? "Deposit-All"
+						if (item.doAction(inventory.getCount(true, item.getComponentID()) > 1 ? "Deposit-All"
 								: "Deposit")) {
 							waitForDepositedItem(Methods.random(2000, 3000));
-							final int cInvCount = bank.isOpen() ? inventory
-									.getCount(true) : bank.getBoxCount();
+							final int cInvCount = bank.isOpen() ? inventory.getCount(true)
+									: bank.getBoxCount();
 							if (cInvCount < invCount) {
 								invCount = cInvCount;
 								continue outer;
@@ -1684,8 +1651,8 @@ public class FallenSuperheater extends Script implements PaintListener,
 					if (i > 0 && i < h - 1) {
 						j = h - 1;
 					}
-					final RSTile tile = new RSTile(start.getX() - offset + i,
-							start.getY() - offset + j);
+					final RSTile tile = new RSTile(start.getX() - offset + i, start.getY()
+							- offset + j);
 					final RSObject objectToList = objects.getTopAt(tile);
 					if (objectToList != null
 							&& calc.tileOnScreen(objectToList.getLocation())) {
@@ -1698,8 +1665,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			return null;
 		}
 		if (possibleTiles.size() > 0 && possibleTiles != null) {
-			final RSTile objectLoc = possibleTiles.get(randGenerator(0,
-					possibleTiles.size()));
+			final RSTile objectLoc = possibleTiles.get(randGenerator(0, possibleTiles.size()));
 			final Point objectPoint = calc.tileToScreen(objectLoc);
 			if (objectPoint != null) {
 				try {
@@ -1732,8 +1698,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 	 */
 	private boolean failSafes() {
 		if (bank.isOpen()) { // Rewards box.
-			if (inventory.containsOneOf(BOX_ID, BOOK_KNOWLEDGE_ID, LAMP_ID,
-					MYSTERY_BOX_ID)) {
+			if (inventory.containsOneOf(BOX_ID, BOOK_KNOWLEDGE_ID, LAMP_ID, MYSTERY_BOX_ID)) {
 				bank.close();
 				Methods.sleep(Methods.random(1000, 1200));
 				log("Rewards-Box failsafed.");
@@ -1802,14 +1767,11 @@ public class FallenSuperheater extends Script implements PaintListener,
 			R = i;
 			P = p;
 			DRAW = true;
-			Circle = new Ellipse2D.Double((p.getX() - i / 2),
-					(p.getY() - i / 2), i, i);
-			final RSComponent[] slots = inventory.getInterface()
-					.getComponents();
+			Circle = new Ellipse2D.Double((p.getX() - i / 2), (p.getY() - i / 2), i, i);
+			final RSComponent[] slots = inventory.getInterface().getComponents();
 			for (final RSComponent slot : slots) {
 				if (Circle.contains(slot.getCenter())) {
-					final RSItem item = inventory.getItemAt(slot
-							.getComponentIndex());
+					final RSItem item = inventory.getItemAt(slot.getComponentIndex());
 					if (item != null) {
 						if (item.getID() == ItemID) {
 							Rect = slot.getArea();
@@ -1831,8 +1793,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			} else if (!Continue && BankTime) {
 				return State.OPENBANK;
 			} else if (!DirectHeat && !Continue) {
-				final int ore1Count = inventory.getCount(Ore1), ore2Count = inventory
-						.getCount(Ore2);
+				final int ore1Count = inventory.getCount(Ore1), ore2Count = inventory.getCount(Ore2);
 				if (ore1Count < 1 || ore2Count < Ore2PerSpell
 						|| ore1Count > Ore1InvAm || ore2Count > Ore2InvAm) {
 					return State.OPENBANK;
@@ -2140,15 +2101,15 @@ public class FallenSuperheater extends Script implements PaintListener,
 			startLevelS = skills.getCurrentLevel(Skills.SMITHING);
 		}
 		XPGainedMagic = skills.getCurrentExp(Skills.MAGIC) - startXPM;
-		final int XPHRM = (int) (XPGainedMagic * 3600000D / (System
-				.currentTimeMillis() - startTime - pauseTimer));
+		final int XPHRM = (int) (XPGainedMagic * 3600000D / (System.currentTimeMillis()
+				- startTime - pauseTimer));
 		XPGainedSmithing = skills.getCurrentExp(Skills.SMITHING) - startXPS;
 		BarCounter = XPGainedMagic / 53;
-		final int XPHRS = (int) (XPGainedSmithing * 3600000D / (System
-				.currentTimeMillis() - startTime - pauseTimer));
+		final int XPHRS = (int) (XPGainedSmithing * 3600000D / (System.currentTimeMillis()
+				- startTime - pauseTimer));
 		final int profit = BarPrice - Ore1Price - Ore2Price - naturePrice;
-		final int ProfitHR = (int) (profit * BarCounter * 3600000D / (System
-				.currentTimeMillis() - startTime - pauseTimer));
+		final int ProfitHR = (int) (profit * BarCounter * 3600000D / (System.currentTimeMillis()
+				- startTime - pauseTimer));
 		levelsGainedM = skills.getCurrentLevel(Skills.MAGIC) - startLevelM;
 		levelsGainedS = skills.getCurrentLevel(Skills.SMITHING) - startLevelS;
 		currentLevelM = skills.getCurrentLevel(Skills.MAGIC);
@@ -2174,10 +2135,8 @@ public class FallenSuperheater extends Script implements PaintListener,
 		// Mouse in general.
 		final Point loc = mouse.getLocation();
 		g.setColor(new Color(90, 90, 255, 180));
-		g.fillRoundRect((int) loc.getX() - 10, (int) loc.getY() - 1, 21, 3, 3,
-				3);
-		g.fillRoundRect((int) loc.getX() - 1, (int) loc.getY() - 10, 3, 21, 3,
-				3);
+		g.fillRoundRect((int) loc.getX() - 10, (int) loc.getY() - 1, 21, 3, 3, 3);
+		g.fillRoundRect((int) loc.getX() - 1, (int) loc.getY() - 10, 3, 21, 3, 3);
 		// TestRec
 		if (testRec != null) {
 			g.setColor(Color.GREEN);
@@ -2207,8 +2166,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			if (Status != "Loading...") {
 				g.setFont(new Font("Verdana", 0, 13));
 				g.setColor(Color.WHITE);
-				g.drawString("" + hours + ":" + minutes + ":" + seconds + ".",
-						80, 437);
+				g.drawString("" + hours + ":" + minutes + ":" + seconds + ".", 80, 437);
 			} else {
 				g.setFont(new Font("Verdana", 0, 13));
 				g.setColor(Color.WHITE);
@@ -2236,9 +2194,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			g.setColor(Color.CYAN);
 			g.drawString("XP Gained: " + XPGainedMagic + " (" + XPHRM / 1000
 					+ "k Xp/h)", 53, 391);
-			g.drawString(
-					"Level: " + currentLevelM + " (" + levelsGainedM + ")", 53,
-					404);
+			g.drawString("Level: " + currentLevelM + " (" + levelsGainedM + ")", 53, 404);
 			// Smith
 			g.setFont(new Font("Verdana", 0, 9));
 			g.setColor(new Color(0, 0, 0));
@@ -2254,9 +2210,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 
 			g.drawString("XP Gained: " + XPGainedSmithing + " (" + XPHRS / 1000
 					+ "k Xp/h)", 262, 391);
-			g.drawString(
-					"Level: " + currentLevelS + " (" + levelsGainedS + ")",
-					262, 404);
+			g.drawString("Level: " + currentLevelS + " (" + levelsGainedS + ")", 262, 404);
 			// PROFIT
 			g.setColor(Color.YELLOW);
 			if (DoTheMath) {
@@ -2271,8 +2225,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 				g.setFont(new Font("Verdana", 0, 9));
 				g.setColor(Color.RED);
 				g.drawString("Casts left: "
-						+ (FallenSuperheater.AmountOfCasts - BarCounter), 390,
-						15);
+						+ (FallenSuperheater.AmountOfCasts - BarCounter), 390, 15);
 			}
 		}
 		// OPTION 2
@@ -2286,8 +2239,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			if (Status != "Loading...") {
 				g.setFont(new Font("Verdana", 0, 13));
 				g.setColor(Color.WHITE);
-				g.drawString("" + hours + ":" + minutes + ":" + seconds + ".",
-						89, 294);
+				g.drawString("" + hours + ":" + minutes + ":" + seconds + ".", 89, 294);
 			} else {
 				g.setFont(new Font("Verdana", 0, 13));
 				g.setColor(Color.WHITE);
@@ -2312,9 +2264,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			g.setColor(Color.CYAN);
 			g.drawString("XP Gained: " + XPGainedMagic + " (" + XPHRM / 1000
 					+ "k Xp/h)", 62, 248);
-			g.drawString(
-					"Level: " + currentLevelM + " (" + levelsGainedM + ")", 62,
-					261);
+			g.drawString("Level: " + currentLevelM + " (" + levelsGainedM + ")", 62, 261);
 			// Smith
 			g.setFont(new Font("Verdana", 0, 9));
 			g.setColor(new Color(0, 0, 0));
@@ -2330,9 +2280,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 
 			g.drawString("XP Gained: " + XPGainedSmithing + " (" + XPHRS / 1000
 					+ "k Xp/h)", 271, 248);
-			g.drawString(
-					"Level: " + currentLevelS + " (" + levelsGainedS + ")",
-					271, 261);
+			g.drawString("Level: " + currentLevelS + " (" + levelsGainedS + ")", 271, 261);
 			// PROFIT
 			g.setColor(Color.YELLOW);
 			if (DoTheMath) {
@@ -2347,8 +2295,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 				g.setFont(new Font("Verdana", 0, 9));
 				g.setColor(Color.RED);
 				g.drawString("Casts left: "
-						+ (FallenSuperheater.AmountOfCasts - BarCounter), 390,
-						15);
+						+ (FallenSuperheater.AmountOfCasts - BarCounter), 390, 15);
 			}
 		}
 		if (MTTNL) {
@@ -2376,8 +2323,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			} catch (final Exception e) {
 				g.drawString("Next level in: -1:-1:-1", X + 8, Y + 11);
 			}
-			g.drawString("Casts to next level: " + XPToLevelM / 53, X + 8,
-					Y + 22);
+			g.drawString("Casts to next level: " + XPToLevelM / 53, X + 8, Y + 22);
 		}
 		if (STTNL) {
 			final int X = (int) mouseSpot.getX();
@@ -2403,8 +2349,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			} catch (final Exception e) {
 				g.drawString("Next level in: -1:-1:-1", X + 8, Y + 11);
 			}
-			g.drawString("Casts to next level: " + (int) (XPToLevelS / BarEXP),
-					X + 8, Y + 22);
+			g.drawString("Casts to next level: " + (int) (XPToLevelS / BarEXP), X + 8, Y + 22);
 		}
 		EXP1 = XPGainedMagic;
 		if (EXP1 > EXP2) {
@@ -2420,9 +2365,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 	public boolean onStart() {
 		Status = "Loading...";
 		try {
-			BKG = ImageIO
-					.read(new URL(
-							"http://a.imageshack.us/img14/5392/superheater50paint.png"));
+			BKG = ImageIO.read(new URL("http://a.imageshack.us/img14/5392/superheater50paint.png"));
 		} catch (final java.io.IOException e) {
 			e.printStackTrace();
 		}
@@ -2547,9 +2490,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 		}
 		if (!contained) {
 			if (browser > 4) {
-				if (magic.getInterface()
-						.getComponent(Magic.INTERFACE_SHOW_SKILL_SPELLS)
-						.doClick()) {
+				if (magic.getInterface().getComponent(Magic.INTERFACE_SHOW_SKILL_SPELLS).doClick()) {
 					log("Show skill-spells enabled.");
 					browser = 0;
 					Methods.sleep(Methods.random(1500, 2000));

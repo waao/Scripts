@@ -59,16 +59,13 @@ public class AionAirCrafter extends Script implements PaintListener,
 		public void process() {
 			if (bank.isOpen()) {
 				if (inventory.contains(Constants.ITEM_AIR_RUNE)) {
-					if (inventory.containsOneOf(Constants.ITEM_AIR_TALISMAN,
-							Constants.ITEM_RUNE_ESS)) {
-						bank.depositAllExcept(Constants.ITEM_AIR_TALISMAN,
-								Constants.ITEM_RUNE_ESS);
+					if (inventory.containsOneOf(Constants.ITEM_AIR_TALISMAN, Constants.ITEM_RUNE_ESS)) {
+						bank.depositAllExcept(Constants.ITEM_AIR_TALISMAN, Constants.ITEM_RUNE_ESS);
 					} else {
 						bank.depositAll();
 					}
 				} else if (!inventory.contains(Constants.ITEM_RUNE_ESS)) {
-					final int runeCount = bank
-							.getCount(Constants.ITEM_RUNE_ESS);
+					final int runeCount = bank.getCount(Constants.ITEM_RUNE_ESS);
 					if (runeCount < 1) {
 						log("You are out of rune essences!");
 					} else {
@@ -85,8 +82,7 @@ public class AionAirCrafter extends Script implements PaintListener,
 							waitToMove(Methods.random(600, 900));
 							waitToStop();
 						}
-						waitForIface(Bank.INTERFACE_BANK,
-								Methods.random(600, 800));
+						waitForIface(Bank.INTERFACE_BANK, Methods.random(600, 800));
 					} else {
 						camera.turnTo(banker);
 						if (!banker.isOnScreen()) {
@@ -114,8 +110,7 @@ public class AionAirCrafter extends Script implements PaintListener,
 
 		int NPC_BANKER = 5912;
 
-		double VERSION = AionAirCrafter.class.getAnnotation(
-				ScriptManifest.class).version();
+		double VERSION = AionAirCrafter.class.getAnnotation(ScriptManifest.class).version();
 
 		Filter<RSNPC> FILTER_NPC = new Filter<RSNPC>() {
 			@Override
@@ -128,17 +123,13 @@ public class AionAirCrafter extends Script implements PaintListener,
 				new RSTile(3159, 3423), new RSTile(3147, 3415),
 				new RSTile(3135, 3407), new RSTile(3129, 3405) };
 
-		RSArea AREA_ALTAR = new RSArea(new RSTile(2835, 4823), new RSTile(2851,
-				4843));
+		RSArea AREA_ALTAR = new RSArea(new RSTile(2835, 4823), new RSTile(2851, 4843));
 
-		RSArea AREA_BANK = new RSArea(new RSTile(3178, 3431), new RSTile(3195,
-				3447));
+		RSArea AREA_BANK = new RSArea(new RSTile(3178, 3431), new RSTile(3195, 3447));
 
-		RSArea AREA_RUINS = new RSArea(new RSTile(3122, 3401), new RSTile(3132,
-				3409));
+		RSArea AREA_RUINS = new RSArea(new RSTile(3122, 3401), new RSTile(3132, 3409));
 
-		RSArea AREA_MUSICIAN = new RSArea(new RSTile(3149, 3419), new RSTile(
-				3157, 3424));
+		RSArea AREA_MUSICIAN = new RSArea(new RSTile(3149, 3419), new RSTile(3157, 3424));
 	}
 
 	public abstract class ObjectAction extends Action {
@@ -196,12 +187,9 @@ public class AionAirCrafter extends Script implements PaintListener,
 		public void process() {
 			if (walking.getEnergy() < 20) {
 				if (canRest() && inMusician()) {
-					final RSTilePath tilePath = walking
-							.newTilePath(Constants.AREA_MUSICIAN.getTileArray());
+					final RSTilePath tilePath = walking.newTilePath(Constants.AREA_MUSICIAN.getTileArray());
 					if (!tilePath.traverse()) {
-						walking.newTilePath(
-								new RSTile[] { Constants.AREA_MUSICIAN
-										.getCentralTile() }).traverse();
+						walking.newTilePath(new RSTile[] { Constants.AREA_MUSICIAN.getCentralTile() }).traverse();
 					}
 					waitToMove(Methods.random(600, 900));
 					walking.rest(100);
@@ -256,8 +244,8 @@ public class AionAirCrafter extends Script implements PaintListener,
 		case 34:
 		case 37:
 		case 40:
-			camera.setPitch(camera.getPitch() >= Methods.random(65, 101) ? Methods
-					.random(0, 61) : Methods.random(61, 101));
+			camera.setPitch(camera.getPitch() >= Methods.random(65, 101) ? Methods.random(0, 61)
+					: Methods.random(61, 101));
 		}
 	}
 
@@ -337,8 +325,7 @@ public class AionAirCrafter extends Script implements PaintListener,
 			if (model != null) {
 				for (final Polygon pol : model.getTriangles()) {
 					for (int i = 0; i < pol.npoints; i++) {
-						final Point p = new Point(pol.xpoints[i],
-								pol.ypoints[i]);
+						final Point p = new Point(pol.xpoints[i], pol.ypoints[i]);
 						if (calc.pointOnScreen(p)) {
 							return p;
 						}
@@ -442,17 +429,14 @@ public class AionAirCrafter extends Script implements PaintListener,
 			g.drawString("Aion's Air Crafter v" + getVersion(), 65, 192);
 			g.drawString("Runtime: " + getRuntime(), 13, 206);
 
-			g.drawString("Crafted " + format(getRunesCrafted()) + " air runes",
-					13, 225);
+			g.drawString("Crafted " + format(getRunesCrafted()) + " air runes", 13, 225);
 			g.drawString("Gained " + format(getExpGained()) + " exp", 13, 239);
-			g.drawString("Runes/Hour: " + format((int) getRunesHour()), 140,
-					225);
+			g.drawString("Runes/Hour: " + format((int) getRunesHour()), 140, 225);
 			g.drawString("Exp/Hour: " + format((int) getExpHour()), 140, 239);
 
 			final int lvlGained = getLvlGained();
 			String text = lvlGained == 0 ? "runecrafting" : "";
-			g.drawString("Current " + text + " level: " + getRunecraftLvl(),
-					13, 258);
+			g.drawString("Current " + text + " level: " + getRunecraftLvl(), 13, 258);
 			if (lvlGained != 0) {
 				text = lvlGained == 1 ? "" : "s";
 				g.drawString("Gained " + lvlGained + " level" + text, 140, 258);
@@ -508,8 +492,7 @@ public class AionAirCrafter extends Script implements PaintListener,
 			public void process() {
 				if (inventory.contains(Constants.ITEM_AIR_TALISMAN)) {
 					if (!inventory.isItemSelected()) {
-						inventory.getItem(Constants.ITEM_AIR_TALISMAN).doClick(
-								true);
+						inventory.getItem(Constants.ITEM_AIR_TALISMAN).doClick(true);
 					} else {
 						final RSItem selItem = inventory.getSelectedItem();
 						if (selItem.getID() != Constants.ITEM_AIR_TALISMAN) {
@@ -517,8 +500,7 @@ public class AionAirCrafter extends Script implements PaintListener,
 							return;
 						}
 					}
-					final RSObject obj = objects
-							.getNearest(Constants.OBJECT_ALTAR);
+					final RSObject obj = objects.getNearest(Constants.OBJECT_ALTAR);
 					if (obj != null) {
 						final Point toClick = getScreenPoint(obj);
 						if (toClick.x != -1 && toClick.y != -1) {
@@ -564,8 +546,7 @@ public class AionAirCrafter extends Script implements PaintListener,
 				Methods.sleep(200, 400);
 				waitForAnim(Methods.random(900, 1200));
 				if (Methods.random(1, 6) == 3) {
-					final RSObject portal = objects
-							.getNearest(Constants.OBJECT_PORTAL);
+					final RSObject portal = objects.getNearest(Constants.OBJECT_PORTAL);
 					if (portal != null) {
 						final Point toClick = getScreenPoint(portal);
 						if (toClick.x != -1 && toClick.y != -1) {
@@ -613,8 +594,7 @@ public class AionAirCrafter extends Script implements PaintListener,
 			}
 		});
 
-		actions.add(new WalkToArea(walking.newTilePath(Constants.PATH)
-				.reverse()) {
+		actions.add(new WalkToArea(walking.newTilePath(Constants.PATH).reverse()) {
 
 			@Override
 			protected boolean canRest() {

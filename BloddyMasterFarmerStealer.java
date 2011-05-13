@@ -182,23 +182,23 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 			label1.setFont(new Font("Lucida Calligraphy", Font.BOLD, 13));
 			label1.setForeground(Color.red);
 			contentPane.add(label1);
-			label1.setBounds(new Rectangle(new Point(5, 10), label1
-					.getPreferredSize()));
+			label1.setBounds(new Rectangle(new Point(5, 10), label1.getPreferredSize()));
 
 			// ---- button2 ----
 			button2.setText("Cancel");
 			button2.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(final ActionEvent e) {
 					button2ActionPerformed(e);
 				}
 			});
 			contentPane.add(button2);
-			button2.setBounds(new Rectangle(new Point(140, 210), button2
-					.getPreferredSize()));
+			button2.setBounds(new Rectangle(new Point(140, 210), button2.getPreferredSize()));
 
 			// ---- button1 ----
 			button1.setText("Start");
 			button1.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(final ActionEvent e) {
 					button1ActionPerformed(e);
 					button1ActionPerformed(e);
@@ -218,27 +218,23 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 					label2.setText("Start in the draynor bank with all your seeds \n");
 					label2.setFont(new Font("Comic Sans MS", Font.PLAIN, 11));
 					panel1.add(label2);
-					label2.setBounds(new Rectangle(new Point(5, 5), label2
-							.getPreferredSize()));
+					label2.setBounds(new Rectangle(new Point(5, 5), label2.getPreferredSize()));
 
 					// ---- label5 ----
 					label5.setText("and food in one tab.");
 					label5.setFont(new Font("Comic Sans MS", Font.PLAIN, 11));
 					panel1.add(label5);
-					label5.setBounds(new Rectangle(new Point(5, 25), label5
-							.getPreferredSize()));
+					label5.setBounds(new Rectangle(new Point(5, 25), label5.getPreferredSize()));
 
 					// ---- label6 ----
 					label6.setText("Also make sure you fill in the right food ID.");
 					label6.setFont(new Font("Comic Sans MS", Font.PLAIN, 11));
 					panel1.add(label6);
-					label6.setBounds(new Rectangle(new Point(5, 45), label6
-							.getPreferredSize()));
+					label6.setBounds(new Rectangle(new Point(5, 45), label6.getPreferredSize()));
 
 					// ---- checkBox2 ----
 					checkBox2.setText("Drop junkseeds");
-					checkBox2
-							.setFont(new Font("Comic Sans MS", Font.PLAIN, 11));
+					checkBox2.setFont(new Font("Comic Sans MS", Font.PLAIN, 11));
 					checkBox2.setSelected(true);
 					checkBox2.addActionListener(new ActionListener() {
 						public void actionPerformed(final ActionEvent e) {
@@ -246,8 +242,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 						}
 					});
 					panel1.add(checkBox2);
-					checkBox2.setBounds(new Rectangle(new Point(3, 60),
-							checkBox2.getPreferredSize()));
+					checkBox2.setBounds(new Rectangle(new Point(3, 60), checkBox2.getPreferredSize()));
 
 					// ---- label4 ----
 					label4.setText("Food ID*:");
@@ -258,24 +253,20 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 					// ---- textField1 ----
 					textField1.setText("ENTER ID HERE");
 					panel1.add(textField1);
-					textField1.setBounds(140, 100, 90,
-							textField1.getPreferredSize().height);
+					textField1.setBounds(140, 100, 90, textField1.getPreferredSize().height);
 
 					// ---- label3 ----
 					label3.setText("*In RSBot client go to: View > Inventory");
-					label3.setFont(label3.getFont().deriveFont(
-							label3.getFont().getStyle() | Font.ITALIC,
-							label3.getFont().getSize() - 2f));
+					label3.setFont(label3.getFont().deriveFont(label3.getFont().getStyle()
+							| Font.ITALIC, label3.getFont().getSize() - 2f));
 					panel1.add(label3);
-					label3.setBounds(new Rectangle(new Point(10, 125), label3
-							.getPreferredSize()));
+					label3.setBounds(new Rectangle(new Point(10, 125), label3.getPreferredSize()));
 
 					// ---- label10 ----
 					label10.setText("Withdraw food:");
 					label10.setFont(new Font("Comic Sans MS", Font.PLAIN, 11));
 					panel1.add(label10);
-					label10.setBounds(new Rectangle(new Point(4, 85), label10
-							.getPreferredSize()));
+					label10.setBounds(new Rectangle(new Point(4, 85), label10.getPreferredSize()));
 
 					// ---- comboBox1 ----
 					comboBox1.setModel(new DefaultComboBoxModel(new String[] {
@@ -286,14 +277,12 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 						}
 					});
 					panel1.add(comboBox1);
-					comboBox1.setBounds(140, 80, 90,
-							comboBox1.getPreferredSize().height);
+					comboBox1.setBounds(140, 80, 90, comboBox1.getPreferredSize().height);
 
 					{ // compute preferred size
 						final Dimension preferredSize = new Dimension();
 						for (int i = 0; i < panel1.getComponentCount(); i++) {
-							final Rectangle bounds = panel1.getComponent(i)
-									.getBounds();
+							final Rectangle bounds = panel1.getComponent(i).getBounds();
 							preferredSize.width = Math.max(bounds.x
 									+ bounds.width, preferredSize.width);
 							preferredSize.height = Math.max(bounds.y
@@ -320,15 +309,13 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 						}
 					});
 					panel2.add(checkBox1);
-					checkBox1.setBounds(new Rectangle(new Point(5, 10),
-							checkBox1.getPreferredSize()));
+					checkBox1.setBounds(new Rectangle(new Point(5, 10), checkBox1.getPreferredSize()));
 
 					// ---- textField2 ----
 					textField2.setText("0");
 					textField2.setEnabled(false);
 					panel2.add(textField2);
-					textField2.setBounds(140, 12, 40,
-							textField2.getPreferredSize().height);
+					textField2.setBounds(140, 12, 40, textField2.getPreferredSize().height);
 
 					// ---- checkBox3 ----
 					checkBox3.setText("After:");
@@ -338,36 +325,31 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 						}
 					});
 					panel2.add(checkBox3);
-					checkBox3.setBounds(new Rectangle(new Point(5, 45),
-							checkBox3.getPreferredSize()));
+					checkBox3.setBounds(new Rectangle(new Point(5, 45), checkBox3.getPreferredSize()));
 
 					// ---- label7 ----
 					label7.setText("H:");
 					label7.setEnabled(false);
 					panel2.add(label7);
-					label7.setBounds(new Rectangle(new Point(30, 75), label7
-							.getPreferredSize()));
+					label7.setBounds(new Rectangle(new Point(30, 75), label7.getPreferredSize()));
 
 					// ---- label8 ----
 					label8.setText("M:");
 					label8.setEnabled(false);
 					panel2.add(label8);
-					label8.setBounds(new Rectangle(new Point(95, 75), label8
-							.getPreferredSize()));
+					label8.setBounds(new Rectangle(new Point(95, 75), label8.getPreferredSize()));
 
 					// ---- label9 ----
 					label9.setText("S:");
 					label9.setEnabled(false);
 					panel2.add(label9);
-					label9.setBounds(new Rectangle(new Point(165, 75), label9
-							.getPreferredSize()));
+					label9.setBounds(new Rectangle(new Point(165, 75), label9.getPreferredSize()));
 
 					// ---- textField3 ----
 					textField3.setEnabled(false);
 					textField3.setText("0");
 					panel2.add(textField3);
-					textField3.setBounds(50, 74, 30,
-							textField3.getPreferredSize().height);
+					textField3.setBounds(50, 74, 30, textField3.getPreferredSize().height);
 
 					// ---- textField4 ----
 					textField4.setEnabled(false);
@@ -384,8 +366,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 					{ // compute preferred size
 						final Dimension preferredSize = new Dimension();
 						for (int i = 0; i < panel2.getComponentCount(); i++) {
-							final Rectangle bounds = panel2.getComponent(i)
-									.getBounds();
+							final Rectangle bounds = panel2.getComponent(i).getBounds();
 							preferredSize.width = Math.max(bounds.x
 									+ bounds.width, preferredSize.width);
 							preferredSize.height = Math.max(bounds.y
@@ -414,6 +395,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 	public class cameraHeight extends Thread {
 
 		private boolean isActive = false;
+
 		@Override
 		public void run() {
 			while (isActive) {
@@ -430,8 +412,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 						camera.setPitch(Methods.random(20, 100));
 					}
 					try {
-						Thread.sleep(Methods.random(Methods.random(1000, 5000),
-								Methods.random(11000, 17000)));
+						Thread.sleep(Methods.random(Methods.random(1000, 5000), Methods.random(11000, 17000)));
 					} catch (final Exception e) {
 					}
 				}
@@ -442,6 +423,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 	public class cameraRotate extends Thread {
 
 		private boolean isActive = false;
+
 		@Override
 		public void run() {
 			while (isActive) {
@@ -458,8 +440,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 						camera.setAngle(Methods.random(0, 360));
 					}
 					try {
-						Thread.sleep(Methods.random(Methods.random(1000, 5000),
-								Methods.random(11000, 17000)));
+						Thread.sleep(Methods.random(Methods.random(1000, 5000), Methods.random(11000, 17000)));
 					} catch (final Exception e) {
 					}
 				}
@@ -471,8 +452,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 		new BloddyMasterFarmerStealer();
 	}
 
-	final ScriptManifest properties = getClass().getAnnotation(
-			ScriptManifest.class);
+	final ScriptManifest properties = getClass().getAnnotation(ScriptManifest.class);
 	BufferedImage normal = null;
 	BufferedImage clicked = null;
 	public int farmerID = 2234;
@@ -542,58 +522,47 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 				Methods.sleep(Methods.random(2200, 2700));
 			}
 			if (randomNumber == 2) {
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 				Methods.sleep(Methods.random(200, 400));
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 3) {
 				camera.setAngle(Methods.random(1, 360));
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 4) {
 				Methods.sleep(Methods.random(100, 200));
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 				camera.setAngle(Methods.random(1, 360));
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 6) {
 				camera.setAngle(Methods.random(1, 360));
 			}
 			if (randomNumber == 7) {
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 8) {
 				Methods.sleep(Methods.random(100, 200));
 				mouse.move(631, 278);
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 				Methods.sleep(Methods.random(200, 500));
 				if (randomNumber == 9) {
 					Methods.sleep(Methods.random(100, 200));
-					mouse.move(Methods.random(50, 700),
-							Methods.random(50, 450), 2, 2);
+					mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 					if (randomNumber == 10) {
-						mouse.move(Methods.random(50, 700),
-								Methods.random(50, 450), 2, 2);
+						mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 					}
 					if (randomNumber == 11) {
 						camera.setAngle(Methods.random(1, 360));
-						mouse.move(Methods.random(50, 700),
-								Methods.random(50, 450), 2, 2);
+						mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 					}
 					if (randomNumber == 12) {
 						game.openTab(Game.TAB_STATS);
 						Methods.sleep(Methods.random(1000, 2000));
 					}
 					if (randomNumber == 13) {
-						mouse.move(Methods.random(50, 700),
-								Methods.random(50, 450), 2, 2);
+						mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 						camera.setAngle(Methods.random(1, 360));
 					}
 
@@ -609,26 +578,21 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 			if (randomNumber == 1) {
 			}
 			if (randomNumber == 2) {
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 				Methods.sleep(Methods.random(200, 300));
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 3) {
 			}
 			if (randomNumber == 4) {
 				camera.setAngle(Methods.random(1, 360));
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 6) {
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 7) {
-				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2,
-						2);
+				mouse.move(Methods.random(50, 700), Methods.random(50, 450), 2, 2);
 			}
 			if (randomNumber == 8) {
 				camera.setAngle(Methods.random(1, 360));
@@ -714,8 +678,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 					if (walking.getEnergy() == Methods.random(60, 100)) {
 						// setRun(true);
 					}
-					if (calc.distanceTo(walking.getDestination()) < Methods
-							.random(5, 12)
+					if (calc.distanceTo(walking.getDestination()) < Methods.random(5, 12)
 							|| calc.distanceTo(walking.getDestination()) > 40) {
 						if (!walking.walkPathMM(farmerToBank)) {
 							walking.walkTo(walking.randomize(bankTile, 2, 2));
@@ -733,8 +696,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 				openBank();
 				bank();
 			} else if (!atBank()) {
-				if (calc.distanceTo(walking.getDestination()) < Methods.random(
-						5, 12)
+				if (calc.distanceTo(walking.getDestination()) < Methods.random(5, 12)
 						|| calc.distanceTo(walking.getDestination()) > 40) {
 					if (!walking.walkPathMM(farmerToBank)) {
 						walking.walkTo(walking.randomize(bankTile, 2, 2));
@@ -772,8 +734,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 	private int getCurrentLifepoint() {
 		if (interfaces.get(748).getComponent(8).isValid()) {
 			if (interfaces.get(748).getComponent(8).getText() != null) {
-				HP = Integer.parseInt(interfaces.get(748).getComponent(8)
-						.getText());
+				HP = Integer.parseInt(interfaces.get(748).getComponent(8).getText());
 			} else {
 				log.severe("Unable to get current lifepoints.");
 			}
@@ -808,24 +769,18 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 					if (inventory.contains(FOODID)) {
 						if (calc.distanceTo(npcs.getNearest("Master Farmer")) <= 5) {
 							pickPocket();
-						} else if (calc.distanceTo(npcs
-								.getNearest("Master Farmer")) >= 6) {
+						} else if (calc.distanceTo(npcs.getNearest("Master Farmer")) >= 6) {
 							status = "Walking to Farmer";
-							walking.walkTo(walking.randomize(
-									npcs.getNearest("Master Farmer")
-											.getLocation(), 1, 1));
+							walking.walkTo(walking.randomize(npcs.getNearest("Master Farmer").getLocation(), 1, 1));
 							return Methods.random(1500, 1700);
 						}
 					}
 				} else {
 					if (calc.distanceTo(npcs.getNearest("Master Farmer")) <= 5) {
 						pickPocket();
-					} else if (calc
-							.distanceTo(npcs.getNearest("Master Farmer")) >= 6) {
+					} else if (calc.distanceTo(npcs.getNearest("Master Farmer")) >= 6) {
 						status = "walking to Farmer";
-						walking.walkTo(walking.randomize(
-								npcs.getNearest("Master Farmer").getLocation(),
-								1, 1));
+						walking.walkTo(walking.randomize(npcs.getNearest("Master Farmer").getLocation(), 1, 1));
 						return Methods.random(1600, 1700);
 					}
 				}
@@ -936,8 +891,7 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 				g.setColor(Color.RED);
 				g.drawString(pickpockets + " pickpockets", 561, coords[4]);
 				g.setColor(Color.LIGHT_GRAY);
-				g.drawString("pickpockets/hour: " + pickpocketsHour, 561,
-						coords[5]);
+				g.drawString("pickpockets/hour: " + pickpocketsHour, 561, coords[5]);
 				g.setColor(Color.RED);
 				g.drawString("XP Gained: " + gainedXP, 561, coords[6]);
 				g.setColor(Color.LIGHT_GRAY);
@@ -947,17 +901,12 @@ public class BloddyMasterFarmerStealer extends Script implements PaintListener,
 				g.setColor(Color.LIGHT_GRAY);
 				g.drawString("Lvls Gained: " + gainedLVL, 561, coords[9]);
 				g.setColor(Color.RED);
-				g.drawString("failed " + failPickpocket + " times", 561,
-						coords[10]);
-				g.drawString(
-						"XP To Next Level: "
-								+ skills.getExpToNextLevel(Skills.THIEVING),
-						561, coords[12]);
+				g.drawString("failed " + failPickpocket + " times", 561, coords[10]);
+				g.drawString("XP To Next Level: "
+						+ skills.getExpToNextLevel(Skills.THIEVING), 561, coords[12]);
 				g.setColor(Color.LIGHT_GRAY);
-				g.drawString(
-						"% To Next Level: "
-								+ skills.getPercentToNextLevel(Skills.THIEVING),
-						561, coords[13]);
+				g.drawString("% To Next Level: "
+						+ skills.getPercentToNextLevel(Skills.THIEVING), 561, coords[13]);
 				g.setColor(Color.RED);
 				g.drawString("Status: " + status, 561, coords[14]);
 				g.setColor(Color.LIGHT_GRAY);

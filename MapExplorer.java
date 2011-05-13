@@ -317,11 +317,11 @@ public class MapExplorer extends Script implements TextPaintListener,
 	@Override
 	public int drawLine(final Graphics g, int idx) {
 		final RSTile off = walking.getCollisionOffset(game.getPlane());
-		final int flags = walking.getCollisionFlags(game.getPlane())[current
-				.getX() - game.getBaseX() - off.getX()][current.getY()
+		final int flags = walking.getCollisionFlags(game.getPlane())[current.getX()
+				- game.getBaseX() - off.getX()][current.getY()
 				- game.getBaseY() - off.getY()];
-		StringUtil.drawLine(g, idx++,
-				"Base: (" + game.getBaseX() + "," + game.getBaseY() + ")");
+		StringUtil.drawLine(g, idx++, "Base: (" + game.getBaseX() + ","
+				+ game.getBaseY() + ")");
 		StringUtil.drawLine(g, idx++, "Offset: " + off);
 		StringUtil.drawLine(g, idx++, "Target: "
 				+ ((flags & MapExplorer.BLOCKED) == 0 ? "Clear "
@@ -405,8 +405,7 @@ public class MapExplorer extends Script implements TextPaintListener,
 						if (tile == null) {
 							tile = t;
 						}
-						if (calc.tileToScreen(tile).distance(p) > calc
-								.tileToScreen(t).distance(p)) {
+						if (calc.tileToScreen(tile).distance(p) > calc.tileToScreen(t).distance(p)) {
 							tile = t;
 						}
 					}
@@ -415,8 +414,7 @@ public class MapExplorer extends Script implements TextPaintListener,
 			if (tile != null) {
 				current = tile;
 				final long start = System.currentTimeMillis();
-				final RSTile[] tiles = pf.findPath(getMyPlayer().getLocation(),
-						tile);
+				final RSTile[] tiles = pf.findPath(getMyPlayer().getLocation(), tile);
 				if (tiles == null) {
 					log.info("unreachable");
 					path = MapExplorer.EMPTY_PATH;
@@ -432,11 +430,10 @@ public class MapExplorer extends Script implements TextPaintListener,
 
 	@Override
 	public void onRepaint(final Graphics g) {
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		final RSTile off = walking.getCollisionOffset(game.getPlane());
-		final int flags = walking.getCollisionFlags(game.getPlane())[current
-				.getX() - game.getBaseX() - off.getX()][current.getY()
+		final int flags = walking.getCollisionFlags(game.getPlane())[current.getX()
+				- game.getBaseX() - off.getX()][current.getY()
 				- game.getBaseY() - off.getY()];
 		if ((flags & MapExplorer.BLOCKED) == 0) {
 			highlight(g, current, MapExplorer.TILE_CLEAR_FILL);

@@ -136,8 +136,7 @@ public class FOGRunner extends Script implements PaintListener,
 		 */
 		private static final long serialVersionUID = 1L;
 		// For Entire GUI:
-		final int screenHeight = (int) Toolkit.getDefaultToolkit()
-				.getScreenSize().getHeight();
+		final int screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		private JPanel jContentPane = null;
 		private JPanel MainTab = null;
 		private JPanel OptionsTab = null;
@@ -296,8 +295,7 @@ public class FOGRunner extends Script implements PaintListener,
 		// For Melee Section:
 		private JCheckBox chckbxMeleeDefence;
 		private JPanel meleePanelDefence = null;
-		private final Rectangle meleeAreaDefence = new Rectangle(285, 87, 430,
-				117);
+		private final Rectangle meleeAreaDefence = new Rectangle(285, 87, 430, 117);
 
 		private DefaultListModel meleeModelDefence;
 		private JLabel meleeTitleTextDefence; // List Stuff
@@ -308,8 +306,7 @@ public class FOGRunner extends Script implements PaintListener,
 
 		private JCheckBox chckbxMagicDefence;
 		private JPanel magicPanelDefence = null;
-		private final Rectangle magicAreaDefence = new Rectangle(285, 207, 430,
-				117);
+		private final Rectangle magicAreaDefence = new Rectangle(285, 207, 430, 117);
 
 		private DefaultListModel magicModelDefence;
 		private JLabel magicTitleTextDefence; // List Stuff
@@ -320,8 +317,7 @@ public class FOGRunner extends Script implements PaintListener,
 
 		private JCheckBox chckbxRangeDefence;
 		private JPanel rangePanelDefence = null;
-		private final Rectangle rangeAreaDefence = new Rectangle(285, 327, 430,
-				117);
+		private final Rectangle rangeAreaDefence = new Rectangle(285, 327, 430, 117);
 
 		private DefaultListModel rangeModelDefence;
 		private JLabel rangeTitleTextDefence; // List Stuff
@@ -341,12 +337,10 @@ public class FOGRunner extends Script implements PaintListener,
 				dmode = chckbxDmode.isSelected();
 			}
 			if (arg0.getSource() == meleeAttackStyleBox) {
-				meleeAttackStyle = meleeAttackStyleBox.getSelectedItem()
-						.toString();
+				meleeAttackStyle = meleeAttackStyleBox.getSelectedItem().toString();
 			}
 			if (arg0.getSource() == rangeAttackStyleBox) {
-				rangeAttackStyle = rangeAttackStyleBox.getSelectedItem()
-						.toString();
+				rangeAttackStyle = rangeAttackStyleBox.getSelectedItem().toString();
 			}
 			if (arg0.getSource() == magicCastSpell) {
 				magicSpell = magicCastSpell.getSelectedItem().toString();
@@ -450,8 +444,7 @@ public class FOGRunner extends Script implements PaintListener,
 						indRemoving++;
 					}
 					meleeListIDsAddedDefence[10] = -1;
-					meleeModelDefence.removeElementAt(meleeListDefence
-							.getSelectedIndex());
+					meleeModelDefence.removeElementAt(meleeListDefence.getSelectedIndex());
 				} catch (final ArrayIndexOutOfBoundsException ignored) {
 				}
 			}
@@ -468,8 +461,7 @@ public class FOGRunner extends Script implements PaintListener,
 						indRemoving++;
 					}
 					magicListIDsAddedDefence[10] = -1;
-					magicModelDefence.removeElementAt(magicListDefence
-							.getSelectedIndex());
+					magicModelDefence.removeElementAt(magicListDefence.getSelectedIndex());
 				} catch (final ArrayIndexOutOfBoundsException ignored) {
 				}
 			}
@@ -486,8 +478,7 @@ public class FOGRunner extends Script implements PaintListener,
 						indRemoving++;
 					}
 					rangeListIDsAddedDefence[10] = -1;
-					rangeModelDefence.removeElementAt(rangeListDefence
-							.getSelectedIndex());
+					rangeModelDefence.removeElementAt(rangeListDefence.getSelectedIndex());
 				} catch (final ArrayIndexOutOfBoundsException ignored) {
 				}
 			}
@@ -536,8 +527,7 @@ public class FOGRunner extends Script implements PaintListener,
 			if (arg0.getSource() == chckbxMelee) {
 				meleeActive = chckbxMelee.isSelected();
 				if (!meleeActive && !magicActive && !rangeActive) {
-					JOptionPane.showMessageDialog(null,
-							"At least one Attack Style must be selected");
+					JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 					chckbxMelee.setSelected(true);
 					meleeActive = true;
 				} else {
@@ -560,8 +550,7 @@ public class FOGRunner extends Script implements PaintListener,
 			if (arg0.getSource() == chckbxMagic) {
 				magicActive = chckbxMagic.isSelected();
 				if (!meleeActive && !magicActive && !rangeActive) {
-					JOptionPane.showMessageDialog(null,
-							"At least one Attack Style must be selected");
+					JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 					chckbxMagic.setSelected(true);
 					magicActive = true;
 				} else {
@@ -583,8 +572,7 @@ public class FOGRunner extends Script implements PaintListener,
 			if (arg0.getSource() == chckbxRange) {
 				rangeActive = chckbxRange.isSelected();
 				if (!meleeActive && !magicActive && !rangeActive) {
-					JOptionPane.showMessageDialog(null,
-							"At least one Attack Style must be selected");
+					JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 					chckbxRange.setSelected(true);
 					rangeActive = true;
 				} else {
@@ -607,8 +595,7 @@ public class FOGRunner extends Script implements PaintListener,
 			// DEFENCE
 			if (arg0.getSource() == chckbxMeleeDefence) {
 				meleeActiveDefence = chckbxMeleeDefence.isSelected();
-				meleeScrollPaneDefence.setEnabled(chckbxMeleeDefence
-						.isSelected());
+				meleeScrollPaneDefence.setEnabled(chckbxMeleeDefence.isSelected());
 				meleeAddDefence.setEnabled(chckbxMeleeDefence.isSelected());
 				meleeRemoveDefence.setEnabled(chckbxMeleeDefence.isSelected());
 				if (chckbxMeleeDefence.isSelected()) {
@@ -620,8 +607,7 @@ public class FOGRunner extends Script implements PaintListener,
 			}
 			if (arg0.getSource() == chckbxMagicDefence) {
 				magicActiveDefence = chckbxMagicDefence.isSelected();
-				magicScrollPaneDefence.setEnabled(chckbxMagicDefence
-						.isSelected());
+				magicScrollPaneDefence.setEnabled(chckbxMagicDefence.isSelected());
 				magicAddDefence.setEnabled(chckbxMagicDefence.isSelected());
 				magicRemoveDefence.setEnabled(chckbxMagicDefence.isSelected());
 				if (chckbxMagicDefence.isSelected()) {
@@ -633,8 +619,7 @@ public class FOGRunner extends Script implements PaintListener,
 			}
 			if (arg0.getSource() == chckbxRangeDefence) {
 				rangeActiveDefence = chckbxRangeDefence.isSelected();
-				rangeScrollPaneDefence.setEnabled(chckbxRangeDefence
-						.isSelected());
+				rangeScrollPaneDefence.setEnabled(chckbxRangeDefence.isSelected());
 				rangeAddDefence.setEnabled(chckbxRangeDefence.isSelected());
 				rangeRemoveDefence.setEnabled(chckbxRangeDefence.isSelected());
 				if (chckbxRangeDefence.isSelected()) {
@@ -650,8 +635,7 @@ public class FOGRunner extends Script implements PaintListener,
 				setStatusLabelBounds();
 				try {
 
-					final BufferedWriter out = new BufferedWriter(
-							new FileWriter(settingsFile));
+					final BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
 
 					out.write("FOGRunner Settings - Version:" + getVersion());
 					out.newLine();
@@ -696,44 +680,22 @@ public class FOGRunner extends Script implements PaintListener,
 					out.newLine();
 					int meleei = 0;
 					while (meleei < meleeModel.size() - 1) {
-						out.write(meleeModel
-								.get(meleei)
-								.toString()
-								.substring(
-										0,
-										meleeModel.get(meleei).toString()
-												.indexOf(" - "))
+						out.write(meleeModel.get(meleei).toString().substring(0, meleeModel.get(meleei).toString().indexOf(" - "))
 								+ ":");
 						meleei++;
 					}
 					if (meleeModel.size() > 0) {
-						out.write(meleeModel
-								.get(meleei)
-								.toString()
-								.substring(
-										0,
-										meleeModel.get(meleei).toString()
-												.indexOf(" - ")));
+						out.write(meleeModel.get(meleei).toString().substring(0, meleeModel.get(meleei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int meleei2 = 0;
 					while (meleei2 < meleeModel.size() - 1) {
-						out.write(meleeModel
-								.get(meleei2)
-								.toString()
-								.substring(
-										meleeModel.get(meleei2).toString()
-												.indexOf(" - ") + 3)
+						out.write(meleeModel.get(meleei2).toString().substring(meleeModel.get(meleei2).toString().indexOf(" - ") + 3)
 								+ ":");
 						meleei2++;
 					}
 					if (meleeModel.size() > 0) {
-						out.write(meleeModel
-								.get(meleei2)
-								.toString()
-								.substring(
-										meleeModel.get(meleei2).toString()
-												.indexOf(" - ") + 3));
+						out.write(meleeModel.get(meleei2).toString().substring(meleeModel.get(meleei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
 
@@ -743,44 +705,22 @@ public class FOGRunner extends Script implements PaintListener,
 					out.newLine();
 					int magici = 0;
 					while (magici < magicModel.size() - 1) {
-						out.write(magicModel
-								.get(magici)
-								.toString()
-								.substring(
-										0,
-										magicModel.get(magici).toString()
-												.indexOf(" - "))
+						out.write(magicModel.get(magici).toString().substring(0, magicModel.get(magici).toString().indexOf(" - "))
 								+ ":");
 						magici++;
 					}
 					if (magicModel.size() > 0) {
-						out.write(magicModel
-								.get(magici)
-								.toString()
-								.substring(
-										0,
-										magicModel.get(magici).toString()
-												.indexOf(" - ")));
+						out.write(magicModel.get(magici).toString().substring(0, magicModel.get(magici).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int magici2 = 0;
 					while (magici2 < magicModel.size() - 1) {
-						out.write(magicModel
-								.get(magici2)
-								.toString()
-								.substring(
-										magicModel.get(magici2).toString()
-												.indexOf(" - ") + 3)
+						out.write(magicModel.get(magici2).toString().substring(magicModel.get(magici2).toString().indexOf(" - ") + 3)
 								+ ":");
 						magici2++;
 					}
 					if (magicModel.size() > 0) {
-						out.write(magicModel
-								.get(magici2)
-								.toString()
-								.substring(
-										magicModel.get(magici2).toString()
-												.indexOf(" - ") + 3));
+						out.write(magicModel.get(magici2).toString().substring(magicModel.get(magici2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
 
@@ -790,44 +730,22 @@ public class FOGRunner extends Script implements PaintListener,
 					out.newLine();
 					int rangei = 0;
 					while (rangei < rangeModel.size() - 1) {
-						out.write(rangeModel
-								.get(rangei)
-								.toString()
-								.substring(
-										0,
-										rangeModel.get(rangei).toString()
-												.indexOf(" - "))
+						out.write(rangeModel.get(rangei).toString().substring(0, rangeModel.get(rangei).toString().indexOf(" - "))
 								+ ":");
 						rangei++;
 					}
 					if (rangeModel.size() > 0) {
-						out.write(rangeModel
-								.get(rangei)
-								.toString()
-								.substring(
-										0,
-										rangeModel.get(rangei).toString()
-												.indexOf(" - ")));
+						out.write(rangeModel.get(rangei).toString().substring(0, rangeModel.get(rangei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int rangei2 = 0;
 					while (rangei2 < rangeModel.size() - 1) {
-						out.write(rangeModel
-								.get(rangei2)
-								.toString()
-								.substring(
-										rangeModel.get(rangei2).toString()
-												.indexOf(" - ") + 3)
+						out.write(rangeModel.get(rangei2).toString().substring(rangeModel.get(rangei2).toString().indexOf(" - ") + 3)
 								+ ":");
 						rangei2++;
 					}
 					if (rangeModel.size() > 0) {
-						out.write(rangeModel
-								.get(rangei2)
-								.toString()
-								.substring(
-										rangeModel.get(rangei2).toString()
-												.indexOf(" - ") + 3));
+						out.write(rangeModel.get(rangei2).toString().substring(rangeModel.get(rangei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
 
@@ -858,44 +776,22 @@ public class FOGRunner extends Script implements PaintListener,
 					out.newLine();
 					int meleeDefencei = 0;
 					while (meleeDefencei < meleeModelDefence.size() - 1) {
-						out.write(meleeModelDefence
-								.get(meleeDefencei)
-								.toString()
-								.substring(
-										0,
-										meleeModelDefence.get(meleeDefencei)
-												.toString().indexOf(" - "))
+						out.write(meleeModelDefence.get(meleeDefencei).toString().substring(0, meleeModelDefence.get(meleeDefencei).toString().indexOf(" - "))
 								+ ":");
 						meleeDefencei++;
 					}
 					if (meleeModelDefence.size() > 0) {
-						out.write(meleeModelDefence
-								.get(meleeDefencei)
-								.toString()
-								.substring(
-										0,
-										meleeModelDefence.get(meleeDefencei)
-												.toString().indexOf(" - ")));
+						out.write(meleeModelDefence.get(meleeDefencei).toString().substring(0, meleeModelDefence.get(meleeDefencei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int meleeDefencei2 = 0;
 					while (meleeDefencei2 < meleeModelDefence.size() - 1) {
-						out.write(meleeModelDefence
-								.get(meleeDefencei2)
-								.toString()
-								.substring(
-										meleeModelDefence.get(meleeDefencei2)
-												.toString().indexOf(" - ") + 3)
+						out.write(meleeModelDefence.get(meleeDefencei2).toString().substring(meleeModelDefence.get(meleeDefencei2).toString().indexOf(" - ") + 3)
 								+ ":");
 						meleeDefencei2++;
 					}
 					if (meleeModelDefence.size() > 0) {
-						out.write(meleeModelDefence
-								.get(meleeDefencei2)
-								.toString()
-								.substring(
-										meleeModelDefence.get(meleeDefencei2)
-												.toString().indexOf(" - ") + 3));
+						out.write(meleeModelDefence.get(meleeDefencei2).toString().substring(meleeModelDefence.get(meleeDefencei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
 
@@ -905,44 +801,22 @@ public class FOGRunner extends Script implements PaintListener,
 					out.newLine();
 					int magicDefencei = 0;
 					while (magicDefencei < magicModelDefence.size() - 1) {
-						out.write(magicModelDefence
-								.get(magicDefencei)
-								.toString()
-								.substring(
-										0,
-										magicModelDefence.get(magicDefencei)
-												.toString().indexOf(" - "))
+						out.write(magicModelDefence.get(magicDefencei).toString().substring(0, magicModelDefence.get(magicDefencei).toString().indexOf(" - "))
 								+ ":");
 						magicDefencei++;
 					}
 					if (magicModelDefence.size() > 0) {
-						out.write(magicModelDefence
-								.get(magicDefencei)
-								.toString()
-								.substring(
-										0,
-										magicModelDefence.get(magicDefencei)
-												.toString().indexOf(" - ")));
+						out.write(magicModelDefence.get(magicDefencei).toString().substring(0, magicModelDefence.get(magicDefencei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int magicDefencei2 = 0;
 					while (magicDefencei2 < magicModelDefence.size() - 1) {
-						out.write(magicModelDefence
-								.get(magicDefencei2)
-								.toString()
-								.substring(
-										magicModelDefence.get(magicDefencei2)
-												.toString().indexOf(" - ") + 3)
+						out.write(magicModelDefence.get(magicDefencei2).toString().substring(magicModelDefence.get(magicDefencei2).toString().indexOf(" - ") + 3)
 								+ ":");
 						magicDefencei2++;
 					}
 					if (magicModelDefence.size() > 0) {
-						out.write(magicModelDefence
-								.get(magicDefencei2)
-								.toString()
-								.substring(
-										magicModelDefence.get(magicDefencei2)
-												.toString().indexOf(" - ") + 3));
+						out.write(magicModelDefence.get(magicDefencei2).toString().substring(magicModelDefence.get(magicDefencei2).toString().indexOf(" - ") + 3));
 					}
 					out.newLine();
 
@@ -952,44 +826,22 @@ public class FOGRunner extends Script implements PaintListener,
 					out.newLine();
 					int rangeDefencei = 0;
 					while (rangeDefencei < rangeModelDefence.size() - 1) {
-						out.write(rangeModelDefence
-								.get(rangeDefencei)
-								.toString()
-								.substring(
-										0,
-										rangeModelDefence.get(rangeDefencei)
-												.toString().indexOf(" - "))
+						out.write(rangeModelDefence.get(rangeDefencei).toString().substring(0, rangeModelDefence.get(rangeDefencei).toString().indexOf(" - "))
 								+ ":");
 						rangeDefencei++;
 					}
 					if (rangeModelDefence.size() > 0) {
-						out.write(rangeModelDefence
-								.get(rangeDefencei)
-								.toString()
-								.substring(
-										0,
-										rangeModelDefence.get(rangeDefencei)
-												.toString().indexOf(" - ")));
+						out.write(rangeModelDefence.get(rangeDefencei).toString().substring(0, rangeModelDefence.get(rangeDefencei).toString().indexOf(" - ")));
 					}
 					out.newLine();
 					int rangeDefencei2 = 0;
 					while (rangeDefencei2 < rangeModelDefence.size() - 1) {
-						out.write(rangeModelDefence
-								.get(rangeDefencei2)
-								.toString()
-								.substring(
-										rangeModelDefence.get(rangeDefencei2)
-												.toString().indexOf(" - ") + 3)
+						out.write(rangeModelDefence.get(rangeDefencei2).toString().substring(rangeModelDefence.get(rangeDefencei2).toString().indexOf(" - ") + 3)
 								+ ":");
 						rangeDefencei2++;
 					}
 					if (rangeModelDefence.size() > 0) {
-						out.write(rangeModelDefence
-								.get(rangeDefencei2)
-								.toString()
-								.substring(
-										rangeModelDefence.get(rangeDefencei2)
-												.toString().indexOf(" - ") + 3));
+						out.write(rangeModelDefence.get(rangeDefencei2).toString().substring(rangeModelDefence.get(rangeDefencei2).toString().indexOf(" - ") + 3));
 					}
 					// out.newLine();
 
@@ -1009,8 +861,7 @@ public class FOGRunner extends Script implements PaintListener,
 				statusLabel.setText("Loading...");
 				setStatusLabelBounds();
 				try {
-					final BufferedReader in = new BufferedReader(
-							new FileReader(settingsFile));
+					final BufferedReader in = new BufferedReader(new FileReader(settingsFile));
 					String line;
 					double settingsVersion;
 					String[] options;
@@ -1045,8 +896,7 @@ public class FOGRunner extends Script implements PaintListener,
 					String[] rangeNamesDefence;
 
 					line = in.readLine(); // Line 1
-					settingsVersion = Double.parseDouble(line.substring(line
-							.indexOf(":") + 1));
+					settingsVersion = Double.parseDouble(line.substring(line.indexOf(":") + 1));
 					options = in.readLine().split(":"); // Line 2
 					prayers = in.readLine().split(":"); // Line 3
 
@@ -1205,67 +1055,48 @@ public class FOGRunner extends Script implements PaintListener,
 					// Options Tab
 					chckbxAntiBan.setSelected(Boolean.parseBoolean(options[0]));
 					useAntiBan = chckbxAntiBan.isSelected();
-					chckbxBandages
-							.setSelected(Boolean.parseBoolean(options[1]));
+					chckbxBandages.setSelected(Boolean.parseBoolean(options[1]));
 					useBandages = chckbxBandages.isSelected();
 					teleOrbBox.setSelectedIndex(Integer.parseInt(options[2]));
 					teleorbLong = teleOrbBox.getSelectedItem().toString();
-					chckbxBankTokens.setSelected(Boolean
-							.parseBoolean(options[3]));
+					chckbxBankTokens.setSelected(Boolean.parseBoolean(options[3]));
 					bankTokens = chckbxBankTokens.isSelected();
 					bankTokensNum.setText(options[4]);
 					chckbxSearch.setSelected(Boolean.parseBoolean(options[5]));
 					search = chckbxSearch.isSelected();
-					chckbxScreenshots.setSelected(Boolean
-							.parseBoolean(options[6]));
+					chckbxScreenshots.setSelected(Boolean.parseBoolean(options[6]));
 					screenshots = chckbxScreenshots.isSelected();
 					mouseSpeedBox.setText(options[7]);
 					chckbxDmode.setSelected(Boolean.parseBoolean(options[8]));
 					dmode = chckbxDmode.isSelected();
 
 					// Prayers Tab
-					chckbxQuickPrayers.setSelected(Boolean
-							.parseBoolean(prayers[0]));
+					chckbxQuickPrayers.setSelected(Boolean.parseBoolean(prayers[0]));
 					useQuickPrayers = chckbxQuickPrayers.isSelected();
-					quickPrayersBox.setSelectedIndex(Integer
-							.parseInt(prayers[1]));
-					quickPrayersLong = quickPrayersBox.getSelectedItem()
-							.toString();
+					quickPrayersBox.setSelectedIndex(Integer.parseInt(prayers[1]));
+					quickPrayersLong = quickPrayersBox.getSelectedItem().toString();
 					chckbxPrayers.setSelected(Boolean.parseBoolean(prayers[2]));
 					usePrayers = chckbxPrayers.isSelected();
-					chckbxAttackPrayers.setSelected(Boolean
-							.parseBoolean(prayers[3]));
+					chckbxAttackPrayers.setSelected(Boolean.parseBoolean(prayers[3]));
 					useAttackPrayers = chckbxAttackPrayers.isSelected();
-					chckbxSkinPrayers.setSelected(Boolean
-							.parseBoolean(prayers[4]));
+					chckbxSkinPrayers.setSelected(Boolean.parseBoolean(prayers[4]));
 					useSkinPrayers = chckbxSkinPrayers.isSelected();
 
 					// Attack Styles Tab
 
-					chckbxMelee.setSelected(Boolean
-							.parseBoolean(meleeOptions[0]));
-					chckbxMagic.setSelected(Boolean
-							.parseBoolean(magicOptions[0]));
-					chckbxRange.setSelected(Boolean
-							.parseBoolean(rangeOptions[0]));
-					chckbxMeleeDefence.setSelected(Boolean
-							.parseBoolean(meleeOptionsDefence));
-					chckbxMagicDefence.setSelected(Boolean
-							.parseBoolean(magicOptionsDefence));
-					chckbxRangeDefence.setSelected(Boolean
-							.parseBoolean(rangeOptionsDefence));
+					chckbxMelee.setSelected(Boolean.parseBoolean(meleeOptions[0]));
+					chckbxMagic.setSelected(Boolean.parseBoolean(magicOptions[0]));
+					chckbxRange.setSelected(Boolean.parseBoolean(rangeOptions[0]));
+					chckbxMeleeDefence.setSelected(Boolean.parseBoolean(meleeOptionsDefence));
+					chckbxMagicDefence.setSelected(Boolean.parseBoolean(magicOptionsDefence));
+					chckbxRangeDefence.setSelected(Boolean.parseBoolean(rangeOptionsDefence));
 
-					meleeAttackStyleBox.setSelectedIndex(Integer
-							.parseInt(meleeOptions[1]));
-					meleeAttackStyle = meleeAttackStyleBox.getSelectedItem()
-							.toString();
-					magicCastSpell.setSelectedIndex(Integer
-							.parseInt(magicOptions[1]));
+					meleeAttackStyleBox.setSelectedIndex(Integer.parseInt(meleeOptions[1]));
+					meleeAttackStyle = meleeAttackStyleBox.getSelectedItem().toString();
+					magicCastSpell.setSelectedIndex(Integer.parseInt(magicOptions[1]));
 					magicSpell = magicCastSpell.getSelectedItem().toString();
-					rangeAttackStyleBox.setSelectedIndex(Integer
-							.parseInt(rangeOptions[1]));
-					rangeAttackStyle = rangeAttackStyleBox.getSelectedItem()
-							.toString();
+					rangeAttackStyleBox.setSelectedIndex(Integer.parseInt(rangeOptions[1]));
+					rangeAttackStyle = rangeAttackStyleBox.getSelectedItem().toString();
 
 					final int[] notFoundItems = new int[39];
 					final String[] notFoundItemsNames = new String[39];
@@ -1328,8 +1159,7 @@ public class FOGRunner extends Script implements PaintListener,
 							invListDefence.setSelectedIndex(invIndex);
 							meleeAddMethodDefence();
 						} else {
-							if (!arrayContains(meleeIDsDefence[iMeleeDefence],
-									notFoundItems)) {
+							if (!arrayContains(meleeIDsDefence[iMeleeDefence], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = meleeIDsDefence[iMeleeDefence];
 								notFoundItemsNames[notFoundItemsIndex] = meleeNamesDefence[iMeleeDefence];
 								notFoundItemsIndex++;
@@ -1345,8 +1175,7 @@ public class FOGRunner extends Script implements PaintListener,
 							invListDefence.setSelectedIndex(invIndex);
 							magicAddMethodDefence();
 						} else {
-							if (!arrayContains(magicIDsDefence[iMagicDefence],
-									notFoundItems)) {
+							if (!arrayContains(magicIDsDefence[iMagicDefence], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = magicIDsDefence[iMagicDefence];
 								notFoundItemsNames[notFoundItemsIndex] = magicNamesDefence[iMagicDefence];
 								notFoundItemsIndex++;
@@ -1362,8 +1191,7 @@ public class FOGRunner extends Script implements PaintListener,
 							invListDefence.setSelectedIndex(invIndex);
 							rangeAddMethodDefence();
 						} else {
-							if (!arrayContains(rangeIDsDefence[iRangeDefence],
-									notFoundItems)) {
+							if (!arrayContains(rangeIDsDefence[iRangeDefence], notFoundItems)) {
 								notFoundItems[notFoundItemsIndex] = rangeIDsDefence[iRangeDefence];
 								notFoundItemsNames[notFoundItemsIndex] = rangeNamesDefence[iRangeDefence];
 								notFoundItemsIndex++;
@@ -1374,8 +1202,7 @@ public class FOGRunner extends Script implements PaintListener,
 
 					meleeActive = chckbxMelee.isSelected();
 					if (!meleeActive && !magicActive && !rangeActive) {
-						JOptionPane.showMessageDialog(null,
-								"At least one Attack Style must be selected");
+						JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 						chckbxMelee.setSelected(true);
 						meleeActive = true;
 					} else {
@@ -1383,8 +1210,7 @@ public class FOGRunner extends Script implements PaintListener,
 						meleeScrollPane.setEnabled(chckbxMelee.isSelected());
 						meleeAdd.setEnabled(chckbxMelee.isSelected());
 						meleeRemove.setEnabled(chckbxMelee.isSelected());
-						meleeAttackStyleBox
-								.setEnabled(chckbxMelee.isSelected());
+						meleeAttackStyleBox.setEnabled(chckbxMelee.isSelected());
 						if (chckbxMelee.isSelected()) {
 							startStylesP[0] = "Melee";
 							meleePanel.setBackground(enabledColor);
@@ -1398,8 +1224,7 @@ public class FOGRunner extends Script implements PaintListener,
 
 					magicActive = chckbxMagic.isSelected();
 					if (!meleeActive && !magicActive && !rangeActive) {
-						JOptionPane.showMessageDialog(null,
-								"At least one Attack Style must be selected");
+						JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 						chckbxMagic.setSelected(true);
 						magicActive = true;
 					} else {
@@ -1420,16 +1245,14 @@ public class FOGRunner extends Script implements PaintListener,
 
 					rangeActive = chckbxRange.isSelected();
 					if (!meleeActive && !magicActive && !rangeActive) {
-						JOptionPane.showMessageDialog(null,
-								"At least one Attack Style must be selected");
+						JOptionPane.showMessageDialog(null, "At least one Attack Style must be selected");
 						chckbxRange.setSelected(true);
 						rangeActive = true;
 					} else {
 						rangeScrollPane.setEnabled(chckbxRange.isSelected());
 						rangeAdd.setEnabled(chckbxRange.isSelected());
 						rangeRemove.setEnabled(chckbxRange.isSelected());
-						rangeAttackStyleBox
-								.setEnabled(chckbxRange.isSelected());
+						rangeAttackStyleBox.setEnabled(chckbxRange.isSelected());
 						if (chckbxRange.isSelected()) {
 							startStylesP[2] = "Range";
 							rangePanel.setBackground(enabledColor);
@@ -1442,11 +1265,9 @@ public class FOGRunner extends Script implements PaintListener,
 					}
 
 					meleeActiveDefence = chckbxMeleeDefence.isSelected();
-					meleeScrollPaneDefence.setEnabled(chckbxMeleeDefence
-							.isSelected());
+					meleeScrollPaneDefence.setEnabled(chckbxMeleeDefence.isSelected());
 					meleeAddDefence.setEnabled(chckbxMeleeDefence.isSelected());
-					meleeRemoveDefence.setEnabled(chckbxMeleeDefence
-							.isSelected());
+					meleeRemoveDefence.setEnabled(chckbxMeleeDefence.isSelected());
 					if (chckbxMeleeDefence.isSelected()) {
 						meleePanelDefence.setBackground(enabledColor);
 					} else {
@@ -1455,11 +1276,9 @@ public class FOGRunner extends Script implements PaintListener,
 					CombatStylesTabDefence.repaint(meleeAreaDefence);
 
 					magicActiveDefence = chckbxMagicDefence.isSelected();
-					magicScrollPaneDefence.setEnabled(chckbxMagicDefence
-							.isSelected());
+					magicScrollPaneDefence.setEnabled(chckbxMagicDefence.isSelected());
 					magicAddDefence.setEnabled(chckbxMagicDefence.isSelected());
-					magicRemoveDefence.setEnabled(chckbxMagicDefence
-							.isSelected());
+					magicRemoveDefence.setEnabled(chckbxMagicDefence.isSelected());
 					if (chckbxMagicDefence.isSelected()) {
 						magicPanelDefence.setBackground(enabledColor);
 					} else {
@@ -1468,11 +1287,9 @@ public class FOGRunner extends Script implements PaintListener,
 					CombatStylesTabDefence.repaint(magicAreaDefence);
 
 					rangeActiveDefence = chckbxRangeDefence.isSelected();
-					rangeScrollPaneDefence.setEnabled(chckbxRangeDefence
-							.isSelected());
+					rangeScrollPaneDefence.setEnabled(chckbxRangeDefence.isSelected());
 					rangeAddDefence.setEnabled(chckbxRangeDefence.isSelected());
-					rangeRemoveDefence.setEnabled(chckbxRangeDefence
-							.isSelected());
+					rangeRemoveDefence.setEnabled(chckbxRangeDefence.isSelected());
 					if (chckbxRangeDefence.isSelected()) {
 						rangePanelDefence.setBackground(enabledColor);
 					} else {
@@ -1481,14 +1298,11 @@ public class FOGRunner extends Script implements PaintListener,
 					CombatStylesTabDefence.repaint(rangeAreaDefence);
 
 					// Attack Style Options
-					startCombatStyle.setSelectedIndex(Integer
-							.parseInt(attackStyleOptions[0]));
+					startCombatStyle.setSelectedIndex(Integer.parseInt(attackStyleOptions[0]));
 					firstStyle = startCombatStyle.getSelectedItem().toString();
-					prayerTrigger.setSelected(Boolean
-							.parseBoolean(attackStyleOptions[1]));
+					prayerTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[1]));
 					prayerTrigger.isSelected();
-					everyGameTrigger.setSelected(Boolean
-							.parseBoolean(attackStyleOptions[2]));
+					everyGameTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[2]));
 					everyGameSwitch = everyGameTrigger.isSelected();
 					if (everyGameTrigger.isSelected()) {
 						randomGameTrigger.setSelected(false);
@@ -1496,8 +1310,7 @@ public class FOGRunner extends Script implements PaintListener,
 						hitTrigger.setSelected(false);
 						hitSwitch = false;
 					}
-					randomGameTrigger.setSelected(Boolean
-							.parseBoolean(attackStyleOptions[3]));
+					randomGameTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[3]));
 					randomGameSwitch = randomGameTrigger.isSelected();
 					if (randomGameTrigger.isSelected()) {
 						everyGameTrigger.setSelected(false);
@@ -1505,8 +1318,7 @@ public class FOGRunner extends Script implements PaintListener,
 						hitTrigger.setSelected(false);
 						hitSwitch = false;
 					}
-					hitTrigger.setSelected(Boolean
-							.parseBoolean(attackStyleOptions[4]));
+					hitTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[4]));
 					hitSwitch = hitTrigger.isSelected();
 					if (hitTrigger.isSelected()) {
 						randomGameTrigger.setSelected(false);
@@ -1520,15 +1332,12 @@ public class FOGRunner extends Script implements PaintListener,
 					if (settingsVersion >= 1.0) {
 						// MELEE SAFE SPOT TRIGGER OPTION
 						if (attackStyleOptions.length > 7) {
-							meleeSafeSpotTrigger.setSelected(Boolean
-									.parseBoolean(attackStyleOptions[7]));
-							meleeSafeSpotSwitch = meleeSafeSpotTrigger
-									.isSelected();
+							meleeSafeSpotTrigger.setSelected(Boolean.parseBoolean(attackStyleOptions[7]));
+							meleeSafeSpotSwitch = meleeSafeSpotTrigger.isSelected();
 						}
 						// USE FIRST ATTACK STYLE AT START OF EACH ROUND OPTION
 						if (attackStyleOptions.length > 8) {
-							chckbxFSGame.setSelected(Boolean
-									.parseBoolean(attackStyleOptions[8]));
+							chckbxFSGame.setSelected(Boolean.parseBoolean(attackStyleOptions[8]));
 							FSGame = chckbxFSGame.isSelected();
 						}
 					}
@@ -1545,11 +1354,8 @@ public class FOGRunner extends Script implements PaintListener,
 									+ " - " + notFoundItemsNames[i] + "\n";
 							i++;
 						}
-						JOptionPane
-								.showMessageDialog(
-										null,
-										"These saved wield items were not found in your inventory,\n They will not be wielded:\n\n"
-												+ notFoundItemsText);
+						JOptionPane.showMessageDialog(null, "These saved wield items were not found in your inventory,\n They will not be wielded:\n\n"
+								+ notFoundItemsText);
 					}
 
 					statusLabel.setText("Loaded");
@@ -1578,14 +1384,11 @@ public class FOGRunner extends Script implements PaintListener,
 				try {
 					mouseSpeed = Integer.parseInt(mouseSpeedString);
 				} catch (final NumberFormatException e) {
-					JOptionPane.showMessageDialog(null,
-							"Please enter a NUMBER in the mouse speed box");
+					JOptionPane.showMessageDialog(null, "Please enter a NUMBER in the mouse speed box");
 					canStart = false;
 				}
 				if (mouseSpeed < 1 || mouseSpeed > 25) {
-					JOptionPane
-							.showMessageDialog(null,
-									"Please enter a valid number in the mouse speed box");
+					JOptionPane.showMessageDialog(null, "Please enter a valid number in the mouse speed box");
 					canStart = false;
 				}
 
@@ -1594,15 +1397,11 @@ public class FOGRunner extends Script implements PaintListener,
 					try {
 						tokensBeforeBank = Integer.parseInt(tokensBeforeBankS);
 					} catch (final NumberFormatException e) {
-						JOptionPane
-								.showMessageDialog(null,
-										"Please enter a NUMBER in the 'Bank Tokens After' box");
+						JOptionPane.showMessageDialog(null, "Please enter a NUMBER in the 'Bank Tokens After' box");
 						canStart = false;
 					}
 					if (tokensBeforeBank < 1) {
-						JOptionPane
-								.showMessageDialog(null,
-										"Please enter a number more than 0 in the 'Bank Tokens After' box");
+						JOptionPane.showMessageDialog(null, "Please enter a number more than 0 in the 'Bank Tokens After' box");
 						canStart = false;
 					}
 				}
@@ -1613,15 +1412,10 @@ public class FOGRunner extends Script implements PaintListener,
 					int hitSwitchMinHitsP;
 					int hitSwitchMaxHitsP;
 					try {
-						hitSwitchMinHitsP = Integer
-								.parseInt(hitTriggerBox1Text);
-						hitSwitchMaxHitsP = Integer
-								.parseInt(hitTriggerBox2Text);
+						hitSwitchMinHitsP = Integer.parseInt(hitTriggerBox1Text);
+						hitSwitchMaxHitsP = Integer.parseInt(hitTriggerBox2Text);
 						if (hitSwitchMinHits < 0 || hitSwitchMaxHits < 0) {
-							JOptionPane
-									.showMessageDialog(
-											null,
-											"Please enter positive numbers in the 'Change Attack Style on Opponent Hitsplats' boxes");
+							JOptionPane.showMessageDialog(null, "Please enter positive numbers in the 'Change Attack Style on Opponent Hitsplats' boxes");
 							canStart = false;
 						}
 						if (canStart) {
@@ -1634,9 +1428,7 @@ public class FOGRunner extends Script implements PaintListener,
 							}
 						}
 					} catch (final NumberFormatException e) {
-						JOptionPane
-								.showMessageDialog(null,
-										"Please enter NUMBERS in the 'Change Attack Style on Opponent Hitsplats' boxes");
+						JOptionPane.showMessageDialog(null, "Please enter NUMBERS in the 'Change Attack Style on Opponent Hitsplats' boxes");
 						canStart = false;
 					}
 
@@ -1780,9 +1572,7 @@ public class FOGRunner extends Script implements PaintListener,
 						// Inventory List Display
 						inventoryTitleText = new JLabel();
 						inventoryTitleText.setText("Your Inventory:");
-						inventoryTitleText
-								.setBounds(new Rectangle(new Point(60, 10),
-										inventoryTitleText.getPreferredSize()));
+						inventoryTitleText.setBounds(new Rectangle(new Point(60, 10), inventoryTitleText.getPreferredSize()));
 						CombatStylesTab.add(inventoryTitleText);
 						scrollPane = new JScrollPane();
 						scrollPane.setBounds(20, 30, 220, 485);
@@ -1790,15 +1580,13 @@ public class FOGRunner extends Script implements PaintListener,
 						invList = new JList(model);
 						scrollPane.setViewportView(invList);
 						invList.addListSelectionListener(this);
-						invList.setBorder(new LineBorder(new Color(255, 255,
-								255)));
+						invList.setBorder(new LineBorder(new Color(255, 255, 255)));
 					}
 					{
 						// Inventory List Population with Inventory Items
 						int i = 0;
 						while (i < inventoryItemsNum) {
-							String IDString = Integer
-									.toString(inventoryItemsIDs[i]);
+							String IDString = Integer.toString(inventoryItemsIDs[i]);
 							final int zerosToAdd = 5 - IDString.length();
 							String zeros = "";
 							int wey = 0;
@@ -1818,21 +1606,12 @@ public class FOGRunner extends Script implements PaintListener,
 					combatStylesText1.setFont(new Font("SansSerif", 0, 12));
 					combatStylesText2.setFont(new Font("SansSerif", 0, 12));
 					combatStylesText3.setFont(new Font("SansSerif", 0, 12));
-					combatStylesText1
-							.setText("These are the different attack styles the script can use.");
-					combatStylesText2
-							.setText("The items in the wield boxes will be equipped when using that style.");
-					combatStylesText3
-							.setText("Select inventory items and use the '>' button to add to the wield items.");
-					combatStylesText1.setBounds(new Rectangle(
-							new Point(283, 22), combatStylesText1
-									.getPreferredSize()));
-					combatStylesText2.setBounds(new Rectangle(
-							new Point(283, 38), combatStylesText2
-									.getPreferredSize()));
-					combatStylesText3.setBounds(new Rectangle(
-							new Point(283, 54), combatStylesText3
-									.getPreferredSize()));
+					combatStylesText1.setText("These are the different attack styles the script can use.");
+					combatStylesText2.setText("The items in the wield boxes will be equipped when using that style.");
+					combatStylesText3.setText("Select inventory items and use the '>' button to add to the wield items.");
+					combatStylesText1.setBounds(new Rectangle(new Point(283, 22), combatStylesText1.getPreferredSize()));
+					combatStylesText2.setBounds(new Rectangle(new Point(283, 38), combatStylesText2.getPreferredSize()));
+					combatStylesText3.setBounds(new Rectangle(new Point(283, 54), combatStylesText3.getPreferredSize()));
 					CombatStylesTab.add(combatStylesText1);
 					CombatStylesTab.add(combatStylesText2);
 					CombatStylesTab.add(combatStylesText3);
@@ -1847,102 +1626,78 @@ public class FOGRunner extends Script implements PaintListener,
 					// Bottom Options
 					startCombatStyleText.setFont(new Font("SansSerif", 0, 13));
 					startCombatStyleText.setText("First Attack Style to Use: ");
-					startCombatStyleText.setBounds(new Rectangle(new Point(283,
-							450), startCombatStyleText.getPreferredSize()));
+					startCombatStyleText.setBounds(new Rectangle(new Point(283, 450), startCombatStyleText.getPreferredSize()));
 					CombatStylesTab.add(startCombatStyleText);
 					refreshStartStyleMenu();
-					startCombatStyle
-							.setBounds(new Rectangle(440, 446, 100, 27));
+					startCombatStyle.setBounds(new Rectangle(440, 446, 100, 27));
 					startCombatStyle.addActionListener(this);
 					CombatStylesTab.add(startCombatStyle);
 
-					chckbxFSGame = new JCheckBox(
-							"Use this at start of every game");
+					chckbxFSGame = new JCheckBox("Use this at start of every game");
 					chckbxFSGame.addActionListener(this);
 					chckbxFSGame.setSelected(false);
-					chckbxFSGame.setBounds(new Rectangle(new Point(535, 446),
-							chckbxFSGame.getPreferredSize()));
+					chckbxFSGame.setBounds(new Rectangle(new Point(535, 446), chckbxFSGame.getPreferredSize()));
 					CombatStylesTab.add(chckbxFSGame);
 
-					switchTriggersTitle.setFont(new Font("SansSerif",
-							Font.BOLD, 13));
+					switchTriggersTitle.setFont(new Font("SansSerif", Font.BOLD, 13));
 					switchTriggersTitle.setText("Switch Attack Style...  ");
-					switchTriggersTitle.setBounds(new Rectangle(new Point(283,
-							470), switchTriggersTitle.getPreferredSize()));
+					switchTriggersTitle.setBounds(new Rectangle(new Point(283, 470), switchTriggersTitle.getPreferredSize()));
 					CombatStylesTab.add(switchTriggersTitle);
 
-					prayerTrigger = new JCheckBox(
-							"When opponent uses prayer protection... [ UNDER CONSTRUCTION ]");
+					prayerTrigger = new JCheckBox("When opponent uses prayer protection... [ UNDER CONSTRUCTION ]");
 					prayerTrigger.addActionListener(this);
 					prayerTrigger.setSelected(false);
 					prayerTrigger.setEnabled(false);
-					prayerTrigger.setBounds(new Rectangle(new Point(280, 488),
-							prayerTrigger.getPreferredSize()));
+					prayerTrigger.setBounds(new Rectangle(new Point(280, 488), prayerTrigger.getPreferredSize()));
 					CombatStylesTab.add(prayerTrigger);
-					meleeSafeSpotTrigger = new JCheckBox(
-							"When attacking with melee and opponent uses a safespot");
+					meleeSafeSpotTrigger = new JCheckBox("When attacking with melee and opponent uses a safespot");
 					meleeSafeSpotTrigger.addActionListener(this);
 					meleeSafeSpotTrigger.setSelected(false);
-					meleeSafeSpotTrigger.setBounds(new Rectangle(new Point(280,
-							508), meleeSafeSpotTrigger.getPreferredSize()));
+					meleeSafeSpotTrigger.setBounds(new Rectangle(new Point(280, 508), meleeSafeSpotTrigger.getPreferredSize()));
 					CombatStylesTab.add(meleeSafeSpotTrigger);
-					randomGameTrigger = new JCheckBox(
-							"Randomly Every 1-5 FOG Games");
+					randomGameTrigger = new JCheckBox("Randomly Every 1-5 FOG Games");
 					randomGameTrigger.addActionListener(this);
-					randomGameTrigger.setBounds(new Rectangle(new Point(280,
-							528), randomGameTrigger.getPreferredSize()));
+					randomGameTrigger.setBounds(new Rectangle(new Point(280, 528), randomGameTrigger.getPreferredSize()));
 					randomGameTrigger.setSelected(true);
 					CombatStylesTab.add(randomGameTrigger);
 					everyGameTrigger = new JCheckBox("Every FOG Game");
 					everyGameTrigger.addActionListener(this);
-					everyGameTrigger.setBounds(new Rectangle(
-							new Point(280, 548), everyGameTrigger
-									.getPreferredSize()));
+					everyGameTrigger.setBounds(new Rectangle(new Point(280, 548), everyGameTrigger.getPreferredSize()));
 					everyGameTrigger.setSelected(false);
 					CombatStylesTab.add(everyGameTrigger);
 					hitTrigger = new JCheckBox("Randomly Every ");
 					hitTrigger.addActionListener(this);
-					hitTrigger.setBounds(new Rectangle(new Point(280, 568),
-							hitTrigger.getPreferredSize()));
+					hitTrigger.setBounds(new Rectangle(new Point(280, 568), hitTrigger.getPreferredSize()));
 					hitTrigger.setSelected(false);
 					CombatStylesTab.add(hitTrigger);
 					hitTriggerBox1.setBounds(410, 572, 20, 20);
-					hitTriggerBox1.setBorder(new LineBorder(new Color(0, 0, 0,
-							255)));
+					hitTriggerBox1.setBorder(new LineBorder(new Color(0, 0, 0, 255)));
 					hitTriggerBox1.setText("3");
 					CombatStylesTab.add(hitTriggerBox1);
 					hitTriggerText1.setFont(new Font("SansSerif", 0, 13));
 					hitTriggerText1.setText("to");
-					hitTriggerText1.setBounds(new Rectangle(
-							new Point(435, 573), hitTriggerText1
-									.getPreferredSize()));
+					hitTriggerText1.setBounds(new Rectangle(new Point(435, 573), hitTriggerText1.getPreferredSize()));
 					CombatStylesTab.add(hitTriggerText1);
 					hitTriggerBox2.setBounds(455, 572, 20, 20);
-					hitTriggerBox2.setBorder(new LineBorder(new Color(0, 0, 0,
-							255)));
+					hitTriggerBox2.setBorder(new LineBorder(new Color(0, 0, 0, 255)));
 					hitTriggerBox2.setText("5");
 					CombatStylesTab.add(hitTriggerBox2);
 					hitTriggerText2.setFont(new Font("SansSerif", 0, 13));
 					hitTriggerText2.setText("Hitsplats on Opponent");
-					hitTriggerText2.setBounds(new Rectangle(
-							new Point(480, 573), hitTriggerText2
-									.getPreferredSize()));
+					hitTriggerText2.setBounds(new Rectangle(new Point(480, 573), hitTriggerText2.getPreferredSize()));
 					CombatStylesTab.add(hitTriggerText2);
 
 					inventoryNoteText1.setFont(new Font("SansSerif", 0, 13));
 					inventoryNoteText1.setText("This list should have");
-					inventoryNoteText1.setBounds(new Rectangle(new Point(26,
-							520), inventoryNoteText1.getPreferredSize()));
+					inventoryNoteText1.setBounds(new Rectangle(new Point(26, 520), inventoryNoteText1.getPreferredSize()));
 					CombatStylesTab.add(inventoryNoteText1);
 					inventoryNoteText2.setFont(new Font("SansSerif", 0, 13));
 					inventoryNoteText2.setText("all your items from your");
-					inventoryNoteText2.setBounds(new Rectangle(new Point(26,
-							540), inventoryNoteText2.getPreferredSize()));
+					inventoryNoteText2.setBounds(new Rectangle(new Point(26, 540), inventoryNoteText2.getPreferredSize()));
 					CombatStylesTab.add(inventoryNoteText2);
 					inventoryNoteText3.setFont(new Font("SansSerif", 0, 13));
 					inventoryNoteText3.setText("equipment and inventory.");
-					inventoryNoteText3.setBounds(new Rectangle(new Point(26,
-							560), inventoryNoteText3.getPreferredSize()));
+					inventoryNoteText3.setBounds(new Rectangle(new Point(26, 560), inventoryNoteText3.getPreferredSize()));
 					CombatStylesTab.add(inventoryNoteText3);
 				}
 			}
@@ -1955,8 +1710,7 @@ public class FOGRunner extends Script implements PaintListener,
 				CombatStylesTabDefence.setLayout(null);
 				if (screenHeight < 750) {
 					CombatStylesTabDefence.setBounds(0, 0, 775, 660);
-					CombatStylesTabDefence.setPreferredSize(new Dimension(775,
-							700));
+					CombatStylesTabDefence.setPreferredSize(new Dimension(775, 700));
 				}
 				{
 					// Inventory List
@@ -1965,9 +1719,7 @@ public class FOGRunner extends Script implements PaintListener,
 						// Inventory List Display
 						inventoryTitleTextDefence = new JLabel();
 						inventoryTitleTextDefence.setText("Your Inventory:");
-						inventoryTitleTextDefence.setBounds(new Rectangle(
-								new Point(60, 10), inventoryTitleTextDefence
-										.getPreferredSize()));
+						inventoryTitleTextDefence.setBounds(new Rectangle(new Point(60, 10), inventoryTitleTextDefence.getPreferredSize()));
 						CombatStylesTabDefence.add(inventoryTitleTextDefence);
 						scrollPaneDefence = new JScrollPane();
 						scrollPaneDefence.setBounds(20, 30, 220, 485);
@@ -1975,15 +1727,13 @@ public class FOGRunner extends Script implements PaintListener,
 						invListDefence = new JList(modelDefence);
 						scrollPaneDefence.setViewportView(invListDefence);
 						invListDefence.addListSelectionListener(this);
-						invListDefence.setBorder(new LineBorder(new Color(255,
-								255, 255)));
+						invListDefence.setBorder(new LineBorder(new Color(255, 255, 255)));
 					}
 					{
 						// Inventory List Population with Inventory Items
 						int i = 0;
 						while (i < inventoryItemsNum) {
-							String IDString = Integer
-									.toString(inventoryItemsIDs[i]);
+							String IDString = Integer.toString(inventoryItemsIDs[i]);
 							final int zerosToAdd = 5 - IDString.length();
 							String zeros = "";
 							int wey = 0;
@@ -2000,27 +1750,15 @@ public class FOGRunner extends Script implements PaintListener,
 					}
 
 					// Combat Styles instructions
-					combatStylesText1Defence.setFont(new Font("SansSerif", 0,
-							12));
-					combatStylesText2Defence.setFont(new Font("SansSerif", 0,
-							12));
-					combatStylesText3Defence.setFont(new Font("SansSerif", 0,
-							12));
-					combatStylesText1Defence
-							.setText("These are the different defence styles the script can use.");
-					combatStylesText2Defence
-							.setText("The items in the wield boxes will be equipped when being attacked by that style.");
-					combatStylesText3Defence
-							.setText("Select inventory items and use the '>' button to add to the wield items.");
-					combatStylesText1Defence.setBounds(new Rectangle(new Point(
-							283, 22), combatStylesText1Defence
-							.getPreferredSize()));
-					combatStylesText2Defence.setBounds(new Rectangle(new Point(
-							283, 38), combatStylesText2Defence
-							.getPreferredSize()));
-					combatStylesText3Defence.setBounds(new Rectangle(new Point(
-							283, 54), combatStylesText3Defence
-							.getPreferredSize()));
+					combatStylesText1Defence.setFont(new Font("SansSerif", 0, 12));
+					combatStylesText2Defence.setFont(new Font("SansSerif", 0, 12));
+					combatStylesText3Defence.setFont(new Font("SansSerif", 0, 12));
+					combatStylesText1Defence.setText("These are the different defence styles the script can use.");
+					combatStylesText2Defence.setText("The items in the wield boxes will be equipped when being attacked by that style.");
+					combatStylesText3Defence.setText("Select inventory items and use the '>' button to add to the wield items.");
+					combatStylesText1Defence.setBounds(new Rectangle(new Point(283, 22), combatStylesText1Defence.getPreferredSize()));
+					combatStylesText2Defence.setBounds(new Rectangle(new Point(283, 38), combatStylesText2Defence.getPreferredSize()));
+					combatStylesText3Defence.setBounds(new Rectangle(new Point(283, 54), combatStylesText3Defence.getPreferredSize()));
 					CombatStylesTabDefence.add(combatStylesText1Defence);
 					CombatStylesTabDefence.add(combatStylesText2Defence);
 					CombatStylesTabDefence.add(combatStylesText3Defence);
@@ -2034,47 +1772,29 @@ public class FOGRunner extends Script implements PaintListener,
 
 					// Bottom Note
 					stylesNoteDefence1.setFont(new Font("SansSerif", 0, 12));
-					stylesNoteDefence1
-							.setText("These items will be equipped when being hunted and the enemy attacks you");
-					stylesNoteDefence1.setBounds(new Rectangle(new Point(283,
-							480), stylesNoteDefence1.getPreferredSize()));
+					stylesNoteDefence1.setText("These items will be equipped when being hunted and the enemy attacks you");
+					stylesNoteDefence1.setBounds(new Rectangle(new Point(283, 480), stylesNoteDefence1.getPreferredSize()));
 					CombatStylesTabDefence.add(stylesNoteDefence1);
 					stylesNoteDefence2.setFont(new Font("SansSerif", 0, 12));
-					stylesNoteDefence2
-							.setText("with any of the enabled styles above.");
-					stylesNoteDefence2.setBounds(new Rectangle(new Point(283,
-							496), stylesNoteDefence2.getPreferredSize()));
+					stylesNoteDefence2.setText("with any of the enabled styles above.");
+					stylesNoteDefence2.setBounds(new Rectangle(new Point(283, 496), stylesNoteDefence2.getPreferredSize()));
 					CombatStylesTabDefence.add(stylesNoteDefence2);
-					stylesNoteDefence3.setFont(new Font("SansSerif", Font.BOLD,
-							12));
-					stylesNoteDefence3
-							.setText("If no items are entered, the script will just wear what it wore last round");
-					stylesNoteDefence3.setBounds(new Rectangle(new Point(283,
-							520), stylesNoteDefence3.getPreferredSize()));
+					stylesNoteDefence3.setFont(new Font("SansSerif", Font.BOLD, 12));
+					stylesNoteDefence3.setText("If no items are entered, the script will just wear what it wore last round");
+					stylesNoteDefence3.setBounds(new Rectangle(new Point(283, 520), stylesNoteDefence3.getPreferredSize()));
 					CombatStylesTabDefence.add(stylesNoteDefence3);
 
-					inventoryNoteText1Defence.setFont(new Font("SansSerif", 0,
-							13));
+					inventoryNoteText1Defence.setFont(new Font("SansSerif", 0, 13));
 					inventoryNoteText1Defence.setText("This list should have");
-					inventoryNoteText1Defence.setBounds(new Rectangle(
-							new Point(26, 520), inventoryNoteText1Defence
-									.getPreferredSize()));
+					inventoryNoteText1Defence.setBounds(new Rectangle(new Point(26, 520), inventoryNoteText1Defence.getPreferredSize()));
 					CombatStylesTabDefence.add(inventoryNoteText1Defence);
-					inventoryNoteText2Defence.setFont(new Font("SansSerif", 0,
-							13));
-					inventoryNoteText2Defence
-							.setText("all your items from your");
-					inventoryNoteText2Defence.setBounds(new Rectangle(
-							new Point(26, 540), inventoryNoteText2Defence
-									.getPreferredSize()));
+					inventoryNoteText2Defence.setFont(new Font("SansSerif", 0, 13));
+					inventoryNoteText2Defence.setText("all your items from your");
+					inventoryNoteText2Defence.setBounds(new Rectangle(new Point(26, 540), inventoryNoteText2Defence.getPreferredSize()));
 					CombatStylesTabDefence.add(inventoryNoteText2Defence);
-					inventoryNoteText3Defence.setFont(new Font("SansSerif", 0,
-							13));
-					inventoryNoteText3Defence
-							.setText("equipment and inventory.");
-					inventoryNoteText3Defence.setBounds(new Rectangle(
-							new Point(26, 560), inventoryNoteText3Defence
-									.getPreferredSize()));
+					inventoryNoteText3Defence.setFont(new Font("SansSerif", 0, 13));
+					inventoryNoteText3Defence.setText("equipment and inventory.");
+					inventoryNoteText3Defence.setBounds(new Rectangle(new Point(26, 560), inventoryNoteText3Defence.getPreferredSize()));
 					CombatStylesTabDefence.add(inventoryNoteText3Defence);
 				}
 			}
@@ -2086,10 +1806,7 @@ public class FOGRunner extends Script implements PaintListener,
 				CombatStylesTabScrollable = new JPanel();
 				CombatStylesTabScrollable.setLayout(null);
 				{
-					final JScrollPane theScrollPane = new JScrollPane(
-							getCombatStylesTab(),
-							JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					final JScrollPane theScrollPane = new JScrollPane(getCombatStylesTab(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 					theScrollPane.setBounds(0, 0, 775, 465);
 					CombatStylesTabScrollable.add(theScrollPane);
 				}
@@ -2102,10 +1819,7 @@ public class FOGRunner extends Script implements PaintListener,
 				CombatStylesTabScrollableDefence = new JPanel();
 				CombatStylesTabScrollableDefence.setLayout(null);
 				{
-					final JScrollPane theScrollPane = new JScrollPane(
-							getCombatStylesTabDefence(),
-							JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					final JScrollPane theScrollPane = new JScrollPane(getCombatStylesTabDefence(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 					theScrollPane.setBounds(0, 1, 775, 465);
 					CombatStylesTabScrollableDefence.add(theScrollPane);
 				}
@@ -2125,23 +1839,18 @@ public class FOGRunner extends Script implements PaintListener,
 					final JLabel nameLabel = new JLabel();
 					nameLabel.setFont(new Font("SansSerif", 0, 12));
 					nameLabel.setText(FOGItems[i].name);
-					nameLabel.setBounds(new Rectangle(new Point(3, v[i] + 1),
-							nameLabel.getPreferredSize()));
+					nameLabel.setBounds(new Rectangle(new Point(3, v[i] + 1), nameLabel.getPreferredSize()));
 					itemsList.add(nameLabel);
 
 					final JLabel tokensLabel = new JLabel();
 					tokensLabel.setFont(new Font("SansSerif", 0, 12));
 					tokensLabel.setText("" + FOGItems[i].tokens);
-					tokensLabel.setBounds(new Rectangle(
-							new Point(195, v[i] + 1), tokensLabel
-									.getPreferredSize()));
+					tokensLabel.setBounds(new Rectangle(new Point(195, v[i] + 1), tokensLabel.getPreferredSize()));
 					itemsList.add(tokensLabel);
 
-					itemPrices[i].setBounds(new Rectangle(new Point(315,
-							v[i] + 1), itemPrices[i].getPreferredSize()));
+					itemPrices[i].setBounds(new Rectangle(new Point(315, v[i] + 1), itemPrices[i].getPreferredSize()));
 					itemsList.add(itemPrices[i]);
-					itemRatios[i].setBounds(new Rectangle(new Point(435,
-							v[i] + 1), itemRatios[i].getPreferredSize()));
+					itemRatios[i].setBounds(new Rectangle(new Point(435, v[i] + 1), itemRatios[i].getPreferredSize()));
 					itemsList.add(itemRatios[i]);
 
 					final JLabel membersLabel = new JLabel();
@@ -2151,8 +1860,7 @@ public class FOGRunner extends Script implements PaintListener,
 					} else {
 						membersLabel.setText("No");
 					}
-					membersLabel.setBounds(new Rectangle(new Point(555,
-							v[i] + 1), membersLabel.getPreferredSize()));
+					membersLabel.setBounds(new Rectangle(new Point(555, v[i] + 1), membersLabel.getPreferredSize()));
 					itemsList.add(membersLabel);
 
 					final JPanel itemPanel = new JPanel();
@@ -2190,10 +1898,8 @@ public class FOGRunner extends Script implements PaintListener,
 					jTabbedPane.addTab("Main", null, getMainTab(), null);
 					jTabbedPane.addTab("Options", null, getOptionsTab(), null);
 					jTabbedPane.addTab("Prayers", null, getPrayersTab(), null);
-					jTabbedPane.addTab("Attack Styles (Hybridding)", null,
-							getCombatStylesTabScrollable(), null);
-					jTabbedPane.addTab("Defence Styles", null,
-							getCombatStylesTabScrollableDefence(), null);
+					jTabbedPane.addTab("Attack Styles (Hybridding)", null, getCombatStylesTabScrollable(), null);
+					jTabbedPane.addTab("Defence Styles", null, getCombatStylesTabScrollableDefence(), null);
 					jTabbedPane.addTab("Money", null, getMoneyTab(), null);
 				}
 			} else {
@@ -2203,10 +1909,8 @@ public class FOGRunner extends Script implements PaintListener,
 					jTabbedPane.addTab("Main", null, getMainTab(), null);
 					jTabbedPane.addTab("Options", null, getOptionsTab(), null);
 					jTabbedPane.addTab("Prayers", null, getPrayersTab(), null);
-					jTabbedPane.addTab("Attack Styles (Hybridding)", null,
-							getCombatStylesTab(), null);
-					jTabbedPane.addTab("Defence Styles", null,
-							getCombatStylesTabDefence(), null);
+					jTabbedPane.addTab("Attack Styles (Hybridding)", null, getCombatStylesTab(), null);
+					jTabbedPane.addTab("Defence Styles", null, getCombatStylesTabDefence(), null);
 					jTabbedPane.addTab("Money", null, getMoneyTab(), null);
 				}
 			}
@@ -2237,15 +1941,13 @@ public class FOGRunner extends Script implements PaintListener,
 					// Magic Check Box
 					chckbxMagic = new JCheckBox("Magic");
 					chckbxMagic.addActionListener(this);
-					chckbxMagic.setBounds(295, 210,
-							chckbxMagic.getPreferredSize().width, 16);
+					chckbxMagic.setBounds(295, 210, chckbxMagic.getPreferredSize().width, 16);
 					chckbxMagic.setSelected(true);
 					CombatStylesTab.add(chckbxMagic);
 					// Magic Wield List
 					magicTitleText = new JLabel();
 					magicTitleText.setText("Wield:");
-					magicTitleText.setBounds(new Rectangle(new Point(410, 212),
-							magicTitleText.getPreferredSize()));
+					magicTitleText.setBounds(new Rectangle(new Point(410, 212), magicTitleText.getPreferredSize()));
 					CombatStylesTab.add(magicTitleText);
 					magicScrollPane = new JScrollPane();
 					magicScrollPane.setBounds(325, 230, 220, 90);
@@ -2254,8 +1956,7 @@ public class FOGRunner extends Script implements PaintListener,
 					magicList = new JList(magicModel);
 					magicScrollPane.setViewportView(magicList);
 					magicList.addListSelectionListener(this);
-					magicList
-							.setBorder(new LineBorder(new Color(255, 255, 255)));
+					magicList.setBorder(new LineBorder(new Color(255, 255, 255)));
 					// Magic Add Button
 					magicAdd = new JButton();
 					magicAdd.setBounds(new Rectangle(285, 245, 40, 28));
@@ -2273,34 +1974,29 @@ public class FOGRunner extends Script implements PaintListener,
 					// Magic Options
 					magicOptionsTitle = new JLabel();
 					magicOptionsTitle.setText("Options:");
-					magicOptionsTitle.setBounds(new Rectangle(new Point(600,
-							212), magicOptionsTitle.getPreferredSize()));
+					magicOptionsTitle.setBounds(new Rectangle(new Point(600, 212), magicOptionsTitle.getPreferredSize()));
 					CombatStylesTab.add(magicOptionsTitle);
 					magicCastSpellTitle = new JLabel();
 					magicCastSpellTitle.setText("Cast Spell:");
-					magicCastSpellTitle.setBounds(new Rectangle(new Point(590,
-							240), magicCastSpellTitle.getPreferredSize()));
+					magicCastSpellTitle.setBounds(new Rectangle(new Point(590, 240), magicCastSpellTitle.getPreferredSize()));
 					CombatStylesTab.add(magicCastSpellTitle);
-					magicCastSpell.setModel(new DefaultComboBoxModel(
-							new String[] { "Auto Highest (F2P)",
-									"Auto Highest (P2P)", "Fire Surge",
-									"Earth Surge", "Water Surge", "Wind Surge",
-									"Fire Wave", "Earth Wave", "Water Wave",
-									"Wind Wave", "Fire Blast", "Earth Blast",
-									"Water Blast", "Wind Blast", "Fire Bolt",
-									"Earth Bolt", "Water Bolt", "Wind Bolt",
-									"Fire Strike", "Earth Strike",
-									"Water Strike", "Wind Strike", "Wind Rush",
-									"Ice Barrage", "Blood Barrage",
-									"Shadow Barrage", "Smoke Barrage",
-									"Ice Blitz", "Blood Blitz", "Shadow Blitz",
-									"Smoke Blitz", "Ice Burst", "Blood Burst",
-									"Shadow Burst", "Smoke Burst", "Ice Rush",
-									"Blood Rush", "Shadow Rush", "Smoke Rush",
-									"Miasmic Barrage", "Miasmic Blitz",
-									"Miasmic Burst", "Miasmic Rush" }));
-					magicCastSpell.setBounds(new Rectangle(new Point(545, 260),
-							magicCastSpell.getPreferredSize()));
+					magicCastSpell.setModel(new DefaultComboBoxModel(new String[] {
+							"Auto Highest (F2P)", "Auto Highest (P2P)",
+							"Fire Surge", "Earth Surge", "Water Surge",
+							"Wind Surge", "Fire Wave", "Earth Wave",
+							"Water Wave", "Wind Wave", "Fire Blast",
+							"Earth Blast", "Water Blast", "Wind Blast",
+							"Fire Bolt", "Earth Bolt", "Water Bolt",
+							"Wind Bolt", "Fire Strike", "Earth Strike",
+							"Water Strike", "Wind Strike", "Wind Rush",
+							"Ice Barrage", "Blood Barrage", "Shadow Barrage",
+							"Smoke Barrage", "Ice Blitz", "Blood Blitz",
+							"Shadow Blitz", "Smoke Blitz", "Ice Burst",
+							"Blood Burst", "Shadow Burst", "Smoke Burst",
+							"Ice Rush", "Blood Rush", "Shadow Rush",
+							"Smoke Rush", "Miasmic Barrage", "Miasmic Blitz",
+							"Miasmic Burst", "Miasmic Rush" }));
+					magicCastSpell.setBounds(new Rectangle(new Point(545, 260), magicCastSpell.getPreferredSize()));
 					magicCastSpell.addActionListener(this);
 					CombatStylesTab.add(magicCastSpell);
 					magicCastSpell.setEnabled(true);
@@ -2319,16 +2015,13 @@ public class FOGRunner extends Script implements PaintListener,
 					// Magic Check Box
 					chckbxMagicDefence = new JCheckBox("Magic");
 					chckbxMagicDefence.addActionListener(this);
-					chckbxMagicDefence.setBounds(295, 210,
-							chckbxMagicDefence.getPreferredSize().width, 16);
+					chckbxMagicDefence.setBounds(295, 210, chckbxMagicDefence.getPreferredSize().width, 16);
 					chckbxMagicDefence.setSelected(true);
 					CombatStylesTabDefence.add(chckbxMagicDefence);
 					// Magic Wield List
 					magicTitleTextDefence = new JLabel();
 					magicTitleTextDefence.setText("Wield:");
-					magicTitleTextDefence
-							.setBounds(new Rectangle(new Point(410, 212),
-									magicTitleTextDefence.getPreferredSize()));
+					magicTitleTextDefence.setBounds(new Rectangle(new Point(410, 212), magicTitleTextDefence.getPreferredSize()));
 					CombatStylesTabDefence.add(magicTitleTextDefence);
 					magicScrollPaneDefence = new JScrollPane();
 					magicScrollPaneDefence.setBounds(325, 230, 220, 90);
@@ -2337,8 +2030,7 @@ public class FOGRunner extends Script implements PaintListener,
 					magicListDefence = new JList(magicModelDefence);
 					magicScrollPaneDefence.setViewportView(magicListDefence);
 					magicListDefence.addListSelectionListener(this);
-					magicListDefence.setBorder(new LineBorder(new Color(255,
-							255, 255)));
+					magicListDefence.setBorder(new LineBorder(new Color(255, 255, 255)));
 					// Magic Add Button
 					magicAddDefence = new JButton();
 					magicAddDefence.setBounds(new Rectangle(285, 245, 40, 28));
@@ -2348,8 +2040,7 @@ public class FOGRunner extends Script implements PaintListener,
 					magicAddDefence.setEnabled(true);
 					// Magic Remove Button
 					magicRemoveDefence = new JButton();
-					magicRemoveDefence
-							.setBounds(new Rectangle(285, 275, 40, 28));
+					magicRemoveDefence.setBounds(new Rectangle(285, 275, 40, 28));
 					magicRemoveDefence.setText("<");
 					magicRemoveDefence.addActionListener(this);
 					CombatStylesTabDefence.add(magicRemoveDefence);
@@ -2369,69 +2060,49 @@ public class FOGRunner extends Script implements PaintListener,
 					} else {
 						imageLabel.setText("Image download error");
 					}
-					imageLabel.setBounds(new Rectangle(new Point(2, 0),
-							imageLabel.getPreferredSize()));
+					imageLabel.setBounds(new Rectangle(new Point(2, 0), imageLabel.getPreferredSize()));
 					MainTab.add(imageLabel);
 				}
 				{
 					notesLabel.setFont(new Font("SansSerif", 0, 23));
 					notesLabel.setText("Notes:");
-					notesLabel.setBounds(new Rectangle(new Point(
-							400 - (int) (notesLabel.getPreferredSize()
-									.getWidth() / 2), 260), notesLabel
-							.getPreferredSize()));
+					notesLabel.setBounds(new Rectangle(new Point(400 - (int) (notesLabel.getPreferredSize().getWidth() / 2), 260), notesLabel.getPreferredSize()));
 					MainTab.add(notesLabel);
 				}
 				{
 					note1.setFont(new Font("SansSerif", 0, 15));
 					note1.setText("Start in the Fist of Guthix Lobby");
-					note1.setBounds(new Rectangle(new Point(400 - (int) (note1
-							.getPreferredSize().getWidth() / 2), 295), note1
-							.getPreferredSize()));
+					note1.setBounds(new Rectangle(new Point(400 - (int) (note1.getPreferredSize().getWidth() / 2), 295), note1.getPreferredSize()));
 					MainTab.add(note1);
 				}
 				{
 					note2.setFont(new Font("SansSerif", 0, 15));
 					note2.setText("XP Paint will appear once you start gaining XP");
-					note2.setBounds(new Rectangle(new Point(400 - (int) (note2
-							.getPreferredSize().getWidth() / 2), 320), note2
-							.getPreferredSize()));
+					note2.setBounds(new Rectangle(new Point(400 - (int) (note2.getPreferredSize().getWidth() / 2), 320), note2.getPreferredSize()));
 					MainTab.add(note2);
 				}
 				{
 					note3.setFont(new Font("SansSerif", 0, 15));
 					note3.setText("Hover over the XP Paint to see details in that skill");
-					note3.setBounds(new Rectangle(new Point(400 - (int) (note3
-							.getPreferredSize().getWidth() / 2), 345), note3
-							.getPreferredSize()));
+					note3.setBounds(new Rectangle(new Point(400 - (int) (note3.getPreferredSize().getWidth() / 2), 345), note3.getPreferredSize()));
 					MainTab.add(note3);
 				}
 				{
 					continueNote.setFont(new Font("SansSerif", 0, 16));
-					continueNote
-							.setText("Continue to next tab to set up script");
-					continueNote.setBounds(new Rectangle(new Point(
-							400 - (int) (continueNote.getPreferredSize()
-									.getWidth() / 2), 500), continueNote
-							.getPreferredSize()));
+					continueNote.setText("Continue to next tab to set up script");
+					continueNote.setBounds(new Rectangle(new Point(400 - (int) (continueNote.getPreferredSize().getWidth() / 2), 500), continueNote.getPreferredSize()));
 					MainTab.add(continueNote);
 				}
 				{
 					authorNote.setFont(new Font("SansSerif", 0, 12));
 					authorNote.setText("By TerraBubble");
-					authorNote.setBounds(new Rectangle(new Point(
-							400 - (int) (authorNote.getPreferredSize()
-									.getWidth() / 2), 555), authorNote
-							.getPreferredSize()));
+					authorNote.setBounds(new Rectangle(new Point(400 - (int) (authorNote.getPreferredSize().getWidth() / 2), 555), authorNote.getPreferredSize()));
 					MainTab.add(authorNote);
 				}
 				{
 					versionNote.setFont(new Font("SansSerif", 0, 12));
 					versionNote.setText("Version " + getVersion());
-					versionNote.setBounds(new Rectangle(new Point(
-							400 - (int) (versionNote.getPreferredSize()
-									.getWidth() / 2), 572), versionNote
-							.getPreferredSize()));
+					versionNote.setBounds(new Rectangle(new Point(400 - (int) (versionNote.getPreferredSize().getWidth() / 2), 572), versionNote.getPreferredSize()));
 					MainTab.add(versionNote);
 				}
 			}
@@ -2449,15 +2120,13 @@ public class FOGRunner extends Script implements PaintListener,
 					// Melee Check Box
 					chckbxMelee = new JCheckBox("Melee");
 					chckbxMelee.addActionListener(this);
-					chckbxMelee.setBounds(295, 90,
-							chckbxMelee.getPreferredSize().width, 16);
+					chckbxMelee.setBounds(295, 90, chckbxMelee.getPreferredSize().width, 16);
 					chckbxMelee.setSelected(true);
 					CombatStylesTab.add(chckbxMelee);
 					// Melee Wield List
 					meleeTitleText = new JLabel();
 					meleeTitleText.setText("Wield:");
-					meleeTitleText.setBounds(new Rectangle(new Point(410, 92),
-							meleeTitleText.getPreferredSize()));
+					meleeTitleText.setBounds(new Rectangle(new Point(410, 92), meleeTitleText.getPreferredSize()));
 					CombatStylesTab.add(meleeTitleText);
 					meleeScrollPane = new JScrollPane();
 					meleeScrollPane.setBounds(325, 110, 220, 90);
@@ -2466,8 +2135,7 @@ public class FOGRunner extends Script implements PaintListener,
 					meleeList = new JList(meleeModel);
 					meleeScrollPane.setViewportView(meleeList);
 					meleeList.addListSelectionListener(this);
-					meleeList
-							.setBorder(new LineBorder(new Color(255, 255, 255)));
+					meleeList.setBorder(new LineBorder(new Color(255, 255, 255)));
 					// Melee Add Button
 					meleeAdd = new JButton();
 					meleeAdd.setBounds(new Rectangle(285, 125, 40, 28));
@@ -2485,21 +2153,16 @@ public class FOGRunner extends Script implements PaintListener,
 					// Melee Options
 					meleeOptionsTitle = new JLabel();
 					meleeOptionsTitle.setText("Options:");
-					meleeOptionsTitle.setBounds(new Rectangle(
-							new Point(600, 92), meleeOptionsTitle
-									.getPreferredSize()));
+					meleeOptionsTitle.setBounds(new Rectangle(new Point(600, 92), meleeOptionsTitle.getPreferredSize()));
 					CombatStylesTab.add(meleeOptionsTitle);
 					meleeAttackStyleTitle = new JLabel();
 					meleeAttackStyleTitle.setText("Attack Style:");
-					meleeAttackStyleTitle
-							.setBounds(new Rectangle(new Point(590, 120),
-									meleeAttackStyleTitle.getPreferredSize()));
+					meleeAttackStyleTitle.setBounds(new Rectangle(new Point(590, 120), meleeAttackStyleTitle.getPreferredSize()));
 					CombatStylesTab.add(meleeAttackStyleTitle);
-					meleeAttackStyleBox.setModel(new DefaultComboBoxModel(
-							new String[] { "Attack EXP", "Strength EXP",
-									"Defence EXP", "Shared EXP" }));
-					meleeAttackStyleBox.setBounds(new Rectangle(new Point(565,
-							140), meleeAttackStyleBox.getPreferredSize()));
+					meleeAttackStyleBox.setModel(new DefaultComboBoxModel(new String[] {
+							"Attack EXP", "Strength EXP", "Defence EXP",
+							"Shared EXP" }));
+					meleeAttackStyleBox.setBounds(new Rectangle(new Point(565, 140), meleeAttackStyleBox.getPreferredSize()));
 					meleeAttackStyleBox.addActionListener(this);
 					CombatStylesTab.add(meleeAttackStyleBox);
 					meleeAttackStyleBox.setEnabled(true);
@@ -2519,16 +2182,13 @@ public class FOGRunner extends Script implements PaintListener,
 					// Melee Check Box
 					chckbxMeleeDefence = new JCheckBox("Melee");
 					chckbxMeleeDefence.addActionListener(this);
-					chckbxMeleeDefence.setBounds(295, 90,
-							chckbxMeleeDefence.getPreferredSize().width, 16);
+					chckbxMeleeDefence.setBounds(295, 90, chckbxMeleeDefence.getPreferredSize().width, 16);
 					chckbxMeleeDefence.setSelected(true);
 					CombatStylesTabDefence.add(chckbxMeleeDefence);
 					// Melee Wield List
 					meleeTitleTextDefence = new JLabel();
 					meleeTitleTextDefence.setText("Wield:");
-					meleeTitleTextDefence
-							.setBounds(new Rectangle(new Point(410, 92),
-									meleeTitleTextDefence.getPreferredSize()));
+					meleeTitleTextDefence.setBounds(new Rectangle(new Point(410, 92), meleeTitleTextDefence.getPreferredSize()));
 					CombatStylesTabDefence.add(meleeTitleTextDefence);
 					meleeScrollPaneDefence = new JScrollPane();
 					meleeScrollPaneDefence.setBounds(325, 110, 220, 90);
@@ -2537,8 +2197,7 @@ public class FOGRunner extends Script implements PaintListener,
 					meleeListDefence = new JList(meleeModelDefence);
 					meleeScrollPaneDefence.setViewportView(meleeListDefence);
 					meleeListDefence.addListSelectionListener(this);
-					meleeListDefence.setBorder(new LineBorder(new Color(255,
-							255, 255)));
+					meleeListDefence.setBorder(new LineBorder(new Color(255, 255, 255)));
 					// Melee Add Button
 					meleeAddDefence = new JButton();
 					meleeAddDefence.setBounds(new Rectangle(285, 125, 40, 28));
@@ -2548,8 +2207,7 @@ public class FOGRunner extends Script implements PaintListener,
 					meleeAdd.setEnabled(true);
 					// Melee Remove Button
 					meleeRemoveDefence = new JButton();
-					meleeRemoveDefence
-							.setBounds(new Rectangle(285, 155, 40, 28));
+					meleeRemoveDefence.setBounds(new Rectangle(285, 155, 40, 28));
 					meleeRemoveDefence.setText("<");
 					meleeRemoveDefence.addActionListener(this);
 					CombatStylesTabDefence.add(meleeRemoveDefence);
@@ -2569,10 +2227,8 @@ public class FOGRunner extends Script implements PaintListener,
 				}
 				{
 					moneyLabel1.setFont(new Font("SansSerif", 0, 12));
-					moneyLabel1
-							.setText("This tab shows prices and tokens for every FOG reward so you can maximise profit from FOG tokens.");
-					moneyLabel1.setBounds(new Rectangle(new Point(30, 25),
-							moneyLabel1.getPreferredSize()));
+					moneyLabel1.setText("This tab shows prices and tokens for every FOG reward so you can maximise profit from FOG tokens.");
+					moneyLabel1.setBounds(new Rectangle(new Point(30, 25), moneyLabel1.getPreferredSize()));
 					MoneyTab.add(moneyLabel1);
 
 					final int x = 40;
@@ -2581,8 +2237,7 @@ public class FOGRunner extends Script implements PaintListener,
 					final JLabel nameText = new JLabel();
 					nameText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					nameText.setText("Name");
-					nameText.setBounds(new Rectangle(new Point(x + 10, y + 3),
-							nameText.getPreferredSize()));
+					nameText.setBounds(new Rectangle(new Point(x + 10, y + 3), nameText.getPreferredSize()));
 					MoneyTab.add(nameText);
 					final JPanel nameTitle = new JPanel();
 					nameTitle.setLayout(null);
@@ -2594,9 +2249,7 @@ public class FOGRunner extends Script implements PaintListener,
 					final JLabel tokensText = new JLabel();
 					tokensText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					tokensText.setText("FOG Tokens");
-					tokensText.setBounds(new Rectangle(
-							new Point(x + 190, y + 3), tokensText
-									.getPreferredSize()));
+					tokensText.setBounds(new Rectangle(new Point(x + 190, y + 3), tokensText.getPreferredSize()));
 					MoneyTab.add(tokensText);
 					final JPanel tokensTitle = new JPanel();
 					tokensTitle.setLayout(null);
@@ -2608,9 +2261,7 @@ public class FOGRunner extends Script implements PaintListener,
 					final JLabel priceText = new JLabel();
 					priceText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					priceText.setText("GE Market Price");
-					priceText.setBounds(new Rectangle(
-							new Point(x + 310, y + 3), priceText
-									.getPreferredSize()));
+					priceText.setBounds(new Rectangle(new Point(x + 310, y + 3), priceText.getPreferredSize()));
 					MoneyTab.add(priceText);
 					final JPanel priceTitle = new JPanel();
 					priceTitle.setLayout(null);
@@ -2622,9 +2273,7 @@ public class FOGRunner extends Script implements PaintListener,
 					final JLabel ratioText = new JLabel();
 					ratioText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					ratioText.setText("GP Per Token");
-					ratioText.setBounds(new Rectangle(
-							new Point(x + 430, y + 3), ratioText
-									.getPreferredSize()));
+					ratioText.setBounds(new Rectangle(new Point(x + 430, y + 3), ratioText.getPreferredSize()));
 					MoneyTab.add(ratioText);
 					final JPanel ratioTitle = new JPanel();
 					ratioTitle.setLayout(null);
@@ -2636,8 +2285,7 @@ public class FOGRunner extends Script implements PaintListener,
 					final JLabel membersText = new JLabel();
 					membersText.setFont(new Font("SansSerif", Font.BOLD, 12));
 					membersText.setText("Members?");
-					membersText.setBounds(new Rectangle(new Point(x + 550,
-							y + 3), membersText.getPreferredSize()));
+					membersText.setBounds(new Rectangle(new Point(x + 550, y + 3), membersText.getPreferredSize()));
 					MoneyTab.add(membersText);
 					final JPanel membersTitle = new JPanel();
 					membersTitle.setLayout(null);
@@ -2646,9 +2294,7 @@ public class FOGRunner extends Script implements PaintListener,
 					membersTitle.setBorder(new LineBorder(Color.BLACK));
 					MoneyTab.add(membersTitle);
 
-					itemScrollPane = new JScrollPane(getItemsList(),
-							JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					itemScrollPane = new JScrollPane(getItemsList(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 					if (screenHeight < 750) {
 						itemScrollPane.setBounds(x, y + 18, 695, 250);
 					} else {
@@ -2680,46 +2326,39 @@ public class FOGRunner extends Script implements PaintListener,
 				}
 				{
 					teleOrbLabel.setText("Use Tele-Orb: ");
-					teleOrbLabel.setBounds(new Rectangle(new Point(57, 75),
-							teleOrbLabel.getPreferredSize()));
+					teleOrbLabel.setBounds(new Rectangle(new Point(57, 75), teleOrbLabel.getPreferredSize()));
 					OptionsTab.add(teleOrbLabel);
 				}
 				{
 					teleOrbBox.setModel(new DefaultComboBoxModel(new String[] {
 							"When being Hunted", "When Hunting",
 							"Random (Hunting/Hunted)", "Never" }));
-					teleOrbBox.setBounds(new Rectangle(new Point(160, 71),
-							teleOrbBox.getPreferredSize()));
+					teleOrbBox.setBounds(new Rectangle(new Point(160, 71), teleOrbBox.getPreferredSize()));
 					teleOrbBox.addActionListener(this);
 					OptionsTab.add(teleOrbBox);
 				}
 				{
-					chckbxBankTokens = new JCheckBox(
-							"Bank Tokens When You Have Over ");
+					chckbxBankTokens = new JCheckBox("Bank Tokens When You Have Over ");
 					chckbxBankTokens.addActionListener(this);
-					chckbxBankTokens.setBounds(30, 110,
-							chckbxBankTokens.getPreferredSize().width, 16);
+					chckbxBankTokens.setBounds(30, 110, chckbxBankTokens.getPreferredSize().width, 16);
 					chckbxBankTokens.setSelected(false);
 					OptionsTab.add(chckbxBankTokens);
 				}
 				{
 					bankTokensNum.setBounds(290, 109, 45, 20);
-					bankTokensNum.setBorder(new LineBorder(new Color(0, 0, 0,
-							255)));
+					bankTokensNum.setBorder(new LineBorder(new Color(0, 0, 0, 255)));
 					bankTokensNum.setText("9000");
 					OptionsTab.add(bankTokensNum);
 				}
 				{
-					chckbxSearch = new JCheckBox(
-							"Search for Opponent when Hunting");
+					chckbxSearch = new JCheckBox("Search for Opponent when Hunting");
 					chckbxSearch.addActionListener(this);
 					chckbxSearch.setBounds(30, 137, 370, 16);
 					chckbxSearch.setSelected(true);
 					OptionsTab.add(chckbxSearch);
 				}
 				{
-					chckbxScreenshots = new JCheckBox(
-							"Take Screenshots on Level Ups");
+					chckbxScreenshots = new JCheckBox("Take Screenshots on Level Ups");
 					chckbxScreenshots.addActionListener(this);
 					chckbxScreenshots.setBounds(30, 162, 370, 16);
 					chckbxScreenshots.setSelected(true);
@@ -2727,25 +2366,18 @@ public class FOGRunner extends Script implements PaintListener,
 				}
 				{
 					mouseSpeedLabel.setText("Mouse Speed: ");
-					mouseSpeedLabel.setBounds(new Rectangle(new Point(57, 187),
-							mouseSpeedLabel.getPreferredSize()));
+					mouseSpeedLabel.setBounds(new Rectangle(new Point(57, 187), mouseSpeedLabel.getPreferredSize()));
 					OptionsTab.add(mouseSpeedLabel);
 				}
 				{
-					mouseSpeedBox.setBounds((int) mouseSpeedLabel
-							.getPreferredSize().getWidth() + 67, 184, 30, 20);
-					mouseSpeedBox.setBorder(new LineBorder(new Color(0, 0, 0,
-							255)));
+					mouseSpeedBox.setBounds((int) mouseSpeedLabel.getPreferredSize().getWidth() + 67, 184, 30, 20);
+					mouseSpeedBox.setBorder(new LineBorder(new Color(0, 0, 0, 255)));
 					mouseSpeedBox.setText("7");
 					OptionsTab.add(mouseSpeedBox);
 				}
 				{
-					mouseSpeedLabel2
-							.setText("(The lower the number, the faster the mouse)");
-					mouseSpeedLabel2.setBounds(new Rectangle(
-							new Point((int) mouseSpeedLabel.getPreferredSize()
-									.getWidth() + 107, 187), mouseSpeedLabel2
-									.getPreferredSize()));
+					mouseSpeedLabel2.setText("(The lower the number, the faster the mouse)");
+					mouseSpeedLabel2.setBounds(new Rectangle(new Point((int) mouseSpeedLabel.getPreferredSize().getWidth() + 107, 187), mouseSpeedLabel2.getPreferredSize()));
 					OptionsTab.add(mouseSpeedLabel2);
 				}
 				{
@@ -2757,12 +2389,8 @@ public class FOGRunner extends Script implements PaintListener,
 				}
 				{
 					continueNoteOptions.setFont(new Font("SansSerif", 0, 16));
-					continueNoteOptions
-							.setText("Continue to next tab to set up prayers");
-					continueNoteOptions.setBounds(new Rectangle(new Point(
-							400 - (int) (continueNoteOptions.getPreferredSize()
-									.getWidth() / 2), 530), continueNoteOptions
-							.getPreferredSize()));
+					continueNoteOptions.setText("Continue to next tab to set up prayers");
+					continueNoteOptions.setBounds(new Rectangle(new Point(400 - (int) (continueNoteOptions.getPreferredSize().getWidth() / 2), 530), continueNoteOptions.getPreferredSize()));
 					OptionsTab.add(continueNoteOptions);
 				}
 			}
@@ -2774,20 +2402,16 @@ public class FOGRunner extends Script implements PaintListener,
 				PrayersTab = new JPanel();
 				PrayersTab.setLayout(null);
 				{
-					chckbxQuickPrayers = new JCheckBox(
-							"Use Quick Prayers when: ");
+					chckbxQuickPrayers = new JCheckBox("Use Quick Prayers when: ");
 					chckbxQuickPrayers.addActionListener(this);
-					chckbxQuickPrayers.setBounds(30, 25,
-							chckbxQuickPrayers.getPreferredSize().width, 16);
+					chckbxQuickPrayers.setBounds(30, 25, chckbxQuickPrayers.getPreferredSize().width, 16);
 					chckbxQuickPrayers.setSelected(false);
 					PrayersTab.add(chckbxQuickPrayers);
 				}
 				{
-					quickPrayersBox
-							.setModel(new DefaultComboBoxModel(new String[] {
-									"When Hunting", "When Being Hunted" }));
-					quickPrayersBox.setBounds(new Rectangle(new Point(220, 21),
-							quickPrayersBox.getPreferredSize()));
+					quickPrayersBox.setModel(new DefaultComboBoxModel(new String[] {
+							"When Hunting", "When Being Hunted" }));
+					quickPrayersBox.setBounds(new Rectangle(new Point(220, 21), quickPrayersBox.getPreferredSize()));
 					quickPrayersBox.addActionListener(this);
 					PrayersTab.add(quickPrayersBox);
 				}
@@ -2799,72 +2423,53 @@ public class FOGRunner extends Script implements PaintListener,
 					PrayersTab.add(chckbxPrayers);
 				}
 				{
-					prayersLabel
-							.setText("This will use 'Protect from ...' prayers automatically depending on the attack style of your");
-					prayersLabel.setBounds(new Rectangle(new Point(57, 80),
-							prayersLabel.getPreferredSize()));
+					prayersLabel.setText("This will use 'Protect from ...' prayers automatically depending on the attack style of your");
+					prayersLabel.setBounds(new Rectangle(new Point(57, 80), prayersLabel.getPreferredSize()));
 					PrayersTab.add(prayersLabel);
 				}
 				{
 					prayersLabel2.setText("opponent and your Prayer level.");
-					prayersLabel2.setBounds(new Rectangle(new Point(57, 100),
-							prayersLabel2.getPreferredSize()));
+					prayersLabel2.setBounds(new Rectangle(new Point(57, 100), prayersLabel2.getPreferredSize()));
 					PrayersTab.add(prayersLabel2);
 				}
 				{
-					chckbxAttackPrayers = new JCheckBox(
-							"Use Attack Multiplier Prayers");
+					chckbxAttackPrayers = new JCheckBox("Use Attack Multiplier Prayers");
 					chckbxAttackPrayers.addActionListener(this);
 					chckbxAttackPrayers.setBounds(30, 139, 370, 16);
 					chckbxAttackPrayers.setSelected(false);
 					PrayersTab.add(chckbxAttackPrayers);
 				}
 				{
-					prayersAttackLabel
-							.setText("This will use Attack Mulitplier Prayers (+5%, +10%, 15%) such as Mystic Might, Ultimate Strength");
-					prayersAttackLabel.setBounds(new Rectangle(new Point(57,
-							159), prayersAttackLabel.getPreferredSize()));
+					prayersAttackLabel.setText("This will use Attack Mulitplier Prayers (+5%, +10%, 15%) such as Mystic Might, Ultimate Strength");
+					prayersAttackLabel.setBounds(new Rectangle(new Point(57, 159), prayersAttackLabel.getPreferredSize()));
 					PrayersTab.add(prayersAttackLabel);
 				}
 				{
-					prayersAttackLabel2
-							.setText("and Incredible Reflexes automatically depending on your Prayer level and attack style.");
-					prayersAttackLabel2.setBounds(new Rectangle(new Point(57,
-							179), prayersAttackLabel2.getPreferredSize()));
+					prayersAttackLabel2.setText("and Incredible Reflexes automatically depending on your Prayer level and attack style.");
+					prayersAttackLabel2.setBounds(new Rectangle(new Point(57, 179), prayersAttackLabel2.getPreferredSize()));
 					PrayersTab.add(prayersAttackLabel2);
 				}
 				{
-					chckbxSkinPrayers = new JCheckBox(
-							"Use 'Skin' Defence Multiplier Prayers");
+					chckbxSkinPrayers = new JCheckBox("Use 'Skin' Defence Multiplier Prayers");
 					chckbxSkinPrayers.addActionListener(this);
 					chckbxSkinPrayers.setBounds(30, 218, 400, 16);
 					chckbxSkinPrayers.setSelected(false);
 					PrayersTab.add(chckbxSkinPrayers);
 				}
 				{
-					prayersSkinLabel
-							.setText("This will use 'Skin' Defence Multiplier Prayers (Thick Skin, Rock Skin and Steel Skin)");
-					prayersSkinLabel.setBounds(new Rectangle(
-							new Point(57, 238), prayersSkinLabel
-									.getPreferredSize()));
+					prayersSkinLabel.setText("This will use 'Skin' Defence Multiplier Prayers (Thick Skin, Rock Skin and Steel Skin)");
+					prayersSkinLabel.setBounds(new Rectangle(new Point(57, 238), prayersSkinLabel.getPreferredSize()));
 					PrayersTab.add(prayersSkinLabel);
 				}
 				{
-					prayersSkinLabel2
-							.setText("automatically depending on your Prayer level.");
-					prayersSkinLabel2.setBounds(new Rectangle(
-							new Point(57, 258), prayersSkinLabel2
-									.getPreferredSize()));
+					prayersSkinLabel2.setText("automatically depending on your Prayer level.");
+					prayersSkinLabel2.setBounds(new Rectangle(new Point(57, 258), prayersSkinLabel2.getPreferredSize()));
 					PrayersTab.add(prayersSkinLabel2);
 				}
 				{
 					continueNotePrayers.setFont(new Font("SansSerif", 0, 16));
-					continueNotePrayers
-							.setText("Continue to next two tabs to set up your attack weapons and defence armour");
-					continueNotePrayers.setBounds(new Rectangle(new Point(
-							400 - (int) (continueNotePrayers.getPreferredSize()
-									.getWidth() / 2), 530), continueNotePrayers
-							.getPreferredSize()));
+					continueNotePrayers.setText("Continue to next two tabs to set up your attack weapons and defence armour");
+					continueNotePrayers.setBounds(new Rectangle(new Point(400 - (int) (continueNotePrayers.getPreferredSize().getWidth() / 2), 530), continueNotePrayers.getPreferredSize()));
 					PrayersTab.add(continueNotePrayers);
 				}
 			}
@@ -2881,15 +2486,13 @@ public class FOGRunner extends Script implements PaintListener,
 					// Range Check Box
 					chckbxRange = new JCheckBox("Range");
 					chckbxRange.addActionListener(this);
-					chckbxRange.setBounds(295, 330,
-							chckbxRange.getPreferredSize().width, 16);
+					chckbxRange.setBounds(295, 330, chckbxRange.getPreferredSize().width, 16);
 					chckbxRange.setSelected(false);
 					CombatStylesTab.add(chckbxRange);
 					// Range Wield List
 					rangeTitleText = new JLabel();
 					rangeTitleText.setText("Wield:");
-					rangeTitleText.setBounds(new Rectangle(new Point(410, 332),
-							rangeTitleText.getPreferredSize()));
+					rangeTitleText.setBounds(new Rectangle(new Point(410, 332), rangeTitleText.getPreferredSize()));
 					CombatStylesTab.add(rangeTitleText);
 					rangeScrollPane = new JScrollPane();
 					rangeScrollPane.setBounds(325, 350, 220, 90);
@@ -2898,8 +2501,7 @@ public class FOGRunner extends Script implements PaintListener,
 					rangeList = new JList(rangeModel);
 					rangeScrollPane.setViewportView(rangeList);
 					rangeList.addListSelectionListener(this);
-					rangeList
-							.setBorder(new LineBorder(new Color(255, 255, 255)));
+					rangeList.setBorder(new LineBorder(new Color(255, 255, 255)));
 					// Range Add Button
 					rangeAdd = new JButton();
 					rangeAdd.setBounds(new Rectangle(285, 365, 40, 28));
@@ -2917,20 +2519,15 @@ public class FOGRunner extends Script implements PaintListener,
 					// Range Options
 					rangeOptionsTitle = new JLabel();
 					rangeOptionsTitle.setText("Options:");
-					rangeOptionsTitle.setBounds(new Rectangle(new Point(600,
-							332), rangeOptionsTitle.getPreferredSize()));
+					rangeOptionsTitle.setBounds(new Rectangle(new Point(600, 332), rangeOptionsTitle.getPreferredSize()));
 					CombatStylesTab.add(rangeOptionsTitle);
 					rangeAttackStyleTitle = new JLabel();
 					rangeAttackStyleTitle.setText("Attack Style:");
-					rangeAttackStyleTitle
-							.setBounds(new Rectangle(new Point(590, 360),
-									rangeAttackStyleTitle.getPreferredSize()));
+					rangeAttackStyleTitle.setBounds(new Rectangle(new Point(590, 360), rangeAttackStyleTitle.getPreferredSize()));
 					CombatStylesTab.add(rangeAttackStyleTitle);
-					rangeAttackStyleBox
-							.setModel(new DefaultComboBoxModel(new String[] {
-									"Accurate", "Rapid", "Long range" }));
-					rangeAttackStyleBox.setBounds(new Rectangle(new Point(565,
-							380), rangeAttackStyleBox.getPreferredSize()));
+					rangeAttackStyleBox.setModel(new DefaultComboBoxModel(new String[] {
+							"Accurate", "Rapid", "Long range" }));
+					rangeAttackStyleBox.setBounds(new Rectangle(new Point(565, 380), rangeAttackStyleBox.getPreferredSize()));
 					rangeAttackStyleBox.addActionListener(this);
 					CombatStylesTab.add(rangeAttackStyleBox);
 					rangeAttackStyleBox.setEnabled(false);
@@ -2949,16 +2546,13 @@ public class FOGRunner extends Script implements PaintListener,
 					// Range Check Box
 					chckbxRangeDefence = new JCheckBox("Range");
 					chckbxRangeDefence.addActionListener(this);
-					chckbxRangeDefence.setBounds(295, 330,
-							chckbxRangeDefence.getPreferredSize().width, 16);
+					chckbxRangeDefence.setBounds(295, 330, chckbxRangeDefence.getPreferredSize().width, 16);
 					chckbxRangeDefence.setSelected(false);
 					CombatStylesTabDefence.add(chckbxRangeDefence);
 					// Range Wield List
 					rangeTitleTextDefence = new JLabel();
 					rangeTitleTextDefence.setText("Wield:");
-					rangeTitleTextDefence
-							.setBounds(new Rectangle(new Point(410, 332),
-									rangeTitleTextDefence.getPreferredSize()));
+					rangeTitleTextDefence.setBounds(new Rectangle(new Point(410, 332), rangeTitleTextDefence.getPreferredSize()));
 					CombatStylesTabDefence.add(rangeTitleTextDefence);
 					rangeScrollPaneDefence = new JScrollPane();
 					rangeScrollPaneDefence.setBounds(325, 350, 220, 90);
@@ -2967,8 +2561,7 @@ public class FOGRunner extends Script implements PaintListener,
 					rangeListDefence = new JList(rangeModelDefence);
 					rangeScrollPaneDefence.setViewportView(rangeListDefence);
 					rangeListDefence.addListSelectionListener(this);
-					rangeListDefence.setBorder(new LineBorder(new Color(255,
-							255, 255)));
+					rangeListDefence.setBorder(new LineBorder(new Color(255, 255, 255)));
 					// Range Add Button
 					rangeAddDefence = new JButton();
 					rangeAddDefence.setBounds(new Rectangle(285, 365, 40, 28));
@@ -2978,8 +2571,7 @@ public class FOGRunner extends Script implements PaintListener,
 					rangeAddDefence.setEnabled(false);
 					// Range Remove Button
 					rangeRemoveDefence = new JButton();
-					rangeRemoveDefence
-							.setBounds(new Rectangle(285, 395, 40, 28));
+					rangeRemoveDefence.setBounds(new Rectangle(285, 395, 40, 28));
 					rangeRemoveDefence.setText("<");
 					rangeRemoveDefence.addActionListener(this);
 					CombatStylesTabDefence.add(rangeRemoveDefence);
@@ -3081,11 +2673,9 @@ public class FOGRunner extends Script implements PaintListener,
 					|| invList.getSelectedIndex() == magicListIDsAdded[9]
 					|| invList.getSelectedIndex() == magicListIDsAdded[10]) {
 			} else if (magicListIDsAdded[10] != -1) {
-				JOptionPane.showMessageDialog(null,
-						"You cannot wield more than 11 items...");
+				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
-				String IDString = Integer.toString(inventoryItemsIDs[invList
-						.getSelectedIndex()]);
+				String IDString = Integer.toString(inventoryItemsIDs[invList.getSelectedIndex()]);
 				final int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
@@ -3097,8 +2687,7 @@ public class FOGRunner extends Script implements PaintListener,
 				IDString = zeros;
 				magicModel.add(magicModel.size(), IDString + " - "
 						+ inventoryItemsNames[invList.getSelectedIndex()]);
-				magicListIDsAdded[magicModel.size() - 1] = invList
-						.getSelectedIndex();
+				magicListIDsAdded[magicModel.size() - 1] = invList.getSelectedIndex();
 			}
 		}
 
@@ -3115,12 +2704,9 @@ public class FOGRunner extends Script implements PaintListener,
 					|| invListDefence.getSelectedIndex() == magicListIDsAddedDefence[9]
 					|| invListDefence.getSelectedIndex() == magicListIDsAddedDefence[10]) {
 			} else if (magicListIDsAddedDefence[10] != -1) {
-				JOptionPane.showMessageDialog(null,
-						"You cannot wield more than 11 items...");
+				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
-				String IDString = Integer
-						.toString(inventoryItemsIDs[invListDefence
-								.getSelectedIndex()]);
+				String IDString = Integer.toString(inventoryItemsIDs[invListDefence.getSelectedIndex()]);
 				final int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
@@ -3130,14 +2716,10 @@ public class FOGRunner extends Script implements PaintListener,
 				}
 				zeros = zeros + IDString;
 				IDString = zeros;
-				magicModelDefence.add(
-						magicModelDefence.size(),
-						IDString
-								+ " - "
-								+ inventoryItemsNames[invListDefence
-										.getSelectedIndex()]);
-				magicListIDsAddedDefence[magicModelDefence.size() - 1] = invListDefence
-						.getSelectedIndex();
+				magicModelDefence.add(magicModelDefence.size(), IDString
+						+ " - "
+						+ inventoryItemsNames[invListDefence.getSelectedIndex()]);
+				magicListIDsAddedDefence[magicModelDefence.size() - 1] = invListDefence.getSelectedIndex();
 			}
 		}
 
@@ -3154,11 +2736,9 @@ public class FOGRunner extends Script implements PaintListener,
 					|| invList.getSelectedIndex() == meleeListIDsAdded[9]
 					|| invList.getSelectedIndex() == meleeListIDsAdded[10]) {
 			} else if (meleeListIDsAdded[10] != -1) {
-				JOptionPane.showMessageDialog(null,
-						"You cannot wield more than 11 items...");
+				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
-				String IDString = Integer.toString(inventoryItemsIDs[invList
-						.getSelectedIndex()]);
+				String IDString = Integer.toString(inventoryItemsIDs[invList.getSelectedIndex()]);
 				final int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
@@ -3170,8 +2750,7 @@ public class FOGRunner extends Script implements PaintListener,
 				IDString = zeros;
 				meleeModel.add(meleeModel.size(), IDString + " - "
 						+ inventoryItemsNames[invList.getSelectedIndex()]);
-				meleeListIDsAdded[meleeModel.size() - 1] = invList
-						.getSelectedIndex();
+				meleeListIDsAdded[meleeModel.size() - 1] = invList.getSelectedIndex();
 			}
 		}
 
@@ -3188,12 +2767,9 @@ public class FOGRunner extends Script implements PaintListener,
 					|| invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[9]
 					|| invListDefence.getSelectedIndex() == meleeListIDsAddedDefence[10]) {
 			} else if (meleeListIDsAddedDefence[10] != -1) {
-				JOptionPane.showMessageDialog(null,
-						"You cannot wield more than 11 items...");
+				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
-				String IDString = Integer
-						.toString(inventoryItemsIDs[invListDefence
-								.getSelectedIndex()]);
+				String IDString = Integer.toString(inventoryItemsIDs[invListDefence.getSelectedIndex()]);
 				final int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
@@ -3203,14 +2779,10 @@ public class FOGRunner extends Script implements PaintListener,
 				}
 				zeros = zeros + IDString;
 				IDString = zeros;
-				meleeModelDefence.add(
-						meleeModelDefence.size(),
-						IDString
-								+ " - "
-								+ inventoryItemsNames[invListDefence
-										.getSelectedIndex()]);
-				meleeListIDsAddedDefence[meleeModelDefence.size() - 1] = invListDefence
-						.getSelectedIndex();
+				meleeModelDefence.add(meleeModelDefence.size(), IDString
+						+ " - "
+						+ inventoryItemsNames[invListDefence.getSelectedIndex()]);
+				meleeListIDsAddedDefence[meleeModelDefence.size() - 1] = invListDefence.getSelectedIndex();
 			}
 		}
 
@@ -3227,11 +2799,9 @@ public class FOGRunner extends Script implements PaintListener,
 					|| invList.getSelectedIndex() == rangeListIDsAdded[9]
 					|| invList.getSelectedIndex() == rangeListIDsAdded[10]) {
 			} else if (rangeListIDsAdded[10] != -1) {
-				JOptionPane.showMessageDialog(null,
-						"You cannot wield more than 11 items...");
+				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
-				String IDString = Integer.toString(inventoryItemsIDs[invList
-						.getSelectedIndex()]);
+				String IDString = Integer.toString(inventoryItemsIDs[invList.getSelectedIndex()]);
 				final int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
@@ -3243,8 +2813,7 @@ public class FOGRunner extends Script implements PaintListener,
 				IDString = zeros;
 				rangeModel.add(rangeModel.size(), IDString + " - "
 						+ inventoryItemsNames[invList.getSelectedIndex()]);
-				rangeListIDsAdded[rangeModel.size() - 1] = invList
-						.getSelectedIndex();
+				rangeListIDsAdded[rangeModel.size() - 1] = invList.getSelectedIndex();
 			}
 		}
 
@@ -3261,12 +2830,9 @@ public class FOGRunner extends Script implements PaintListener,
 					|| invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[9]
 					|| invListDefence.getSelectedIndex() == rangeListIDsAddedDefence[10]) {
 			} else if (rangeListIDsAdded[10] != -1) {
-				JOptionPane.showMessageDialog(null,
-						"You cannot wield more than 11 items...");
+				JOptionPane.showMessageDialog(null, "You cannot wield more than 11 items...");
 			} else {
-				String IDString = Integer
-						.toString(inventoryItemsIDs[invListDefence
-								.getSelectedIndex()]);
+				String IDString = Integer.toString(inventoryItemsIDs[invListDefence.getSelectedIndex()]);
 				final int zerosToAdd = 5 - IDString.length();
 				String zeros = "";
 				int wey = 0;
@@ -3276,14 +2842,10 @@ public class FOGRunner extends Script implements PaintListener,
 				}
 				zeros = zeros + IDString;
 				IDString = zeros;
-				rangeModelDefence.add(
-						rangeModelDefence.size(),
-						IDString
-								+ " - "
-								+ inventoryItemsNames[invListDefence
-										.getSelectedIndex()]);
-				rangeListIDsAddedDefence[rangeModelDefence.size() - 1] = invListDefence
-						.getSelectedIndex();
+				rangeModelDefence.add(rangeModelDefence.size(), IDString
+						+ " - "
+						+ inventoryItemsNames[invListDefence.getSelectedIndex()]);
+				rangeListIDsAddedDefence[rangeModelDefence.size() - 1] = invListDefence.getSelectedIndex();
 			}
 		}
 
@@ -3314,8 +2876,7 @@ public class FOGRunner extends Script implements PaintListener,
 					startStyles1[0] = startStylesP[one];
 					one++;
 				}
-				startCombatStyle
-						.setModel(new DefaultComboBoxModel(startStyles1));
+				startCombatStyle.setModel(new DefaultComboBoxModel(startStyles1));
 				firstStyle = startStyles1[0];
 				break;
 			}
@@ -3329,8 +2890,7 @@ public class FOGRunner extends Script implements PaintListener,
 					startStyles2[1] = startStylesP[two];
 					two++;
 				}
-				startCombatStyle
-						.setModel(new DefaultComboBoxModel(startStyles2));
+				startCombatStyle.setModel(new DefaultComboBoxModel(startStyles2));
 				firstStyle = startStyles2[0];
 				break;
 			}
@@ -3338,8 +2898,7 @@ public class FOGRunner extends Script implements PaintListener,
 				startStyles3[0] = startStylesP[0];
 				startStyles3[1] = startStylesP[1];
 				startStyles3[2] = startStylesP[2];
-				startCombatStyle
-						.setModel(new DefaultComboBoxModel(startStyles3));
+				startCombatStyle.setModel(new DefaultComboBoxModel(startStyles3));
 				firstStyle = startStyles3[0];
 				break;
 			}
@@ -3348,15 +2907,9 @@ public class FOGRunner extends Script implements PaintListener,
 
 		private void setStatusLabelBounds() {
 			if (screenHeight < 750) {
-				statusLabel.setBounds(new Rectangle(
-						new Point(405 - (int) (statusLabel.getPreferredSize()
-								.getWidth() / 2), 513), statusLabel
-								.getPreferredSize()));
+				statusLabel.setBounds(new Rectangle(new Point(405 - (int) (statusLabel.getPreferredSize().getWidth() / 2), 513), statusLabel.getPreferredSize()));
 			} else {
-				statusLabel.setBounds(new Rectangle(
-						new Point(405 - (int) (statusLabel.getPreferredSize()
-								.getWidth() / 2), 648), statusLabel
-								.getPreferredSize()));
+				statusLabel.setBounds(new Rectangle(new Point(405 - (int) (statusLabel.getPreferredSize().getWidth() / 2), 648), statusLabel.getPreferredSize()));
 			}
 		}
 
@@ -3378,14 +2931,12 @@ public class FOGRunner extends Script implements PaintListener,
 			}
 			// DEFENCE
 			if (arg0.getSource() == invListDefence) {
-				invListDefence
-						.getSelectedIndex();
+				invListDefence.getSelectedIndex();
 			}
 		}
 	}
 
-	private final ScriptManifest properties = getClass().getAnnotation(
-			ScriptManifest.class);
+	private final ScriptManifest properties = getClass().getAnnotation(ScriptManifest.class);
 	// The GUI
 	private FOGRunner.FOGRunnerGUI gui;
 	// For Mouse Paint
@@ -3450,26 +3001,17 @@ public class FOGRunner extends Script implements PaintListener,
 	private int startRangeLevel = 0;
 	private int startConstitutionLevel = 0;
 	private final Rectangle attackBox = new Rectangle(7, 0, 490, 13);
-	private final Rectangle strengthBox = new Rectangle(attackBox.x, 0,
-			attackBox.width, attackBox.height);
-	private final Rectangle defenceBox = new Rectangle(attackBox.x, 0,
-			attackBox.width, attackBox.height);
-	private final Rectangle magicBox = new Rectangle(attackBox.x, 0,
-			attackBox.width, attackBox.height);
-	private final Rectangle rangeBox = new Rectangle(attackBox.x, 0,
-			attackBox.width, attackBox.height);
-	private final Rectangle constitutionBox = new Rectangle(attackBox.x, 0,
-			attackBox.width, attackBox.height);
-	private final Rectangle expGradientBox = new Rectangle(attackBox.x,
-			expYs[nextPlace], attackBox.width, 30);
+	private final Rectangle strengthBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle defenceBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle magicBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle rangeBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle constitutionBox = new Rectangle(attackBox.x, 0, attackBox.width, attackBox.height);
+	private final Rectangle expGradientBox = new Rectangle(attackBox.x, expYs[nextPlace], attackBox.width, 30);
 	// Button Rectangles
 	private final Rectangle statusButtonRec = new Rectangle(560, 443, 51, 15);
-	private final Rectangle expButtonRec = new Rectangle(
-			statusButtonRec.x + 57, 443, 51, 15);
-	private final Rectangle statsButtonRec = new Rectangle(expButtonRec.x + 57,
-			443, 51, 15);
-	private final Rectangle moreStatsButtonRec = new Rectangle(
-			expButtonRec.x - 10, 443 - 15, 71, 12);
+	private final Rectangle expButtonRec = new Rectangle(statusButtonRec.x + 57, 443, 51, 15);
+	private final Rectangle statsButtonRec = new Rectangle(expButtonRec.x + 57, 443, 51, 15);
+	private final Rectangle moreStatsButtonRec = new Rectangle(expButtonRec.x - 10, 443 - 15, 71, 12);
 
 	// Tile Paint
 	private boolean canDrawTheirTile = false;
@@ -3479,14 +3021,9 @@ public class FOGRunner extends Script implements PaintListener,
 	private boolean dieScript = false;
 	private BufferedImage banner = null;
 	private boolean success = false;
-	public final File scriptFile = new File(new File(
-			GlobalConfiguration.Paths.getScriptCacheDirectory()),
-			"FOGRunner.java");
-	private final File settingsFile = new File(new File(
-			GlobalConfiguration.Paths.getScriptCacheDirectory()),
-			"FOGRunner.txt");
-	private final File bannerFile = new File(new File(
-			GlobalConfiguration.Paths.getScriptsDirectory()), "FOGRunner.png");
+	public final File scriptFile = new File(new File(GlobalConfiguration.Paths.getScriptCacheDirectory()), "FOGRunner.java");
+	private final File settingsFile = new File(new File(GlobalConfiguration.Paths.getScriptCacheDirectory()), "FOGRunner.txt");
+	private final File bannerFile = new File(new File(GlobalConfiguration.Paths.getScriptsDirectory()), "FOGRunner.png");
 	private boolean loadBannerFromFile = true;
 	// Misc Options
 	private boolean useAntiBan = true;
@@ -3594,8 +3131,14 @@ public class FOGRunner extends Script implements PaintListener,
 	private boolean loginWait = false;
 	private boolean meleeTimerStarted = false; // Whether the timer below has
 												// started
-	private final org.rsbot.script.util.Timer meleeTimer = new org.rsbot.script.util.Timer(
-			100); // Timer for if melee attacking (for rock bug)
+	private final org.rsbot.script.util.Timer meleeTimer = new org.rsbot.script.util.Timer(100); // Timer
+																									// for
+																									// if
+																									// melee
+																									// attacking
+																									// (for
+																									// rock
+																									// bug)
 	private boolean initialised = false; // Whether the script has initialised
 	private boolean justPlayed = false; // Whether just played a game
 	private boolean walkedOnce = false; // Whether you've already walked to a
@@ -3622,16 +3165,12 @@ public class FOGRunner extends Script implements PaintListener,
 	private boolean antiBanTime = true;
 	// 'Go!' detection
 	private boolean goReceived = false;
-	private final org.rsbot.script.util.Timer goTimer = new org.rsbot.script.util.Timer(
-			5000);
+	private final org.rsbot.script.util.Timer goTimer = new org.rsbot.script.util.Timer(5000);
 	private boolean overrideGoReceived = false;
 	// Timer for waiting in the centre before searching for other player
-	private final org.rsbot.script.util.Timer t = new org.rsbot.script.util.Timer(
-			8000);
-	private final org.rsbot.script.util.Timer t2 = new org.rsbot.script.util.Timer(
-			30000);
-	private final org.rsbot.script.util.Timer s = new org.rsbot.script.util.Timer(
-			10000);
+	private final org.rsbot.script.util.Timer t = new org.rsbot.script.util.Timer(8000);
+	private final org.rsbot.script.util.Timer t2 = new org.rsbot.script.util.Timer(30000);
+	private final org.rsbot.script.util.Timer s = new org.rsbot.script.util.Timer(10000);
 	private boolean timerStarted = false;
 	private int timerToUse = 1;
 	// For searching for other player
@@ -3694,58 +3233,33 @@ public class FOGRunner extends Script implements PaintListener,
 	private RSObject stoneObject;
 	// FOG Items You Can Purchase & Sell Degraded (IDs at 0 charge)
 	// F2P
-	private final FOGItem druidic_mage_top = new FOGItem("Druidic Mage Top",
-			12899, 300, false);
-	private final FOGItem druidic_mage_bottom = new FOGItem(
-			"Druidic Mage Bottom", 12906, 200, false);
-	private final FOGItem druidic_mage_hood = new FOGItem("Druidic Mage Hood",
-			12892, 100, false);
-	private final FOGItem combat_robe_top = new FOGItem("Combat Robe Top",
-			12976, 150, false);
-	private final FOGItem combat_robe_bottom = new FOGItem(
-			"Combat Robe Bottom", 12983, 100, false);
-	private final FOGItem combat_hood = new FOGItem("Combat Hood", 12969, 50,
-			false);
-	private final FOGItem green_dhide_coif = new FOGItem("Green D'Hide Coif",
-			12941, 150, false);
-	private final FOGItem bronze_gauntlets = new FOGItem("Bronze Gauntlets",
-			12986, 15, false);
-	private final FOGItem iron_gauntlets = new FOGItem("Iron Gauntlets", 12989,
-			30, false);
-	private final FOGItem steel_gauntlets = new FOGItem("Steel Gauntlets",
-			12992, 50, false);
-	private final FOGItem black_gauntlets = new FOGItem("Black Gauntlets",
-			12995, 75, false);
-	private final FOGItem mithril_gauntlets = new FOGItem("Mithril Gauntlets",
-			12998, 100, false);
-	private final FOGItem adamant_gauntlets = new FOGItem("Adamant Gauntlets",
-			13001, 150, false);
-	private final FOGItem rune_gauntlets = new FOGItem("Rune Gauntlets", 13004,
-			200, false);
-	private final FOGItem adamant_spikeshield = new FOGItem(
-			"Adamant Spikeshield", 12913, 50, false);
-	private final FOGItem adamant_berserker_shield = new FOGItem(
-			"Adamant Berserker Shield", 12920, 100, false);
-	private final FOGItem rune_spikeshield = new FOGItem("Rune Spikeshield",
-			12927, 200, false);
-	private final FOGItem rune_berserker_shield = new FOGItem(
-			"Rune Berserker Shield", 12934, 300, false);
+	private final FOGItem druidic_mage_top = new FOGItem("Druidic Mage Top", 12899, 300, false);
+	private final FOGItem druidic_mage_bottom = new FOGItem("Druidic Mage Bottom", 12906, 200, false);
+	private final FOGItem druidic_mage_hood = new FOGItem("Druidic Mage Hood", 12892, 100, false);
+	private final FOGItem combat_robe_top = new FOGItem("Combat Robe Top", 12976, 150, false);
+	private final FOGItem combat_robe_bottom = new FOGItem("Combat Robe Bottom", 12983, 100, false);
+	private final FOGItem combat_hood = new FOGItem("Combat Hood", 12969, 50, false);
+	private final FOGItem green_dhide_coif = new FOGItem("Green D'Hide Coif", 12941, 150, false);
+	private final FOGItem bronze_gauntlets = new FOGItem("Bronze Gauntlets", 12986, 15, false);
+	private final FOGItem iron_gauntlets = new FOGItem("Iron Gauntlets", 12989, 30, false);
+	private final FOGItem steel_gauntlets = new FOGItem("Steel Gauntlets", 12992, 50, false);
+	private final FOGItem black_gauntlets = new FOGItem("Black Gauntlets", 12995, 75, false);
+	private final FOGItem mithril_gauntlets = new FOGItem("Mithril Gauntlets", 12998, 100, false);
+	private final FOGItem adamant_gauntlets = new FOGItem("Adamant Gauntlets", 13001, 150, false);
+	private final FOGItem rune_gauntlets = new FOGItem("Rune Gauntlets", 13004, 200, false);
+	private final FOGItem adamant_spikeshield = new FOGItem("Adamant Spikeshield", 12913, 50, false);
+	private final FOGItem adamant_berserker_shield = new FOGItem("Adamant Berserker Shield", 12920, 100, false);
+	private final FOGItem rune_spikeshield = new FOGItem("Rune Spikeshield", 12927, 200, false);
+	private final FOGItem rune_berserker_shield = new FOGItem("Rune Berserker Shield", 12934, 300, false);
 	// P2P
-	private final FOGItem dragon_gauntlets = new FOGItem("Dragon Gauntlets",
-			13007, 300, true);
-	private final FOGItem blue_dhide_coif = new FOGItem("Blue D'Hide Coif",
-			12948, 200, true);
-	private final FOGItem red_dhide_coif = new FOGItem("Red D'Hide Coif",
-			12955, 300, true);
-	private final FOGItem black_dhide_coif = new FOGItem("Black D'Hide Coif",
-			12962, 500, true);
-	private final FOGItem battle_robe_top = new FOGItem("Battle Robe Top",
-			12878, 1500, true);
-	private final FOGItem battle_robe_bottom = new FOGItem(
-			"Battle Robe Bottom", 12885, 1000, true);
+	private final FOGItem dragon_gauntlets = new FOGItem("Dragon Gauntlets", 13007, 300, true);
+	private final FOGItem blue_dhide_coif = new FOGItem("Blue D'Hide Coif", 12948, 200, true);
+	private final FOGItem red_dhide_coif = new FOGItem("Red D'Hide Coif", 12955, 300, true);
+	private final FOGItem black_dhide_coif = new FOGItem("Black D'Hide Coif", 12962, 500, true);
+	private final FOGItem battle_robe_top = new FOGItem("Battle Robe Top", 12878, 1500, true);
+	private final FOGItem battle_robe_bottom = new FOGItem("Battle Robe Bottom", 12885, 1000, true);
 
-	private final FOGItem battle_hood = new FOGItem("Battle Hood", 12871, 250,
-			true);
+	private final FOGItem battle_hood = new FOGItem("Battle Hood", 12871, 250, true);
 	private final FOGItem[] FOGItemsF2P = { druidic_mage_top,
 			druidic_mage_bottom, druidic_mage_hood, combat_robe_top,
 			combat_robe_bottom, combat_hood, green_dhide_coif,
@@ -4259,8 +3773,7 @@ public class FOGRunner extends Script implements PaintListener,
 						int tries = 0;
 						boolean done = false;
 						while (!done && tries < 10) {
-							mouse.move(calc.tileToScreen(loc, 0.5, 0.5, -500),
-									0, 0);
+							mouse.move(calc.tileToScreen(loc, 0.5, 0.5, -500), 0, 0);
 							if (menu.doAction(action)) {
 								done = true;
 							}
@@ -4332,8 +3845,7 @@ public class FOGRunner extends Script implements PaintListener,
 		final int expPerHour = (int) (3600000.0 / (double) runTime * gainedExp);
 		g.setColor(background);
 		g.fillRoundRect(boxX, boxY, width, height, cornerNum, cornerNum);
-		final GradientPaint gradient = new GradientPaint(boxX, boxY, white,
-				boxX, boxY + 7, new Color(255, 255, 255, 0), false);
+		final GradientPaint gradient = new GradientPaint(boxX, boxY, white, boxX, boxY + 7, new Color(255, 255, 255, 0), false);
 		g2d.setPaint(gradient);
 		g2d.fillRoundRect(boxX, boxY, width, height, cornerNum, cornerNum);
 		g.setColor(black);
@@ -4350,12 +3862,10 @@ public class FOGRunner extends Script implements PaintListener,
 		g.drawString("XP/Hour: " + expPerHour, textX, ys[3]);
 		g.drawString("Current LvL: " + skills.getRealLevel(skill), textX, ys[4]);
 		g.drawString("Gained LvLs: " + gainedLevel, textX, ys[5]);
-		g.drawString("XP to LvL: " + skills.getExpToNextLevel(skill), textX,
-				ys[6]);
+		g.drawString("XP to LvL: " + skills.getExpToNextLevel(skill), textX, ys[6]);
 		g.drawString("TTL: " + getTTL(skill, gainedExp), textX, ys[7]);
 		final int barX = boxX + width / 2 - 50;
-		drawPercentBar(g, g2d, barX, ys[8] - 9, 10, black, white, green, red,
-				skills.getPercentToNextLevel(skill));
+		drawPercentBar(g, g2d, barX, ys[8] - 9, 10, black, white, green, red, skills.getPercentToNextLevel(skill));
 	}
 
 	void drawHealthBar(final Graphics g, final Graphics2D g2d, final int X,
@@ -4384,10 +3894,8 @@ public class FOGRunner extends Script implements PaintListener,
 		if (status.equals("Dying...")) {
 			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
-			final GradientPaint gradient = new GradientPaint(X + 100, Y - 10,
-					new Color(255, 255, 255, (int) (255 * statusAlpha)),
-					X + 100, Y + (int) ((double) 10 / 1.5) - 10, new Color(255,
-							255, 255, 0), false);
+			final GradientPaint gradient = new GradientPaint(X + 100, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 100, Y
+					+ (int) ((double) 10 / 1.5) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
 			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
@@ -4397,20 +3905,15 @@ public class FOGRunner extends Script implements PaintListener,
 			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
 			g.setColor(new Color(0, 255, 0, (int) (255 * statusAlpha)));
-			g.fillRoundRect(X + 100, Y - 10, getMyPlayer().getHPPercent() * 2,
-					10, 11, 11);
-			final GradientPaint gradient = new GradientPaint(X + 100, Y - 10,
-					new Color(255, 255, 255, (int) (255 * statusAlpha)),
-					X + 100, Y + (int) ((double) 10 / 1.5) - 10, new Color(255,
-							255, 255, 0), false);
+			g.fillRoundRect(X + 100, Y - 10, getMyPlayer().getHPPercent() * 2, 10, 11, 11);
+			final GradientPaint gradient = new GradientPaint(X + 100, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 100, Y
+					+ (int) ((double) 10 / 1.5) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
 			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
-			g.drawString("" + getMyPlayer().getHPPercent() + "%", X + 115,
-					Y - 1);
+			g.drawString("" + getMyPlayer().getHPPercent() + "%", X + 115, Y - 1);
 			g.drawRoundRect(X + 100, Y - 10, 200, 10, 11, 11);
-			g.drawRoundRect(X + 100, Y - 10, getMyPlayer().getHPPercent() * 2,
-					10, 11, 11);
+			g.drawRoundRect(X + 100, Y - 10, getMyPlayer().getHPPercent() * 2, 10, 11, 11);
 		}
 	}
 
@@ -4423,10 +3926,8 @@ public class FOGRunner extends Script implements PaintListener,
 		if (status.equals("Opponent Killed")) {
 			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
-			final GradientPaint gradient = new GradientPaint(X + 130, Y - 10,
-					new Color(255, 255, 255, (int) (255 * statusAlpha)),
-					X + 130, Y + (int) ((double) 10 / 1.5) - 10, new Color(255,
-							255, 255, 0), false);
+			final GradientPaint gradient = new GradientPaint(X + 130, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 130, Y
+					+ (int) ((double) 10 / 1.5) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
 			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
@@ -4436,20 +3937,15 @@ public class FOGRunner extends Script implements PaintListener,
 			g.setColor(new Color(255, 0, 0, (int) (255 * statusAlpha)));
 			g.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
 			g.setColor(new Color(0, 255, 0, (int) (255 * statusAlpha)));
-			g.fillRoundRect(X + 130, Y - 10,
-					getPlayerThrow().getHPPercent() * 2, 10, 11, 11);
-			final GradientPaint gradient = new GradientPaint(X + 130, Y - 10,
-					new Color(255, 255, 255, (int) (255 * statusAlpha)),
-					X + 130, Y + (int) ((double) 10 / 1.5) - 10, new Color(255,
-							255, 255, 0), false);
+			g.fillRoundRect(X + 130, Y - 10, getPlayerThrow().getHPPercent() * 2, 10, 11, 11);
+			final GradientPaint gradient = new GradientPaint(X + 130, Y - 10, new Color(255, 255, 255, (int) (255 * statusAlpha)), X + 130, Y
+					+ (int) ((double) 10 / 1.5) - 10, new Color(255, 255, 255, 0), false);
 			g2d.setPaint(gradient);
 			g2d.fillRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
 			g.setColor(new Color(0, 0, 0, (int) (255 * statusAlpha)));
-			g.drawString("" + getPlayerThrow().getHPPercent() + "%", X + 145,
-					Y - 1);
+			g.drawString("" + getPlayerThrow().getHPPercent() + "%", X + 145, Y - 1);
 			g.drawRoundRect(X + 130, Y - 10, 200, 10, 11, 11);
-			g.drawRoundRect(X + 130, Y - 10,
-					getPlayerThrow().getHPPercent() * 2, 10, 11, 11);
+			g.drawRoundRect(X + 130, Y - 10, getPlayerThrow().getHPPercent() * 2, 10, 11, 11);
 		}
 	}
 
@@ -4462,8 +3958,7 @@ public class FOGRunner extends Script implements PaintListener,
 		g.setColor(green);
 		g.fillRoundRect(x, y, percent, height, 11, 11);
 		final GradientPaint gradient = new GradientPaint(x, y, white, x, y
-				+ (int) ((double) height / 1.5), new Color(255, 255, 255, 0),
-				false);
+				+ (int) ((double) height / 1.5), new Color(255, 255, 255, 0), false);
 		g2d.setPaint(gradient);
 		g2d.fillRoundRect(x, y, 100, height, 11, 11);
 		g.setColor(black);
@@ -4492,9 +3987,7 @@ public class FOGRunner extends Script implements PaintListener,
 					py.y, pxy.y, px.y, pn.y }, 4);
 			g.setColor(captionColor);
 			g.setFont(new Font("Arial", Font.BOLD, 11));
-			g.drawString(caption,
-					Math.max(Math.max(pn.x, px.x), Math.max(py.x, pxy.x)) + 5,
-					Math.min(Math.min(pn.y, px.y), Math.min(py.y, pxy.y)) + 15);
+			g.drawString(caption, Math.max(Math.max(pn.x, px.x), Math.max(py.x, pxy.x)) + 5, Math.min(Math.min(pn.y, px.y), Math.min(py.y, pxy.y)) + 15);
 		}
 	}
 
@@ -4589,8 +4082,7 @@ public class FOGRunner extends Script implements PaintListener,
 	}
 
 	public int getCharges() {
-		final String chargesTxt = interfaces.get(730).getComponent(17)
-				.getText();
+		final String chargesTxt = interfaces.get(730).getComponent(17).getText();
 		final int chargesIndex = chargesTxt.indexOf(": ");
 		final String finalString = chargesTxt.substring(chargesIndex + 2);
 		final int finalCharges = Integer.parseInt(finalString);
@@ -4718,8 +4210,7 @@ public class FOGRunner extends Script implements PaintListener,
 			boolean walkToStone = false;
 			stoneObject = objects.getNearest(30143);
 			stoneObject.getLocation();
-			final RSTile nextToStoneTile = new RSTile(stoneObject.getLocation()
-					.getX() + 1, stoneObject.getLocation().getY());
+			final RSTile nextToStoneTile = new RSTile(stoneObject.getLocation().getX() + 1, stoneObject.getLocation().getY());
 			if (stoneObject.isOnScreen()) {
 				while (inventory.getCount(stoneID) < 1 && !walkToStone
 						&& inGame() && !dieScript && !switchingRole) {
@@ -4800,8 +4291,7 @@ public class FOGRunner extends Script implements PaintListener,
 			boolean walkToStone = false;
 			stoneObject = objects.getNearest(30143);
 			final RSTile stoneTile = stoneObject.getLocation();
-			final RSTile nextToStoneTile = new RSTile(stoneObject.getLocation()
-					.getX() + 1, stoneObject.getLocation().getY());
+			final RSTile nextToStoneTile = new RSTile(stoneObject.getLocation().getX() + 1, stoneObject.getLocation().getY());
 			if (calc.tileOnScreen(stoneTile)) {
 				while (inventory.getCount(stoneID) < 1 && !walkToStone
 						&& inGame() && !dieScript) {
@@ -4936,8 +4426,7 @@ public class FOGRunner extends Script implements PaintListener,
 				return false;
 			}
 			final Point menuLocation = menu.getLocation();
-			final int i = Methods.random(4,
-					itemStringsArray[menuIndex].length() * 4);
+			final int i = Methods.random(4, itemStringsArray[menuIndex].length() * 4);
 			final int j = 21 + 15 * menuIndex + Methods.random(3, 12);
 			mouse.move((int) menuLocation.getX() + i, (int) menuLocation.getY()
 					+ j, 2, 2);
@@ -5015,10 +4504,8 @@ public class FOGRunner extends Script implements PaintListener,
 					i2Try++;
 				} else {
 					inventoryItemsIDsP[i2] = inventoryItemsIDsX[i2Try];
-					final int nameStart = inventory.getItemAt(i2Try).getName()
-							.indexOf("<col=ff9040>") + 12;
-					inventoryItemsNamesP[i2] = inventory.getItemAt(i2Try)
-							.getName().substring(nameStart);
+					final int nameStart = inventory.getItemAt(i2Try).getName().indexOf("<col=ff9040>") + 12;
+					inventoryItemsNamesP[i2] = inventory.getItemAt(i2Try).getName().substring(nameStart);
 					i2++;
 					i2Try++;
 				}
@@ -5049,10 +4536,8 @@ public class FOGRunner extends Script implements PaintListener,
 					i2TryE++;
 				} else {
 					equipmentItemsIDs[i2E] = equipmentItemsIDsX[i2TryE];
-					final int nameStart = equipmentItems[i2TryE].getName()
-							.indexOf("<col=ff9040>") + 12;
-					equipmentItemsNames[i2E] = equipmentItems[i2TryE].getName()
-							.substring(nameStart);
+					final int nameStart = equipmentItems[i2TryE].getName().indexOf("<col=ff9040>") + 12;
+					equipmentItemsNames[i2E] = equipmentItems[i2TryE].getName().substring(nameStart);
 					i2E++;
 					i2TryE++;
 				}
@@ -5107,11 +4592,8 @@ public class FOGRunner extends Script implements PaintListener,
 								gui.itemRatios[k].setText(""
 										+ FOGItems[k].getRatio()
 										+ " - P2P Best");
-								gui.itemRatios[k].setFont(new Font("SansSerif",
-										Font.BOLD, 12));
-								gui.itemRatios[k].setBounds(new Rectangle(
-										new Point(435, v[k] + 1),
-										gui.itemRatios[k].getPreferredSize()));
+								gui.itemRatios[k].setFont(new Font("SansSerif", Font.BOLD, 12));
+								gui.itemRatios[k].setBounds(new Rectangle(new Point(435, v[k] + 1), gui.itemRatios[k].getPreferredSize()));
 							}
 						}
 					} else {
@@ -5120,11 +4602,8 @@ public class FOGRunner extends Script implements PaintListener,
 								gui.itemRatios[k].setText(""
 										+ FOGItems[k].getRatio()
 										+ " - F2P Best");
-								gui.itemRatios[k].setFont(new Font("SansSerif",
-										Font.BOLD, 12));
-								gui.itemRatios[k].setBounds(new Rectangle(
-										new Point(435, v[k] + 1),
-										gui.itemRatios[k].getPreferredSize()));
+								gui.itemRatios[k].setFont(new Font("SansSerif", Font.BOLD, 12));
+								gui.itemRatios[k].setBounds(new Rectangle(new Point(435, v[k] + 1), gui.itemRatios[k].getPreferredSize()));
 							}
 						}
 					}
@@ -5205,8 +4684,7 @@ public class FOGRunner extends Script implements PaintListener,
 		}
 		if (!loadBannerFromFile) {
 			try {
-				final URL bannerURL = new URL(
-						"http://i55.tinypic.com/288144x.png");
+				final URL bannerURL = new URL("http://i55.tinypic.com/288144x.png");
 				banner = ImageIO.read(bannerURL);
 				success = true;
 			} catch (final MalformedURLException e) {
@@ -5226,8 +4704,7 @@ public class FOGRunner extends Script implements PaintListener,
 			final URL cursorURL = new URL("http://i54.tinypic.com/2unwz85.png");
 			final URL clickedURL = new URL("http://i51.tinypic.com/24y1lxe.png");
 			final URL upArrowURL = new URL("http://i51.tinypic.com/16ge3no.png");
-			final URL downArrowURL = new URL(
-					"http://i53.tinypic.com/2j49b0k.png");
+			final URL downArrowURL = new URL("http://i53.tinypic.com/2j49b0k.png");
 			normal = ImageIO.read(cursorURL);
 			clicked = ImageIO.read(clickedURL);
 			upArrow = ImageIO.read(upArrowURL);
@@ -5318,8 +4795,7 @@ public class FOGRunner extends Script implements PaintListener,
 		int i = 0;
 		while (i < 11) {
 			try {
-				final RSComponent comp = equipment.getInterface().getComponent(
-						eComps[i]);
+				final RSComponent comp = equipment.getInterface().getComponent(eComps[i]);
 				final String[] compActions = comp.getActions();
 				if (compActions[0].contains("Remove")) {
 					itemsFound++;
@@ -5423,13 +4899,11 @@ public class FOGRunner extends Script implements PaintListener,
 					if (justStarted) {
 						if (randomGameSwitch) {
 							if (!nextRandomSwitchSet) {
-								final int properRandomHigh = Methods.random(
-										1000, 5000);
+								final int properRandomHigh = Methods.random(1000, 5000);
 								final int aThousand = 1000;
 								final double smaller = (double) properRandomHigh
 										/ (double) aThousand;
-								final int properRandom = (int) Math
-										.round(smaller);
+								final int properRandom = (int) Math.round(smaller);
 								if (dmode) {
 									log("Next style switch: " + properRandom);
 								}
@@ -5439,26 +4913,8 @@ public class FOGRunner extends Script implements PaintListener,
 						}
 						Methods.sleep(250);
 						try {
-							startRating = Integer
-									.parseInt(interfaces
-											.get(731)
-											.getComponent(7)
-											.getText()
-											.substring(
-													interfaces.get(731)
-															.getComponent(7)
-															.getText()
-															.indexOf(":") + 2));
-							currentRating = Integer
-									.parseInt(interfaces
-											.get(731)
-											.getComponent(7)
-											.getText()
-											.substring(
-													interfaces.get(731)
-															.getComponent(7)
-															.getText()
-															.indexOf(":") + 2));
+							startRating = Integer.parseInt(interfaces.get(731).getComponent(7).getText().substring(interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
+							currentRating = Integer.parseInt(interfaces.get(731).getComponent(7).getText().substring(interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
 						} catch (final StringIndexOutOfBoundsException e) {
 							if (dmode) {
 								e.printStackTrace();
@@ -5484,13 +4940,11 @@ public class FOGRunner extends Script implements PaintListener,
 								nextRandomSwitchSet = false;
 							}
 							if (!nextRandomSwitchSet) {
-								final int properRandomHigh = Methods.random(
-										1000, 5000);
+								final int properRandomHigh = Methods.random(1000, 5000);
 								final int aThousand = 1000;
 								final double smaller = (double) properRandomHigh
 										/ (double) aThousand;
-								final int properRandom = (int) Math
-										.round(smaller);
+								final int properRandom = (int) Math.round(smaller);
 								if (dmode) {
 									log("Next style switch: " + properRandom);
 								}
@@ -5504,16 +4958,7 @@ public class FOGRunner extends Script implements PaintListener,
 					}
 					if (!gotRatingInfo) {
 						try {
-							currentRating = Integer
-									.parseInt(interfaces
-											.get(731)
-											.getComponent(7)
-											.getText()
-											.substring(
-													interfaces.get(731)
-															.getComponent(7)
-															.getText()
-															.indexOf(":") + 2));
+							currentRating = Integer.parseInt(interfaces.get(731).getComponent(7).getText().substring(interfaces.get(731).getComponent(7).getText().indexOf(":") + 2));
 							gainedRating = currentRating - startRating;
 							gotRatingInfo = true;
 							dlog("Got Rating Stats");
@@ -5579,8 +5024,7 @@ public class FOGRunner extends Script implements PaintListener,
 						if (!getMyPlayer().isMoving()) {
 							status = "Going into Waiting Room...";
 							mouse.setSpeed(3);
-							final RSObject entranceObject = objects
-									.getNearest(30224);
+							final RSObject entranceObject = objects.getNearest(30224);
 							mouse.move(calc.tileToScreen(entrance, 1));
 							int timesTried = 0;
 							while (!entranceObject.doAction("Go-through")
@@ -5640,8 +5084,7 @@ public class FOGRunner extends Script implements PaintListener,
 						overallStatus = "In Waiting Room";
 						status = "Waiting...";
 						Methods.sleep(Methods.random(825, 1225));
-						walking.walkTileOnScreen(new RSTile(Methods.random(
-								1650, 1652), Methods.random(5598, 5604)));
+						walking.walkTileOnScreen(new RSTile(Methods.random(1650, 1652), Methods.random(5598, 5604)));
 						Methods.sleep(500);
 					}
 				}
@@ -5655,10 +5098,8 @@ public class FOGRunner extends Script implements PaintListener,
 					if (round == 1) {
 						if (!setVarsRound1) {
 							goTimer.reset();
-							prevHg = interfaces.get(730).getComponent(26)
-									.getBoundsArrayIndex();
-							prevHd = interfaces.get(730).getComponent(27)
-									.getBoundsArrayIndex();
+							prevHg = interfaces.get(730).getComponent(26).getBoundsArrayIndex();
+							prevHd = interfaces.get(730).getComponent(27).getBoundsArrayIndex();
 							setVarsRound1 = true;
 						}
 						if (!gone) {
@@ -5689,10 +5130,8 @@ public class FOGRunner extends Script implements PaintListener,
 						}
 						if (gone) {
 							if (!startedUp) {
-								prevHg = interfaces.get(730).getComponent(26)
-										.getBoundsArrayIndex();
-								prevHd = interfaces.get(730).getComponent(27)
-										.getBoundsArrayIndex();
+								prevHg = interfaces.get(730).getComponent(26).getBoundsArrayIndex();
+								prevHd = interfaces.get(730).getComponent(27).getBoundsArrayIndex();
 								if (prevHg != -1) {
 									hunted = false;
 									roundOneHunted = false;
@@ -5722,8 +5161,7 @@ public class FOGRunner extends Script implements PaintListener,
 								if (!atCenter()) {
 									status = "Running to Center";
 									antiBanTime = false;
-									final RSTile[] tilePath = walking
-											.findPath(centerTile);
+									final RSTile[] tilePath = walking.findPath(centerTile);
 									walking.walkPathMM(tilePath);
 									Methods.sleep(Methods.random(600, 1200));
 								} else {
@@ -5740,8 +5178,7 @@ public class FOGRunner extends Script implements PaintListener,
 										}
 										setSkinPrayer();
 										if (useQuickPrayers) {
-											if (quickPrayersLong
-													.equals("When Being Hunted")) {
+											if (quickPrayersLong.equals("When Being Hunted")) {
 												setQuickPrayers(true);
 											}
 										}
@@ -5754,8 +5191,7 @@ public class FOGRunner extends Script implements PaintListener,
 								}
 								if (getMyPlayer().getHPPercent() < 50) {
 									if (useBandages) {
-										if (inventory.getCount(false,
-												bandagesID) > 0) {
+										if (inventory.getCount(false, bandagesID) > 0) {
 											status = "Using Bandages...";
 											dlog("Using Bandages...");
 											doActionExtreme(bandagesID, "Heal");
@@ -5789,20 +5225,15 @@ public class FOGRunner extends Script implements PaintListener,
 									timerStarted = false;
 									searchTileOn = 0;
 									searching = false;
-									if (calc.distanceBetween(getMyPlayer()
-											.getLocation(), getPlayerLoc()) > 4.3
+									if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3
 											&& !attacking()) {
 										status = "Running to Opponent...";
 										antiBanTime = false;
-										walking.walkPathMM(walking
-												.findPath(getPlayerLoc()));
+										walking.walkPathMM(walking.findPath(getPlayerLoc()));
 										if (currentStyle.equals("Magic")
 												|| currentStyle.equals("Range")) {
 											try {
-												if (calc.distanceBetween(
-														getMyPlayer()
-																.getLocation(),
-														getPlayerLocThrow()) < 15.0) {
+												if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLocThrow()) < 15.0) {
 													final char keyDown = KeyEvent.VK_DOWN;
 													keyboard.pressKey(keyDown);
 													camera.turnToCharacter(getPlayerThrow());
@@ -5822,50 +5253,38 @@ public class FOGRunner extends Script implements PaintListener,
 										}
 										int sleepTime = 0;
 										while (playerLocKnown()
-												&& calc.distanceBetween(
-														getMyPlayer()
-																.getLocation(),
-														getPlayerLoc()) > 4.3
-												&& sleepTime < Methods.random(
-														300, 400)) {
+												&& calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3
+												&& sleepTime < Methods.random(300, 400)) {
 											Methods.sleep(1);
 											sleepTime++;
 										}
 									}
 									if (playerLocKnown()
-											&& (calc.distanceBetween(
-													getMyPlayer().getLocation(),
-													getPlayerLoc()) <= 4.3 || attacking())) {
+											&& (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) <= 4.3 || attacking())) {
 										if (getPlayer().getHPPercent() > 0) {
 											if (!attacking()) {
 												antiBanTime = false;
 												attack();
 											} else {
-												if (currentStyle
-														.equals("Melee")) { // MELEE
-																			// GLITCH
-																			// BUG
-																			// FIX
-																			// 12345
+												if (currentStyle.equals("Melee")) { // MELEE
+																					// GLITCH
+																					// BUG
+																					// FIX
+																					// 12345
 													if (calc.distanceTo(getPlayerLoc()) > 1
-															&& !getMyPlayer()
-																	.isMoving()
-															&& !getPlayer()
-																	.isMoving()) {
+															&& !getMyPlayer().isMoving()
+															&& !getPlayer().isMoving()) {
 														if (meleeSafeSpotSwitch) {
 															setRandomStyle();
-															if (currentStyle
-																	.equals("Magic")) {
+															if (currentStyle.equals("Magic")) {
 																setSpell();
 															}
 														} else {
 															if (!meleeTimerStarted) {
-																meleeTimer
-																		.reset();
+																meleeTimer.reset();
 																meleeTimerStarted = true;
 															} else {
-																if (!meleeTimer
-																		.isRunning()) {
+																if (!meleeTimer.isRunning()) {
 																	attack();
 																}
 																meleeTimerStarted = false;
@@ -5879,13 +5298,11 @@ public class FOGRunner extends Script implements PaintListener,
 												}
 												setAttackPrayer();
 												if (useQuickPrayers) {
-													if (quickPrayersLong
-															.equals("When Hunting")) {
+													if (quickPrayersLong.equals("When Hunting")) {
 														setQuickPrayers(true);
 													}
 												}
-												if (currentStyle
-														.equals("Magic")) {
+												if (currentStyle.equals("Magic")) {
 													if (!maging()) {
 														setSpell();
 													}
@@ -5895,8 +5312,7 @@ public class FOGRunner extends Script implements PaintListener,
 														hits = 0;
 														setNextHitSwitch();
 														setRandomStyle();
-														if (currentStyle
-																.equals("Magic")) {
+														if (currentStyle.equals("Magic")) {
 															setSpell();
 														}
 													}
@@ -5920,8 +5336,7 @@ public class FOGRunner extends Script implements PaintListener,
 												lastAttackPrayerSet = 0;
 												lastSkinPrayerSet = -1;
 												Methods.sleep(1);
-												lastKnownLoc = new RSTile(-1,
-														-1);
+												lastKnownLoc = new RSTile(-1, -1);
 												timerToUse = 1;
 												meleeTimerStarted = false;
 											}
@@ -5939,8 +5354,7 @@ public class FOGRunner extends Script implements PaintListener,
 									if (!atCenter() && !searching) {
 										status = "Running to Center";
 										antiBanTime = false;
-										final RSTile[] tilePath = walking
-												.findPath(centerTile);
+										final RSTile[] tilePath = walking.findPath(centerTile);
 										walking.walkPathMM(tilePath);
 										Methods.sleep(Methods.random(600, 1200));
 										timerStarted = false;
@@ -6043,8 +5457,7 @@ public class FOGRunner extends Script implements PaintListener,
 								if (!atCenter()) {
 									status = "Running to Center...";
 									antiBanTime = false;
-									final RSTile[] tilePath = walking
-											.findPath(centerTile);
+									final RSTile[] tilePath = walking.findPath(centerTile);
 									walking.walkPathMM(tilePath);
 									Methods.sleep(Methods.random(600, 1200));
 								} else {
@@ -6061,8 +5474,7 @@ public class FOGRunner extends Script implements PaintListener,
 										}
 										setSkinPrayer();
 										if (useQuickPrayers) {
-											if (quickPrayersLong
-													.equals("When Being Hunted")) {
+											if (quickPrayersLong.equals("When Being Hunted")) {
 												setQuickPrayers(true);
 											}
 										}
@@ -6075,8 +5487,7 @@ public class FOGRunner extends Script implements PaintListener,
 								}
 								if (getMyPlayer().getHPPercent() < 50) {
 									if (useBandages) {
-										if (inventory.getCount(false,
-												bandagesID) > 0) {
+										if (inventory.getCount(false, bandagesID) > 0) {
 											status = "Using Bandages...";
 											dlog("Using Bandages...");
 											doActionExtreme(bandagesID, "Heal");
@@ -6099,20 +5510,15 @@ public class FOGRunner extends Script implements PaintListener,
 									timerStarted = false;
 									searchTileOn = 0;
 									searching = false;
-									if (calc.distanceBetween(getMyPlayer()
-											.getLocation(), getPlayerLoc()) > 4.3
+									if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3
 											&& !attacking()) {
 										status = "Running to Opponent";
 										antiBanTime = false;
-										walking.walkPathMM(walking
-												.findPath(getPlayerLoc()));
+										walking.walkPathMM(walking.findPath(getPlayerLoc()));
 										if (currentStyle.equals("Magic")
 												|| currentStyle.equals("Range")) {
 											try {
-												if (calc.distanceBetween(
-														getMyPlayer()
-																.getLocation(),
-														getPlayerLocThrow()) < 15.0) {
+												if (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLocThrow()) < 15.0) {
 													final char keyDown = KeyEvent.VK_DOWN;
 													keyboard.pressKey(keyDown);
 													camera.turnToCharacter(getPlayerThrow());
@@ -6132,50 +5538,38 @@ public class FOGRunner extends Script implements PaintListener,
 										}
 										int sleepTime = 0;
 										while (playerLocKnown()
-												&& calc.distanceBetween(
-														getMyPlayer()
-																.getLocation(),
-														getPlayerLoc()) > 4.3
-												&& sleepTime < Methods.random(
-														300, 400)) {
+												&& calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) > 4.3
+												&& sleepTime < Methods.random(300, 400)) {
 											Methods.sleep(1);
 											sleepTime++;
 										}
 									}
 									if (playerLocKnown()
-											&& (calc.distanceBetween(
-													getMyPlayer().getLocation(),
-													getPlayerLoc()) <= 4.3 || attacking())) {
+											&& (calc.distanceBetween(getMyPlayer().getLocation(), getPlayerLoc()) <= 4.3 || attacking())) {
 										if (getPlayer().getHPPercent() > 0) {
 											if (!attacking()) {
 												antiBanTime = false;
 												attack();
 											} else {
-												if (currentStyle
-														.equals("Melee")) { // MELEE
-																			// GLITCH
-																			// BUG
-																			// FIX
-																			// 12345
+												if (currentStyle.equals("Melee")) { // MELEE
+																					// GLITCH
+																					// BUG
+																					// FIX
+																					// 12345
 													if (calc.distanceTo(getPlayerLoc()) > 1
-															&& !getMyPlayer()
-																	.isMoving()
-															&& !getPlayer()
-																	.isMoving()) {
+															&& !getMyPlayer().isMoving()
+															&& !getPlayer().isMoving()) {
 														if (meleeSafeSpotSwitch) {
 															setRandomStyle();
-															if (currentStyle
-																	.equals("Magic")) {
+															if (currentStyle.equals("Magic")) {
 																setSpell();
 															}
 														} else {
 															if (!meleeTimerStarted) {
-																meleeTimer
-																		.reset();
+																meleeTimer.reset();
 																meleeTimerStarted = true;
 															} else {
-																if (!meleeTimer
-																		.isRunning()) {
+																if (!meleeTimer.isRunning()) {
 																	attack();
 																}
 																meleeTimerStarted = false;
@@ -6189,13 +5583,11 @@ public class FOGRunner extends Script implements PaintListener,
 												}
 												setAttackPrayer();
 												if (useQuickPrayers) {
-													if (quickPrayersLong
-															.equals("When Hunting")) {
+													if (quickPrayersLong.equals("When Hunting")) {
 														setQuickPrayers(true);
 													}
 												}
-												if (currentStyle
-														.equals("Magic")) {
+												if (currentStyle.equals("Magic")) {
 													if (!maging()) {
 														setSpell();
 													}
@@ -6205,8 +5597,7 @@ public class FOGRunner extends Script implements PaintListener,
 														hits = 0;
 														setNextHitSwitch();
 														setRandomStyle();
-														if (currentStyle
-																.equals("Magic")) {
+														if (currentStyle.equals("Magic")) {
 															setSpell();
 														}
 													}
@@ -6235,8 +5626,7 @@ public class FOGRunner extends Script implements PaintListener,
 									if (!atCenter() && !searching) {
 										status = "Running to Center...";
 										antiBanTime = false;
-										final RSTile[] tilePath = walking
-												.findPath(centerTile);
+										final RSTile[] tilePath = walking.findPath(centerTile);
 										walking.walkPathMM(tilePath);
 										Methods.sleep(Methods.random(600, 1200));
 										timerStarted = false;
@@ -6344,12 +5734,8 @@ public class FOGRunner extends Script implements PaintListener,
 			if (messageStringLower.contains("you won")) {
 				gamesPlayed++;
 				gamesWon++;
-				final String chargesString = messageStringLower.substring(
-						messageStringLower.indexOf("you had") + 8,
-						messageStringLower.indexOf("charges") - 1);
-				final String chargesStringO = messageStringLower.substring(
-						messageStringLower.indexOf("opponent had") + 13,
-						messageStringLower.lastIndexOf("."));
+				final String chargesString = messageStringLower.substring(messageStringLower.indexOf("you had") + 8, messageStringLower.indexOf("charges") - 1);
+				final String chargesStringO = messageStringLower.substring(messageStringLower.indexOf("opponent had") + 13, messageStringLower.lastIndexOf("."));
 				if (dmode) {
 					log("Strings: You: " + chargesString + " Opponent: "
 							+ chargesStringO);
@@ -6367,12 +5753,8 @@ public class FOGRunner extends Script implements PaintListener,
 			if (messageStringLower.contains("you lost")) {
 				gamesPlayed++;
 				gamesLost++;
-				final String chargesString = messageStringLower.substring(
-						messageStringLower.indexOf("you had") + 8,
-						messageStringLower.indexOf("charges") - 1);
-				final String chargesStringO = messageStringLower.substring(
-						messageStringLower.indexOf("opponent had") + 13,
-						messageStringLower.lastIndexOf("."));
+				final String chargesString = messageStringLower.substring(messageStringLower.indexOf("you had") + 8, messageStringLower.indexOf("charges") - 1);
+				final String chargesStringO = messageStringLower.substring(messageStringLower.indexOf("opponent had") + 13, messageStringLower.lastIndexOf("."));
 				if (dmode) {
 					log("Strings: You: " + chargesString + " Opponent: "
 							+ chargesStringO);
@@ -6509,10 +5891,11 @@ public class FOGRunner extends Script implements PaintListener,
 			if (prevHg != -1 || prevHd != -1) {
 				if (interfaces.get(730).getComponent(26).getBoundsArrayIndex() != -1
 						&& // hunting component index = 26
-						interfaces.get(730).getComponent(27)
-								.getBoundsArrayIndex() != -1) { // hunted
-																// component
-																// index = 27
+						interfaces.get(730).getComponent(27).getBoundsArrayIndex() != -1) { // hunted
+																							// component
+																							// index
+																							// =
+																							// 27
 					if (round != 2) {
 						canDrawTheirTile = false;
 						antiBanTime = false;
@@ -6555,8 +5938,7 @@ public class FOGRunner extends Script implements PaintListener,
 
 		// Your Player Tile
 		try {
-			drawTile(g, getMyPlayer().getLocation(), new Color(0, 255, 0, 80),
-					"You", new Color(0, 255, 0, 255));
+			drawTile(g, getMyPlayer().getLocation(), new Color(0, 255, 0, 80), "You", new Color(0, 255, 0, 255));
 		} catch (final NullPointerException ignored) {
 		}
 
@@ -6565,8 +5947,7 @@ public class FOGRunner extends Script implements PaintListener,
 			try {
 				if (getPlayerLocThrow().getX() != 0) {
 					lastKnownLoc = getPlayerLocThrow();
-					drawTile(g, getPlayerLocThrow(), new Color(255, 0, 0, 80),
-							"Opponent", new Color(255, 0, 0, 255));
+					drawTile(g, getPlayerLocThrow(), new Color(255, 0, 0, 80), "Opponent", new Color(255, 0, 0, 255));
 				}
 			} catch (final NullPointerException e) {
 				canDrawTheirTile = false;
@@ -6640,10 +6021,8 @@ public class FOGRunner extends Script implements PaintListener,
 				g.drawString(status, 205, 316);
 			}
 			if (dmode) {
-				final String hgS = Integer.toString(interfaces.get(730)
-						.getComponent(26).getBoundsArrayIndex());
-				final String hdS = Integer.toString(interfaces.get(730)
-						.getComponent(27).getBoundsArrayIndex());
+				final String hgS = Integer.toString(interfaces.get(730).getComponent(26).getBoundsArrayIndex());
+				final String hdS = Integer.toString(interfaces.get(730).getComponent(27).getBoundsArrayIndex());
 				int magicIndex = -1;
 				if (magic.getInterface() != null
 						&& magic.getInterface().isValid()) {
@@ -6657,8 +6036,7 @@ public class FOGRunner extends Script implements PaintListener,
 				if (canDrawInfo) {
 					try {
 						if (dmode) {
-							final String thing = Integer
-									.toString(getPlayerThrow().getAnimation());
+							final String thing = Integer.toString(getPlayerThrow().getAnimation());
 							g.drawString("OP Anim: " + thing, 2, 287);
 						}
 						g.drawString("Opponent LvL: "
@@ -6672,13 +6050,10 @@ public class FOGRunner extends Script implements PaintListener,
 									if (!hunted) {
 										if (attacking()) {
 											if (getPlayerThrow().getHPPercent() < lastKnownHealth) {
-												lastKnownHealth = getPlayerThrow()
-														.getHPPercent();
+												lastKnownHealth = getPlayerThrow().getHPPercent();
 												hits++;
-											} else if (getPlayerThrow()
-													.getHPPercent() > lastKnownHealth) {
-												lastKnownHealth = getPlayerThrow()
-														.getHPPercent();
+											} else if (getPlayerThrow().getHPPercent() > lastKnownHealth) {
+												lastKnownHealth = getPlayerThrow().getHPPercent();
 											}
 										}
 									}
@@ -6687,13 +6062,10 @@ public class FOGRunner extends Script implements PaintListener,
 									if (!hunted2) {
 										if (attacking()) {
 											if (getPlayerThrow().getHPPercent() < lastKnownHealth) {
-												lastKnownHealth = getPlayerThrow()
-														.getHPPercent();
+												lastKnownHealth = getPlayerThrow().getHPPercent();
 												hits++;
-											} else if (getPlayerThrow()
-													.getHPPercent() > lastKnownHealth) {
-												lastKnownHealth = getPlayerThrow()
-														.getHPPercent();
+											} else if (getPlayerThrow().getHPPercent() > lastKnownHealth) {
+												lastKnownHealth = getPlayerThrow().getHPPercent();
 											}
 										}
 									}
@@ -6718,18 +6090,12 @@ public class FOGRunner extends Script implements PaintListener,
 		final Color buttonOverOn = new Color(40, 95, 40, 255);
 		final Color buttonPressedOn = new Color(0, 60, 0, 255);
 
-		final Color buttonNormalS = new Color(30, 30, 100,
-				(int) (255 * statsAlpha));
-		final Color buttonOverS = new Color(60, 60, 130,
-				(int) (255 * statsAlpha));
-		final Color buttonPressedS = new Color(0, 0, 50,
-				(int) (255 * statsAlpha));
-		final Color buttonNormalOnS = new Color(20, 75, 20,
-				(int) (255 * statsAlpha));
-		final Color buttonOverOnS = new Color(40, 95, 40,
-				(int) (255 * statsAlpha));
-		final Color buttonPressedOnS = new Color(0, 60, 0,
-				(int) (255 * statsAlpha));
+		final Color buttonNormalS = new Color(30, 30, 100, (int) (255 * statsAlpha));
+		final Color buttonOverS = new Color(60, 60, 130, (int) (255 * statsAlpha));
+		final Color buttonPressedS = new Color(0, 0, 50, (int) (255 * statsAlpha));
+		final Color buttonNormalOnS = new Color(20, 75, 20, (int) (255 * statsAlpha));
+		final Color buttonOverOnS = new Color(40, 95, 40, (int) (255 * statsAlpha));
+		final Color buttonPressedOnS = new Color(0, 60, 0, (int) (255 * statsAlpha));
 
 		Color statsWhite = new Color(255, 255, 255, (int) (255 * statsAlpha));
 
@@ -6762,14 +6128,12 @@ public class FOGRunner extends Script implements PaintListener,
 				g.setColor(new Color(255, 255, 255, (int) (255 * statsAlpha)));
 				g.drawRoundRect(555, 327, 175, 134, cornerNum, cornerNum);
 				g.setFont(new Font("Arial", Font.BOLD, 14));
-				g.drawString(properties.name() + " v" + getVersion(), 561,
-						coords[9] + 8);
+				g.drawString(properties.name() + " v" + getVersion(), 561, coords[9] + 8);
 				g.setFont(new Font("Arial", Font.PLAIN, 12));
 				g.drawString("Run Time: " + hours + ":" + minutes + ":"
 						+ seconds, 561, coords[10] + 8);
 				g.setColor(new Color(200, 200, 200, (int) (255 * statsAlpha)));
-				g.drawString("-----------------------------------------", 561,
-						coords[11] + 3);
+				g.drawString("-----------------------------------------", 561, coords[11] + 3);
 				g.setColor(statsWhite);
 				g.drawString("Tokens Gained: " + tokensGained, 561, coords[12]);
 				g.drawString("Tokens/Hour: " + tokensPerHour, 561, coords[13]);
@@ -6794,20 +6158,18 @@ public class FOGRunner extends Script implements PaintListener,
 					break;
 				}
 				g.setColor(new Color(0, 0, 70, (int) (110 * statsAlpha)));
-				g.fillRoundRect(555, 327 - moreStatsOffset, 175,
-						134 + moreStatsOffset, cornerNum, cornerNum);
+				g.fillRoundRect(555, 327 - moreStatsOffset, 175, 134 + moreStatsOffset, cornerNum, cornerNum);
 				g.setColor(statsWhite);
-				g.drawRoundRect(555, 327 - moreStatsOffset, 175,
-						134 + moreStatsOffset, cornerNum, cornerNum);
+				g.drawRoundRect(555, 327 - moreStatsOffset, 175, 134 + moreStatsOffset, cornerNum, cornerNum);
 				g.setFont(new Font("Arial", Font.BOLD, 14));
-				g.drawString(properties.name() + " v" + getVersion(), 561,
-						coords[9] + 8 - moreStatsOffset);
+				g.drawString(properties.name() + " v" + getVersion(), 561, coords[9]
+						+ 8 - moreStatsOffset);
 				g.setFont(new Font("Arial", Font.PLAIN, 12));
 				g.drawString("Run Time: " + hours + ":" + minutes + ":"
 						+ seconds, 561, coords[10] + 8 - moreStatsOffset);
 				g.setColor(new Color(200, 200, 200, (int) (255 * statsAlpha)));
-				g.drawString("-----------------------------------------", 561,
-						coords[11] + 3 - moreStatsOffset);
+				g.drawString("-----------------------------------------", 561, coords[11]
+						+ 3 - moreStatsOffset);
 				g.setColor(statsWhite);
 				g.drawString("Tokens Gained: " + tokensGained, 561, coords[12]
 						- moreStatsOffset);
@@ -6880,8 +6242,7 @@ public class FOGRunner extends Script implements PaintListener,
 						}
 					}
 					g.setColor(new Color(255, 255, 255, getTextAlpha(3)));
-					g.drawString("Average Charges: " + averageCharges, 561,
-							coords[11]);
+					g.drawString("Average Charges: " + averageCharges, 561, coords[11]);
 				}
 				if (moreStatsOffset >= 60) {
 					if (moreStats == 1 || moreStats == 2) {
@@ -6914,8 +6275,7 @@ public class FOGRunner extends Script implements PaintListener,
 						}
 					}
 					g.setColor(new Color(255, 255, 255, getTextAlpha(5)));
-					g.drawString("Current Rating: " + currentRating, 561,
-							coords[13]);
+					g.drawString("Current Rating: " + currentRating, 561, coords[13]);
 				}
 				if (moreStatsOffset >= 30) {
 					if (moreStats == 1 || moreStats == 2) {
@@ -6931,8 +6291,7 @@ public class FOGRunner extends Script implements PaintListener,
 						}
 					}
 					g.setColor(new Color(255, 255, 255, getTextAlpha(6)));
-					g.drawString("Gained Rating: " + gainedRating, 561,
-							coords[14]);
+					g.drawString("Gained Rating: " + gainedRating, 561, coords[14]);
 				}
 				if (moreStatsOffset >= 15) {
 					if (moreStats == 1 || moreStats == 2) {
@@ -6948,8 +6307,7 @@ public class FOGRunner extends Script implements PaintListener,
 						}
 					}
 					g.setColor(new Color(255, 255, 255, getTextAlpha(7)));
-					g.drawString("Rating/Hour: " + ratingPerHour, 561,
-							coords[15]);
+					g.drawString("Rating/Hour: " + ratingPerHour, 561, coords[15]);
 				}
 			}
 		}
@@ -6987,8 +6345,8 @@ public class FOGRunner extends Script implements PaintListener,
 					- startMagicExp;
 			final int gainedRangeExp = skills.getCurrentExp(Skills.RANGE)
 					- startRangeExp;
-			final int gainedConstitutionExp = skills
-					.getCurrentExp(Skills.CONSTITUTION) - startConstitutionExp;
+			final int gainedConstitutionExp = skills.getCurrentExp(Skills.CONSTITUTION)
+					- startConstitutionExp;
 
 			final int gainedAttackExpHour = (int) (3600000.0 / (double) runTime * gainedAttackExp);
 			final int gainedStrengthExpHour = (int) (3600000.0 / (double) runTime * gainedStrengthExp);
@@ -6999,39 +6357,31 @@ public class FOGRunner extends Script implements PaintListener,
 
 			final int gainedAttackLevel = skills.getRealLevel(Skills.ATTACK)
 					- startAttackLevel;
-			final int gainedStrengthLevel = skills
-					.getRealLevel(Skills.STRENGTH) - startStrengthLevel;
+			final int gainedStrengthLevel = skills.getRealLevel(Skills.STRENGTH)
+					- startStrengthLevel;
 			final int gainedDefenceLevel = skills.getRealLevel(Skills.DEFENSE)
 					- startDefenceLevel;
 			final int gainedMagicLevel = skills.getRealLevel(Skills.MAGIC)
 					- startMagicLevel;
 			final int gainedRangeLevel = skills.getRealLevel(Skills.RANGE)
 					- startRangeLevel;
-			final int gainedConstitutionLevel = skills
-					.getRealLevel(Skills.CONSTITUTION) - startConstitutionLevel;
+			final int gainedConstitutionLevel = skills.getRealLevel(Skills.CONSTITUTION)
+					- startConstitutionLevel;
 
-			final Color blackVisible = new Color(0, 0, 0,
-					(int) (200 * expAlpha));
+			final Color blackVisible = new Color(0, 0, 0, (int) (200 * expAlpha));
 			final Color blackInvisible = new Color(0, 0, 0, 0);
 			expGradientBox.y = expYs[nextPlace];
-			final GradientPaint expGradient = new GradientPaint(
-					expGradientBox.x, expGradientBox.y, blackVisible,
-					expGradientBox.x, expGradientBox.y + expGradientBox.height,
-					blackInvisible, false);
+			final GradientPaint expGradient = new GradientPaint(expGradientBox.x, expGradientBox.y, blackVisible, expGradientBox.x, expGradientBox.y
+					+ expGradientBox.height, blackInvisible, false);
 			g2d.setPaint(expGradient);
-			g2d.fillRect(expGradientBox.x, expGradientBox.y,
-					expGradientBox.width, expGradientBox.height);
+			g2d.fillRect(expGradientBox.x, expGradientBox.y, expGradientBox.width, expGradientBox.height);
 
-			final Color expDarkGrey = new Color(70, 70, 70,
-					(int) (255 * expAlpha));
-			final Color expDarkerGrey = new Color(40, 40, 40,
-					(int) (255 * expAlpha));
+			final Color expDarkGrey = new Color(70, 70, 70, (int) (255 * expAlpha));
+			final Color expDarkerGrey = new Color(40, 40, 40, (int) (255 * expAlpha));
 			final Color expBlack = new Color(0, 0, 0, (int) (255 * expAlpha));
-			final Color expDarkBlue = new Color(0, 0, 150,
-					(int) (255 * expAlpha));
+			final Color expDarkBlue = new Color(0, 0, 150, (int) (255 * expAlpha));
 			final Color expBrown = new Color(75, 45, 0, (int) (255 * expAlpha));
-			final Color expDarkRed = new Color(150, 0, 0,
-					(int) (255 * expAlpha));
+			final Color expDarkRed = new Color(150, 0, 0, (int) (255 * expAlpha));
 			final Color expGreen = new Color(0, 255, 0, (int) (255 * expAlpha));
 			final Color expRed = new Color(255, 0, 0, (int) (255 * expAlpha));
 
@@ -7041,26 +6391,19 @@ public class FOGRunner extends Script implements PaintListener,
 					nextPlace++;
 				}
 				g.setColor(expBlack);
-				g.fillRoundRect(attackBox.x, attackBox.y, attackBox.width,
-						attackBox.height, 0, 0);
+				g.fillRoundRect(attackBox.x, attackBox.y, attackBox.width, attackBox.height, 0, 0);
 				g.setColor(expWhite);
 				g.setFont(new Font("Arial", Font.BOLD, 11));
 				g.drawString("Attack", attackBox.x + 3, attackBox.y + 10);
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
-				g.drawString("XP Gained: " + gainedAttackExp, attackBox.x + 77,
-						attackBox.y + 10);
-				g.drawString("XP/Hour: " + gainedAttackExpHour,
-						attackBox.x + 183, attackBox.y + 10);
+				g.drawString("XP Gained: " + gainedAttackExp, attackBox.x + 77, attackBox.y + 10);
+				g.drawString("XP/Hour: " + gainedAttackExpHour, attackBox.x + 183, attackBox.y + 10);
 				g.drawString("Level: " + skills.getRealLevel(Skills.ATTACK)
-						+ "(+" + gainedAttackLevel + ")", attackBox.x + 268,
-						attackBox.y + 10);
+						+ "(+" + gainedAttackLevel + ")", attackBox.x + 268, attackBox.y + 10);
 				if (skills.getRealLevel(Skills.ATTACK) < 99) {
 					g.drawString("% to "
-							+ (skills.getRealLevel(Skills.ATTACK) + 1) + ":",
-							attackBox.x + 343, attackBox.y + 10);
-					drawPercentBar(g, g2d, attackBox.x + 385, attackBox.y + 1,
-							attackBox.height - 3, expBlack, expWhite, expGreen,
-							expRed, skills.getPercentToNextLevel(Skills.ATTACK));
+							+ (skills.getRealLevel(Skills.ATTACK) + 1) + ":", attackBox.x + 343, attackBox.y + 10);
+					drawPercentBar(g, g2d, attackBox.x + 385, attackBox.y + 1, attackBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.ATTACK));
 				}
 			}
 
@@ -7070,29 +6413,19 @@ public class FOGRunner extends Script implements PaintListener,
 					nextPlace++;
 				}
 				g.setColor(expDarkerGrey);
-				g.fillRoundRect(strengthBox.x, strengthBox.y,
-						strengthBox.width, strengthBox.height, 0, 0);
+				g.fillRoundRect(strengthBox.x, strengthBox.y, strengthBox.width, strengthBox.height, 0, 0);
 				g.setColor(expWhite);
 				g.setFont(new Font("Arial", Font.BOLD, 11));
 				g.drawString("Strength", strengthBox.x + 3, strengthBox.y + 10);
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
-				g.drawString("XP Gained: " + gainedStrengthExp,
-						strengthBox.x + 77, strengthBox.y + 10);
-				g.drawString("XP/Hour: " + gainedStrengthExpHour,
-						strengthBox.x + 183, strengthBox.y + 10);
+				g.drawString("XP Gained: " + gainedStrengthExp, strengthBox.x + 77, strengthBox.y + 10);
+				g.drawString("XP/Hour: " + gainedStrengthExpHour, strengthBox.x + 183, strengthBox.y + 10);
 				g.drawString("Level: " + skills.getRealLevel(Skills.STRENGTH)
-						+ "(+" + gainedStrengthLevel + ")",
-						strengthBox.x + 268, strengthBox.y + 10);
+						+ "(+" + gainedStrengthLevel + ")", strengthBox.x + 268, strengthBox.y + 10);
 				if (skills.getRealLevel(Skills.STRENGTH) < 99) {
-					g.drawString(
-							"% to "
-									+ (skills.getRealLevel(Skills.STRENGTH) + 1)
-									+ ":", strengthBox.x + 343,
-							strengthBox.y + 10);
-					drawPercentBar(g, g2d, strengthBox.x + 385,
-							strengthBox.y + 1, strengthBox.height - 3,
-							expBlack, expWhite, expGreen, expRed,
-							skills.getPercentToNextLevel(Skills.STRENGTH));
+					g.drawString("% to "
+							+ (skills.getRealLevel(Skills.STRENGTH) + 1) + ":", strengthBox.x + 343, strengthBox.y + 10);
+					drawPercentBar(g, g2d, strengthBox.x + 385, strengthBox.y + 1, strengthBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.STRENGTH));
 				}
 			}
 
@@ -7102,27 +6435,19 @@ public class FOGRunner extends Script implements PaintListener,
 					nextPlace++;
 				}
 				g.setColor(expDarkGrey);
-				g.fillRoundRect(defenceBox.x, defenceBox.y, defenceBox.width,
-						defenceBox.height, 0, 0);
+				g.fillRoundRect(defenceBox.x, defenceBox.y, defenceBox.width, defenceBox.height, 0, 0);
 				g.setColor(expWhite);
 				g.setFont(new Font("Arial", Font.BOLD, 11));
 				g.drawString("Defence", defenceBox.x + 3, defenceBox.y + 10);
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
-				g.drawString("XP Gained: " + gainedDefenceExp,
-						defenceBox.x + 77, defenceBox.y + 10);
-				g.drawString("XP/Hour: " + gainedDefenceExpHour,
-						defenceBox.x + 183, defenceBox.y + 10);
+				g.drawString("XP Gained: " + gainedDefenceExp, defenceBox.x + 77, defenceBox.y + 10);
+				g.drawString("XP/Hour: " + gainedDefenceExpHour, defenceBox.x + 183, defenceBox.y + 10);
 				g.drawString("Level: " + skills.getRealLevel(Skills.DEFENSE)
-						+ "(+" + gainedDefenceLevel + ")", defenceBox.x + 268,
-						defenceBox.y + 10);
+						+ "(+" + gainedDefenceLevel + ")", defenceBox.x + 268, defenceBox.y + 10);
 				if (skills.getRealLevel(Skills.DEFENSE) < 99) {
 					g.drawString("% to "
-							+ (skills.getRealLevel(Skills.DEFENSE) + 1) + ":",
-							defenceBox.x + 343, defenceBox.y + 10);
-					drawPercentBar(g, g2d, defenceBox.x + 385,
-							defenceBox.y + 1, defenceBox.height - 3, expBlack,
-							expWhite, expGreen, expRed,
-							skills.getPercentToNextLevel(Skills.DEFENSE));
+							+ (skills.getRealLevel(Skills.DEFENSE) + 1) + ":", defenceBox.x + 343, defenceBox.y + 10);
+					drawPercentBar(g, g2d, defenceBox.x + 385, defenceBox.y + 1, defenceBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.DEFENSE));
 				}
 			}
 
@@ -7132,26 +6457,19 @@ public class FOGRunner extends Script implements PaintListener,
 					nextPlace++;
 				}
 				g.setColor(expDarkBlue);
-				g.fillRoundRect(magicBox.x, magicBox.y, magicBox.width,
-						magicBox.height, 0, 0);
+				g.fillRoundRect(magicBox.x, magicBox.y, magicBox.width, magicBox.height, 0, 0);
 				g.setColor(expWhite);
 				g.setFont(new Font("Arial", Font.BOLD, 11));
 				g.drawString("Magic", magicBox.x + 3, magicBox.y + 10);
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
-				g.drawString("XP Gained: " + gainedMagicExp, magicBox.x + 77,
-						magicBox.y + 10);
-				g.drawString("XP/Hour: " + gainedMagicExpHour,
-						magicBox.x + 183, magicBox.y + 10);
+				g.drawString("XP Gained: " + gainedMagicExp, magicBox.x + 77, magicBox.y + 10);
+				g.drawString("XP/Hour: " + gainedMagicExpHour, magicBox.x + 183, magicBox.y + 10);
 				g.drawString("Level: " + skills.getRealLevel(Skills.MAGIC)
-						+ "(+" + gainedMagicLevel + ")", magicBox.x + 268,
-						magicBox.y + 10);
+						+ "(+" + gainedMagicLevel + ")", magicBox.x + 268, magicBox.y + 10);
 				if (skills.getRealLevel(Skills.MAGIC) < 99) {
 					g.drawString("% to "
-							+ (skills.getRealLevel(Skills.MAGIC) + 1) + ":",
-							magicBox.x + 343, magicBox.y + 10);
-					drawPercentBar(g, g2d, magicBox.x + 385, magicBox.y + 1,
-							magicBox.height - 3, expBlack, expWhite, expGreen,
-							expRed, skills.getPercentToNextLevel(Skills.MAGIC));
+							+ (skills.getRealLevel(Skills.MAGIC) + 1) + ":", magicBox.x + 343, magicBox.y + 10);
+					drawPercentBar(g, g2d, magicBox.x + 385, magicBox.y + 1, magicBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.MAGIC));
 				}
 			}
 
@@ -7161,26 +6479,19 @@ public class FOGRunner extends Script implements PaintListener,
 					nextPlace++;
 				}
 				g.setColor(expBrown);
-				g.fillRoundRect(rangeBox.x, rangeBox.y, rangeBox.width,
-						rangeBox.height, 0, 0);
+				g.fillRoundRect(rangeBox.x, rangeBox.y, rangeBox.width, rangeBox.height, 0, 0);
 				g.setColor(expWhite);
 				g.setFont(new Font("Arial", Font.BOLD, 11));
 				g.drawString("Range", rangeBox.x + 3, rangeBox.y + 10);
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
-				g.drawString("XP Gained: " + gainedRangeExp, rangeBox.x + 77,
-						rangeBox.y + 10);
-				g.drawString("XP/Hour: " + gainedRangeExpHour,
-						rangeBox.x + 183, rangeBox.y + 10);
+				g.drawString("XP Gained: " + gainedRangeExp, rangeBox.x + 77, rangeBox.y + 10);
+				g.drawString("XP/Hour: " + gainedRangeExpHour, rangeBox.x + 183, rangeBox.y + 10);
 				g.drawString("Level: " + skills.getRealLevel(Skills.RANGE)
-						+ "(+" + gainedRangeLevel + ")", rangeBox.x + 268,
-						rangeBox.y + 10);
+						+ "(+" + gainedRangeLevel + ")", rangeBox.x + 268, rangeBox.y + 10);
 				if (skills.getRealLevel(Skills.RANGE) < 99) {
 					g.drawString("% to "
-							+ (skills.getRealLevel(Skills.RANGE) + 1) + ":",
-							rangeBox.x + 343, rangeBox.y + 10);
-					drawPercentBar(g, g2d, rangeBox.x + 385, rangeBox.y + 1,
-							rangeBox.height - 3, expBlack, expWhite, expGreen,
-							expRed, skills.getPercentToNextLevel(Skills.RANGE));
+							+ (skills.getRealLevel(Skills.RANGE) + 1) + ":", rangeBox.x + 343, rangeBox.y + 10);
+					drawPercentBar(g, g2d, rangeBox.x + 385, rangeBox.y + 1, rangeBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.RANGE));
 				}
 			}
 
@@ -7190,31 +6501,21 @@ public class FOGRunner extends Script implements PaintListener,
 					nextPlace++;
 				}
 				g.setColor(expDarkRed);
-				g.fillRoundRect(constitutionBox.x, constitutionBox.y,
-						constitutionBox.width, constitutionBox.height, 0, 0);
+				g.fillRoundRect(constitutionBox.x, constitutionBox.y, constitutionBox.width, constitutionBox.height, 0, 0);
 				g.setColor(expWhite);
 				g.setFont(new Font("Arial", Font.BOLD, 11));
-				g.drawString("Constitution", constitutionBox.x + 3,
-						constitutionBox.y + 10);
+				g.drawString("Constitution", constitutionBox.x + 3, constitutionBox.y + 10);
 				g.setFont(new Font("Arial", Font.PLAIN, 11));
-				g.drawString("XP Gained: " + gainedConstitutionExp,
-						constitutionBox.x + 77, constitutionBox.y + 10);
-				g.drawString("XP/Hour: " + gainedConstitutionExpHour,
-						constitutionBox.x + 183, constitutionBox.y + 10);
-				g.drawString(
-						"Level: " + skills.getRealLevel(Skills.CONSTITUTION)
-								+ "(+" + gainedConstitutionLevel + ")",
-						constitutionBox.x + 268, constitutionBox.y + 10);
+				g.drawString("XP Gained: " + gainedConstitutionExp, constitutionBox.x + 77, constitutionBox.y + 10);
+				g.drawString("XP/Hour: " + gainedConstitutionExpHour, constitutionBox.x + 183, constitutionBox.y + 10);
+				g.drawString("Level: "
+						+ skills.getRealLevel(Skills.CONSTITUTION) + "(+"
+						+ gainedConstitutionLevel + ")", constitutionBox.x + 268, constitutionBox.y + 10);
 				if (skills.getRealLevel(Skills.CONSTITUTION) < 99) {
-					g.drawString(
-							"% to "
-									+ (skills.getRealLevel(Skills.CONSTITUTION) + 1)
-									+ ":", constitutionBox.x + 343,
-							constitutionBox.y + 10);
-					drawPercentBar(g, g2d, constitutionBox.x + 385,
-							constitutionBox.y + 1, constitutionBox.height - 3,
-							expBlack, expWhite, expGreen, expRed,
-							skills.getPercentToNextLevel(Skills.CONSTITUTION));
+					g.drawString("% to "
+							+ (skills.getRealLevel(Skills.CONSTITUTION) + 1)
+							+ ":", constitutionBox.x + 343, constitutionBox.y + 10);
+					drawPercentBar(g, g2d, constitutionBox.x + 385, constitutionBox.y + 1, constitutionBox.height - 3, expBlack, expWhite, expGreen, expRed, skills.getPercentToNextLevel(Skills.CONSTITUTION));
 				}
 			}
 
@@ -7222,50 +6523,37 @@ public class FOGRunner extends Script implements PaintListener,
 
 			if (gainedAttackExp > 0) {
 				if (mouseInArea(attackBox)) {
-					drawExpInfo(g, g2d, expBlack, expWhite, expBlack, expGreen,
-							expRed, "Attack", Skills.ATTACK, gainedAttackExp,
-							gainedAttackLevel);
+					drawExpInfo(g, g2d, expBlack, expWhite, expBlack, expGreen, expRed, "Attack", Skills.ATTACK, gainedAttackExp, gainedAttackLevel);
 				}
 			}
 
 			if (gainedStrengthExp > 0) {
 				if (mouseInArea(strengthBox)) {
-					drawExpInfo(g, g2d, expBlack, expWhite, expDarkerGrey,
-							expGreen, expRed, "Strength", Skills.STRENGTH,
-							gainedStrengthExp, gainedStrengthLevel);
+					drawExpInfo(g, g2d, expBlack, expWhite, expDarkerGrey, expGreen, expRed, "Strength", Skills.STRENGTH, gainedStrengthExp, gainedStrengthLevel);
 				}
 			}
 
 			if (gainedDefenceExp > 0) {
 				if (mouseInArea(defenceBox)) {
-					drawExpInfo(g, g2d, expBlack, expWhite, expDarkGrey,
-							expGreen, expRed, "Defence", Skills.DEFENSE,
-							gainedDefenceExp, gainedDefenceLevel);
+					drawExpInfo(g, g2d, expBlack, expWhite, expDarkGrey, expGreen, expRed, "Defence", Skills.DEFENSE, gainedDefenceExp, gainedDefenceLevel);
 				}
 			}
 
 			if (gainedMagicExp > 0) {
 				if (mouseInArea(magicBox)) {
-					drawExpInfo(g, g2d, expBlack, expWhite, expDarkBlue,
-							expGreen, expRed, "Magic", Skills.MAGIC,
-							gainedMagicExp, gainedMagicLevel);
+					drawExpInfo(g, g2d, expBlack, expWhite, expDarkBlue, expGreen, expRed, "Magic", Skills.MAGIC, gainedMagicExp, gainedMagicLevel);
 				}
 			}
 
 			if (gainedRangeExp > 0) {
 				if (mouseInArea(rangeBox)) {
-					drawExpInfo(g, g2d, expBlack, expWhite, expBrown, expGreen,
-							expRed, "Range", Skills.RANGE, gainedRangeExp,
-							gainedRangeLevel);
+					drawExpInfo(g, g2d, expBlack, expWhite, expBrown, expGreen, expRed, "Range", Skills.RANGE, gainedRangeExp, gainedRangeLevel);
 				}
 			}
 
 			if (gainedConstitutionExp > 0) {
 				if (mouseInArea(constitutionBox)) {
-					drawExpInfo(g, g2d, expBlack, expWhite, expDarkRed,
-							expGreen, expRed, "Constitution",
-							Skills.CONSTITUTION, gainedConstitutionExp,
-							gainedConstitutionLevel);
+					drawExpInfo(g, g2d, expBlack, expWhite, expDarkRed, expGreen, expRed, "Constitution", Skills.CONSTITUTION, gainedConstitutionExp, gainedConstitutionLevel);
 				}
 			}
 		}
@@ -7274,39 +6562,31 @@ public class FOGRunner extends Script implements PaintListener,
 		if (statusPaint == 1 || statusPaint == 2) {
 			if (mouseInArea(statusButtonRec)) {
 				if (userMousePressed) {
-					drawButton(g, statusButtonRec, buttonPressedOn, "Status",
-							Color.WHITE);
+					drawButton(g, statusButtonRec, buttonPressedOn, "Status", Color.WHITE);
 				} else {
-					drawButton(g, statusButtonRec, buttonOverOn, "Status",
-							Color.WHITE);
+					drawButton(g, statusButtonRec, buttonOverOn, "Status", Color.WHITE);
 				}
 			} else {
-				drawButton(g, statusButtonRec, buttonNormalOn, "Status",
-						Color.WHITE);
+				drawButton(g, statusButtonRec, buttonNormalOn, "Status", Color.WHITE);
 			}
 		} else {
 			if (mouseInArea(statusButtonRec)) {
 				if (userMousePressed) {
-					drawButton(g, statusButtonRec, buttonPressed, "Status",
-							Color.WHITE);
+					drawButton(g, statusButtonRec, buttonPressed, "Status", Color.WHITE);
 				} else {
-					drawButton(g, statusButtonRec, buttonOver, "Status",
-							Color.WHITE);
+					drawButton(g, statusButtonRec, buttonOver, "Status", Color.WHITE);
 				}
 			} else {
-				drawButton(g, statusButtonRec, buttonNormal, "Status",
-						Color.WHITE);
+				drawButton(g, statusButtonRec, buttonNormal, "Status", Color.WHITE);
 			}
 		}
 		// Exp Button
 		if (expPaint == 1 || expPaint == 2) {
 			if (mouseInArea(expButtonRec)) {
 				if (userMousePressed) {
-					drawButton(g, expButtonRec, buttonPressedOn, "Exp",
-							Color.WHITE);
+					drawButton(g, expButtonRec, buttonPressedOn, "Exp", Color.WHITE);
 				} else {
-					drawButton(g, expButtonRec, buttonOverOn, "Exp",
-							Color.WHITE);
+					drawButton(g, expButtonRec, buttonOverOn, "Exp", Color.WHITE);
 				}
 			} else {
 				drawButton(g, expButtonRec, buttonNormalOn, "Exp", Color.WHITE);
@@ -7314,8 +6594,7 @@ public class FOGRunner extends Script implements PaintListener,
 		} else {
 			if (mouseInArea(expButtonRec)) {
 				if (userMousePressed) {
-					drawButton(g, expButtonRec, buttonPressed, "Exp",
-							Color.WHITE);
+					drawButton(g, expButtonRec, buttonPressed, "Exp", Color.WHITE);
 				} else {
 					drawButton(g, expButtonRec, buttonOver, "Exp", Color.WHITE);
 				}
@@ -7327,28 +6606,22 @@ public class FOGRunner extends Script implements PaintListener,
 		if (statsPaint == 1 || statsPaint == 2) {
 			if (mouseInArea(statsButtonRec)) {
 				if (userMousePressed) {
-					drawButton(g, statsButtonRec, buttonPressedOn, "Stats",
-							Color.WHITE);
+					drawButton(g, statsButtonRec, buttonPressedOn, "Stats", Color.WHITE);
 				} else {
-					drawButton(g, statsButtonRec, buttonOverOn, "Stats",
-							Color.WHITE);
+					drawButton(g, statsButtonRec, buttonOverOn, "Stats", Color.WHITE);
 				}
 			} else {
-				drawButton(g, statsButtonRec, buttonNormalOn, "Stats",
-						Color.WHITE);
+				drawButton(g, statsButtonRec, buttonNormalOn, "Stats", Color.WHITE);
 			}
 		} else {
 			if (mouseInArea(statsButtonRec)) {
 				if (userMousePressed) {
-					drawButton(g, statsButtonRec, buttonPressed, "Stats",
-							Color.WHITE);
+					drawButton(g, statsButtonRec, buttonPressed, "Stats", Color.WHITE);
 				} else {
-					drawButton(g, statsButtonRec, buttonOver, "Stats",
-							Color.WHITE);
+					drawButton(g, statsButtonRec, buttonOver, "Stats", Color.WHITE);
 				}
 			} else {
-				drawButton(g, statsButtonRec, buttonNormal, "Stats",
-						Color.WHITE);
+				drawButton(g, statsButtonRec, buttonNormal, "Stats", Color.WHITE);
 			}
 		}
 		// More Stats Button
@@ -7356,43 +6629,34 @@ public class FOGRunner extends Script implements PaintListener,
 			if (moreStats == 1 || moreStats == 2) {
 				if (mouseInArea(moreStatsButtonRec)) {
 					if (userMousePressed) {
-						drawButton(g, moreStatsButtonRec, buttonPressedOnS,
-								"Less", statsWhite, -1, statsWhite);
+						drawButton(g, moreStatsButtonRec, buttonPressedOnS, "Less", statsWhite, -1, statsWhite);
 					} else {
-						drawButton(g, moreStatsButtonRec, buttonOverOnS,
-								"Less", statsWhite, -1, statsWhite);
+						drawButton(g, moreStatsButtonRec, buttonOverOnS, "Less", statsWhite, -1, statsWhite);
 					}
 				} else {
-					drawButton(g, moreStatsButtonRec, buttonNormalOnS, "Less",
-							statsWhite, -1, statsWhite);
+					drawButton(g, moreStatsButtonRec, buttonNormalOnS, "Less", statsWhite, -1, statsWhite);
 				}
 				if (downArrow != null) {
 					if (statsAlpha > 0.5) {
-						g.drawImage(downArrow, moreStatsButtonRec.x + 4,
-								moreStatsButtonRec.y + 3, null);
-						g.drawImage(downArrow,
-								moreStatsButtonRec.x + moreStatsButtonRec.width
-										- downArrow.getWidth() - 4,
-								moreStatsButtonRec.y + 3, null);
+						g.drawImage(downArrow, moreStatsButtonRec.x + 4, moreStatsButtonRec.y + 3, null);
+						g.drawImage(downArrow, moreStatsButtonRec.x
+								+ moreStatsButtonRec.width
+								- downArrow.getWidth() - 4, moreStatsButtonRec.y + 3, null);
 					}
 				}
 			} else if (moreStats == 0 || moreStats == 3) {
 				if (mouseInArea(moreStatsButtonRec)) {
 					if (userMousePressed) {
-						drawButton(g, moreStatsButtonRec, buttonPressedS,
-								"More", statsWhite, -1, statsWhite);
+						drawButton(g, moreStatsButtonRec, buttonPressedS, "More", statsWhite, -1, statsWhite);
 					} else {
-						drawButton(g, moreStatsButtonRec, buttonOverS, "More",
-								statsWhite, -1, statsWhite);
+						drawButton(g, moreStatsButtonRec, buttonOverS, "More", statsWhite, -1, statsWhite);
 					}
 				} else {
-					drawButton(g, moreStatsButtonRec, buttonNormalS, "More",
-							statsWhite, -1, statsWhite);
+					drawButton(g, moreStatsButtonRec, buttonNormalS, "More", statsWhite, -1, statsWhite);
 				}
 				if (downArrow != null) {
 					if (statsAlpha > 0.5) {
-						g.drawImage(upArrow, moreStatsButtonRec.x + 4,
-								moreStatsButtonRec.y + 3, null);
+						g.drawImage(upArrow, moreStatsButtonRec.x + 4, moreStatsButtonRec.y + 3, null);
 						g.drawImage(upArrow, moreStatsButtonRec.x
 								+ moreStatsButtonRec.width - upArrow.getWidth()
 								- 4, moreStatsButtonRec.y + 3, null);
@@ -7410,9 +6674,8 @@ public class FOGRunner extends Script implements PaintListener,
 			status = "Logging in...";
 			log(">>> GUI WILL OPEN AFTER LOGIN <<<");
 		}
-		final File out_dir = new File(
-				GlobalConfiguration.Paths.getScriptCacheDirectory()
-						+ "/images/");
+		final File out_dir = new File(GlobalConfiguration.Paths.getScriptCacheDirectory()
+				+ "/images/");
 		if (!out_dir.exists()) {
 			try {
 				out_dir.createNewFile();// createNewDirectory
@@ -7470,8 +6733,7 @@ public class FOGRunner extends Script implements PaintListener,
 	void search() {
 		status = "Searching for Opponent...";
 		antiBanTime = false;
-		final RSTile nextTile = new RSTile(searchTilesX[searchTileOn],
-				searchTilesY[searchTileOn]);
+		final RSTile nextTile = new RSTile(searchTilesX[searchTileOn], searchTilesY[searchTileOn]);
 		final RSTile[] tilePath = walking.findPath(nextTile);
 		walking.walkPathMM(tilePath);
 		Methods.sleep(Methods.random(200, 700));
@@ -7809,8 +7071,7 @@ public class FOGRunner extends Script implements PaintListener,
 
 		final int hitSwitchMinHitsBIG = hitSwitchMinHits * 1000;
 		final int hitSwitchMaxHitsBIG = hitSwitchMaxHits * 1000;
-		final int nextBig = Methods.random(hitSwitchMinHitsBIG,
-				hitSwitchMaxHitsBIG);
+		final int nextBig = Methods.random(hitSwitchMinHitsBIG, hitSwitchMaxHitsBIG);
 		final double nextDown = (double) nextBig / 1000.00;
 		final int next = (int) Math.round(nextDown);
 
@@ -7942,31 +7203,26 @@ public class FOGRunner extends Script implements PaintListener,
 	void setQuickPrayers(final boolean on) {
 		if (skills.getCurrentLevel(Skills.PRAYER) > 0) {
 			if (on) {
-				if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1)
-						.containsAction("Turn quick prayers on")) {
+				if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).containsAction("Turn quick prayers on")) {
 					final int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
 					while (!prayerSet && tries < 10 && inGame()
 							&& round == thisRound) {
-						if (interfaces.get(Game.INTERFACE_PRAYER_ORB)
-								.getComponent(1)
-								.doAction("Turn quick prayers on")) {
+						if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).doAction("Turn quick prayers on")) {
 							prayerSet = true;
 						}
 						tries++;
 					}
 				}
 			} else if (!on) {
-				if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1)
-						.containsAction("Turn prayers off")) {
+				if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).containsAction("Turn prayers off")) {
 					final int thisRound = round;
 					int tries = 0;
 					boolean prayerSet = false;
 					while (!prayerSet && tries < 10 && inGame()
 							&& round == thisRound) {
-						if (interfaces.get(Game.INTERFACE_PRAYER_ORB)
-								.getComponent(1).doAction("Turn prayers off")) {
+						if (interfaces.get(Game.INTERFACE_PRAYER_ORB).getComponent(1).doAction("Turn prayers off")) {
 							prayerSet = true;
 						}
 						tries++;
@@ -8174,9 +7430,7 @@ public class FOGRunner extends Script implements PaintListener,
 					&& magic.getInterface().getIndex() == MODERN_SPELLBOOK) {
 				int tries = 0;
 				while (!setCombatSpells && tries < 15) {
-					setCombatSpells = magic.getInterface()
-							.getComponent(Magic.INTERFACE_SORT_BY_COMBAT)
-							.doAction("");
+					setCombatSpells = magic.getInterface().getComponent(Magic.INTERFACE_SORT_BY_COMBAT).doAction("");
 					tries++;
 				}
 			} else {
@@ -8306,10 +7560,8 @@ public class FOGRunner extends Script implements PaintListener,
 					while (i < meleeEquipmentDefence.length
 							&& getMyPlayer().getHPPercent() > 50 && inGame()) {
 						if (inventory.getCount(false, meleeEquipmentDefence[i]) > 0) {
-							if (!doActionExtreme(meleeEquipmentDefence[i],
-									"Wear")) {
-								if (!doActionExtreme(meleeEquipmentDefence[i],
-										"Wield")) {
+							if (!doActionExtreme(meleeEquipmentDefence[i], "Wear")) {
+								if (!doActionExtreme(meleeEquipmentDefence[i], "Wield")) {
 									dlog("Unwearable item: "
 											+ meleeEquipmentDefence[i]);
 								}
@@ -8331,10 +7583,8 @@ public class FOGRunner extends Script implements PaintListener,
 					while (i < magicEquipmentDefence.length
 							&& getMyPlayer().getHPPercent() > 50 && inGame()) {
 						if (inventory.getCount(false, magicEquipmentDefence[i]) > 0) {
-							if (!doActionExtreme(magicEquipmentDefence[i],
-									"Wear")) {
-								if (!doActionExtreme(magicEquipmentDefence[i],
-										"Wield")) {
+							if (!doActionExtreme(magicEquipmentDefence[i], "Wear")) {
+								if (!doActionExtreme(magicEquipmentDefence[i], "Wield")) {
 									dlog("Unwearable item: "
 											+ magicEquipmentDefence[i]);
 								}
@@ -8356,10 +7606,8 @@ public class FOGRunner extends Script implements PaintListener,
 					while (i < rangeEquipmentDefence.length
 							&& getMyPlayer().getHPPercent() > 50 && inGame()) {
 						if (inventory.getCount(false, rangeEquipmentDefence[i]) > 0) {
-							if (!doActionExtreme(rangeEquipmentDefence[i],
-									"Wear")) {
-								if (!doActionExtreme(rangeEquipmentDefence[i],
-										"Wield")) {
+							if (!doActionExtreme(rangeEquipmentDefence[i], "Wear")) {
+								if (!doActionExtreme(rangeEquipmentDefence[i], "Wield")) {
 									dlog("Unwearable item: "
 											+ rangeEquipmentDefence[i]);
 								}
@@ -8460,8 +7708,7 @@ public class FOGRunner extends Script implements PaintListener,
 	void startup() throws NullPointerException {
 		if (dmode) {
 			log("Starting up...");
-			final String logLoc = Integer.toString(getMyPlayer().getLocation()
-					.getX())
+			final String logLoc = Integer.toString(getMyPlayer().getLocation().getX())
 					+ ", "
 					+ Integer.toString(getMyPlayer().getLocation().getY());
 			log("Spawn pos: " + logLoc);
@@ -8576,9 +7823,7 @@ public class FOGRunner extends Script implements PaintListener,
 			}
 		} else {
 			final RSObject stoneObjectS = objects.getNearest(30143);
-			final RSTile nextToStoneTileS = new RSTile(stoneObjectS
-					.getLocation().getX() + 1, stoneObjectS.getLocation()
-					.getY());
+			final RSTile nextToStoneTileS = new RSTile(stoneObjectS.getLocation().getX() + 1, stoneObjectS.getLocation().getY());
 			while (calc.distanceTo(nextToStoneTileS) > 5 && inGame()) {
 				walking.walkPathMM(walking.findPath(nextToStoneTileS));
 				Methods.sleep(Methods.random(500, 1000));
@@ -8773,8 +8018,7 @@ public class FOGRunner extends Script implements PaintListener,
 			for (int i = 0; i < 11; i++) {
 				try {
 					final int nextItem = noOrder[i];
-					if (equipment.getInterface().getComponent(eComps[nextItem])
-							.getActions()[0].contains("Remove")) {
+					if (equipment.getInterface().getComponent(eComps[nextItem]).getActions()[0].contains("Remove")) {
 						if (eItems[nextItem].doAction("Remove")) {
 							if (itemsInEquipment() < 3) {
 								Methods.sleep(700);

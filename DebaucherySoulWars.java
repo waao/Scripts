@@ -88,8 +88,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 							}
 							keyboard.releaseKey(key);
 						}
-						Thread.sleep(Methods.random(Methods.random(6000, 8000),
-								Methods.random(19000, 20000)));
+						Thread.sleep(Methods.random(Methods.random(6000, 8000), Methods.random(19000, 20000)));
 					}
 				}
 			} catch (final Exception e) {
@@ -108,12 +107,10 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			try {
 				while (!stop) {
 					if (takeBreak) {
-						final long takingBreakIn = Methods.random(
-								minimiumTimeUntillBreak * 60000,
-								maxiumTimeUntillBreak * 60000);
+						final long takingBreakIn = Methods.random(minimiumTimeUntillBreak * 60000, maxiumTimeUntillBreak * 60000);
 						final long ranFor = System.currentTimeMillis();
-						while (ranFor + takingBreakIn > System
-								.currentTimeMillis() && !stop) {
+						while (ranFor + takingBreakIn > System.currentTimeMillis()
+								&& !stop) {
 							Thread.sleep(1);
 							breakHandlerStatus = "Taking break in:  "
 									+ Timer.format(ranFor + takingBreakIn
@@ -124,17 +121,14 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 							Thread.sleep(1);
 							breakHandlerStatus = "Taking break after this game";
 						}
-						final long takingBreakFor = Methods.random(
-								minimiumTimeForBreak * 60000,
-								maxiumTimeForBreak * 60000);
+						final long takingBreakFor = Methods.random(minimiumTimeForBreak * 60000, maxiumTimeForBreak * 60000);
 						final long breakingFor = System.currentTimeMillis();
-						while (breakingFor + takingBreakFor > System
-								.currentTimeMillis() && !stop) {
+						while (breakingFor + takingBreakFor > System.currentTimeMillis()
+								&& !stop) {
 							Thread.sleep(1);
 							breakHandlerStatus = "Taking break for:  "
 									+ Timer.format((breakingFor
-											+ takingBreakFor - System
-											.currentTimeMillis()));
+											+ takingBreakFor - System.currentTimeMillis()));
 						}
 						takingBreak = false;
 						while (!stoppedBreak && !stop) {
@@ -153,38 +147,45 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 	private enum Location {
 
 		RED_WAITING(new RSArea(new RSTile(1909, 3167), new RSTile(1899, 3156)),
-				"Red waiting", false), BLUE_WAITING(new RSArea(new RSTile(1880,
-				3167), new RSTile(1869, 3157)), "Blue waiting", false), OUTSIDE(
+				"Red waiting", false), BLUE_WAITING(
+				new RSArea(new RSTile(1880, 3167), new RSTile(1869, 3157)),
+				"Blue waiting", false), OUTSIDE(
 				new RSArea(new RSTile(1918, 3187), new RSTile(1862, 3149)),
-				"Lobby", false), RED_SPAWN(new RSArea(new RSTile(1951, 3234),
-				new RSTile(1958, 3244)), "Inside red spawn", false), BLUE_SPAWN(
+				"Lobby", false), RED_SPAWN(
+				new RSArea(new RSTile(1951, 3234), new RSTile(1958, 3244)),
+				"Inside red spawn", false), BLUE_SPAWN(
 				new RSArea(new RSTile(1816, 3220), new RSTile(1823, 3230)),
-				"Inside blue spawn", false), BLUE_SPAWN_OUT(new RSArea(
-				new RSTile(1815, 3231), new RSTile(1808, 3219)),
-				"Outside blue spawn", true), RED_SPAWN_OUT(new RSArea(
-				new RSTile(1965, 3245), new RSTile(1959, 3232)),
-				"Outside red spawn", true), EAST_GRAVE(new RSArea(new RSTile(
-				1932, 3244), new RSTile(1934, 3246)), "Inside east grave",
-				false), WEST_GRAVE(new RSArea(new RSTile(1841, 3217),
-				new RSTile(1843, 3219)), "Inside west grave", false), EAST_GRAVE_OUT(
+				"Inside blue spawn", false), BLUE_SPAWN_OUT(
+				new RSArea(new RSTile(1815, 3231), new RSTile(1808, 3219)),
+				"Outside blue spawn", true), RED_SPAWN_OUT(
+				new RSArea(new RSTile(1965, 3245), new RSTile(1959, 3232)),
+				"Outside red spawn", true), EAST_GRAVE(
+				new RSArea(new RSTile(1932, 3244), new RSTile(1934, 3246)),
+				"Inside east grave", false), WEST_GRAVE(
+				new RSArea(new RSTile(1841, 3217), new RSTile(1843, 3219)),
+				"Inside west grave", false), EAST_GRAVE_OUT(
 				new RSArea(new RSTile(1937, 3250), new RSTile(1927, 3242)),
-				"Outside east grave", true), WEST_GRAVE_OUT(new RSArea(
-				new RSTile(1847, 3223), new RSTile(1837, 3214)),
-				"Outside west grave", true), RED_SUPPLIES(new RSArea(
-				new RSTile(1977, 3213), new RSTile(1961, 3203)),
-				"Red supplies", true), BLUE_SUPPLIES(new RSArea(new RSTile(
-				1812, 3261), new RSTile(1795, 3250)), "Blue Supplies", true), RED_AVATAR(
+				"Outside east grave", true), WEST_GRAVE_OUT(
+				new RSArea(new RSTile(1847, 3223), new RSTile(1837, 3214)),
+				"Outside west grave", true), RED_SUPPLIES(
+				new RSArea(new RSTile(1977, 3213), new RSTile(1961, 3203)),
+				"Red supplies", true), BLUE_SUPPLIES(
+				new RSArea(new RSTile(1812, 3261), new RSTile(1795, 3250)),
+				"Blue Supplies", true), RED_AVATAR(
 				new RSArea(new RSTile(1976, 3261), new RSTile(1959, 3244)),
-				"Red avatar", true), BLUE_AVATAR(new RSArea(new RSTile(1816,
-				3220), new RSTile(1798, 3202)), "Blue avatar", true), SOUTHEAST_PYRES(
+				"Red avatar", true), BLUE_AVATAR(
+				new RSArea(new RSTile(1816, 3220), new RSTile(1798, 3202)),
+				"Blue avatar", true), SOUTHEAST_PYRES(
 				new RSArea(new RSTile(1938, 3222), new RSTile(1917, 3204)),
-				"Southeast pryes", true), NORTHWEST_PRYES(new RSArea(
-				new RSTile(1856, 3258), new RSTile(1834, 3238)),
-				"Northwest pryes", true), NORTH_JELLIES(new RSArea(new RSTile(
-				1906, 3263), new RSTile(1869, 3248)), "North jellies", true), SOUTH_JELLIES(
+				"Southeast pryes", true), NORTHWEST_PRYES(
+				new RSArea(new RSTile(1856, 3258), new RSTile(1834, 3238)),
+				"Northwest pryes", true), NORTH_JELLIES(
+				new RSArea(new RSTile(1906, 3263), new RSTile(1869, 3248)),
+				"North jellies", true), SOUTH_JELLIES(
 				new RSArea(new RSTile(1899, 3214), new RSTile(1873, 3199)),
-				"South jellies", true), OBELISK(new RSArea(new RSTile(1901,
-				3241), new RSTile(1872, 3221)), "Obelisk", true), OTHER(
+				"South jellies", true), OBELISK(
+				new RSArea(new RSTile(1901, 3241), new RSTile(1872, 3221)),
+				"Obelisk", true), OTHER(
 				new RSArea(new RSTile(0, 0), new RSTile(0, 0)), "Other", false);
 		private final RSArea area;
 		private final String name;
@@ -234,19 +235,16 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 					}
 					if (Methods.random(1, 15000) == 342) {
 						char key = 0;
-						if (camera.getPitch() < Methods.random(
-								Methods.random(50, 86), 100)) {
+						if (camera.getPitch() < Methods.random(Methods.random(50, 86), 100)) {
 							key = KeyEvent.VK_UP;
 						}
-						if (camera.getPitch() >= Methods.random(
-								Methods.random(50, 86), 100)) {
+						if (camera.getPitch() >= Methods.random(Methods.random(50, 86), 100)) {
 							key = KeyEvent.VK_DOWN;
 						}
 						if (key != 0) {
 							keyboard.pressKey(key);
 							final long endTime = System.currentTimeMillis()
-									+ Methods.random(Methods.random(50, 150),
-											500);
+									+ Methods.random(Methods.random(50, 150), 500);
 							while (System.currentTimeMillis() < endTime) {
 								if (pause) {
 									break;
@@ -263,8 +261,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 							}
 							keyboard.releaseKey(key);
 						}
-						Thread.sleep(Methods.random(Methods.random(6000, 8000),
-								Methods.random(19000, 20000)));
+						Thread.sleep(Methods.random(Methods.random(6000, 8000), Methods.random(19000, 20000)));
 					}
 				}
 			} catch (final Exception e) {
@@ -428,8 +425,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 		private void donateActionPerformed(final java.awt.event.ActionEvent evt) {
 			final String donate = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3QP2NLZS3N65W";
 			try {
-				java.awt.Desktop.getDesktop().browse(
-						java.net.URI.create(donate));
+				java.awt.Desktop.getDesktop().browse(java.net.URI.create(donate));
 			} catch (final Exception e) {
 			}
 		}
@@ -518,16 +514,16 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14));
 			jLabel4.setText("Choose team:");
 
-			ChooseTeam.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[] { "Random", "Red", "Blue", "Last Won",
-							"Last Lost", "Clan Chat" }));
+			ChooseTeam.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"Random", "Red", "Blue", "Last Won", "Last Lost",
+					"Clan Chat" }));
 
 			jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 			jLabel5.setText("Choose Activity: ");
 
-			ChooseActivity.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[] { "Random", "Attack Players", "Attack Pyres",
-							"Attack Jellies", "Pure Mode" }));
+			ChooseActivity.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"Random", "Attack Players", "Attack Pyres",
+					"Attack Jellies", "Pure Mode" }));
 
 			AttackAvatar.setText("Attack Avatar");
 
@@ -572,311 +568,18 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			jLabel18.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 			jLabel18.setText("Choose Location:");
 
-			ChooseLocation.setModel(new javax.swing.DefaultComboBoxModel(
-					allCombatLocations()));
+			ChooseLocation.setModel(new javax.swing.DefaultComboBoxModel(allCombatLocations()));
 
-			final javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(
-					jPanel1);
+			final javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 			jPanel1.setLayout(jPanel1Layout);
-			jPanel1Layout
-					.setHorizontalGroup(jPanel1Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel1Layout
-											.createSequentialGroup()
-											.addComponent(jLabel3)
-											.addContainerGap(108,
-													Short.MAX_VALUE))
-							.addComponent(jSeparator1,
-									javax.swing.GroupLayout.DEFAULT_SIZE, 392,
-									Short.MAX_VALUE)
-							.addGroup(
-									jPanel1Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	jPanel1Layout
-																			.createSequentialGroup()
-																			.addGroup(
-																					jPanel1Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.LEADING)
-																							.addGroup(
-																									jPanel1Layout
-																											.createSequentialGroup()
-																											.addGroup(
-																													jPanel1Layout
-																															.createParallelGroup(
-																																	javax.swing.GroupLayout.Alignment.TRAILING)
-																															.addGroup(
-																																	jPanel1Layout
-																																			.createSequentialGroup()
-																																			.addComponent(
-																																					donate,
-																																					javax.swing.GroupLayout.DEFAULT_SIZE,
-																																					101,
-																																					Short.MAX_VALUE)
-																																			.addGap(8,
-																																					8,
-																																					8))
-																															.addGroup(
-																																	jPanel1Layout
-																																			.createSequentialGroup()
-																																			.addComponent(
-																																					info,
-																																					javax.swing.GroupLayout.DEFAULT_SIZE,
-																																					103,
-																																					Short.MAX_VALUE)
-																																			.addPreferredGap(
-																																					javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-																											.addComponent(
-																													Start,
-																													javax.swing.GroupLayout.PREFERRED_SIZE,
-																													153,
-																													javax.swing.GroupLayout.PREFERRED_SIZE)
-																											.addGap(19,
-																													19,
-																													19))
-																							.addGroup(
-																									javax.swing.GroupLayout.Alignment.TRAILING,
-																									jPanel1Layout
-																											.createSequentialGroup()
-																											.addGroup(
-																													jPanel1Layout
-																															.createParallelGroup(
-																																	javax.swing.GroupLayout.Alignment.LEADING)
-																															.addComponent(
-																																	jLabel4)
-																															.addComponent(
-																																	jLabel5))
-																											.addGap(32,
-																													32,
-																													32)
-																											.addGroup(
-																													jPanel1Layout
-																															.createParallelGroup(
-																																	javax.swing.GroupLayout.Alignment.TRAILING,
-																																	false)
-																															.addComponent(
-																																	ChooseTeam,
-																																	0,
-																																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																																	Short.MAX_VALUE)
-																															.addComponent(
-																																	ChooseActivity,
-																																	0,
-																																	145,
-																																	Short.MAX_VALUE)
-																															.addComponent(
-																																	ChooseLocation,
-																																	javax.swing.GroupLayout.Alignment.LEADING,
-																																	0,
-																																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																																	Short.MAX_VALUE))))
-																			.addGap(101,
-																					101,
-																					101))
-															.addGroup(
-																	jPanel1Layout
-																			.createSequentialGroup()
-																			.addGroup(
-																					jPanel1Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.TRAILING)
-																							.addGroup(
-																									jPanel1Layout
-																											.createParallelGroup(
-																													javax.swing.GroupLayout.Alignment.LEADING)
-																											.addComponent(
-																													PickUpBones)
-																											.addComponent(
-																													GetSupplies))
-																							.addComponent(
-																									WeponSpec))
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																			.addGroup(
-																					jPanel1Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.LEADING)
-																							.addComponent(
-																									PickUpArrows)
-																							.addComponent(
-																									HealOthers)
-																							.addComponent(
-																									QuickPrayer))
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																			.addGroup(
-																					jPanel1Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.LEADING)
-																							.addGroup(
-																									jPanel1Layout
-																											.createSequentialGroup()
-																											.addComponent(
-																													BuryAtGrave,
-																													javax.swing.GroupLayout.DEFAULT_SIZE,
-																													111,
-																													Short.MAX_VALUE)
-																											.addContainerGap(
-																													81,
-																													javax.swing.GroupLayout.PREFERRED_SIZE))
-																							.addGroup(
-																									jPanel1Layout
-																											.createSequentialGroup()
-																											.addComponent(
-																													AttackAvatar,
-																													javax.swing.GroupLayout.DEFAULT_SIZE,
-																													186,
-																													Short.MAX_VALUE)
-																											.addContainerGap())))))
-							.addGroup(
-									javax.swing.GroupLayout.Alignment.TRAILING,
-									jPanel1Layout
-											.createSequentialGroup()
-											.addGap(200, 200, 200)
-											.addComponent(
-													AttackEverywhere,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													186, Short.MAX_VALUE)
-											.addContainerGap())
-							.addGroup(
-									jPanel1Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addComponent(jLabel18)
-											.addContainerGap(275,
-													Short.MAX_VALUE)));
-			jPanel1Layout
-					.setVerticalGroup(jPanel1Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel1Layout
-											.createSequentialGroup()
-											.addComponent(jLabel3)
-											.addGap(8, 8, 8)
-											.addComponent(
-													jSeparator1,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													javax.swing.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel4)
-															.addComponent(
-																	ChooseTeam,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel5)
-															.addComponent(
-																	ChooseActivity,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel18)
-															.addComponent(
-																	ChooseLocation,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-													8, Short.MAX_VALUE)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	AttackEverywhere)
-															.addComponent(
-																	QuickPrayer)
-															.addComponent(
-																	WeponSpec))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	GetSupplies)
-															.addComponent(
-																	HealOthers)
-															.addComponent(
-																	AttackAvatar,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	23,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	PickUpBones)
-															.addComponent(
-																	PickUpArrows)
-															.addComponent(
-																	BuryAtGrave))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.TRAILING,
-																	false)
-															.addGroup(
-																	jPanel1Layout
-																			.createSequentialGroup()
-																			.addComponent(
-																					info)
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-																					javax.swing.GroupLayout.DEFAULT_SIZE,
-																					Short.MAX_VALUE)
-																			.addComponent(
-																					donate))
-															.addComponent(
-																	Start,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	55,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addContainerGap()));
+			jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addComponent(jLabel3).addContainerGap(108, Short.MAX_VALUE)).addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(jPanel1Layout.createSequentialGroup().addComponent(donate, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE).addGap(8, 8, 8)).addGroup(jPanel1Layout.createSequentialGroup().addComponent(info, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))).addComponent(Start, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(19, 19, 19)).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel4).addComponent(jLabel5)).addGap(32, 32, 32).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(ChooseTeam, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(ChooseActivity, 0, 145, Short.MAX_VALUE).addComponent(ChooseLocation, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))).addGap(101, 101, 101)).addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(PickUpBones).addComponent(GetSupplies)).addComponent(WeponSpec)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(PickUpArrows).addComponent(HealOthers).addComponent(QuickPrayer)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addComponent(BuryAtGrave, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE).addContainerGap(81, javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(jPanel1Layout.createSequentialGroup().addComponent(AttackAvatar, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE).addContainerGap()))))).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup().addGap(200, 200, 200).addComponent(AttackEverywhere, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE).addContainerGap()).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addComponent(jLabel18).addContainerGap(275, Short.MAX_VALUE)));
+			jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addComponent(jLabel3).addGap(8, 8, 8).addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel4).addComponent(ChooseTeam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel5).addComponent(ChooseActivity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel18).addComponent(ChooseLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(AttackEverywhere).addComponent(QuickPrayer).addComponent(WeponSpec)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(GetSupplies).addComponent(HealOthers).addComponent(AttackAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(PickUpBones).addComponent(PickUpArrows).addComponent(BuryAtGrave)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addGroup(jPanel1Layout.createSequentialGroup().addComponent(info).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(donate)).addComponent(Start, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)).addContainerGap()));
 
 			jTabbedPane1.addTab("General", jPanel1);
 
 			WithdrawPouches.setText("Withdraw more pouches");
 
-			ChooseFamiliar.setModel(new javax.swing.DefaultComboBoxModel(
-					allFamiliars()));
+			ChooseFamiliar.setModel(new javax.swing.DefaultComboBoxModel(allFamiliars()));
 
 			jLabel17.setText("Select your summoning monster");
 
@@ -884,83 +587,10 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 
 			UseScrolls.setText("Use scrolls");
 
-			final javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(
-					jPanel4);
+			final javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
 			jPanel4.setLayout(jPanel4Layout);
-			jPanel4Layout
-					.setHorizontalGroup(jPanel4Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel4Layout
-											.createSequentialGroup()
-											.addGroup(
-													jPanel4Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	jPanel4Layout
-																			.createSequentialGroup()
-																			.addGap(92,
-																					92,
-																					92)
-																			.addComponent(
-																					EnableSummoning))
-															.addGroup(
-																	jPanel4Layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addComponent(
-																					jLabel17))
-															.addGroup(
-																	jPanel4Layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addComponent(
-																					ChooseFamiliar,
-																					0,
-																					284,
-																					Short.MAX_VALUE))
-															.addGroup(
-																	jPanel4Layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addComponent(
-																					WithdrawPouches))
-															.addGroup(
-																	jPanel4Layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addComponent(
-																					UseScrolls)))
-											.addContainerGap()));
-			jPanel4Layout
-					.setVerticalGroup(jPanel4Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel4Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addComponent(EnableSummoning)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jLabel17)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(
-													ChooseFamiliar,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													javax.swing.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-											.addComponent(WithdrawPouches)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(UseScrolls)
-											.addContainerGap(141,
-													Short.MAX_VALUE)));
+			jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel4Layout.createSequentialGroup().addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel4Layout.createSequentialGroup().addGap(92, 92, 92).addComponent(EnableSummoning)).addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addComponent(jLabel17)).addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addComponent(ChooseFamiliar, 0, 284, Short.MAX_VALUE)).addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addComponent(WithdrawPouches)).addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addComponent(UseScrolls))).addContainerGap()));
+			jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addComponent(EnableSummoning).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel17).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(ChooseFamiliar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(WithdrawPouches).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(UseScrolls).addContainerGap(141, Short.MAX_VALUE)));
 
 			jTabbedPane1.addTab("Summoning", jPanel4);
 
@@ -968,16 +598,14 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 
 			jLabel13.setText("Reward");
 
-			jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[] { "Attack", "Defence", "Strenght", "Magic",
-							"Range", "Health", "Prayer", "Slayer" }));
+			jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"Attack", "Defence", "Strenght", "Magic", "Range",
+					"Health", "Prayer", "Slayer" }));
 
 			jLabel14.setText("Amount");
 
-			jComboBox2
-					.setModel(new javax.swing.DefaultComboBoxModel(
-							new String[] { "Every Game", "10", "20", "50",
-									"100", "150" }));
+			jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"Every Game", "10", "20", "50", "100", "150" }));
 
 			jButton1.setText("Add >");
 
@@ -985,111 +613,10 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 
 			jLabel16.setText("complete, just a preview");
 
-			final javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(
-					jPanel3);
+			final javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 			jPanel3.setLayout(jPanel3Layout);
-			jPanel3Layout
-					.setHorizontalGroup(jPanel3Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel3Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addGroup(
-													jPanel3Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	jPanel3Layout
-																			.createParallelGroup(
-																					javax.swing.GroupLayout.Alignment.TRAILING)
-																			.addGroup(
-																					jPanel3Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.LEADING,
-																									false)
-																							.addComponent(
-																									jComboBox2,
-																									0,
-																									javax.swing.GroupLayout.DEFAULT_SIZE,
-																									Short.MAX_VALUE)
-																							.addComponent(
-																									jLabel13)
-																							.addComponent(
-																									jComboBox1,
-																									0,
-																									114,
-																									Short.MAX_VALUE)
-																							.addComponent(
-																									jLabel14))
-																			.addComponent(
-																					jButton1))
-															.addComponent(
-																	jLabel15)
-															.addComponent(
-																	jLabel16))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(
-													jScrollPane1,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													162, Short.MAX_VALUE)
-											.addContainerGap()));
-			jPanel3Layout
-					.setVerticalGroup(jPanel3Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel3Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addGroup(
-													jPanel3Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	jPanel3Layout
-																			.createSequentialGroup()
-																			.addComponent(
-																					jLabel13)
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																			.addComponent(
-																					jComboBox1,
-																					javax.swing.GroupLayout.PREFERRED_SIZE,
-																					javax.swing.GroupLayout.DEFAULT_SIZE,
-																					javax.swing.GroupLayout.PREFERRED_SIZE)
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																			.addComponent(
-																					jLabel14)
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																			.addComponent(
-																					jComboBox2,
-																					javax.swing.GroupLayout.PREFERRED_SIZE,
-																					javax.swing.GroupLayout.DEFAULT_SIZE,
-																					javax.swing.GroupLayout.PREFERRED_SIZE)
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																			.addComponent(
-																					jButton1)
-																			.addGap(6,
-																					6,
-																					6)
-																			.addComponent(
-																					jLabel15)
-																			.addPreferredGap(
-																					javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																			.addComponent(
-																					jLabel16))
-															.addComponent(
-																	jScrollPane1,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	244,
-																	Short.MAX_VALUE))
-											.addContainerGap()));
+			jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(jLabel13).addComponent(jComboBox1, 0, 114, Short.MAX_VALUE).addComponent(jLabel14)).addComponent(jButton1)).addComponent(jLabel15).addComponent(jLabel16)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE).addContainerGap()));
+			jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addComponent(jLabel13).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel14).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButton1).addGap(6, 6, 6).addComponent(jLabel15).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel16)).addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)).addContainerGap()));
 
 			jTabbedPane1.addTab("Trade in Zeals", jPanel3);
 
@@ -1125,221 +652,17 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			jLabel12.setFont(new java.awt.Font("Tahoma", 0, 10));
 			jLabel12.setText("time it will become an easy way to detect a bot.");
 
-			final javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(
-					jPanel2);
+			final javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
 			jPanel2.setLayout(jPanel2Layout);
-			jPanel2Layout
-					.setHorizontalGroup(jPanel2Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel2Layout
-											.createSequentialGroup()
-											.addGroup(
-													jPanel2Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	jPanel2Layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addGroup(
-																					jPanel2Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.LEADING)
-																							.addComponent(
-																									jLabel6)
-																							.addComponent(
-																									jLabel7)
-																							.addComponent(
-																									jLabel8)
-																							.addComponent(
-																									jLabel9)
-																							.addComponent(
-																									TakeBreak))
-																			.addGap(18,
-																					18,
-																					18)
-																			.addGroup(
-																					jPanel2Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.LEADING,
-																									false)
-																							.addComponent(
-																									MaxiumTimeForBreak)
-																							.addComponent(
-																									MaxiumTimeUntillBreak)
-																							.addComponent(
-																									MinimiumTimeUntillBreak,
-																									javax.swing.GroupLayout.DEFAULT_SIZE,
-																									82,
-																									Short.MAX_VALUE)
-																							.addComponent(
-																									MinimiumTimeForBreak)))
-															.addGroup(
-																	jPanel2Layout
-																			.createSequentialGroup()
-																			.addGap(32,
-																					32,
-																					32)
-																			.addComponent(
-																					jLabel12))
-															.addGroup(
-																	jPanel2Layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addComponent(
-																					jLabel11))
-															.addGroup(
-																	jPanel2Layout
-																			.createSequentialGroup()
-																			.addGap(36,
-																					36,
-																					36)
-																			.addComponent(
-																					jLabel10)))
-											.addContainerGap(22,
-													Short.MAX_VALUE)));
-			jPanel2Layout
-					.setVerticalGroup(jPanel2Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel2Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addComponent(TakeBreak)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel2Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel6)
-															.addComponent(
-																	MinimiumTimeUntillBreak,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel2Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel7)
-															.addComponent(
-																	MaxiumTimeUntillBreak,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel2Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel8)
-															.addComponent(
-																	MinimiumTimeForBreak,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	20,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel2Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel9)
-															.addComponent(
-																	MaxiumTimeForBreak,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-													72, Short.MAX_VALUE)
-											.addComponent(
-													jLabel10,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													13,
-													javax.swing.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(
-													jLabel11,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													13,
-													javax.swing.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jLabel12)
-											.addContainerGap()));
+			jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addContainerGap().addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel6).addComponent(jLabel7).addComponent(jLabel8).addComponent(jLabel9).addComponent(TakeBreak)).addGap(18, 18, 18).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(MaxiumTimeForBreak).addComponent(MaxiumTimeUntillBreak).addComponent(MinimiumTimeUntillBreak, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE).addComponent(MinimiumTimeForBreak))).addGroup(jPanel2Layout.createSequentialGroup().addGap(32, 32, 32).addComponent(jLabel12)).addGroup(jPanel2Layout.createSequentialGroup().addContainerGap().addComponent(jLabel11)).addGroup(jPanel2Layout.createSequentialGroup().addGap(36, 36, 36).addComponent(jLabel10))).addContainerGap(22, Short.MAX_VALUE)));
+			jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addContainerGap().addComponent(TakeBreak).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel6).addComponent(MinimiumTimeUntillBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel7).addComponent(MaxiumTimeUntillBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel8).addComponent(MinimiumTimeForBreak, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel9).addComponent(MaxiumTimeForBreak, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE).addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel12).addContainerGap()));
 
 			jTabbedPane1.addTab("Break Handler", jPanel2);
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGap(91,
-																			91,
-																			91)
-																	.addComponent(
-																			jLabel2))
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addContainerGap()
-																	.addComponent(
-																			jLabel1,
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			309,
-																			Short.MAX_VALUE))
-													.addGroup(
-															javax.swing.GroupLayout.Alignment.TRAILING,
-															layout.createSequentialGroup()
-																	.addContainerGap(
-																			javax.swing.GroupLayout.DEFAULT_SIZE,
-																			Short.MAX_VALUE)
-																	.addComponent(
-																			jTabbedPane1,
-																			javax.swing.GroupLayout.PREFERRED_SIZE,
-																			309,
-																			javax.swing.GroupLayout.PREFERRED_SIZE)))
-									.addContainerGap()));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addComponent(
-											jLabel1,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(
-											jTabbedPane1,
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											294, Short.MAX_VALUE)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(jLabel2)));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(91, 91, 91).addComponent(jLabel2)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))).addContainerGap()));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel2)));
 
 			pack();
 		}// </editor-fold>
@@ -1436,12 +759,9 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			}
 			startScript = true;
 			maxiumTimeForBreak = Integer.parseInt(MaxiumTimeForBreak.getText());
-			minimiumTimeForBreak = Integer.parseInt(MinimiumTimeForBreak
-					.getText());
-			maxiumTimeUntillBreak = Integer.parseInt(MaxiumTimeUntillBreak
-					.getText());
-			minimiumTimeUntillBreak = Integer.parseInt(MinimiumTimeUntillBreak
-					.getText());
+			minimiumTimeForBreak = Integer.parseInt(MinimiumTimeForBreak.getText());
+			maxiumTimeUntillBreak = Integer.parseInt(MaxiumTimeUntillBreak.getText());
+			minimiumTimeUntillBreak = Integer.parseInt(MinimiumTimeUntillBreak.getText());
 			healOthers = HealOthers.isSelected();
 			pickUpBones = PickUpBones.isSelected();
 			attackAvatar = AttackAvatar.isSelected();
@@ -1455,10 +775,8 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			enableSummoning = EnableSummoning.isSelected();
 			withdrawPouches = WithdrawPouches.isSelected();
 			useScrolls = UseScrolls.isSelected();
-			chosenFamiliar = farmiliarNameToObject(allFamiliars()[ChooseFamiliar
-					.getSelectedIndex()]);
-			chosenLocationString = allCombatLocations()[ChooseLocation
-					.getSelectedIndex()];
+			chosenFamiliar = farmiliarNameToObject(allFamiliars()[ChooseFamiliar.getSelectedIndex()]);
+			chosenLocationString = allCombatLocations()[ChooseLocation.getSelectedIndex()];
 		}
 	}
 
@@ -1565,8 +883,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			} else {
 				if (pickUpBones) {
 					if (getActivityBarPercent() < 1000 || buryAtGrave) {
-						final RSGroundItem bones = groundItems
-								.getNearest(bonesID);
+						final RSGroundItem bones = groundItems.getNearest(bonesID);
 						bones.doAction("Take " + bones.getItem().getName());
 						return;
 					}
@@ -1574,9 +891,8 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 				pickUpArrows();
 				if (!getMyPlayer().isMoving()
 						|| calc.distanceTo(walking.getDestination()) < 5) {
-					walking.walkTileMM(walking
-							.getClosestTileOnMap((getMyPlayer().getTeam() == 1 ? new RSTile(
-									1901, 3231) : new RSTile(1871, 3233))));
+					walking.walkTileMM(walking.getClosestTileOnMap((getMyPlayer().getTeam() == 1 ? new RSTile(1901, 3231)
+							: new RSTile(1871, 3233))));
 					Methods.sleep(1000, 3000);
 				}
 			}
@@ -1590,8 +906,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			if (avatar != null) {
 				if (avatar.isOnScreen()) {
 					if (getMyPlayer().getInteracting() == null
-							|| !getMyPlayer().getInteracting().getName()
-									.equals(avatar.getName())) {
+							|| !getMyPlayer().getInteracting().getName().equals(avatar.getName())) {
 						avatar.doAction("Attack " + avatar.getName());
 						Methods.sleep(3000, 5000);
 					}
@@ -1602,8 +917,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 					if (avatarLoc != null) {
 						if (calc.distanceTo(walking.getDestination()) < 4
 								|| !getMyPlayer().isMoving()) {
-							walking.walkTileMM(walking
-									.getClosestTileOnMap(avatarLoc));
+							walking.walkTileMM(walking.getClosestTileOnMap(avatarLoc));
 						}
 					}
 				}
@@ -1613,8 +927,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			if (avatar != null) {
 				if (avatar.isOnScreen()) {
 					if (getMyPlayer().getInteracting() == null
-							|| !getMyPlayer().getInteracting().getName()
-									.equals(avatar.getName())) {
+							|| !getMyPlayer().getInteracting().getName().equals(avatar.getName())) {
 						avatar.doAction("Attack");
 						Methods.sleep(3000, 5000);
 					}
@@ -1625,8 +938,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 					if (avatarLoc != null) {
 						if (calc.distanceTo(walking.getDestination()) < 4
 								|| !getMyPlayer().isMoving()) {
-							walking.walkTileMM(walking
-									.getClosestTileOnMap(avatarLoc));
+							walking.walkTileMM(walking.getClosestTileOnMap(avatarLoc));
 						}
 					}
 				}
@@ -1640,16 +952,13 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			if (jellies != null) {
 				camera.setPitch(true);
 				if (calc.distanceTo(jellies) > 4 && !jellies.isOnScreen()) {
-					walking.walkTileMM(walking.getClosestTileOnMap(jellies
-							.getLocation()));
+					walking.walkTileMM(walking.getClosestTileOnMap(jellies.getLocation()));
 				}
 				if (!jellies.isOnScreen()) {
 					camera.turnTo(jellies);
 				}
 				if (jellies.isOnScreen()
-						&& (getMyPlayer().getInteracting() == null || !getMyPlayer()
-								.getInteracting().getName()
-								.equals(jellies.getName()))) {
+						&& (getMyPlayer().getInteracting() == null || !getMyPlayer().getInteracting().getName().equals(jellies.getName()))) {
 					jellies.doAction("Attack");
 					Methods.sleep(3000, 5000);
 				}
@@ -1663,16 +972,13 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			if (pyres != null) {
 				camera.setPitch(true);
 				if (calc.distanceTo(pyres) > 4 && !pyres.isOnScreen()) {
-					walking.walkTileMM(walking.getClosestTileOnMap(pyres
-							.getLocation()));
+					walking.walkTileMM(walking.getClosestTileOnMap(pyres.getLocation()));
 				}
 				if (!pyres.isOnScreen()) {
 					camera.turnTo(pyres);
 				}
 				if (pyres.isOnScreen()
-						&& (getMyPlayer().getInteracting() == null || !getMyPlayer()
-								.getInteracting().getName()
-								.equals(pyres.getName()))) {
+						&& (getMyPlayer().getInteracting() == null || !getMyPlayer().getInteracting().getName().equals(pyres.getName()))) {
 					pyres.doAction("Attack");
 					Methods.sleep(3000, 5000);
 				}
@@ -1681,9 +987,8 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 	}
 
 	private void avatarStrat() {
-		if (getMyLocation().equals(
-				(getMyPlayer().getTeam() == 1 ? Location.RED_AVATAR
-						: Location.BLUE_AVATAR))) {
+		if (getMyLocation().equals((getMyPlayer().getTeam() == 1 ? Location.RED_AVATAR
+				: Location.BLUE_AVATAR))) {
 			heal();
 			qPrayer();
 			attackAvatar();
@@ -1730,8 +1035,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 	private void bonesStrat() {
 		try {
 			if (buryAtGrave
-					&& (getMyLocation().equals(Location.EAST_GRAVE_OUT) || getMyLocation()
-							.equals(Location.WEST_GRAVE_OUT))
+					&& (getMyLocation().equals(Location.EAST_GRAVE_OUT) || getMyLocation().equals(Location.WEST_GRAVE_OUT))
 					&& inventory.containsOneOf(bonesID)) {
 				if (getActivityBarPercent() < 800) {
 					buryBones();
@@ -1865,8 +1169,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 
 	private RSTile divideTile(final RSTile tile) {
 		final RSTile loc = getMyPlayer().getLocation();
-		return new RSTile((loc.getX() + 4 * tile.getX()) / 5,
-				(loc.getY() + 4 * tile.getY()) / 5);
+		return new RSTile((loc.getX() + 4 * tile.getX()) / 5, (loc.getY() + 4 * tile.getY()) / 5);
 	}
 
 	private Summoning farmiliarNameToObject(final String name) {
@@ -2038,15 +1341,13 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 					if (calc.distanceTo(bandages) <= 2
 							&& getMyPlayer().getInteracting() == null) {
 						if (interfaces.getComponent(752, 5) != null
-								&& !interfaces.getComponent(752, 5).getText()
-										.contains(String.valueOf(supplyNum))
+								&& !interfaces.getComponent(752, 5).getText().contains(String.valueOf(supplyNum))
 								&& !getMyPlayer().isInCombat()) {
 							keyboard.sendText(String.valueOf(supplyNum), false);
 							Methods.sleep(1000, 1400);
 						}
 						if (interfaces.getComponent(752, 5) != null
-								&& interfaces.getComponent(752, 5).getText()
-										.contains(String.valueOf(supplyNum))
+								&& interfaces.getComponent(752, 5).getText().contains(String.valueOf(supplyNum))
 								&& !getMyPlayer().isInCombat()) {
 							keyboard.sendText("", true);
 							Methods.sleep(1800, 2000);
@@ -2055,8 +1356,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 				}
 			} else {
 				if (!getMyPlayer().isMoving()) {
-					walking.walkTileMM(walking.getClosestTileOnMap(bandages
-							.getLocation()));
+					walking.walkTileMM(walking.getClosestTileOnMap(bandages.getLocation()));
 					Methods.sleep(1000, 2000);
 				}
 			}
@@ -2202,8 +1502,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 									final Point p = mod.getPoint();
 									if (p != null) {
 										mouse.hop(p);
-										if (getMyLocation().equals(
-												Location.OUTSIDE)) {
+										if (getMyLocation().equals(Location.OUTSIDE)) {
 											mouse.click(true);
 											Methods.sleep(500, 800);
 										}
@@ -2215,8 +1514,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 								&& calc.distanceTo(randomTeamTile) <= 4) {
 							camera.getObjectAngle(randomTeam);
 						} else {
-							final RSTile closestTileToRandomTeam = walking
-									.getClosestTileOnMap(randomTeamTile);
+							final RSTile closestTileToRandomTeam = walking.getClosestTileOnMap(randomTeamTile);
 							if (closestTileToRandomTeam != null) {
 								walking.walkTileMM(closestTileToRandomTeam);
 								Methods.sleep(400, 800);
@@ -2239,8 +1537,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 									final Point p = mod.getPoint();
 									if (p != null) {
 										mouse.hop(p);
-										if (getMyLocation().equals(
-												Location.OUTSIDE)) {
+										if (getMyLocation().equals(Location.OUTSIDE)) {
 											mouse.click(true);
 											Methods.sleep(500, 800);
 										}
@@ -2259,8 +1556,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 							camera.getObjectAngle(blueBarrier);
 							camera.setPitch(true);
 						} else {
-							final RSTile closestTileToBlueBarrier = walking
-									.getClosestTileOnMap(blueBarrierTile);
+							final RSTile closestTileToBlueBarrier = walking.getClosestTileOnMap(blueBarrierTile);
 							if (closestTileToBlueBarrier != null) {
 								walking.walkTileMM(closestTileToBlueBarrier);
 								Methods.sleep(500, 800);
@@ -2283,8 +1579,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 									final Point p = mod.getPoint();
 									if (p != null) {
 										mouse.hop(p);
-										if (getMyLocation().equals(
-												Location.OUTSIDE)) {
+										if (getMyLocation().equals(Location.OUTSIDE)) {
 											mouse.click(true);
 										}
 										Methods.sleep(500, 800);
@@ -2304,8 +1599,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 							camera.getObjectAngle(redBarrier);
 							camera.setPitch(true);
 						} else {
-							final RSTile closestTileToRedBarrier = walking
-									.getClosestTileOnMap(redBarrierTile);
+							final RSTile closestTileToRedBarrier = walking.getClosestTileOnMap(redBarrierTile);
 							if (closestTileToRedBarrier != null) {
 								walking.walkTileMM(closestTileToRedBarrier);
 								Methods.sleep(500, 800);
@@ -2360,14 +1654,10 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 							if (mod != null) {
 								final Point p = mod.getPoint();
 								if (p != null) {
-									if (getMyLocation().equals(
-											Location.RED_SPAWN)
-											|| getMyLocation().equals(
-													Location.BLUE_SPAWN)
-											|| getMyLocation().equals(
-													Location.EAST_GRAVE)
-											|| getMyLocation().equals(
-													Location.WEST_GRAVE)) {
+									if (getMyLocation().equals(Location.RED_SPAWN)
+											|| getMyLocation().equals(Location.BLUE_SPAWN)
+											|| getMyLocation().equals(Location.EAST_GRAVE)
+											|| getMyLocation().equals(Location.WEST_GRAVE)) {
 										mouse.hop(p);
 										mouse.click(true);
 									}
@@ -2376,12 +1666,9 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 							break;
 						default:
 							if (getMyLocation().equals(Location.RED_SPAWN)
-									|| getMyLocation().equals(
-											Location.BLUE_SPAWN)
-									|| getMyLocation().equals(
-											Location.EAST_GRAVE)
-									|| getMyLocation().equals(
-											Location.WEST_GRAVE)) {
+									|| getMyLocation().equals(Location.BLUE_SPAWN)
+									|| getMyLocation().equals(Location.EAST_GRAVE)
+									|| getMyLocation().equals(Location.WEST_GRAVE)) {
 								Barrier.doAction("Pass");
 							}
 							break;
@@ -2403,8 +1690,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 					|| time != null
 					&& (time.equals("7 mins") || time.equals("6 mins")
 							|| time.equals("5 mins") || time.equals("4 mins")
-							|| time.equals("3 mins") || time.equals("2 mins") || time
-							.equals("1 min"));
+							|| time.equals("3 mins") || time.equals("2 mins") || time.equals("1 min"));
 		}
 	}
 
@@ -2439,8 +1725,8 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 		path = null;
 		tempTile = null;
 		if ((getMyLocation().equals(Location.OUTSIDE)
-				|| interfaces.get(Game.INTERFACE_LOGOUT_LOBBY).isValid() || !game
-				.isLoggedIn()) && takingBreak) {
+				|| interfaces.get(Game.INTERFACE_LOGOUT_LOBBY).isValid() || !game.isLoggedIn())
+				&& takingBreak) {
 			task = "Waiting in lobby.";
 			if (!interfaces.get(Game.INTERFACE_LOGOUT_LOBBY).isValid()
 					|| game.isLoggedIn()) {
@@ -2472,8 +1758,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 				}
 				if (getMyLocation().equals(Location.OUTSIDE)) {
 					if (interfaces.getComponent(243, 4).isValid()
-							&& interfaces.getComponent(243, 4).containsText(
-									"You were removed from the game due")) {
+							&& interfaces.getComponent(243, 4).containsText("You were removed from the game due")) {
 						result = "drewLast";
 						lowActivity = lowActivity + 25;
 						kicked += 1;
@@ -2482,15 +1767,13 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 					if (enableSummoning) {
 						if (!summoning.isFamiliarSummoned()) {
 							if (inventory.contains(chosenFamiliar.getPouchID())) {
-								final RSItem pouch = inventory
-										.getItem(chosenFamiliar.getPouchID());
+								final RSItem pouch = inventory.getItem(chosenFamiliar.getPouchID());
 								if (pouch != null
 										&& summoning.getSummoningPoints() <= 0) {
 									pouch.doAction("Summon");
 								}
 							} else if (withdrawPouches) {
-								final RSObject chest = objects
-										.getNearest(Bank.BANK_CHESTS);
+								final RSObject chest = objects.getNearest(Bank.BANK_CHESTS);
 								if (chest != null && !chest.isOnScreen()) {
 									for (int i = 0; i > 5; i++) {
 										walking.walkTileMM(chest.getLocation());
@@ -2501,8 +1784,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 								}
 								bank.open();
 								if (bank.isOpen()) {
-									bank.withdraw(chosenFamiliar.getPouchID(),
-											5);
+									bank.withdraw(chosenFamiliar.getPouchID(), 5);
 								}
 							}
 						}
@@ -2634,16 +1916,13 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 				zeal += 3;
 			} else if (message.contains("This chat is currently full")) {
 				inClan = false;
-			} else if (message
-					.contains("You have been kicked from the channel")) {
+			} else if (message.contains("You have been kicked from the channel")) {
 				inClan = false;
 				log("You got kicked from clan channel!");
-			} else if (message
-					.contains("You are temporarily banned from this clan channel")) {
+			} else if (message.contains("You are temporarily banned from this clan channel")) {
 				inClan = false;
 				log("You got banned from clan channel!");
-			} else if (message
-					.contains("You cannot take non-combat items into the arena")) {
+			} else if (message.contains("You cannot take non-combat items into the arena")) {
 				log("You have something that it stopping us from entering a game.");
 				game.logout(true);
 				stopScript();
@@ -2720,20 +1999,16 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 	}
 
 	private Location nearestJellies() {
-		final int distanceToNorth = calc.distanceTo(Location.NORTH_JELLIES
-				.getRSArea().getNearestTile(getMyPlayer().getLocation()));
-		final int distanceToSouth = calc.distanceTo(Location.SOUTH_JELLIES
-				.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+		final int distanceToNorth = calc.distanceTo(Location.NORTH_JELLIES.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+		final int distanceToSouth = calc.distanceTo(Location.SOUTH_JELLIES.getRSArea().getNearestTile(getMyPlayer().getLocation()));
 		return distanceToSouth > distanceToNorth ? Location.NORTH_JELLIES
 				: Location.SOUTH_JELLIES;
 	}
 
 	private Location nearestOwnedGrave() {
 		if (controlsWesternGraveyard() && controlsEasternGraveyard()) {
-			final int distanceToEast = calc.distanceTo(Location.EAST_GRAVE_OUT
-					.getRSArea().getNearestTile(getMyPlayer().getLocation()));
-			final int distanceToWest = calc.distanceTo(Location.WEST_GRAVE_OUT
-					.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+			final int distanceToEast = calc.distanceTo(Location.EAST_GRAVE_OUT.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+			final int distanceToWest = calc.distanceTo(Location.WEST_GRAVE_OUT.getRSArea().getNearestTile(getMyPlayer().getLocation()));
 			return distanceToEast < distanceToWest ? Location.EAST_GRAVE_OUT
 					: Location.WEST_GRAVE_OUT;
 		} else if (controlsWesternGraveyard()) {
@@ -2745,19 +2020,15 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 	}
 
 	private Location nearestPyres() {
-		final int distanceToNorth = calc.distanceTo(Location.NORTHWEST_PRYES
-				.getRSArea().getNearestTile(getMyPlayer().getLocation()));
-		final int distanceToSouth = calc.distanceTo(Location.SOUTHEAST_PYRES
-				.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+		final int distanceToNorth = calc.distanceTo(Location.NORTHWEST_PRYES.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+		final int distanceToSouth = calc.distanceTo(Location.SOUTHEAST_PYRES.getRSArea().getNearestTile(getMyPlayer().getLocation()));
 		return distanceToSouth > distanceToNorth ? Location.NORTHWEST_PRYES
 				: Location.SOUTHEAST_PYRES;
 	}
 
 	private Location nearestSupplies() {
-		final int distanceToBlue = calc.distanceTo(Location.BLUE_SUPPLIES
-				.getRSArea().getNearestTile(getMyPlayer().getLocation()));
-		final int distanceToRed = calc.distanceTo(Location.RED_SUPPLIES
-				.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+		final int distanceToBlue = calc.distanceTo(Location.BLUE_SUPPLIES.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+		final int distanceToRed = calc.distanceTo(Location.RED_SUPPLIES.getRSArea().getNearestTile(getMyPlayer().getLocation()));
 		return distanceToRed > distanceToBlue ? Location.BLUE_SUPPLIES
 				: Location.RED_SUPPLIES;
 	}
@@ -2778,8 +2049,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 
 	public void onRepaint(final Graphics g1) {
 		final Graphics2D g = (Graphics2D) g1;
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		if (!hide) {
 
 			hideRect = new Rectangle(503, 210, 14, 14);
@@ -2791,10 +2061,8 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			g.drawImage(logo, 2, 209, null);
 			g.setFont(new Font("SansSerif", 0, 15));
 			g.setColor(new Color(255, 255, 255, 200));
-			g.drawString(
-					"Version: "
-							+ getClass().getAnnotation(ScriptManifest.class)
-									.version(), 119, 332);
+			g.drawString("Version: "
+					+ getClass().getAnnotation(ScriptManifest.class).version(), 119, 332);
 			g.setFont(new Font("SansSerif", 0, 10));
 			g.drawString("Time:  " + run.toElapsedString(), 300, 219);
 			g.drawString("Current Task:  " + task, 300, 234);
@@ -2827,8 +2095,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			g.drawImage(hideImg, 503, 324, null);
 			g.setColor(new Color(255, 255, 255, 200));
 			g.setFont(new Font("SansSerif", 0, 10));
-			g.drawString("Time: " + run.toElapsedString() + " | Zeal: " + zeal,
-					372, 335);
+			g.drawString("Time: " + run.toElapsedString() + " | Zeal: " + zeal, 372, 335);
 		}
 	}
 
@@ -2883,10 +2150,8 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 
 	private Location opponentsGrave() {
 		if (!controlsWesternGraveyard() && !controlsEasternGraveyard()) {
-			final int distanceToEast = calc.distanceTo(Location.EAST_GRAVE_OUT
-					.getRSArea().getNearestTile(getMyPlayer().getLocation()));
-			final int distanceToWest = calc.distanceTo(Location.WEST_GRAVE_OUT
-					.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+			final int distanceToEast = calc.distanceTo(Location.EAST_GRAVE_OUT.getRSArea().getNearestTile(getMyPlayer().getLocation()));
+			final int distanceToWest = calc.distanceTo(Location.WEST_GRAVE_OUT.getRSArea().getNearestTile(getMyPlayer().getLocation()));
 			return distanceToEast < distanceToWest ? Location.EAST_GRAVE_OUT
 					: Location.WEST_GRAVE_OUT;
 		} else if (!controlsWesternGraveyard()) {
@@ -3046,8 +2311,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 				}
 			}
 		}
-		log(Color.red,
-				"Your weapon ethier doesn't have special or i don't have it saved please post a comment so i can add it.");
+		log(Color.red, "Your weapon ethier doesn't have special or i don't have it saved please post a comment so i can add it.");
 		return 0;
 	}
 
@@ -3081,14 +2345,12 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 			break;
 		case 5:
 			if (getMyLocation().equals(Location.RED_WAITING)) {
-				final RSTile center = Location.RED_WAITING.getRSArea()
-						.getCentralTile();
+				final RSTile center = Location.RED_WAITING.getRSArea().getCentralTile();
 				if (center != null && calc.distanceTo(center) > 2) {
 					walking.walkTileMM(center, 2, 2);
 				}
 			} else if (getMyLocation().equals(Location.BLUE_WAITING)) {
-				final RSTile center = Location.BLUE_WAITING.getRSArea()
-						.getCentralTile();
+				final RSTile center = Location.BLUE_WAITING.getRSArea().getCentralTile();
 				if (center != null && calc.distanceTo(center) > 2) {
 					walking.walkTileMM(center, 2, 2);
 				}
@@ -3103,13 +2365,9 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 	private int waitTime() {
 		try {
 			if (interfaces.getComponent(211, 1).isValid()
-					&& interfaces.getComponent(211, 1).containsText(
-							"You left a game of Soul Wars early")) {
-				final String getLine = interfaces.getComponent(211, 1)
-						.getText();
-				final String subLine = getLine.substring(
-						getLine.indexOf("wait ") + 5,
-						getLine.indexOf(" minutes"));
+					&& interfaces.getComponent(211, 1).containsText("You left a game of Soul Wars early")) {
+				final String getLine = interfaces.getComponent(211, 1).getText();
+				final String subLine = getLine.substring(getLine.indexOf("wait ") + 5, getLine.indexOf(" minutes"));
 				return Integer.parseInt(subLine);
 			}
 		} catch (final Exception e) {
@@ -3157,8 +2415,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 						}
 						Methods.sleep(Methods.random(300, 900));
 					}
-					mouse.click(645 + Methods.random(0, 4),
-							425 + Methods.random(0, 4), true);
+					mouse.click(645 + Methods.random(0, 4), 425 + Methods.random(0, 4), true);
 					Methods.sleep(3000, 5000);
 				}
 			}

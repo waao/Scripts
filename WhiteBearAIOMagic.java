@@ -87,8 +87,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 		// Antiban timeouts and next times
 		long timeOutA1 = 600000, timeOutA2 = 800000, lengthA1 = 1000,
 				lengthA2 = 3000;
-		long timeFriend = System.currentTimeMillis(), timeExp = System
-				.currentTimeMillis();
+		long timeFriend = System.currentTimeMillis(),
+				timeExp = System.currentTimeMillis();
 		long timeLook = System.currentTimeMillis();
 		long timeOutFriend = 20000, timeOutExp = 20000;
 
@@ -107,8 +107,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				nextLength = varLength;
 			} else {
 				final int diff = randTime * 1000 * 60;
-				final long varTime = Methods.random(midTime * 1000 * 60 - diff,
-						midTime * 1000 * 60 + diff);
+				final long varTime = Methods.random(midTime * 1000 * 60 - diff, midTime
+						* 1000 * 60 + diff);
 				nextBreak = System.currentTimeMillis() + varTime;
 				final int diff2 = randLength * 1000 * 60;
 				final long varLength = Methods.random(midLength * 1000 * 60
@@ -125,8 +125,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				status = "Look Away";
 				if (Methods.random(0, moveMouseB) <= 50) {
 					mouse.setSpeed(Methods.random(3, 5));
-					mouse.move(Methods.random(40, game.getWidth() - 50),
-							game.getHeight());
+					mouse.move(Methods.random(40, game.getWidth() - 50), game.getHeight());
 					mouse.setSpeed(Methods.random(minMS, maxMS));
 				}
 				int r1 = Methods.random(0, 101);
@@ -150,8 +149,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				}
 				log.info("[Antiban] Simulated looking away from screen, waited an extra "
 						+ to + " ms.");
-				timeLook = (long) (System.currentTimeMillis() + Methods.random(
-						timeOutA1, timeOutA2));
+				timeLook = (long) (System.currentTimeMillis() + Methods.random(timeOutA1, timeOutA2));
 				chatRes.pause = false;
 				return true;
 			}
@@ -169,8 +167,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				if (modCheck[element] != null) {
 					try {
 						if (modCheck[element].getName().startsWith("Mod")) {
-							final int distance = calc
-									.distanceTo(modCheck[element]);
+							final int distance = calc.distanceTo(modCheck[element]);
 							if (distance < Dist) {
 								Dist = distance;
 								closest = modCheck[element];
@@ -186,9 +183,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		private boolean load() {
 			try {
-				WBini.load(new FileInputStream(new File(
-						GlobalConfiguration.Paths.getSettingsDirectory(),
-						"WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final java.lang.Exception e) {
 				log.severe("[ERROR] Could not load settings file!");
 				return false;
@@ -210,16 +205,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			}
 
 			if (WBini.getProperty("ABtimeOutFriend") != null) {
-				timeOutFriend = Integer.parseInt(WBini
-						.getProperty("ABtimeOutFriend"));
+				timeOutFriend = Integer.parseInt(WBini.getProperty("ABtimeOutFriend"));
 			}
 			if (WBini.getProperty("ABtimeOutExp") != null) {
-				timeOutExp = Integer
-						.parseInt(WBini.getProperty("ABtimeOutExp"));
+				timeOutExp = Integer.parseInt(WBini.getProperty("ABtimeOutExp"));
 			}
 			if (WBini.getProperty("ABmoveMouseB") != null) {
-				moveMouseB = Integer
-						.parseInt(WBini.getProperty("ABmoveMouseB"));
+				moveMouseB = Integer.parseInt(WBini.getProperty("ABmoveMouseB"));
 			}
 			return true;
 		}
@@ -232,8 +224,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				status = "Antiban";
 				if (Methods.random(0, moveMouseB) <= 50) {
 					mouse.setSpeed(Methods.random(3, 5));
-					mouse.move(Methods.random(40, game.getWidth() - 50),
-							game.getHeight());
+					mouse.move(Methods.random(40, game.getWidth() - 50), game.getHeight());
 					mouse.setSpeed(Methods.random(minMS, maxMS));
 				}
 				int r1 = Methods.random(0, 101);
@@ -253,8 +244,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				}
 				log.info("[Antiban] Simulated looking away from screen, waited an extra "
 						+ to + " ms.");
-				timeLook = (long) (System.currentTimeMillis() + Methods.random(
-						timeOutA1, timeOutA2));
+				timeLook = (long) (System.currentTimeMillis() + Methods.random(timeOutA1, timeOutA2));
 				chatRes.pause = false;
 				return true;
 			}
@@ -274,8 +264,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				if (random == 1) {
 					if (Methods.random(1, 3) == 1) {
 						chatRes.wait = true;
-						mouse.move(Methods.random(5, game.getWidth()),
-								Methods.random(5, game.getHeight()));
+						mouse.move(Methods.random(5, game.getWidth()), Methods.random(5, game.getHeight()));
 						chatRes.wait = false;
 					}
 				}
@@ -295,15 +284,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						if (game.getCurrentTab() != 1) {
 							chatRes.wait = true;
 							game.openTab(1);
-							final Point stats = new Point(interfaces.get(320)
-									.getComponent(87).getAbsoluteX() + 20,
-									interfaces.get(320).getComponent(87)
-											.getAbsoluteY() + 10);
+							final Point stats = new Point(interfaces.get(320).getComponent(87).getAbsoluteX() + 20, interfaces.get(320).getComponent(87).getAbsoluteY() + 10);
 							mouse.move(stats, 5, 5);
 							sleepCR(Methods.random(28, 31));
 							timeExp = System.currentTimeMillis()
-									+ (long) Methods.random(timeOutExp - 1500,
-											timeOutExp + 1500);
+									+ (long) Methods.random(timeOutExp - 1500, timeOutExp + 1500);
 							chatRes.wait = false;
 						}
 					}
@@ -320,9 +305,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 								game.openTab(9);
 								sleepCR(Methods.random(18, 25));
 								timeFriend = System.currentTimeMillis()
-										+ (long) Methods.random(
-												timeOutFriend - 1500,
-												timeOutFriend + 1500);
+										+ (long) Methods.random(timeOutFriend - 1500, timeOutFriend + 1500);
 								chatRes.wait = false;
 							}
 						}
@@ -332,16 +315,14 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					if (extras == true) {
 						final int chance2 = Methods.random(1, player);
 						if (chance2 == 1) {
-							final RSPlayer player = players
-									.getNearest(Players.ALL_FILTER);
+							final RSPlayer player = players.getNearest(Players.ALL_FILTER);
 							if (player != null && calc.distanceTo(player) != 0) {
 								chatRes.wait = true;
 								mouse.move(player.getScreenLocation(), 5, 5);
 								sleepCR(Methods.random(6, 9));
 								mouse.click(false);
 								sleepCR(Methods.random(15, 17));
-								mouse.move(Methods.random(10, 450),
-										Methods.random(10, 495));
+								mouse.move(Methods.random(10, 450), Methods.random(10, 495));
 								chatRes.wait = false;
 							}
 						}
@@ -353,52 +334,38 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		private boolean personalize() {
 			try {
-				WBini.load(new FileInputStream(new File(
-						GlobalConfiguration.Paths.getSettingsDirectory(),
-						"WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final java.lang.Exception e) {
 			}
 			if (WBini.getProperty("ABallRand") == null) {
-				WBini.setProperty("ABallRand",
-						Integer.toString(Methods.random(20, 23)));
+				WBini.setProperty("ABallRand", Integer.toString(Methods.random(20, 23)));
 			}
 			if (WBini.getProperty("ABcam") == null) {
-				WBini.setProperty("ABcam",
-						Integer.toString(Methods.random(26, 29)));
+				WBini.setProperty("ABcam", Integer.toString(Methods.random(26, 29)));
 			}
 			if (WBini.getProperty("ABskill") == null) {
-				WBini.setProperty("ABskill",
-						Integer.toString(Methods.random(44, 49)));
+				WBini.setProperty("ABskill", Integer.toString(Methods.random(44, 49)));
 			}
 			if (WBini.getProperty("ABplayer") == null) {
-				WBini.setProperty("ABplayer",
-						Integer.toString(Methods.random(19, 23)));
+				WBini.setProperty("ABplayer", Integer.toString(Methods.random(19, 23)));
 			}
 			if (WBini.getProperty("ABfriend") == null) {
-				WBini.setProperty("ABfriend",
-						Integer.toString(Methods.random(59, 69)));
+				WBini.setProperty("ABfriend", Integer.toString(Methods.random(59, 69)));
 			}
 
 			if (WBini.getProperty("ABtimeOutFriend") == null) {
-				WBini.setProperty("ABtimeOutFriend",
-						Integer.toString(Methods.random(33000, 60000)));
+				WBini.setProperty("ABtimeOutFriend", Integer.toString(Methods.random(33000, 60000)));
 			}
 			if (WBini.getProperty("ABtimeOutExp") == null) {
-				WBini.setProperty("ABtimeOutExp",
-						Integer.toString(Methods.random(25000, 50000)));
+				WBini.setProperty("ABtimeOutExp", Integer.toString(Methods.random(25000, 50000)));
 			}
 
 			if (WBini.getProperty("ABmoveMouseB") == null) {
-				WBini.setProperty("ABmoveMouseB",
-						Integer.toString(Methods.random(55, 105)));
+				WBini.setProperty("ABmoveMouseB", Integer.toString(Methods.random(55, 105)));
 			}
 			try {
-				WBini.store(
-						new FileWriter(new File(GlobalConfiguration.Paths
-								.getSettingsDirectory(),
-								"WhiteBearAIOMagicV2.ini")),
-						"The GUI Settings for White Bear AIO Magic (Version: "
-								+ Double.toString(properties.version()) + ")");
+				WBini.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
+						+ Double.toString(properties.version()) + ")");
 			} catch (final java.lang.Exception e) {
 				log.severe("[ERROR] Could not save settings file!");
 				return false;
@@ -428,8 +395,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				status = "Look Away";
 				if (Methods.random(0, moveMouseB) <= 50) {
 					mouse.setSpeed(Methods.random(3, 5));
-					mouse.move(Methods.random(40, game.getWidth() - 50),
-							game.getHeight());
+					mouse.move(Methods.random(40, game.getWidth() - 50), game.getHeight());
 					mouse.setSpeed(Methods.random(minMS, maxMS));
 				}
 				int r1 = Methods.random(0, 101);
@@ -453,8 +419,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				}
 				log.info("[Antiban] Simulated looking away from screen, waited an extra "
 						+ to + " ms.");
-				timeLook = (long) (System.currentTimeMillis() + Methods.random(
-						timeOutA1, timeOutA2));
+				timeLook = (long) (System.currentTimeMillis() + Methods.random(timeOutA1, timeOutA2));
 				chatRes.pause = false;
 				return true;
 			}
@@ -500,8 +465,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 		long lastLevelUp = System.currentTimeMillis() - 300000,
 				nextCustom = System.currentTimeMillis() - 1000000;
 		long lastSaidLevel = System.currentTimeMillis() - 110000,
-				nextModAlert = System.currentTimeMillis(), sayNo = System
-						.currentTimeMillis();
+				nextModAlert = System.currentTimeMillis(),
+				sayNo = System.currentTimeMillis();
 		int level = 0; // records MAGIC level
 		boolean run = true, doLevelRes = false, doCustomRes = false;
 		boolean typing = false; // read by antiban (true = suppress antiban)
@@ -534,10 +499,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				String text = null;
 				for (int x = 280; x >= 180; x--) {
 					if (interfaces.get(137).getComponent(x).getText() != null) {
-						if (interfaces.get(137).getComponent(x).getText()
-								.contains("<col=")) {
-							text = interfaces.get(137).getComponent(x)
-									.getText();
+						if (interfaces.get(137).getComponent(x).getText().contains("<col=")) {
+							text = interfaces.get(137).getComponent(x).getText();
 							break;
 						}
 					}
@@ -574,8 +537,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						&& System.currentTimeMillis() - 200000 >= lastLevelUp) {
 					lastLevelUp = System.currentTimeMillis();
 					if (Methods.random(0, 11) <= 7
-							&& calc.distanceTo(players
-									.getNearest(Players.ALL_FILTER)) < 10) {
+							&& calc.distanceTo(players.getNearest(Players.ALL_FILTER)) < 10) {
 						resCount++;
 						sleepNE(Methods.random(200, 600));
 						final String[] r = levelRes;
@@ -612,8 +574,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					} else if (random == 5) {
 						sendText("lv " + skills.getCurrentLevel(Skills.MAGIC));
 					} else if (random == 6) {
-						sendText(Integer.toString(skills
-								.getCurrentLevel(Skills.MAGIC)));
+						sendText(Integer.toString(skills.getCurrentLevel(Skills.MAGIC)));
 					} else if (random > 6) {
 						sleepNE(Methods.random(100, 200));
 						keyboard.sendKey((char) KeyEvent.VK_ENTER);
@@ -665,8 +626,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			}
 			if (doCustomRes && findText(m, customDetect)
 					&& System.currentTimeMillis() > nextCustom) {
-				nextCustom = (long) (System.currentTimeMillis() + Methods
-						.random(customTO - customTOR, customTO + customTOR));
+				nextCustom = (long) (System.currentTimeMillis() + Methods.random(customTO
+						- customTOR, customTO + customTOR));
 				resCount++;
 				sleepNE(Methods.random(500, 1400));
 				final int r = Methods.random(0, customRes.length);
@@ -689,8 +650,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						if (useChatRes && tradeResponse) {
 							if (sayNo < System.currentTimeMillis()) {
 								tradeResponse = false;
-								final int timeOut = Methods.random(110000,
-										130000);
+								final int timeOut = Methods.random(110000, 130000);
 								sayNo = System.currentTimeMillis() + timeOut;
 								sleepNE(Methods.random(300, 700));
 								final String[] res = tradeRes;
@@ -703,8 +663,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						final String m = getChatMessage().toLowerCase();
 						if (m != null
 								&& !m.equals(lastMessage)
-								&& m.contains(getMyPlayer().getName()
-										.toLowerCase() + ": <") != true) {
+								&& m.contains(getMyPlayer().getName().toLowerCase()
+										+ ": <") != true) {
 							remoteControl(m);
 							if (useChatRes) {
 								response(m);
@@ -813,26 +773,20 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 		private void button1ActionPerformed(final ActionEvent e) {
 			try {
 				chatRes.tradeRes = textArea3.getText().toLowerCase().split("/");
-				chatRes.greetingRes = textArea7.getText().toLowerCase()
-						.split("/");
-				chatRes.botterRes = textArea8.getText().toLowerCase()
-						.split("/");
+				chatRes.greetingRes = textArea7.getText().toLowerCase().split("/");
+				chatRes.botterRes = textArea8.getText().toLowerCase().split("/");
 				chatRes.levelRes = textArea9.getText().toLowerCase().split("/");
-				chatRes.customDetect = textArea10.getText().toLowerCase()
-						.split("/");
-				chatRes.customRes = textArea11.getText().toLowerCase()
-						.split("/");
+				chatRes.customDetect = textArea10.getText().toLowerCase().split("/");
+				chatRes.customRes = textArea11.getText().toLowerCase().split("/");
 				chatRes.doLevelRes = radioButton2.isSelected();
 				chatRes.doCustomRes = radioButton1.isSelected();
-				chatRes.customTO = Integer.parseInt(formattedTextField1
-						.getText());
-				chatRes.customTOR = Integer.parseInt(formattedTextField3
-						.getText());
+				chatRes.customTO = Integer.parseInt(formattedTextField1.getText());
+				chatRes.customTOR = Integer.parseInt(formattedTextField3.getText());
 
-				WBini.setProperty("CRuseLevelRes", String.valueOf(radioButton2
-						.isSelected() ? true : false));
-				WBini.setProperty("CRuseCustomRes", String.valueOf(radioButton1
-						.isSelected() ? true : false));
+				WBini.setProperty("CRuseLevelRes", String.valueOf(radioButton2.isSelected() ? true
+						: false));
+				WBini.setProperty("CRuseCustomRes", String.valueOf(radioButton1.isSelected() ? true
+						: false));
 				WBini.setProperty("CRtradeRes", textArea3.getText());
 				WBini.setProperty("CRgreetingRes", textArea7.getText());
 				WBini.setProperty("CRbotterRes", textArea8.getText());
@@ -842,12 +796,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				WBini.setProperty("CRcustomTO", formattedTextField1.getText());
 				WBini.setProperty("CRcustomTOR", formattedTextField3.getText());
 				try {
-					WBini.store(new FileWriter(new File(
-							GlobalConfiguration.Paths.getSettingsDirectory(),
-							"WhiteBearAIOMagicV2.ini")),
-							"The GUI Settings for White Bear AIO Magic (Version: "
-									+ Double.toString(properties.version())
-									+ ")");
+					WBini.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
+							+ Double.toString(properties.version()) + ")");
 				} catch (final IOException ioe) {
 					log.warning("[GUI] Error occurred when saving GUI settings!");
 				}
@@ -911,12 +861,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				WhiteBearGUI.setResizable(false);
 				WhiteBearGUI.setMinimumSize(new Dimension(405, 405));
 				WhiteBearGUI.setTitle("White Bear AIO Magic");
-				WhiteBearGUI
-						.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-				WhiteBearGUI
-						.setFont(new Font("Century Gothic", Font.PLAIN, 12));
-				final Container WhiteBearGUIContentPane = WhiteBearGUI
-						.getContentPane();
+				WhiteBearGUI.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+				WhiteBearGUI.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+				final Container WhiteBearGUIContentPane = WhiteBearGUI.getContentPane();
 				WhiteBearGUIContentPane.setLayout(null);
 
 				// ======== panel1 ========
@@ -928,8 +875,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 					// ======== tabbedPane1 ========
 					{
-						tabbedPane1.setFont(new Font("Century Gothic",
-								Font.PLAIN, 12));
+						tabbedPane1.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 						tabbedPane1.setForeground(new Color(0, 153, 0));
 						tabbedPane1.setEnabled(false);
 
@@ -939,11 +885,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							panel6.setLayout(null);
 
 							// ---- textArea1 ----
-							textArea1
-									.setText(" This GUI allows you to change Chat Responder\nsettings. Just click start if you do not know what\nto do.");
+							textArea1.setText(" This GUI allows you to change Chat Responder\nsettings. Just click start if you do not know what\nto do.");
 							textArea1.setLineWrap(true);
-							textArea1.setFont(new Font("Century Gothic",
-									Font.PLAIN, 14));
+							textArea1.setFont(new Font("Century Gothic", Font.PLAIN, 14));
 							textArea1.setTabSize(0);
 							textArea1.setBackground(Color.black);
 							textArea1.setForeground(new Color(204, 255, 0));
@@ -956,11 +900,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							textArea1.setBounds(20, 10, 330, 60);
 
 							// ---- textArea2 ----
-							textArea2
-									.setText(" For responses, separate each response with /\nE.g. For hi/hello/yes?, the possible responses\nare hi, hello and yes?. When the bot needs to\nrespond, it will randomly pick one response");
+							textArea2.setText(" For responses, separate each response with /\nE.g. For hi/hello/yes?, the possible responses\nare hi, hello and yes?. When the bot needs to\nrespond, it will randomly pick one response");
 							textArea2.setLineWrap(true);
-							textArea2.setFont(new Font("Century Gothic",
-									Font.PLAIN, 14));
+							textArea2.setFont(new Font("Century Gothic", Font.PLAIN, 14));
 							textArea2.setTabSize(0);
 							textArea2.setBackground(Color.black);
 							textArea2.setForeground(new Color(204, 255, 0));
@@ -975,8 +917,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- button2 ----
 							button2.setText("Customize Responses");
 							button2.setBackground(Color.black);
-							button2.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							button2.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							button2.setForeground(new Color(0, 102, 51));
 							button2.addActionListener(new ActionListener() {
 								@Override
@@ -990,8 +931,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- textArea4 ----
 							textArea4.setText("and use it.");
 							textArea4.setLineWrap(true);
-							textArea4.setFont(new Font("Century Gothic",
-									Font.PLAIN, 14));
+							textArea4.setFont(new Font("Century Gothic", Font.PLAIN, 14));
 							textArea4.setTabSize(0);
 							textArea4.setBackground(Color.black);
 							textArea4.setForeground(new Color(204, 255, 0));
@@ -1004,11 +944,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							textArea4.setBounds(20, 156, 85, 20);
 
 							// ---- textArea5 ----
-							textArea5
-									.setText(" You can also set a custom detection, reply");
+							textArea5.setText(" You can also set a custom detection, reply");
 							textArea5.setLineWrap(true);
-							textArea5.setFont(new Font("Century Gothic",
-									Font.PLAIN, 14));
+							textArea5.setFont(new Font("Century Gothic", Font.PLAIN, 14));
 							textArea5.setTabSize(0);
 							textArea5.setBackground(Color.black);
 							textArea5.setForeground(new Color(204, 255, 0));
@@ -1023,8 +961,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- button3 ----
 							button3.setText("Custom detection");
 							button3.setBackground(Color.black);
-							button3.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							button3.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							button3.setForeground(new Color(0, 102, 51));
 							button3.addActionListener(new ActionListener() {
 								@Override
@@ -1038,8 +975,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- textArea6 ----
 							textArea6.setText("and timeout.");
 							textArea6.setLineWrap(true);
-							textArea6.setFont(new Font("Century Gothic",
-									Font.PLAIN, 14));
+							textArea6.setFont(new Font("Century Gothic", Font.PLAIN, 14));
 							textArea6.setTabSize(0);
 							textArea6.setBackground(Color.black);
 							textArea6.setForeground(new Color(204, 255, 0));
@@ -1054,14 +990,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel6.getComponentCount(); i++) {
-									final Rectangle bounds = panel6
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel6.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel6.getInsets();
 								preferredSize.width += insets.right;
@@ -1081,8 +1014,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label17.setText("Trade Response");
 							label17.setBackground(new Color(51, 51, 51));
 							label17.setForeground(new Color(255, 255, 102));
-							label17.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label17.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							label17.setHorizontalAlignment(SwingConstants.LEFT);
 							panel4.add(label17);
 							label17.setBounds(5, 15, 110, 20);
@@ -1091,8 +1023,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label18.setText("Greeting Response");
 							label18.setBackground(new Color(51, 51, 51));
 							label18.setForeground(new Color(255, 255, 102));
-							label18.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label18.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							label18.setHorizontalAlignment(SwingConstants.LEFT);
 							panel4.add(label18);
 							label18.setBounds(5, 65, 120, 20);
@@ -1101,8 +1032,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label20.setText("Botter! Response");
 							label20.setBackground(new Color(51, 51, 51));
 							label20.setForeground(new Color(255, 255, 102));
-							label20.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label20.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel4.add(label20);
 							label20.setBounds(5, 115, 115, 20);
 
@@ -1110,8 +1040,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label30.setText("Level up (yourself)");
 							label30.setBackground(new Color(51, 51, 51));
 							label30.setForeground(new Color(255, 255, 102));
-							label30.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label30.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel4.add(label30);
 							label30.setBounds(5, 165, 115, 20);
 
@@ -1119,8 +1048,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							textArea3.setForeground(new Color(255, 255, 204));
 							textArea3.setBackground(Color.gray);
 							textArea3.setText("no thanks/no thx/nope/im fine");
-							textArea3.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textArea3.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textArea3.setLineWrap(true);
 							panel4.add(textArea3);
 							textArea3.setBounds(130, 15, 225, 37);
@@ -1128,10 +1056,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- textArea7 ----
 							textArea7.setForeground(new Color(255, 255, 204));
 							textArea7.setBackground(Color.gray);
-							textArea7
-									.setText("hi!/hi./hi/hello/hello!/hello./hello../yo/yo!/yes?/what/what?/hey!");
-							textArea7.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textArea7.setText("hi!/hi./hi/hello/hello!/hello./hello../yo/yo!/yes?/what/what?/hey!");
+							textArea7.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textArea7.setLineWrap(true);
 							panel4.add(textArea7);
 							textArea7.setBounds(130, 65, 225, 37);
@@ -1139,10 +1065,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- textArea8 ----
 							textArea8.setForeground(new Color(255, 255, 204));
 							textArea8.setBackground(Color.gray);
-							textArea8
-									.setText("huh/zzz/.../???/?????/what/what?/no/nop/nope");
-							textArea8.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textArea8.setText("huh/zzz/.../???/?????/what/what?/no/nop/nope");
+							textArea8.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textArea8.setLineWrap(true);
 							panel4.add(textArea8);
 							textArea8.setBounds(130, 115, 225, 37);
@@ -1150,10 +1074,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- textArea9 ----
 							textArea9.setForeground(new Color(255, 255, 204));
 							textArea9.setBackground(Color.gray);
-							textArea9
-									.setText("yay/haha/:)/yay!/yay!!!/finally...");
-							textArea9.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textArea9.setText("yay/haha/:)/yay!/yay!!!/finally...");
+							textArea9.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textArea9.setLineWrap(true);
 							panel4.add(textArea9);
 							textArea9.setBounds(130, 165, 225, 37);
@@ -1162,16 +1084,14 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label19.setText("(70% chance to talk)");
 							label19.setBackground(new Color(51, 51, 51));
 							label19.setForeground(new Color(255, 255, 102));
-							label19.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label19.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel4.add(label19);
 							label19.setBounds(4, 182, 130, 20);
 
 							// ---- button4 ----
 							button4.setText("Back");
 							button4.setBackground(Color.black);
-							button4.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							button4.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							button4.setForeground(new Color(0, 102, 51));
 							button4.addActionListener(new ActionListener() {
 								@Override
@@ -1186,22 +1106,18 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton2.setText("Use Level up Response");
 							radioButton2.setBackground(Color.black);
 							radioButton2.setForeground(Color.yellow);
-							radioButton2.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton2.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel4.add(radioButton2);
 							radioButton2.setBounds(10, 210, 183, 25);
 
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel4.getComponentCount(); i++) {
-									final Rectangle bounds = panel4
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel4.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel4.getInsets();
 								preferredSize.width += insets.right;
@@ -1221,8 +1137,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton1.setText("Use Custom Detection");
 							radioButton1.setBackground(Color.black);
 							radioButton1.setForeground(Color.yellow);
-							radioButton1.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton1.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel3.add(radioButton1);
 							radioButton1.setBounds(17, 15, 183, 25);
 
@@ -1230,16 +1145,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label8.setText("Timeout (seconds):");
 							label8.setBackground(new Color(51, 51, 51));
 							label8.setForeground(new Color(255, 255, 102));
-							label8.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label8.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel3.add(label8);
 							label8.setBounds(25, 160, 125, 20);
 
 							// ---- formattedTextField1 ----
-							formattedTextField1.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField1.setForeground(new Color(255,
-									255, 204));
+							formattedTextField1.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField1.setForeground(new Color(255, 255, 204));
 							formattedTextField1.setBackground(Color.gray);
 							formattedTextField1.setText("160");
 							panel3.add(formattedTextField1);
@@ -1249,16 +1161,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label9.setText("\u00b1");
 							label9.setBackground(new Color(51, 51, 51));
 							label9.setForeground(new Color(255, 255, 102));
-							label9.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label9.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel3.add(label9);
 							label9.setBounds(230, 160, 15, 20);
 
 							// ---- formattedTextField3 ----
-							formattedTextField3.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField3.setForeground(new Color(255,
-									255, 204));
+							formattedTextField3.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField3.setForeground(new Color(255, 255, 204));
 							formattedTextField3.setBackground(Color.gray);
 							formattedTextField3.setText("30");
 							panel3.add(formattedTextField3);
@@ -1267,8 +1176,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- button5 ----
 							button5.setText("Back");
 							button5.setBackground(Color.black);
-							button5.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							button5.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							button5.setForeground(new Color(0, 102, 51));
 							button5.addActionListener(new ActionListener() {
 								@Override
@@ -1283,8 +1191,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label21.setText("Detect:");
 							label21.setBackground(new Color(51, 51, 51));
 							label21.setForeground(new Color(255, 255, 102));
-							label21.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label21.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							label21.setHorizontalAlignment(SwingConstants.LEFT);
 							panel3.add(label21);
 							label21.setBounds(25, 50, 55, 20);
@@ -1292,10 +1199,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- textArea10 ----
 							textArea10.setForeground(new Color(255, 255, 204));
 							textArea10.setBackground(Color.gray);
-							textArea10
-									.setText("i love u/i luv u/i love you/i luv you/i lov u/i love you");
-							textArea10.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textArea10.setText("i love u/i luv u/i love you/i luv you/i lov u/i love you");
+							textArea10.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textArea10.setLineWrap(true);
 							panel3.add(textArea10);
 							textArea10.setBounds(95, 50, 235, 37);
@@ -1303,10 +1208,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- textArea11 ----
 							textArea11.setForeground(new Color(255, 255, 204));
 							textArea11.setBackground(Color.gray);
-							textArea11
-									.setText("yuck/yuk/gross/eww/zzz/.../zzzz/....");
-							textArea11.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textArea11.setText("yuck/yuk/gross/eww/zzz/.../zzzz/....");
+							textArea11.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textArea11.setLineWrap(true);
 							panel3.add(textArea11);
 							textArea11.setBounds(95, 100, 235, 37);
@@ -1315,8 +1218,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label22.setText("Respond:");
 							label22.setBackground(new Color(51, 51, 51));
 							label22.setForeground(new Color(255, 255, 102));
-							label22.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label22.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							label22.setHorizontalAlignment(SwingConstants.LEFT);
 							panel3.add(label22);
 							label22.setBounds(25, 100, 65, 20);
@@ -1324,14 +1226,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel3.getComponentCount(); i++) {
-									final Rectangle bounds = panel3
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel3.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel3.getInsets();
 								preferredSize.width += insets.right;
@@ -1371,8 +1270,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					{ // compute preferred size
 						final Dimension preferredSize = new Dimension();
 						for (int i = 0; i < panel1.getComponentCount(); i++) {
-							final Rectangle bounds = panel1.getComponent(i)
-									.getBounds();
+							final Rectangle bounds = panel1.getComponent(i).getBounds();
 							preferredSize.width = Math.max(bounds.x
 									+ bounds.width, preferredSize.width);
 							preferredSize.height = Math.max(bounds.y
@@ -1388,8 +1286,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				WhiteBearGUIContentPane.add(panel1);
 				panel1.setBounds(0, 0, 400, 395);
 
-				WhiteBearGUIContentPane
-						.setPreferredSize(new Dimension(405, 420));
+				WhiteBearGUIContentPane.setPreferredSize(new Dimension(405, 420));
 				WhiteBearGUI.setSize(405, 420);
 				WhiteBearGUI.setLocationRelativeTo(WhiteBearGUI.getOwner());
 				loadSettings();
@@ -1398,9 +1295,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		public boolean loadSettings() {
 			try {
-				WBini.load(new FileInputStream(new File(
-						GlobalConfiguration.Paths.getSettingsDirectory(),
-						"WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final FileNotFoundException e) {
 				return false;
 			} catch (final IOException e) {
@@ -1409,12 +1304,10 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			}
 			try {
 				if (WBini.getProperty("CRuseLevelRes") != null) {
-					radioButton2.setSelected(Boolean.parseBoolean(WBini
-							.getProperty("CRuseLevelRes")));
+					radioButton2.setSelected(Boolean.parseBoolean(WBini.getProperty("CRuseLevelRes")));
 				}
 				if (WBini.getProperty("CRuseCustomRes") != null) {
-					radioButton1.setSelected(Boolean.parseBoolean(WBini
-							.getProperty("CRuseCustomRes")));
+					radioButton1.setSelected(Boolean.parseBoolean(WBini.getProperty("CRuseCustomRes")));
 				}
 				if (WBini.getProperty("CRtradeRes") != null) {
 					textArea3.setText(WBini.getProperty("CRtradeRes"));
@@ -1436,12 +1329,10 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				}
 
 				if (WBini.getProperty("CRcustomTO") != null) {
-					formattedTextField1
-							.setText(WBini.getProperty("CRcustomTO"));
+					formattedTextField1.setText(WBini.getProperty("CRcustomTO"));
 				}
 				if (WBini.getProperty("CRcustomTOR") != null) {
-					formattedTextField3.setText(WBini
-							.getProperty("CRcustomTOR"));
+					formattedTextField3.setText(WBini.getProperty("CRcustomTOR"));
 				}
 			} catch (final java.lang.Exception e) {
 				log.warning("[GUI] Settings file is corrupt, using default settings!");
@@ -1594,8 +1485,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				}
 				// *****************TELEPORTS********************************\\
 				if (doWhat == 0) {
-					final String tempTele = (String) teleportCombo
-							.getSelectedItem();
+					final String tempTele = (String) teleportCombo.getSelectedItem();
 					if (tempTele.contains("Varrock Teleport")) {
 						component = 40;
 						exp = 35;
@@ -1633,8 +1523,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					}
 					// *****************ALCHEMY********************************\\
 				} else if (doWhat == 1) {
-					final String tempAlch = (String) alchemyCombo
-							.getSelectedItem();
+					final String tempAlch = (String) alchemyCombo.getSelectedItem();
 					if (tempAlch.contains("Low Level Alchemy")) {
 						component = 38;
 						exp = 31;
@@ -1648,8 +1537,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					}
 					// *****************CURSES*********************************\\
 				} else if (doWhat == 2) {
-					final String tempCurse = (String) curseCombo
-							.getSelectedItem();
+					final String tempCurse = (String) curseCombo.getSelectedItem();
 					if (tempCurse.contains("Confuse")) {
 						component = 26;
 						exp = 13;
@@ -1692,8 +1580,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					// *****************ALCH +
 					// CURSE****************************\\
 				} else if (doWhat == 3) {
-					final String tempAlch = (String) alchemyCombo
-							.getSelectedItem();
+					final String tempAlch = (String) alchemyCombo.getSelectedItem();
 					if (tempAlch.contains("Low Level Alchemy")) {
 						component = 38;
 						exp = 31;
@@ -1705,8 +1592,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					} else {
 						log.severe("An error occured!");
 					}
-					final String tempCurse = (String) curseCombo
-							.getSelectedItem();
+					final String tempCurse = (String) curseCombo.getSelectedItem();
 					if (tempCurse.contains("Confuse")) {
 						curseComponent = 26;
 					} else if (tempCurse.contains("Weaken")) {
@@ -1730,8 +1616,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					}
 					// *****************ENCHANT********************************\\
 				} else if (doWhat == 4) {
-					final String tempAlch = (String) enchantCombo
-							.getSelectedItem();
+					final String tempAlch = (String) enchantCombo.getSelectedItem();
 					if (tempAlch.contains("Level 1")) {
 						component = 29;
 						exp = 17.5;
@@ -1764,8 +1649,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					component = 50;
 					exp = 53;
 					spellName = "Superheat Item";
-					final String tempBar = (String) superheatCombo
-							.getSelectedItem();
+					final String tempBar = (String) superheatCombo.getSelectedItem();
 					if (tempBar.contains("Bronze")) {
 						barID = 2349;
 						ore1ID = 436;
@@ -1823,8 +1707,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				} else if (doWhat == 8) {
 					component = 27;
 					spellName = "Enchant Crossbow Bolt";
-					final String tempBolt = (String) boltCombo
-							.getSelectedItem();
+					final String tempBolt = (String) boltCombo.getSelectedItem();
 					if (tempBolt.contains("Sapphire")) {
 						exp = 17;
 						bolteId = 9240;
@@ -1860,8 +1743,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					}
 					// *****************OTHERS*********************************\\
 				} else if (doWhat == 99) {
-					final String tempAlch = (String) othersCombo
-							.getSelectedItem();
+					final String tempAlch = (String) othersCombo.getSelectedItem();
 					if (tempAlch.contains("Bones to Banana")) {
 						doWhat = 6;
 						component = 33;
@@ -1977,94 +1859,73 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					remoteMsg = "";
 				}
 				try {
-					relogAfter = Integer.parseInt(formattedTextField31
-							.getText());
+					relogAfter = Integer.parseInt(formattedTextField31.getText());
 				} catch (final Exception eeee) {
 					relogAfter = -1;
 				}
-				WBini.setProperty("UseSetting",
-						String.valueOf(useSetting ? true : false));
+				WBini.setProperty("UseSetting", String.valueOf(useSetting ? true
+						: false));
 				if (useSetting) {
 					WBini.setProperty("NpcID", tfNpcID.getText());
 					WBini.setProperty("ItemID", tfItemID.getText());
 
-					WBini.setProperty("SpellTypeCombo",
-							Integer.toString(spellTypeCombo.getSelectedIndex()));
-					WBini.setProperty("SuperheatCombo",
-							Integer.toString(superheatCombo.getSelectedIndex()));
-					WBini.setProperty("BankCombo",
-							Integer.toString(bankCombo.getSelectedIndex()));
-					WBini.setProperty("AlchemyCombo",
-							Integer.toString(alchemyCombo.getSelectedIndex()));
-					WBini.setProperty("BoltCombo",
-							Integer.toString(boltCombo.getSelectedIndex()));
-					WBini.setProperty("EnchantCombo",
-							Integer.toString(enchantCombo.getSelectedIndex()));
-					WBini.setProperty("CurseCombo",
-							Integer.toString(curseCombo.getSelectedIndex()));
-					WBini.setProperty("OthersCombo",
-							Integer.toString(othersCombo.getSelectedIndex()));
-					WBini.setProperty("TeleportCombo",
-							Integer.toString(teleportCombo.getSelectedIndex()));
+					WBini.setProperty("SpellTypeCombo", Integer.toString(spellTypeCombo.getSelectedIndex()));
+					WBini.setProperty("SuperheatCombo", Integer.toString(superheatCombo.getSelectedIndex()));
+					WBini.setProperty("BankCombo", Integer.toString(bankCombo.getSelectedIndex()));
+					WBini.setProperty("AlchemyCombo", Integer.toString(alchemyCombo.getSelectedIndex()));
+					WBini.setProperty("BoltCombo", Integer.toString(boltCombo.getSelectedIndex()));
+					WBini.setProperty("EnchantCombo", Integer.toString(enchantCombo.getSelectedIndex()));
+					WBini.setProperty("CurseCombo", Integer.toString(curseCombo.getSelectedIndex()));
+					WBini.setProperty("OthersCombo", Integer.toString(othersCombo.getSelectedIndex()));
+					WBini.setProperty("TeleportCombo", Integer.toString(teleportCombo.getSelectedIndex()));
 
-					WBini.setProperty("UseChatRes", String
-							.valueOf(radioButton12.isSelected() ? true : false));
-					WBini.setProperty("CheckUpdate", String
-							.valueOf(radioButton25.isSelected() ? true : false));
-					WBini.setProperty("PaintColour",
-							String.valueOf(clrSelected.getSelectedIndex()));
+					WBini.setProperty("UseChatRes", String.valueOf(radioButton12.isSelected() ? true
+							: false));
+					WBini.setProperty("CheckUpdate", String.valueOf(radioButton25.isSelected() ? true
+							: false));
+					WBini.setProperty("PaintColour", String.valueOf(clrSelected.getSelectedIndex()));
 					WBini.setProperty("PaintFont", tfTextFont.getText());
-					WBini.setProperty("Fkeys", String.valueOf(radioButton23
-							.isSelected() ? true : false));
+					WBini.setProperty("Fkeys", String.valueOf(radioButton23.isSelected() ? true
+							: false));
 					WBini.setProperty("MinMouseSpeed", jTextField.getText());
 					WBini.setProperty("MaxMouseSpeed", jTextField2.getText());
-					WBini.setProperty("Antialias", String.valueOf(radioButton22
-							.isSelected() ? true : false));
-					WBini.setProperty("Breaking", String.valueOf(radioButton1
-							.isSelected() ? true : false));
-					WBini.setProperty("RandomBreak", String
-							.valueOf(radioButton2.isSelected() ? true : false));
-					WBini.setProperty("CheckFriend",
-							String.valueOf(check2.isSelected() ? true : false));
-					WBini.setProperty("CheckExperience",
-							String.valueOf(check3.isSelected() ? true : false));
-					WBini.setProperty("ScreenLookaway",
-							String.valueOf(check4.isSelected() ? true : false));
+					WBini.setProperty("Antialias", String.valueOf(radioButton22.isSelected() ? true
+							: false));
+					WBini.setProperty("Breaking", String.valueOf(radioButton1.isSelected() ? true
+							: false));
+					WBini.setProperty("RandomBreak", String.valueOf(radioButton2.isSelected() ? true
+							: false));
+					WBini.setProperty("CheckFriend", String.valueOf(check2.isSelected() ? true
+							: false));
+					WBini.setProperty("CheckExperience", String.valueOf(check3.isSelected() ? true
+							: false));
+					WBini.setProperty("ScreenLookaway", String.valueOf(check4.isSelected() ? true
+							: false));
 					WBini.setProperty("TimeoutA1", jTextField3.getText());
 					WBini.setProperty("TimeoutA2", jTextField4.getText());
 					WBini.setProperty("LengthA1", jTextField6.getText());
 					WBini.setProperty("LengthA2", jTextField5.getText());
-					WBini.setProperty("BreakLogout", String
-							.valueOf(radioButton3.isSelected() ? true : false));
+					WBini.setProperty("BreakLogout", String.valueOf(radioButton3.isSelected() ? true
+							: false));
 					WBini.setProperty("MidTime", formattedTextField1.getText());
 					WBini.setProperty("RandTime", formattedTextField3.getText());
-					WBini.setProperty("MidLength",
-							formattedTextField2.getText());
-					WBini.setProperty("RandLength",
-							formattedTextField4.getText());
+					WBini.setProperty("MidLength", formattedTextField2.getText());
+					WBini.setProperty("RandLength", formattedTextField4.getText());
 					WBini.setProperty("AutoStopH", textHour.getText());
 					WBini.setProperty("AutoStopM", textMinute.getText());
 					WBini.setProperty("AutoStopS", textSecond.getText());
-					WBini.setProperty("Remote", String.valueOf(radioButton11
-							.isSelected() ? true : false));
-					WBini.setProperty("RemoteName",
-							formattedTextField11.getText());
-					WBini.setProperty("RemoteText",
-							formattedTextField21.getText());
-					WBini.setProperty("RemoteReply",
-							formattedTextField22.getText());
-					WBini.setProperty("Relog", String.valueOf(radioButton26
-							.isSelected() ? true : false));
-					WBini.setProperty("RelogTime",
-							formattedTextField31.getText());
+					WBini.setProperty("Remote", String.valueOf(radioButton11.isSelected() ? true
+							: false));
+					WBini.setProperty("RemoteName", formattedTextField11.getText());
+					WBini.setProperty("RemoteText", formattedTextField21.getText());
+					WBini.setProperty("RemoteReply", formattedTextField22.getText());
+					WBini.setProperty("Relog", String.valueOf(radioButton26.isSelected() ? true
+							: false));
+					WBini.setProperty("RelogTime", formattedTextField31.getText());
 				}
 				try {
-					WBini.store(new FileWriter(new File(
-							GlobalConfiguration.Paths.getSettingsDirectory(),
-							"WhiteBearAIOMagicV2.ini")),
-							"The GUI Settings for White Bear AIO Magic (Version: "
-									+ Double.toString(properties.version())
-									+ ")");
+					WBini.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
+							+ Double.toString(properties.version()) + ")");
 					if (first) {
 						log("[GUI] Created a settings file!");
 					}
@@ -2187,12 +2048,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				WhiteBearGUI.setResizable(false);
 				WhiteBearGUI.setMinimumSize(new Dimension(405, 405));
 				WhiteBearGUI.setTitle("White Bear AIO Magic");
-				WhiteBearGUI
-						.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-				WhiteBearGUI
-						.setFont(new Font("Century Gothic", Font.PLAIN, 12));
-				final Container WhiteBearGUIContentPane = WhiteBearGUI
-						.getContentPane();
+				WhiteBearGUI.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+				WhiteBearGUI.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+				final Container WhiteBearGUIContentPane = WhiteBearGUI.getContentPane();
 				WhiteBearGUIContentPane.setLayout(null);
 
 				// ======== panel1 ========
@@ -2204,8 +2062,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 					// ======== tabbedPane1 ========
 					{
-						tabbedPane1.setFont(new Font("Century Gothic",
-								Font.PLAIN, 12));
+						tabbedPane1.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 						tabbedPane1.setForeground(new Color(0, 153, 0));
 
 						// ======== panel6 ========
@@ -2217,28 +2074,22 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton12.setText("Use Chat Responder");
 							radioButton12.setBackground(Color.black);
 							radioButton12.setForeground(Color.yellow);
-							radioButton12.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton12.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							radioButton12.setSelected(true);
 							panel6.add(radioButton12);
-							radioButton12.setBounds(new Rectangle(new Point(17,
-									155), radioButton12.getPreferredSize()));
+							radioButton12.setBounds(new Rectangle(new Point(17, 155), radioButton12.getPreferredSize()));
 
 							// ---- teleportCombo ----
 							teleportCombo.setBackground(Color.black);
 							teleportCombo.setForeground(new Color(51, 51, 51));
 							teleportCombo.setBorder(null);
-							teleportCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							teleportCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Varrock Teleport",
-											"Lumbridge Teleport",
-											"Falador Teleport",
-											"Camelot Teleport",
-											"Ardougne Teleport",
-											"Watchtower Teleport",
-											"Trollheim Teleport",
-											"Teleport to Ape Atoll" }));
+							teleportCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							teleportCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Varrock Teleport", "Lumbridge Teleport",
+									"Falador Teleport", "Camelot Teleport",
+									"Ardougne Teleport", "Watchtower Teleport",
+									"Trollheim Teleport",
+									"Teleport to Ape Atoll" }));
 							teleportCombo.setSelectedIndex(0);
 							panel6.add(teleportCombo);
 							teleportCombo.setBounds(75, 64, 155, 25);
@@ -2247,8 +2098,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton25.setText("Check for Updates");
 							radioButton25.setBackground(Color.black);
 							radioButton25.setForeground(Color.yellow);
-							radioButton25.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton25.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							radioButton25.setSelected(true);
 							panel6.add(radioButton25);
 							radioButton25.setBounds(17, 191, 150, 25);
@@ -2256,8 +2106,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							// ---- button2 ----
 							button2.setText("Customize");
 							button2.setBackground(Color.black);
-							button2.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							button2.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							button2.setForeground(new Color(0, 102, 51));
 							button2.addActionListener(new ActionListener() {
 								@Override
@@ -2272,8 +2121,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label7.setText("Spell Type:");
 							label7.setBackground(new Color(51, 51, 51));
 							label7.setForeground(new Color(255, 204, 0));
-							label7.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label7.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel6.add(label7);
 							label7.setBounds(20, 20, 85, 20);
 
@@ -2281,13 +2129,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							spellTypeCombo.setBackground(Color.black);
 							spellTypeCombo.setForeground(new Color(51, 51, 51));
 							spellTypeCombo.setBorder(null);
-							spellTypeCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							spellTypeCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Teleports", "Alchemy",
-											"Curses", "Alch + Curse",
-											"Enchants", "Superheat",
-											"Bolt Enchant", "Others" }));
+							spellTypeCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							spellTypeCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Teleports", "Alchemy", "Curses",
+									"Alch + Curse", "Enchants", "Superheat",
+									"Bolt Enchant", "Others" }));
 							spellTypeCombo.addItemListener(new ItemListener() {
 								@Override
 								public void itemStateChanged(final ItemEvent e) {
@@ -2303,14 +2149,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label31.setText("Item ID:");
 							label31.setBackground(new Color(51, 51, 51));
 							label31.setForeground(new Color(255, 255, 102));
-							label31.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label31.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel6.add(label31);
 							label31.setBounds(240, 65, 60, 20);
 
 							// ---- tfItemID ----
-							tfItemID.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							tfItemID.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							tfItemID.setForeground(new Color(255, 255, 204));
 							tfItemID.setBackground(Color.gray);
 							tfItemID.setText("0");
@@ -2321,11 +2165,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							alchemyCombo.setBackground(Color.black);
 							alchemyCombo.setForeground(new Color(51, 51, 51));
 							alchemyCombo.setBorder(null);
-							alchemyCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							alchemyCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Low Level Alchemy",
-											"High Level Alchemy" }));
+							alchemyCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							alchemyCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Low Level Alchemy", "High Level Alchemy" }));
 							alchemyCombo.setSelectedIndex(0);
 							panel6.add(alchemyCombo);
 							alchemyCombo.setBounds(75, 64, 155, 25);
@@ -2334,13 +2176,10 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							boltCombo.setBackground(Color.black);
 							boltCombo.setForeground(new Color(51, 51, 51));
 							boltCombo.setBorder(null);
-							boltCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							boltCombo
-									.setModel(new DefaultComboBoxModel(
-											new String[] { "Sapphire",
-													"Emerald", "Ruby",
-													"Diamond", "Dragon", "Onyx" }));
+							boltCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							boltCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Sapphire", "Emerald", "Ruby", "Diamond",
+									"Dragon", "Onyx" }));
 							boltCombo.setSelectedIndex(0);
 							panel6.add(boltCombo);
 							boltCombo.setBounds(75, 64, 155, 25);
@@ -2349,8 +2188,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label32.setText("Spell:");
 							label32.setBackground(new Color(51, 51, 51));
 							label32.setForeground(new Color(255, 255, 102));
-							label32.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label32.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel6.add(label32);
 							label32.setBounds(20, 65, 50, 20);
 
@@ -2358,8 +2196,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label33.setText("Spell:");
 							label33.setBackground(new Color(51, 51, 51));
 							label33.setForeground(new Color(255, 255, 102));
-							label33.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label33.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel6.add(label33);
 							label33.setBounds(20, 107, 50, 20);
 
@@ -2367,13 +2204,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							curseCombo.setBackground(Color.black);
 							curseCombo.setForeground(new Color(51, 51, 51));
 							curseCombo.setBorder(null);
-							curseCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							curseCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Confuse", "Weaken",
-											"Curse", "Bind", "Snare",
-											"Vulnerability", "Enfeeble",
-											"Entangle", "Stun" }));
+							curseCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							curseCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Confuse", "Weaken", "Curse", "Bind",
+									"Snare", "Vulnerability", "Enfeeble",
+									"Entangle", "Stun" }));
 							curseCombo.setSelectedIndex(0);
 							panel6.add(curseCombo);
 							curseCombo.setBounds(75, 106, 155, 25);
@@ -2382,14 +2217,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label34.setText("NPC ID:");
 							label34.setBackground(new Color(51, 51, 51));
 							label34.setForeground(new Color(255, 255, 102));
-							label34.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label34.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel6.add(label34);
 							label34.setBounds(240, 107, 60, 20);
 
 							// ---- tfNpcID ----
-							tfNpcID.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							tfNpcID.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							tfNpcID.setForeground(new Color(255, 255, 204));
 							tfNpcID.setBackground(Color.gray);
 							tfNpcID.setText("0");
@@ -2400,15 +2233,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							enchantCombo.setBackground(Color.black);
 							enchantCombo.setForeground(new Color(51, 51, 51));
 							enchantCombo.setBorder(null);
-							enchantCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							enchantCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Enchant Level 1",
-											"Enchant Level 2",
-											"Enchant Level 3",
-											"Enchant Level 4",
-											"Enchant Level 5",
-											"Enchant Level 6" }));
+							enchantCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							enchantCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Enchant Level 1", "Enchant Level 2",
+									"Enchant Level 3", "Enchant Level 4",
+									"Enchant Level 5", "Enchant Level 6" }));
 							enchantCombo.setSelectedIndex(0);
 							panel6.add(enchantCombo);
 							enchantCombo.setBounds(75, 65, 155, 25);
@@ -2417,12 +2246,10 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							othersCombo.setBackground(Color.black);
 							othersCombo.setForeground(new Color(51, 51, 51));
 							othersCombo.setBorder(null);
-							othersCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							othersCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Bones to Banana",
-											"Bones to Peaches",
-											"Telekinetic Grab" }));
+							othersCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							othersCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Bones to Banana", "Bones to Peaches",
+									"Telekinetic Grab" }));
 							othersCombo.setSelectedIndex(0);
 							panel6.add(othersCombo);
 							othersCombo.setBounds(75, 65, 155, 25);
@@ -2431,8 +2258,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label35.setText("Bank using:");
 							label35.setBackground(new Color(51, 51, 51));
 							label35.setForeground(new Color(255, 255, 102));
-							label35.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label35.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel6.add(label35);
 							label35.setBounds(20, 107, 80, 20);
 
@@ -2440,11 +2266,10 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							bankCombo.setBackground(Color.black);
 							bankCombo.setForeground(new Color(51, 51, 51));
 							bankCombo.setBorder(null);
-							bankCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							bankCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Bankers", "Bank Booth",
-											"Chests", "Chest (Soul Wars)" }));
+							bankCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							bankCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Bankers", "Bank Booth", "Chests",
+									"Chest (Soul Wars)" }));
 							bankCombo.setSelectedIndex(0);
 							panel6.add(bankCombo);
 							bankCombo.setBounds(105, 107, 125, 25);
@@ -2453,8 +2278,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label36.setText("Superheat:");
 							label36.setBackground(new Color(51, 51, 51));
 							label36.setForeground(new Color(255, 255, 102));
-							label36.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label36.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel6.add(label36);
 							label36.setBounds(20, 65, 75, 20);
 
@@ -2462,12 +2286,10 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							superheatCombo.setBackground(Color.black);
 							superheatCombo.setForeground(new Color(51, 51, 51));
 							superheatCombo.setBorder(null);
-							superheatCombo.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							superheatCombo.setModel(new DefaultComboBoxModel(
-									new String[] { "Bronze", "Iron", "Steel",
-											"Silver", "Gold", "Mithril",
-											"Adamant", "Rune" }));
+							superheatCombo.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							superheatCombo.setModel(new DefaultComboBoxModel(new String[] {
+									"Bronze", "Iron", "Steel", "Silver",
+									"Gold", "Mithril", "Adamant", "Rune" }));
 							superheatCombo.setSelectedIndex(0);
 							panel6.add(superheatCombo);
 							superheatCombo.setBounds(100, 64, 95, 25);
@@ -2475,14 +2297,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel6.getComponentCount(); i++) {
-									final Rectangle bounds = panel6
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel6.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel6.getInsets();
 								preferredSize.width += insets.right;
@@ -2499,8 +2318,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							panel2.setLayout(null);
 
 							// ---- jTextField ----
-							jTextField.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							jTextField.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							jTextField.setForeground(new Color(255, 255, 204));
 							jTextField.setBackground(Color.gray);
 							jTextField.setText("4");
@@ -2511,8 +2329,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton22.setText("Disable Paint Antialias");
 							radioButton22.setBackground(Color.black);
 							radioButton22.setForeground(Color.yellow);
-							radioButton22.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton22.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel2.add(radioButton22);
 							radioButton22.setBounds(17, 130, 175, 25);
 
@@ -2520,8 +2337,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label4.setText("Paint Colour");
 							label4.setBackground(new Color(51, 51, 51));
 							label4.setForeground(new Color(255, 255, 102));
-							label4.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label4.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel2.add(label4);
 							label4.setBounds(20, 17, 90, 20);
 
@@ -2529,11 +2345,10 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							clrSelected.setBackground(Color.black);
 							clrSelected.setForeground(new Color(51, 51, 51));
 							clrSelected.setBorder(null);
-							clrSelected.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
-							clrSelected.setModel(new DefaultComboBoxModel(
-									new String[] { "Black", "Blue", "Green",
-											"Red", "Purple", "Brown" }));
+							clrSelected.setFont(new Font("Century Gothic", Font.BOLD, 12));
+							clrSelected.setModel(new DefaultComboBoxModel(new String[] {
+									"Black", "Blue", "Green", "Red", "Purple",
+									"Brown" }));
 							clrSelected.setSelectedIndex(0);
 							panel2.add(clrSelected);
 							clrSelected.setBounds(118, 16, 110, 25);
@@ -2542,8 +2357,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label5.setText("Mouse Speed");
 							label5.setBackground(new Color(51, 51, 51));
 							label5.setForeground(new Color(255, 255, 102));
-							label5.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label5.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel2.add(label5);
 							label5.setBounds(20, 93, 100, 20);
 
@@ -2551,8 +2365,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label6.setText("(higher = slower)");
 							label6.setBackground(new Color(51, 51, 51));
 							label6.setForeground(new Color(255, 255, 102));
-							label6.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label6.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel2.add(label6);
 							label6.setBounds(225, 93, 105, 20);
 
@@ -2560,14 +2373,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label16.setText("(hr:min:sec)");
 							label16.setBackground(new Color(51, 51, 51));
 							label16.setForeground(new Color(255, 255, 102));
-							label16.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label16.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel2.add(label16);
 							label16.setBounds(220, 206, 80, 20);
 
 							// ---- textSecond ----
-							textSecond.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textSecond.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textSecond.setForeground(new Color(255, 255, 204));
 							textSecond.setBackground(Color.gray);
 							textSecond.setText("0");
@@ -2578,14 +2389,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label15.setText(":");
 							label15.setBackground(new Color(51, 51, 51));
 							label15.setForeground(new Color(255, 255, 102));
-							label15.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label15.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel2.add(label15);
 							label15.setBounds(175, 206, 10, 20);
 
 							// ---- textMinute ----
-							textMinute.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textMinute.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textMinute.setForeground(new Color(255, 255, 204));
 							textMinute.setBackground(Color.gray);
 							textMinute.setText("0");
@@ -2596,14 +2405,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label14.setText(":");
 							label14.setBackground(new Color(51, 51, 51));
 							label14.setForeground(new Color(255, 255, 102));
-							label14.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label14.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel2.add(label14);
 							label14.setBounds(135, 206, 10, 20);
 
 							// ---- textHour ----
-							textHour.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textHour.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textHour.setForeground(new Color(255, 255, 204));
 							textHour.setBackground(Color.gray);
 							textHour.setText("0");
@@ -2614,14 +2421,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label13.setText("Auto Stop:");
 							label13.setBackground(new Color(51, 51, 51));
 							label13.setForeground(new Color(255, 255, 102));
-							label13.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label13.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel2.add(label13);
 							label13.setBounds(20, 206, 75, 20);
 
 							// ---- jTextField2 ----
-							jTextField2.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							jTextField2.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							jTextField2.setForeground(new Color(255, 255, 204));
 							jTextField2.setBackground(Color.gray);
 							jTextField2.setText("6");
@@ -2632,8 +2437,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label21.setText("to");
 							label21.setBackground(new Color(51, 51, 51));
 							label21.setForeground(new Color(255, 255, 102));
-							label21.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label21.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel2.add(label21);
 							label21.setBounds(162, 93, 15, 20);
 
@@ -2641,8 +2445,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton23.setText("Disable F-keys");
 							radioButton23.setBackground(Color.black);
 							radioButton23.setForeground(Color.yellow);
-							radioButton23.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton23.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel2.add(radioButton23);
 							radioButton23.setBounds(17, 167, 133, 25);
 
@@ -2650,14 +2453,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label30.setText("Paint Font");
 							label30.setBackground(new Color(51, 51, 51));
 							label30.setForeground(new Color(255, 255, 102));
-							label30.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label30.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel2.add(label30);
 							label30.setBounds(20, 56, 90, 20);
 
 							// ---- tfTextFont ----
-							tfTextFont.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							tfTextFont.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							tfTextFont.setForeground(new Color(255, 255, 204));
 							tfTextFont.setBackground(Color.gray);
 							tfTextFont.setText("sansserif");
@@ -2667,14 +2468,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel2.getComponentCount(); i++) {
-									final Rectangle bounds = panel2
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel2.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel2.getInsets();
 								preferredSize.width += insets.right;
@@ -2694,8 +2492,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton1.setText("Use Breaking");
 							radioButton1.setBackground(Color.black);
 							radioButton1.setForeground(Color.yellow);
-							radioButton1.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton1.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel3.add(radioButton1);
 							radioButton1.setBounds(17, 20, 120, 25);
 
@@ -2703,16 +2500,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton2.setText("Completely Random");
 							radioButton2.setBackground(Color.black);
 							radioButton2.setForeground(Color.yellow);
-							radioButton2.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
-							radioButton2
-									.addActionListener(new ActionListener() {
-										@Override
-										public void actionPerformed(
-												final ActionEvent e) {
-											radioButton2ActionPerformed(e);
-										}
-									});
+							radioButton2.setFont(new Font("Century Gothic", Font.BOLD, 13));
+							radioButton2.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(final ActionEvent e) {
+									radioButton2ActionPerformed(e);
+								}
+							});
 							panel3.add(radioButton2);
 							radioButton2.setBounds(175, 20, 170, 25);
 
@@ -2720,16 +2514,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label8.setText("Time between breaks:");
 							label8.setBackground(new Color(51, 51, 51));
 							label8.setForeground(new Color(255, 255, 102));
-							label8.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label8.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel3.add(label8);
 							label8.setBounds(20, 65, 140, 20);
 
 							// ---- formattedTextField1 ----
-							formattedTextField1.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField1.setForeground(new Color(255,
-									255, 204));
+							formattedTextField1.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField1.setForeground(new Color(255, 255, 204));
 							formattedTextField1.setBackground(Color.gray);
 							formattedTextField1.setText("90");
 							panel3.add(formattedTextField1);
@@ -2739,8 +2530,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label9.setText("\u00b1");
 							label9.setBackground(new Color(51, 51, 51));
 							label9.setForeground(new Color(255, 255, 102));
-							label9.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label9.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel3.add(label9);
 							label9.setBounds(225, 65, 15, 20);
 
@@ -2748,16 +2538,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label10.setText("(time unit: minutes)");
 							label10.setBackground(new Color(51, 51, 51));
 							label10.setForeground(new Color(255, 255, 102));
-							label10.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label10.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel3.add(label10);
 							label10.setBounds(240, 135, 110, 20);
 
 							// ---- formattedTextField3 ----
-							formattedTextField3.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField3.setForeground(new Color(255,
-									255, 204));
+							formattedTextField3.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField3.setForeground(new Color(255, 255, 204));
 							formattedTextField3.setBackground(Color.gray);
 							formattedTextField3.setText("90");
 							panel3.add(formattedTextField3);
@@ -2767,16 +2554,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label11.setText("Length of breaks:");
 							label11.setBackground(new Color(51, 51, 51));
 							label11.setForeground(new Color(255, 255, 102));
-							label11.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label11.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel3.add(label11);
 							label11.setBounds(20, 110, 110, 20);
 
 							// ---- formattedTextField2 ----
-							formattedTextField2.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField2.setForeground(new Color(255,
-									255, 204));
+							formattedTextField2.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField2.setForeground(new Color(255, 255, 204));
 							formattedTextField2.setBackground(Color.gray);
 							formattedTextField2.setText("8");
 							panel3.add(formattedTextField2);
@@ -2786,16 +2570,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label12.setText("\u00b1");
 							label12.setBackground(new Color(51, 51, 51));
 							label12.setForeground(new Color(255, 255, 102));
-							label12.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label12.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel3.add(label12);
 							label12.setBounds(225, 110, 15, 20);
 
 							// ---- formattedTextField4 ----
-							formattedTextField4.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField4.setForeground(new Color(255,
-									255, 204));
+							formattedTextField4.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField4.setForeground(new Color(255, 255, 204));
 							formattedTextField4.setBackground(Color.gray);
 							formattedTextField4.setText("2");
 							panel3.add(formattedTextField4);
@@ -2805,22 +2586,18 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton3.setText("Logout before break starts");
 							radioButton3.setBackground(Color.black);
 							radioButton3.setForeground(Color.yellow);
-							radioButton3.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton3.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel3.add(radioButton3);
 							radioButton3.setBounds(17, 170, 208, 25);
 
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel3.getComponentCount(); i++) {
-									final Rectangle bounds = panel3
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel3.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel3.getInsets();
 								preferredSize.width += insets.right;
@@ -2840,8 +2617,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							check3.setText("Check magic exp");
 							check3.setBackground(Color.black);
 							check3.setForeground(Color.yellow);
-							check3.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							check3.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							check3.setSelected(true);
 							panel5.add(check3);
 							check3.setBounds(17, 15, 145, 25);
@@ -2850,8 +2626,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							check2.setText("Check friends");
 							check2.setBackground(Color.black);
 							check2.setForeground(Color.yellow);
-							check2.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							check2.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel5.add(check2);
 							check2.setBounds(175, 15, 145, 25);
 
@@ -2859,8 +2634,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							check4.setText("Take short breaks between casts");
 							check4.setBackground(Color.black);
 							check4.setForeground(Color.yellow);
-							check4.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							check4.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel5.add(check4);
 							check4.setBounds(17, 66, 338, 25);
 
@@ -2868,14 +2642,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label22.setText("Timeout");
 							label22.setBackground(new Color(51, 51, 51));
 							label22.setForeground(new Color(255, 255, 102));
-							label22.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label22.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel5.add(label22);
 							label22.setBounds(20, 101, 65, 20);
 
 							// ---- jTextField3 ----
-							jTextField3.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							jTextField3.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							jTextField3.setForeground(new Color(255, 255, 204));
 							jTextField3.setBackground(Color.gray);
 							jTextField3.setText("30");
@@ -2886,14 +2658,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label23.setText("Max:");
 							label23.setBackground(new Color(51, 51, 51));
 							label23.setForeground(new Color(255, 255, 102));
-							label23.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label23.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel5.add(label23);
 							label23.setBounds(167, 101, 38, 20);
 
 							// ---- jTextField4 ----
-							jTextField4.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							jTextField4.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							jTextField4.setForeground(new Color(255, 255, 204));
 							jTextField4.setBackground(Color.gray);
 							jTextField4.setText("80");
@@ -2904,8 +2674,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label24.setText("(in seconds)");
 							label24.setBackground(new Color(51, 51, 51));
 							label24.setForeground(new Color(255, 255, 102));
-							label24.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label24.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel5.add(label24);
 							label24.setBounds(251, 101, 83, 20);
 
@@ -2913,8 +2682,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label25.setText("Min:");
 							label25.setBackground(new Color(51, 51, 51));
 							label25.setForeground(new Color(255, 255, 102));
-							label25.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label25.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel5.add(label25);
 							label25.setBounds(86, 101, 36, 20);
 
@@ -2922,8 +2690,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label26.setText("Length");
 							label26.setBackground(new Color(51, 51, 51));
 							label26.setForeground(new Color(255, 255, 102));
-							label26.setFont(new Font("Century Gothic",
-									Font.BOLD, 14));
+							label26.setFont(new Font("Century Gothic", Font.BOLD, 14));
 							panel5.add(label26);
 							label26.setBounds(20, 136, 65, 20);
 
@@ -2931,8 +2698,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label27.setText("Min:");
 							label27.setBackground(new Color(51, 51, 51));
 							label27.setForeground(new Color(255, 255, 102));
-							label27.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label27.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel5.add(label27);
 							label27.setBounds(90, 136, 36, 20);
 
@@ -2940,14 +2706,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label28.setText("(in seconds)");
 							label28.setBackground(new Color(51, 51, 51));
 							label28.setForeground(new Color(255, 255, 102));
-							label28.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label28.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel5.add(label28);
 							label28.setBounds(255, 136, 83, 20);
 
 							// ---- jTextField5 ----
-							jTextField5.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							jTextField5.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							jTextField5.setForeground(new Color(255, 255, 204));
 							jTextField5.setBackground(Color.gray);
 							jTextField5.setText("3");
@@ -2958,14 +2722,12 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label29.setText("Max:");
 							label29.setBackground(new Color(51, 51, 51));
 							label29.setForeground(new Color(255, 255, 102));
-							label29.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label29.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel5.add(label29);
 							label29.setBounds(170, 136, 38, 20);
 
 							// ---- jTextField6 ----
-							jTextField6.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							jTextField6.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							jTextField6.setForeground(new Color(255, 255, 204));
 							jTextField6.setBackground(Color.gray);
 							jTextField6.setText("1");
@@ -2975,14 +2737,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel5.getComponentCount(); i++) {
-									final Rectangle bounds = panel5
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel5.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel5.getInsets();
 								preferredSize.width += insets.right;
@@ -2999,11 +2758,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							panel4.setLayout(null);
 
 							// ---- textArea3 ----
-							textArea3
-									.setText("Allows remote stopping of script. When the character says the pass to you in clan chat, you will be logged out, thus \nallowing you to login to your account.");
+							textArea3.setText("Allows remote stopping of script. When the character says the pass to you in clan chat, you will be logged out, thus \nallowing you to login to your account.");
 							textArea3.setLineWrap(true);
-							textArea3.setFont(new Font("Century Gothic",
-									Font.PLAIN, 12));
+							textArea3.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 							textArea3.setTabSize(0);
 							textArea3.setBackground(Color.gray);
 							textArea3.setForeground(new Color(255, 255, 104));
@@ -3016,8 +2773,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton11.setText("Enable Remote Control");
 							radioButton11.setBackground(Color.black);
 							radioButton11.setForeground(Color.yellow);
-							radioButton11.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton11.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel4.add(radioButton11);
 							radioButton11.setBounds(17, 65, 180, 25);
 
@@ -3025,16 +2781,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label17.setText("Character name");
 							label17.setBackground(new Color(51, 51, 51));
 							label17.setForeground(new Color(255, 255, 102));
-							label17.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label17.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel4.add(label17);
 							label17.setBounds(20, 100, 110, 20);
 
 							// ---- formattedTextField11 ----
-							formattedTextField11.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField11.setForeground(new Color(255,
-									255, 204));
+							formattedTextField11.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField11.setForeground(new Color(255, 255, 204));
 							formattedTextField11.setBackground(Color.gray);
 							formattedTextField11.setText("Zezima");
 							panel4.add(formattedTextField11);
@@ -3044,16 +2797,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label18.setText("Pass");
 							label18.setBackground(new Color(51, 51, 51));
 							label18.setForeground(new Color(255, 255, 102));
-							label18.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label18.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel4.add(label18);
 							label18.setBounds(20, 135, 35, 20);
 
 							// ---- formattedTextField21 ----
-							formattedTextField21.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField21.setForeground(new Color(255,
-									255, 204));
+							formattedTextField21.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField21.setForeground(new Color(255, 255, 204));
 							formattedTextField21.setBackground(Color.gray);
 							formattedTextField21.setText("Lets go shopping");
 							panel4.add(formattedTextField21);
@@ -3063,16 +2813,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							radioButton26.setText("Relog after");
 							radioButton26.setBackground(Color.black);
 							radioButton26.setForeground(Color.yellow);
-							radioButton26.setFont(new Font("Century Gothic",
-									Font.BOLD, 13));
+							radioButton26.setFont(new Font("Century Gothic", Font.BOLD, 13));
 							panel4.add(radioButton26);
 							radioButton26.setBounds(17, 208, 103, 25);
 
 							// ---- formattedTextField31 ----
-							formattedTextField31.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField31.setForeground(new Color(255,
-									255, 204));
+							formattedTextField31.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField31.setForeground(new Color(255, 255, 204));
 							formattedTextField31.setBackground(Color.gray);
 							formattedTextField31.setText("15");
 							panel4.add(formattedTextField31);
@@ -3082,8 +2829,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label19.setText("minutes");
 							label19.setBackground(new Color(51, 51, 51));
 							label19.setForeground(new Color(255, 255, 102));
-							label19.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label19.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel4.add(label19);
 							label19.setBounds(175, 209, 60, 20);
 
@@ -3091,16 +2837,13 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							label20.setText("Reply");
 							label20.setBackground(new Color(51, 51, 51));
 							label20.setForeground(new Color(255, 255, 102));
-							label20.setFont(new Font("Century Gothic",
-									Font.BOLD, 12));
+							label20.setFont(new Font("Century Gothic", Font.BOLD, 12));
 							panel4.add(label20);
 							label20.setBounds(20, 170, 40, 20);
 
 							// ---- formattedTextField22 ----
-							formattedTextField22.setFont(new Font(
-									"Century Gothic", Font.PLAIN, 12));
-							formattedTextField22.setForeground(new Color(255,
-									255, 204));
+							formattedTextField22.setFont(new Font("Century Gothic", Font.PLAIN, 12));
+							formattedTextField22.setForeground(new Color(255, 255, 204));
 							formattedTextField22.setBackground(Color.gray);
 							formattedTextField22.setText("Sure!");
 							panel4.add(formattedTextField22);
@@ -3109,14 +2852,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 							{ // compute preferred size
 								final Dimension preferredSize = new Dimension();
 								for (int i = 0; i < panel4.getComponentCount(); i++) {
-									final Rectangle bounds = panel4
-											.getComponent(i).getBounds();
-									preferredSize.width = Math
-											.max(bounds.x + bounds.width,
-													preferredSize.width);
+									final Rectangle bounds = panel4.getComponent(i).getBounds();
+									preferredSize.width = Math.max(bounds.x
+											+ bounds.width, preferredSize.width);
 									preferredSize.height = Math.max(bounds.y
-											+ bounds.height,
-											preferredSize.height);
+											+ bounds.height, preferredSize.height);
 								}
 								final Insets insets = panel4.getInsets();
 								preferredSize.width += insets.right;
@@ -3165,8 +2905,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					{ // compute preferred size
 						final Dimension preferredSize = new Dimension();
 						for (int i = 0; i < panel1.getComponentCount(); i++) {
-							final Rectangle bounds = panel1.getComponent(i)
-									.getBounds();
+							final Rectangle bounds = panel1.getComponent(i).getBounds();
 							preferredSize.width = Math.max(bounds.x
 									+ bounds.width, preferredSize.width);
 							preferredSize.height = Math.max(bounds.y
@@ -3182,8 +2921,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				WhiteBearGUIContentPane.add(panel1);
 				panel1.setBounds(0, 0, 400, 405);
 
-				WhiteBearGUIContentPane
-						.setPreferredSize(new Dimension(405, 425));
+				WhiteBearGUIContentPane.setPreferredSize(new Dimension(405, 425));
 				WhiteBearGUI.setSize(405, 425);
 				WhiteBearGUI.setLocationRelativeTo(WhiteBearGUI.getOwner());
 				loadSettings();
@@ -3192,9 +2930,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		public boolean loadSettings() {
 			try {
-				WBini.load(new FileInputStream(new File(
-						GlobalConfiguration.Paths.getSettingsDirectory(),
-						"WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final FileNotFoundException e) {
 				log.warning("[GUI] Settings file was not found!");
 				first = true;
@@ -3205,8 +2941,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			}
 			try {
 				if (WBini.getProperty("UseSetting") != null) {
-					useSetting = Boolean.parseBoolean(WBini
-							.getProperty("UseSetting"));
+					useSetting = Boolean.parseBoolean(WBini.getProperty("UseSetting"));
 				}
 			} catch (final java.lang.Exception e) {
 			}
@@ -3220,60 +2955,47 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					}
 
 					if (WBini.getProperty("SpellTypeCombo") != null) {
-						spellTypeCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("SpellTypeCombo")));
+						spellTypeCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("SpellTypeCombo")));
 					}
 					if (WBini.getProperty("SuperheatCombo") != null) {
-						superheatCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("SuperheatCombo")));
+						superheatCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("SuperheatCombo")));
 					}
 					if (WBini.getProperty("BankCombo") != null) {
-						bankCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("BankCombo")));
+						bankCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("BankCombo")));
 					}
 					if (WBini.getProperty("AlchemyCombo") != null) {
-						alchemyCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("AlchemyCombo")));
+						alchemyCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("AlchemyCombo")));
 					}
 					if (WBini.getProperty("BoltCombo") != null) {
-						boltCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("BoltCombo")));
+						boltCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("BoltCombo")));
 					}
 					if (WBini.getProperty("EnchantCombo") != null) {
-						enchantCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("EnchantCombo")));
+						enchantCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("EnchantCombo")));
 					}
 					if (WBini.getProperty("CurseCombo") != null) {
-						curseCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("CurseCombo")));
+						curseCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("CurseCombo")));
 					}
 					if (WBini.getProperty("OthersCombo") != null) {
-						othersCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("OthersCombo")));
+						othersCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("OthersCombo")));
 					}
 					if (WBini.getProperty("TeleportCombo") != null) {
-						teleportCombo.setSelectedIndex(Integer.parseInt(WBini
-								.getProperty("TeleportCombo")));
+						teleportCombo.setSelectedIndex(Integer.parseInt(WBini.getProperty("TeleportCombo")));
 					}
 
 					if (WBini.getProperty("UseChatRes") != null) {
-						radioButton12.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("UseChatRes")));
+						radioButton12.setSelected(Boolean.parseBoolean(WBini.getProperty("UseChatRes")));
 					}
 					if (WBini.getProperty("CheckUpdate") != null) {
-						radioButton25.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("CheckUpdate")));
+						radioButton25.setSelected(Boolean.parseBoolean(WBini.getProperty("CheckUpdate")));
 					}
 					if (WBini.getProperty("PaintColour") != null) {
-						clrSelected.setSelectedIndex(Integer.valueOf(WBini
-								.getProperty("PaintColour")));
+						clrSelected.setSelectedIndex(Integer.valueOf(WBini.getProperty("PaintColour")));
 					}
 					if (WBini.getProperty("PaintFont") != null) {
 						tfTextFont.setText(WBini.getProperty("PaintFont"));
 					}
 					if (WBini.getProperty("Fkeys") != null) {
-						radioButton23.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("Fkeys")));
+						radioButton23.setSelected(Boolean.parseBoolean(WBini.getProperty("Fkeys")));
 					}
 					if (WBini.getProperty("MinMouseSpeed") != null) {
 						jTextField.setText(WBini.getProperty("MinMouseSpeed"));
@@ -3282,28 +3004,22 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						jTextField2.setText(WBini.getProperty("MaxMouseSpeed"));
 					}
 					if (WBini.getProperty("Antialias") != null) {
-						radioButton22.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("Antialias")));
+						radioButton22.setSelected(Boolean.parseBoolean(WBini.getProperty("Antialias")));
 					}
 					if (WBini.getProperty("Breaking") != null) {
-						radioButton1.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("Breaking")));
+						radioButton1.setSelected(Boolean.parseBoolean(WBini.getProperty("Breaking")));
 					}
 					if (WBini.getProperty("RandomBreak") != null) {
-						radioButton2.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("RandomBreak")));
+						radioButton2.setSelected(Boolean.parseBoolean(WBini.getProperty("RandomBreak")));
 					}
 					if (WBini.getProperty("CheckFriend") != null) {
-						check2.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("CheckFriend")));
+						check2.setSelected(Boolean.parseBoolean(WBini.getProperty("CheckFriend")));
 					}
 					if (WBini.getProperty("CheckExperience") != null) {
-						check3.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("CheckExperience")));
+						check3.setSelected(Boolean.parseBoolean(WBini.getProperty("CheckExperience")));
 					}
 					if (WBini.getProperty("ScreenLookaway") != null) {
-						check4.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("ScreenLookaway")));
+						check4.setSelected(Boolean.parseBoolean(WBini.getProperty("ScreenLookaway")));
 					}
 					if (WBini.getProperty("TimeoutA1") != null) {
 						jTextField3.setText(WBini.getProperty("TimeoutA1"));
@@ -3318,24 +3034,19 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						jTextField5.setText(WBini.getProperty("TimeoutB2"));
 					}
 					if (WBini.getProperty("BreakLogout") != null) {
-						radioButton3.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("BreakLogout")));
+						radioButton3.setSelected(Boolean.parseBoolean(WBini.getProperty("BreakLogout")));
 					}
 					if (WBini.getProperty("MidTime") != null) {
-						formattedTextField1.setText(WBini
-								.getProperty("MidTime"));
+						formattedTextField1.setText(WBini.getProperty("MidTime"));
 					}
 					if (WBini.getProperty("RandTime") != null) {
-						formattedTextField3.setText(WBini
-								.getProperty("RandTime"));
+						formattedTextField3.setText(WBini.getProperty("RandTime"));
 					}
 					if (WBini.getProperty("MidLength") != null) {
-						formattedTextField2.setText(WBini
-								.getProperty("MidLength"));
+						formattedTextField2.setText(WBini.getProperty("MidLength"));
 					}
 					if (WBini.getProperty("RandLength") != null) {
-						formattedTextField4.setText(WBini
-								.getProperty("RandLength"));
+						formattedTextField4.setText(WBini.getProperty("RandLength"));
 					}
 					if (WBini.getProperty("AutoStopH") != null) {
 						textHour.setText(WBini.getProperty("AutoStopH"));
@@ -3347,70 +3058,53 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						textSecond.setText(WBini.getProperty("AutoStopS"));
 					}
 					if (WBini.getProperty("Remote") != null) {
-						radioButton11.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("Remote")));
+						radioButton11.setSelected(Boolean.parseBoolean(WBini.getProperty("Remote")));
 					}
 					if (WBini.getProperty("RemoteName") != null) {
-						formattedTextField11.setText(WBini
-								.getProperty("RemoteName"));
+						formattedTextField11.setText(WBini.getProperty("RemoteName"));
 					}
 					if (WBini.getProperty("RemoteText") != null) {
-						formattedTextField21.setText(WBini
-								.getProperty("RemoteText"));
+						formattedTextField21.setText(WBini.getProperty("RemoteText"));
 					}
 					if (WBini.getProperty("RemoteReply") != null) {
-						formattedTextField22.setText(WBini
-								.getProperty("RemoteReply"));
+						formattedTextField22.setText(WBini.getProperty("RemoteReply"));
 					}
 					if (WBini.getProperty("Relog") != null) {
-						radioButton26.setSelected(Boolean.parseBoolean(WBini
-								.getProperty("Relog")));
+						radioButton26.setSelected(Boolean.parseBoolean(WBini.getProperty("Relog")));
 					}
 					if (WBini.getProperty("RelogTime") != null) {
-						formattedTextField31.setText(WBini
-								.getProperty("RelogTime"));
+						formattedTextField31.setText(WBini.getProperty("RelogTime"));
 					}
 
 					if (WBini.getProperty("CRuseLevelRes") != null) {
-						chatRes.doLevelRes = Boolean.parseBoolean(WBini
-								.getProperty("CRuseLevelRes"));
+						chatRes.doLevelRes = Boolean.parseBoolean(WBini.getProperty("CRuseLevelRes"));
 					}
 					if (WBini.getProperty("CRuseCustomRes") != null) {
-						chatRes.doCustomRes = Boolean.parseBoolean(WBini
-								.getProperty("CRuseCustomRes"));
+						chatRes.doCustomRes = Boolean.parseBoolean(WBini.getProperty("CRuseCustomRes"));
 					}
 					if (WBini.getProperty("CRtradeRes") != null) {
-						chatRes.tradeRes = WBini.getProperty("CRtradeRes")
-								.toLowerCase().split("/");
+						chatRes.tradeRes = WBini.getProperty("CRtradeRes").toLowerCase().split("/");
 					}
 					if (WBini.getProperty("CRgreetingRes") != null) {
-						chatRes.greetingRes = WBini
-								.getProperty("CRgreetingRes").toLowerCase()
-								.split("/");
+						chatRes.greetingRes = WBini.getProperty("CRgreetingRes").toLowerCase().split("/");
 					}
 					if (WBini.getProperty("CRbotterRes") != null) {
-						chatRes.botterRes = WBini.getProperty("CRbotterRes")
-								.toLowerCase().split("/");
+						chatRes.botterRes = WBini.getProperty("CRbotterRes").toLowerCase().split("/");
 					}
 					if (WBini.getProperty("CRlevelRes") != null) {
-						chatRes.levelRes = WBini.getProperty("CRlevelRes")
-								.toLowerCase().split("/");
+						chatRes.levelRes = WBini.getProperty("CRlevelRes").toLowerCase().split("/");
 					}
 					if (WBini.getProperty("CRdetection") != null) {
-						chatRes.customDetect = WBini.getProperty("CRdetection")
-								.toLowerCase().split("/");
+						chatRes.customDetect = WBini.getProperty("CRdetection").toLowerCase().split("/");
 					}
 					if (WBini.getProperty("CRresponse") != null) {
-						chatRes.customRes = WBini.getProperty("CRresponse")
-								.toLowerCase().split("/");
+						chatRes.customRes = WBini.getProperty("CRresponse").toLowerCase().split("/");
 					}
 					if (WBini.getProperty("CRcustomTO") != null) {
-						chatRes.customTO = Integer.parseInt(WBini
-								.getProperty("CRcustomTO"));
+						chatRes.customTO = Integer.parseInt(WBini.getProperty("CRcustomTO"));
 					}
 					if (WBini.getProperty("CRcustomTOR") != null) {
-						chatRes.customTOR = Integer.parseInt(WBini
-								.getProperty("CRcustomTOR"));
+						chatRes.customTOR = Integer.parseInt(WBini.getProperty("CRcustomTOR"));
 					}
 				} catch (final java.lang.Exception e) {
 					log.warning("[GUI] Settings file is corrupt, using default settings!");
@@ -3602,10 +3296,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			g.setColor(new Color(60, 60, 60, 185));
 			g.fillRect(sb1.x, sb1.y + half, sb1.width, half);
 			final int percent = skills.getPercentToNextLevel(Skills.MAGIC);
-			g.setColor(new Color(255 - 2 * percent, (int) (1.7 * percent), 0,
-					150));
-			g.fillRect(sb1.x + 2, sb1.y + 2,
-					(int) ((sb1.width - 4) / 100.0 * percent), sb1.height - 4);
+			g.setColor(new Color(255 - 2 * percent, (int) (1.7 * percent), 0, 150));
+			g.fillRect(sb1.x + 2, sb1.y + 2, (int) ((sb1.width - 4) / 100.0 * percent), sb1.height - 4);
 			g.setColor(Color.WHITE);
 			g.drawString("Magic", sb1.x + 3, sb1.y + 12);
 			drawStringEnd(g, percent + "%", sb1, -3, 4);
@@ -3648,8 +3340,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			if (leftSide) {
 				g.drawString(str, rect.x + xOffset, rect.y + yOffset + index
 						* indexMult);
-				g.drawString(val, rect.x + rect.width / 2 - width - xOffset,
-						rect.y + yOffset + index * indexMult);
+				g.drawString(val, rect.x + rect.width / 2 - width - xOffset, rect.y
+						+ yOffset + index * indexMult);
 			} else {
 				g.drawString(str, rect.x + rect.width / 2 + xOffset, rect.y
 						+ yOffset + index * indexMult);
@@ -3699,14 +3391,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				g.setColor(new Color(0, 0, 0, 100));
 				g.fillRect(logOut2.x, logOut2.y, logOut2.width, logOut2.height);
 				g.setColor(Color.WHITE);
-				g.drawString("Logout: Are you sure?", logOut2.x + 10,
-						logOut2.y + 22);
+				g.drawString("Logout: Are you sure?", logOut2.x + 10, logOut2.y + 22);
 				g.setColor(Color.RED);
-				g.fillRect(logOutYes.x, logOutYes.y, logOutYes.width,
-						logOutYes.height);
+				g.fillRect(logOutYes.x, logOutYes.y, logOutYes.width, logOutYes.height);
 				g.setColor(Color.GREEN);
-				g.fillRect(logOutNo.x, logOutNo.y, logOutNo.width,
-						logOutNo.height);
+				g.fillRect(logOutNo.x, logOutNo.y, logOutNo.width, logOutNo.height);
 				g.setColor(Color.BLACK);
 				g.drawString("YES", logOutYes.x + 28, logOutYes.y + 14);
 				g.drawString("NO", logOutNo.x + 29, logOutNo.y + 14);
@@ -3747,16 +3436,11 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					castPerHour = (int) (3600000.0 / runTime * count1);
 					xpPerHour = (int) (3600000.0 / runTime * (expGained + curseExpGained));
 				}
-				drawStringMain(g, "Casts ", formatter.format(count1), r, 20,
-						35, 2, true);
-				drawStringMain(g, "Casts / Hour: ",
-						formatter.format(castPerHour), r, 20, 35, 3, true);
+				drawStringMain(g, "Casts ", formatter.format(count1), r, 20, 35, 2, true);
+				drawStringMain(g, "Casts / Hour: ", formatter.format(castPerHour), r, 20, 35, 3, true);
 
-				drawStringMain(g, "EXP Gained: ",
-						formatter.format((long) (expGained + curseExpGained)),
-						r, 20, 35, 2, false);
-				drawStringMain(g, "EXP / Hour: ", formatter.format(xpPerHour),
-						r, 20, 35, 3, false);
+				drawStringMain(g, "EXP Gained: ", formatter.format((long) (expGained + curseExpGained)), r, 20, 35, 2, false);
+				drawStringMain(g, "EXP / Hour: ", formatter.format(xpPerHour), r, 20, 35, 3, false);
 				break;
 			case 1: // INFO
 				drawPaint(g, r3c);
@@ -3766,27 +3450,18 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				g.setFont(new Font(font, Font.BOLD, 14));
 				drawString(g, properties.name(), r, -40);
 				g.setFont(new Font(font, Font.PLAIN, 12));
-				drawStringMain(g, "Version: ",
-						Double.toString(properties.version()), r, 20, 35, 0,
-						true);
+				drawStringMain(g, "Version: ", Double.toString(properties.version()), r, 20, 35, 0, true);
 				if (foundType == true) {
 					if (doWhat != 8) {
-						drawStringMain(g, "Amt of " + itemtype + " in Bank:",
-								"", r, 20, 35, 2, true);
-						drawStringMain(g, "", formatter.format(bankCount), r,
-								20, 35, 3, true);
-						drawStringMain(g, "Worth:",
-								formatter.format((bankCount * priceGuide)), r,
-								20, 35, 4, true);
+						drawStringMain(g, "Amt of " + itemtype + " in Bank:", "", r, 20, 35, 2, true);
+						drawStringMain(g, "", formatter.format(bankCount), r, 20, 35, 3, true);
+						drawStringMain(g, "Worth:", formatter.format((bankCount * priceGuide)), r, 20, 35, 4, true);
 					}
-					drawStringMain(g, itemtype + " Prices", "", r, 20, 35, 0,
-							false);
-					drawStringMain(g, "Price Guide:",
-							Integer.toString(priceGuide) + " coins", r, 20, 35,
-							2, false);
+					drawStringMain(g, itemtype + " Prices", "", r, 20, 35, 0, false);
+					drawStringMain(g, "Price Guide:", Integer.toString(priceGuide)
+							+ " coins", r, 20, 35, 2, false);
 				} else {
-					drawStringMain(g, "Prices not loaded!", "", r, 20, 35, 0,
-							false);
+					drawStringMain(g, "Prices not loaded!", "", r, 20, 35, 0, false);
 				}
 				break;
 			case 2: // STATS
@@ -3801,20 +3476,15 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				final int xpTL = skills.getExpToNextLevel(Skills.MAGIC);
 				final int xpHour = (int) (3600000.0 / runTime * gained_exp);
 				final int TTL = (int) ((double) xpTL / (double) xpHour * 3600000);
-				drawStringMain(g, "Current Level:",
-						skills.getCurrentLevel(Skills.MAGIC) + "", r, 20, 35,
-						2, true);
-				drawStringMain(g, "Level Gained:", gained_lvl + " lvl", r, 20,
-						35, 3, true);
-				drawStringMain(g, "Time to Lvl:", formatTime(TTL), r, 20, 35,
-						4, true);
+				drawStringMain(g, "Current Level:", skills.getCurrentLevel(Skills.MAGIC)
+						+ "", r, 20, 35, 2, true);
+				drawStringMain(g, "Level Gained:", gained_lvl + " lvl", r, 20, 35, 3, true);
+				drawStringMain(g, "Time to Lvl:", formatTime(TTL), r, 20, 35, 4, true);
 
 				drawStringMain(g, "XP Gained:", formatter.format(gained_exp)
 						+ "xp", r, 20, 35, 2, false);
-				drawStringMain(g, "XP / Hour:",
-						formatter.format(xpHour) + "xp", r, 20, 35, 3, false);
-				drawStringMain(g, "XP to Lvl:", formatter.format(xpTL) + "xp",
-						r, 20, 35, 4, false);
+				drawStringMain(g, "XP / Hour:", formatter.format(xpHour) + "xp", r, 20, 35, 3, false);
+				drawStringMain(g, "XP to Lvl:", formatter.format(xpTL) + "xp", r, 20, 35, 4, false);
 				break;
 			case 3: // ETC
 				drawPaint(g, r5c);
@@ -3826,46 +3496,29 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				g.setFont(new Font(font, Font.PLAIN, 12));
 				if (useBreaking == true) {
 					if (randomBreaking == true) {
-						drawStringMain(g, "Break Distance:", "Random", r, 20,
-								35, 0, true);
-						drawStringMain(g, "Break Length:", "Random", r, 20, 35,
-								1, true);
+						drawStringMain(g, "Break Distance:", "Random", r, 20, 35, 0, true);
+						drawStringMain(g, "Break Length:", "Random", r, 20, 35, 1, true);
 					} else {
-						drawStringMain(
-								g,
-								"Break Distance:",
-								Integer.toString(midTime) + " \u00B1"
-										+ Integer.toString(randTime), r, 20,
-								35, 0, true);
-						drawStringMain(g, "Break Length:",
-								Integer.toString(midLength) + " \u00B1"
-										+ Integer.toString(randLength), r, 20,
-								35, 1, true);
+						drawStringMain(g, "Break Distance:", Integer.toString(midTime)
+								+ " \u00B1" + Integer.toString(randTime), r, 20, 35, 0, true);
+						drawStringMain(g, "Break Length:", Integer.toString(midLength)
+								+ " \u00B1" + Integer.toString(randLength), r, 20, 35, 1, true);
 					}
-					drawStringMain(g, "Next Break:",
-							formatTime((int) (nextBreak - System
-									.currentTimeMillis())), r, 20, 35, 3, true);
-					drawStringMain(g, "Break Length:",
-							formatTime((int) nextLength), r, 20, 35, 4, true);
+					drawStringMain(g, "Next Break:", formatTime((int) (nextBreak - System.currentTimeMillis())), r, 20, 35, 3, true);
+					drawStringMain(g, "Break Length:", formatTime((int) nextLength), r, 20, 35, 4, true);
 				} else {
-					drawStringMain(g, "Breaking is disabled!", "", r, 20, 35,
-							0, true);
+					drawStringMain(g, "Breaking is disabled!", "", r, 20, 35, 0, true);
 				}
-				drawStringMain(g, "Camera Turns:", Integer.toString(camTurned),
-						r, 20, 35, 0, false);
+				drawStringMain(g, "Camera Turns:", Integer.toString(camTurned), r, 20, 35, 0, false);
 				if (useChatRes) {
-					drawStringMain(g, "Chat Response:",
-							Integer.toString(resCount), r, 20, 35, 3, false);
+					drawStringMain(g, "Chat Response:", Integer.toString(resCount), r, 20, 35, 3, false);
 				} else {
-					drawStringMain(g, "Chat Responder is disabled!", "", r, 20,
-							35, 3, false);
+					drawStringMain(g, "Chat Responder is disabled!", "", r, 20, 35, 3, false);
 				}
 				if (useRemote) {
-					drawStringMain(g, "Remote Control:", "Enabled", r, 20, 35,
-							4, false);
+					drawStringMain(g, "Remote Control:", "Enabled", r, 20, 35, 4, false);
 				} else {
-					drawStringMain(g, "Remote Control is disabled!", "", r, 20,
-							35, 4, false);
+					drawStringMain(g, "Remote Control is disabled!", "", r, 20, 35, 4, false);
 				}
 				break;
 			case 4:
@@ -3908,11 +3561,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				}
 				if (counter < 1) {
 					g.setColor(new Color(0, 0, 0, 160));
-					g.fillRect(logOut.x + 125, logOut.y, logOut.width + 53,
-							logOut.height);
+					g.fillRect(logOut.x + 125, logOut.y, logOut.width + 53, logOut.height);
 					g.setColor(Color.YELLOW);
-					g.drawString("Take Screenshot", logOut.x + 131,
-							logOut.y + 12);
+					g.drawString("Take Screenshot", logOut.x + 131, logOut.y + 12);
 				}
 				break;
 			}
@@ -4010,24 +3661,18 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				g.fillRect(7, 235, 133, 76);
 				g.setColor(fonts);
 				g.drawString(date, 17, 257);
-				g.drawString(
-						"Version " + Double.toString(properties.version()), 17,
-						279);
-				g.drawString(
-						"Magic Level: " + skills.getCurrentLevel(Skills.MAGIC),
-						17, 301);
+				g.drawString("Version " + Double.toString(properties.version()), 17, 279);
+				g.drawString("Magic Level: "
+						+ skills.getCurrentLevel(Skills.MAGIC), 17, 301);
 			} else {
 				g.setFont(new Font(font, Font.PLAIN, 12));
 				g.setColor(normalBack);
 				g.fillRect(7, 10, 133, 76);
 				g.setColor(fonts);
 				g.drawString(date, 17, 32);
-				g.drawString(
-						"Version " + Double.toString(properties.version()), 17,
-						54);
-				g.drawString(
-						"Magic Level: " + skills.getCurrentLevel(Skills.MAGIC),
-						17, 76);
+				g.drawString("Version " + Double.toString(properties.version()), 17, 54);
+				g.drawString("Magic Level: "
+						+ skills.getCurrentLevel(Skills.MAGIC), 17, 76);
 			}
 		}
 
@@ -4077,8 +3722,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 	}
 
 	// ------------VARIABLES--------------\\
-	final ScriptManifest properties = getClass().getAnnotation(
-			ScriptManifest.class);
+	final ScriptManifest properties = getClass().getAnnotation(ScriptManifest.class);
 	WhiteBearPaint thePainter = new WhiteBearPaint();
 	ChatResponder chatRes;
 	Antiban antiban = new Antiban();
@@ -4097,8 +3741,9 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 	private final double curseExpGained = 0;
 	private long stopTime = -1, nextBreak = System.currentTimeMillis(),
 			nextLength = 60000;
-	private long endTime = System.currentTimeMillis(), nextRun = System
-			.currentTimeMillis(), curseWait = System.currentTimeMillis();
+	private long endTime = System.currentTimeMillis(),
+			nextRun = System.currentTimeMillis(),
+			curseWait = System.currentTimeMillis();
 	private boolean unactivated = true, foundType = false, breakLogout = false;
 	private boolean logOutInfo = false, tradeResponse = false,
 			doBanking = false, invFull = false;
@@ -4147,11 +3792,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			URLConnection url = null;
 			BufferedReader in = null;
 			try {
-				url = new URL(
-						"http://whitebearrs.orgfree.com/content/updater.php?script=magic&type=all")
-						.openConnection();
-				in = new BufferedReader(new InputStreamReader(
-						url.getInputStream()));
+				url = new URL("http://whitebearrs.orgfree.com/content/updater.php?script=magic&type=all").openConnection();
+				in = new BufferedReader(new InputStreamReader(url.getInputStream()));
 				final String ver = in.readLine();
 				final String link = in.readLine();
 				final String update = in.readLine();
@@ -4198,18 +3840,14 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				Methods.sleep(Methods.random(400, 600));
 			}
 			if (interfaces.get(432).isValid()) {
-				if (!interfaces.getComponent(432, boltComponent).doAction(
-						"Make 10")) {
+				if (!interfaces.getComponent(432, boltComponent).doAction("Make 10")) {
 					Methods.sleep(Methods.random(300, 400));
-					if (!interfaces.getComponent(432, boltComponent).doAction(
-							"Make 10")) {
+					if (!interfaces.getComponent(432, boltComponent).doAction("Make 10")) {
 						Methods.sleep(Methods.random(300, 400));
 						if (interfaces.get(432).isValid()
-								&& !interfaces.getComponent(432, boltComponent)
-										.doAction("Make 10")) {
+								&& !interfaces.getComponent(432, boltComponent).doAction("Make 10")) {
 							Methods.sleep(Methods.random(300, 400));
-							if (!interfaces.getComponent(432, boltComponent)
-									.doAction("Make 10")) {
+							if (!interfaces.getComponent(432, boltComponent).doAction("Make 10")) {
 								Methods.sleep(Methods.random(300, 400));
 								interfaces.getComponent(432, 12).doClick();
 								log.warning("Unable to cast Enchant Crossbow Bolt spell for 4 tries, logging out.");
@@ -4425,8 +4063,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						return 100;
 					}
 					Methods.sleep(Methods.random(500, 550));
-					final int c1 = inventory.getCount(ore1ID), c2 = inventory
-							.getCount(ore2ID);
+					final int c1 = inventory.getCount(ore1ID), c2 = inventory.getCount(ore2ID);
 					if (ore2ID == -1) { // silver / gold / iron
 						bank.withdraw(ore1ID, 0);
 					} else { // needs 2 ores
@@ -4650,8 +4287,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 						doBanking = true;
 						return 10;
 					} else {
-						if (!inventory.getItem(itemID).doAction(
-								"Cast Lvl-" + spellName)) {
+						if (!inventory.getItem(itemID).doAction("Cast Lvl-"
+								+ spellName)) {
 							return Methods.random(300, 500);
 						}
 						if (Methods.random(0, 4) == 0) {
@@ -4743,10 +4380,8 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					Methods.sleep(Methods.random(160, 220));
 				}
 				for (int i = 0; i < 28; i++) {
-					if (interfaces.getComponent(149, 0).getComponent(i)
-							.getComponentID() == itemID) {
-						if (interfaces.getComponent(149, 0).getComponent(i)
-								.doAction("Drop")) {
+					if (interfaces.getComponent(149, 0).getComponent(i).getComponentID() == itemID) {
+						if (interfaces.getComponent(149, 0).getComponent(i).doAction("Drop")) {
 							Methods.sleep(Methods.random(300, 500));
 						}
 					}
@@ -4795,9 +4430,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 			Methods.sleep(Methods.random(200, 400));
 		}
 		while (!game.isOnLogoutTab()) {
-			mouse.move(
-					Methods.random(game.getWidth() - 15, game.getWidth() - 5),
-					Methods.random(5, 16));
+			mouse.move(Methods.random(game.getWidth() - 15, game.getWidth() - 5), Methods.random(5, 16));
 			mouse.click(true);
 			if (bank.isOpen()) {
 				bank.close();
@@ -4832,8 +4465,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 	private RSComponent getLastOre() {
 		for (int i = 27; i >= 0; i--) {
-			if (interfaces.getComponent(149, 0).getComponent(i)
-					.getComponentID() == ore1ID) {
+			if (interfaces.getComponent(149, 0).getComponent(i).getComponentID() == ore1ID) {
 				return interfaces.getComponent(149, 0).getComponent(i);
 			}
 		}
@@ -5119,9 +4751,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 		}
 		if (thePainter.currentTab == 4
 				&& counter == 0
-				&& new Rectangle(thePainter.logOut.x + 125,
-						thePainter.logOut.y, thePainter.logOut.width + 53,
-						thePainter.logOut.height).contains(p)) {
+				&& new Rectangle(thePainter.logOut.x + 125, thePainter.logOut.y, thePainter.logOut.width + 53, thePainter.logOut.height).contains(p)) {
 			thePainter.currentTab = 0;
 			counter = 400;
 		}
@@ -5159,26 +4789,18 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		try {
 			if (game.isLoggedIn()) {
-				final Rectangle nameBlock = new Rectangle(interfaces.get(137)
-						.getComponent(54).getAbsoluteX(), interfaces.get(137)
-						.getComponent(54).getAbsoluteY() + 2, 89, 13);
+				final Rectangle nameBlock = new Rectangle(interfaces.get(137).getComponent(54).getAbsoluteX(), interfaces.get(137).getComponent(54).getAbsoluteY() + 2, 89, 13);
 				g.setColor(new Color(211, 192, 155, 253));
 				try {
-					g.fillRect(nameBlock.x, nameBlock.y, nameBlock.width,
-							nameBlock.height);
+					g.fillRect(nameBlock.x, nameBlock.y, nameBlock.width, nameBlock.height);
 				} catch (final Exception e) {
 				}
 			}
 			g.setFont(new Font("sansserif", Font.PLAIN, 12));
 			if (thePainter.antialias == true) {
-				((Graphics2D) g).setRenderingHint(
-						RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_ON);
-				((Graphics2D) g).setRenderingHint(
-						RenderingHints.KEY_COLOR_RENDERING,
-						RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-				((Graphics2D) g).setRenderingHint(RenderingHints.KEY_RENDERING,
-						RenderingHints.VALUE_RENDER_QUALITY);
+				((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				((Graphics2D) g).setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+				((Graphics2D) g).setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			}
 			if (currentlyBreaking) {
 				g.setColor(new Color(0, 0, 0));
@@ -5246,8 +4868,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				mouse.move(checkScreen);
 				final Object[] menuItems = menu.getItems();
 				for (final Object menuItem : menuItems) {
-					if (menuItem.toString().toLowerCase()
-							.contains(action.toLowerCase())) {
+					if (menuItem.toString().toLowerCase().contains(action.toLowerCase())) {
 						stop = true;
 						break;
 					}

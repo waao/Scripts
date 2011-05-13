@@ -223,29 +223,25 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 
 				// ---- label3 ----
 				label3.setText("Ranged");
-				label3.setFont(label3.getFont().deriveFont(Font.ITALIC,
-						label3.getFont().getSize() + 2f));
+				label3.setFont(label3.getFont().deriveFont(Font.ITALIC, label3.getFont().getSize() + 2f));
 				panel1.add(label3);
 				label3.setBounds(465, 45, 70, 16);
 
 				// ---- label4 ----
 				label4.setText("Melee");
-				label4.setFont(label4.getFont().deriveFont(Font.ITALIC,
-						label4.getFont().getSize() + 2f));
+				label4.setFont(label4.getFont().deriveFont(Font.ITALIC, label4.getFont().getSize() + 2f));
 				panel1.add(label4);
 				label4.setBounds(35, 40, 60, 21);
 
 				// ---- label5 ----
 				label5.setText("Fast");
-				label5.setFont(label5.getFont().deriveFont(Font.ITALIC,
-						label5.getFont().getSize() + 2f));
+				label5.setFont(label5.getFont().deriveFont(Font.ITALIC, label5.getFont().getSize() + 2f));
 				panel1.add(label5);
 				label5.setBounds(10, 10, 70, 16);
 
 				// ---- label2 ----
 				label2.setText("Special Attacks");
-				label2.setFont(label2.getFont().deriveFont(Font.ITALIC,
-						label2.getFont().getSize() + 2f));
+				label2.setFont(label2.getFont().deriveFont(Font.ITALIC, label2.getFont().getSize() + 2f));
 				panel1.add(label2);
 				label2.setBounds(440, 5, 120, 16);
 
@@ -270,8 +266,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 
 				// ---- label7 ----
 				label7.setText("Author: Pervy Shuya");
-				label7.setFont(label7.getFont().deriveFont(
-						label7.getFont().getStyle() | Font.BOLD));
+				label7.setFont(label7.getFont().deriveFont(label7.getFont().getStyle()
+						| Font.BOLD));
 				panel1.add(label7);
 				label7.setBounds(425, 315, 116, 14);
 
@@ -288,8 +284,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 						label8.setText("Spec weapon");
 						label8.setFont(new Font("MV Boli", Font.BOLD, 15));
 						panel2.add(label8);
-						label8.setBounds(15, 5, 110,
-								label8.getPreferredSize().height);
+						label8.setBounds(15, 5, 110, label8.getPreferredSize().height);
 
 						// ---- label10 ----
 						label10.setText("Pick Up Arrows/Bolts?");
@@ -314,78 +309,65 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 						panel2.add(separator5);
 						separator5.setBounds(0, 145, 145, 10);
 						panel2.add(DMLine1);
-						DMLine1.setBounds(5, 140,
-								DMLine1.getPreferredSize().width, 15);
+						DMLine1.setBounds(5, 140, DMLine1.getPreferredSize().width, 15);
 						panel2.add(DMLine2);
-						DMLine2.setBounds(new Rectangle(new Point(5, 155),
-								DMLine2.getPreferredSize()));
+						DMLine2.setBounds(new Rectangle(new Point(5, 155), DMLine2.getPreferredSize()));
 						panel2.add(DMLine3);
-						DMLine3.setBounds(new Rectangle(new Point(5, 170),
-								DMLine3.getPreferredSize()));
+						DMLine3.setBounds(new Rectangle(new Point(5, 170), DMLine3.getPreferredSize()));
 						panel2.add(separator8);
 						separator8.setBounds(145, 145, 190, 10);
 
 						// ---- label15 ----
 						label15.setText("GUI Made By Pervy");
-						label15.setFont(label15.getFont().deriveFont(
-								label15.getFont().getStyle() | Font.BOLD,
-								label15.getFont().getSize() - 2f));
+						label15.setFont(label15.getFont().deriveFont(label15.getFont().getStyle()
+								| Font.BOLD, label15.getFont().getSize() - 2f));
 						label15.setEnabled(false);
 						panel2.add(label15);
-						label15.setBounds(new Rectangle(new Point(220, 150),
-								label15.getPreferredSize()));
+						label15.setBounds(new Rectangle(new Point(220, 150), label15.getPreferredSize()));
 
 						// ---- checkBox7 ----
 						checkBox7.setText("Use Special Attacks");
 						checkBox7.setBackground(Color.white);
 						panel2.add(checkBox7);
-						checkBox7.setBounds(new Rectangle(new Point(145, 105),
-								checkBox7.getPreferredSize()));
+						checkBox7.setBounds(new Rectangle(new Point(145, 105), checkBox7.getPreferredSize()));
 
 						// ---- checkBox6 ----
 						checkBox6.setText("Would you like to wait for arrows?");
 						checkBox6.setBackground(Color.white);
 						panel2.add(checkBox6);
-						checkBox6.setBounds(145, 70, 189,
-								checkBox6.getPreferredSize().height);
+						checkBox6.setBounds(145, 70, 189, checkBox6.getPreferredSize().height);
 
 						// ---- orginalWepLabel ----
 						orginalWepLabel.setText("Orginal Weapon ID:");
-						orginalWepLabel.setFont(new Font("Script MT Bold",
-								Font.BOLD | Font.ITALIC, 12));
+						orginalWepLabel.setFont(new Font("Script MT Bold", Font.BOLD
+								| Font.ITALIC, 12));
 						panel2.add(orginalWepLabel);
 						orginalWepLabel.setBounds(5, 70, 130, 20);
 
 						// ---- orginalWepTextField ----
-						orginalWepTextField
-								.setHorizontalAlignment(SwingConstants.CENTER);
+						orginalWepTextField.setHorizontalAlignment(SwingConstants.CENTER);
 						panel2.add(orginalWepTextField);
-						orginalWepTextField.setBounds(25, 105, 77,
-								orginalWepTextField.getPreferredSize().height);
+						orginalWepTextField.setBounds(25, 105, 77, orginalWepTextField.getPreferredSize().height);
 
 						// ---- specComboBox ----
-						specComboBox.setModel(new DefaultComboBoxModel(
-								new String[] { "Dragon dagger (p++)",
-										"Dragon longsword", "Dragon mace",
-										"Dragon battleaxe", "Dragon halberd",
-										"Dragon scimitar", "Dragon claws",
-										"Dragon 2h sword", "Dorgeshuun c'bow",
-										"Magic shortbow", "Seercull",
-										"Dark bow", "Granite maul",
-										"Granite mace", "Abyssal whip",
-										"Ancient mace", "Saradomin sword",
-										"Armadyl godsword", "Bandos godsword",
-										"Saradomin godsword",
-										"Zamorak godsword" }));
+						specComboBox.setModel(new DefaultComboBoxModel(new String[] {
+								"Dragon dagger (p++)", "Dragon longsword",
+								"Dragon mace", "Dragon battleaxe",
+								"Dragon halberd", "Dragon scimitar",
+								"Dragon claws", "Dragon 2h sword",
+								"Dorgeshuun c'bow", "Magic shortbow",
+								"Seercull", "Dark bow", "Granite maul",
+								"Granite mace", "Abyssal whip", "Ancient mace",
+								"Saradomin sword", "Armadyl godsword",
+								"Bandos godsword", "Saradomin godsword",
+								"Zamorak godsword" }));
 						panel2.add(specComboBox);
-						specComboBox.setBounds(new Rectangle(new Point(5, 30),
-								specComboBox.getPreferredSize()));
+						specComboBox.setBounds(new Rectangle(new Point(5, 30), specComboBox.getPreferredSize()));
 
 						{ // compute preferred size
 							final Dimension preferredSize = new Dimension();
 							for (int i = 0; i < panel2.getComponentCount(); i++) {
-								final Rectangle bounds = panel2.getComponent(i)
-										.getBounds();
+								final Rectangle bounds = panel2.getComponent(i).getBounds();
 								preferredSize.width = Math.max(bounds.x
 										+ bounds.width, preferredSize.width);
 								preferredSize.height = Math.max(bounds.y
@@ -443,14 +425,12 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 						// ---- label17 ----
 						label17.setText("What HP To Eat At");
 						panel3.add(label17);
-						label17.setBounds(new Rectangle(new Point(130, 50),
-								label17.getPreferredSize()));
+						label17.setBounds(new Rectangle(new Point(130, 50), label17.getPreferredSize()));
 
 						// ---- textField1 ----
 						textField1.setText("500");
 						panel3.add(textField1);
-						textField1.setBounds(230, 45, 100,
-								textField1.getPreferredSize().height);
+						textField1.setBounds(230, 45, 100, textField1.getPreferredSize().height);
 
 						// ---- checkBox8 ----
 						checkBox8.setText("Would like to eat?");
@@ -462,11 +442,9 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 
 						// ---- mouseSpeedLabel ----
 						mouseSpeedLabel.setText("Adjust Mouse Speed:");
-						mouseSpeedLabel.setFont(new Font("Engravers MT",
-								Font.PLAIN, 12));
+						mouseSpeedLabel.setFont(new Font("Engravers MT", Font.PLAIN, 12));
 						panel3.add(mouseSpeedLabel);
-						mouseSpeedLabel.setBounds(130, 80,
-								mouseSpeedLabel.getPreferredSize().width, 20);
+						mouseSpeedLabel.setBounds(130, 80, mouseSpeedLabel.getPreferredSize().width, 20);
 
 						// ---- mouseSpeedSlider ----
 						mouseSpeedSlider.setMinimum(1);
@@ -483,8 +461,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 						{ // compute preferred size
 							final Dimension preferredSize = new Dimension();
 							for (int i = 0; i < panel3.getComponentCount(); i++) {
-								final Rectangle bounds = panel3.getComponent(i)
-										.getBounds();
+								final Rectangle bounds = panel3.getComponent(i).getBounds();
 								preferredSize.width = Math.max(bounds.x
 										+ bounds.width, preferredSize.width);
 								preferredSize.height = Math.max(bounds.y
@@ -536,12 +513,9 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 			{ // compute preferred size
 				final Dimension preferredSize = new Dimension();
 				for (int i = 0; i < contentPane.getComponentCount(); i++) {
-					final Rectangle bounds = contentPane.getComponent(i)
-							.getBounds();
-					preferredSize.width = Math.max(bounds.x + bounds.width,
-							preferredSize.width);
-					preferredSize.height = Math.max(bounds.y + bounds.height,
-							preferredSize.height);
+					final Rectangle bounds = contentPane.getComponent(i).getBounds();
+					preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+					preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
 				}
 				final Insets insets = contentPane.getInsets();
 				preferredSize.width += insets.right;
@@ -623,43 +597,34 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 			if (doSpec) {
 				log("Special Attacks Enabled");
 
-				if (specComboBox.getSelectedItem()
-						.equals("Dragon dagger (p++)")) {
+				if (specComboBox.getSelectedItem().equals("Dragon dagger (p++)")) {
 					SPEC_WEP_ID = 5698;
 					specialCost = 250;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Dragon longsword")) {
+				} else if (specComboBox.getSelectedItem().equals("Dragon longsword")) {
 					SPEC_WEP_ID = 1305;
 					specialCost = 250;
 				} else if (specComboBox.getSelectedItem().equals("Dragon mace")) {
 					SPEC_WEP_ID = 1434;
 					specialCost = 250;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Dragon battleaxe")) {
+				} else if (specComboBox.getSelectedItem().equals("Dragon battleaxe")) {
 					SPEC_WEP_ID = 1377;
 					specialCost = 1000;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Dragon halberd")) {
+				} else if (specComboBox.getSelectedItem().equals("Dragon halberd")) {
 					SPEC_WEP_ID = 3204;
 					specialCost = 300;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Dragon scimitar")) {
+				} else if (specComboBox.getSelectedItem().equals("Dragon scimitar")) {
 					SPEC_WEP_ID = 4587;
 					specialCost = 550;
-				} else if (specComboBox.getSelectedItem()
-						.equals("Dragon claws")) {
+				} else if (specComboBox.getSelectedItem().equals("Dragon claws")) {
 					SPEC_WEP_ID = 14484;
 					specialCost = 500;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Dragon 2h sword")) {
+				} else if (specComboBox.getSelectedItem().equals("Dragon 2h sword")) {
 					SPEC_WEP_ID = 7158;
 					specialCost = 550;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Dorgeshuun c'bow")) {
+				} else if (specComboBox.getSelectedItem().equals("Dorgeshuun c'bow")) {
 					SPEC_WEP_ID = 8880;
 					specialCost = 900;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Magic shortbow")) {
+				} else if (specComboBox.getSelectedItem().equals("Magic shortbow")) {
 					SPEC_WEP_ID = 861;
 					specialCost = 550;
 				} else if (specComboBox.getSelectedItem().equals("Seercull")) {
@@ -668,47 +633,37 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 				} else if (specComboBox.getSelectedItem().equals("Dark bow")) {
 					SPEC_WEP_ID = 11235;
 					specialCost = 650;
-				} else if (specComboBox.getSelectedItem()
-						.equals("Granite maul")) {
+				} else if (specComboBox.getSelectedItem().equals("Granite maul")) {
 					SPEC_WEP_ID = 4153;
 					specialCost = 500;
-				} else if (specComboBox.getSelectedItem()
-						.equals("Granite mace")) {
+				} else if (specComboBox.getSelectedItem().equals("Granite mace")) {
 					SPEC_WEP_ID = 14679;
 					specialCost = 500;
-				} else if (specComboBox.getSelectedItem()
-						.equals("Abyssal whip")) {
+				} else if (specComboBox.getSelectedItem().equals("Abyssal whip")) {
 					SPEC_WEP_ID = 4151;
 					specialCost = 500;
-				} else if (specComboBox.getSelectedItem()
-						.equals("Ancient mace")) {
+				} else if (specComboBox.getSelectedItem().equals("Ancient mace")) {
 					SPEC_WEP_ID = 11061;
 					specialCost = 1000;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Saradomin sword")) {
+				} else if (specComboBox.getSelectedItem().equals("Saradomin sword")) {
 					SPEC_WEP_ID = 11730;
 					specialCost = 250;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Armadyl godsword")) {
+				} else if (specComboBox.getSelectedItem().equals("Armadyl godsword")) {
 					SPEC_WEP_ID = 11694;
 					specialCost = 500;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Bandos godsword")) {
+				} else if (specComboBox.getSelectedItem().equals("Bandos godsword")) {
 					SPEC_WEP_ID = 11696;
 					specialCost = 1000;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Saradomin godsword")) {
+				} else if (specComboBox.getSelectedItem().equals("Saradomin godsword")) {
 					SPEC_WEP_ID = 11698;
 					specialCost = 500;
-				} else if (specComboBox.getSelectedItem().equals(
-						"Zamorak godsword")) {
+				} else if (specComboBox.getSelectedItem().equals("Zamorak godsword")) {
 					SPEC_WEP_ID = 11700;
 					specialCost = 600;
 				}
 				if (!orginalWepTextField.getText().isEmpty()) {
 					try {
-						CURR_WEP_ID = Integer.parseInt(orginalWepTextField
-								.getText());
+						CURR_WEP_ID = Integer.parseInt(orginalWepTextField.getText());
 					} catch (final NumberFormatException ignored) {
 					}
 				} else {
@@ -816,15 +771,13 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 	}
 
 	private static double round(final double paramDouble, final int paramInt) {
-		BigDecimal localBigDecimal = new BigDecimal(
-				Double.toString(paramDouble));
+		BigDecimal localBigDecimal = new BigDecimal(Double.toString(paramDouble));
 		localBigDecimal = localBigDecimal.setScale(paramInt, 4);
 		return localBigDecimal.doubleValue();
 	}
 
 	private final int KILLYAKS = 0, KILLSCRIPT = 1, SPECIAL = 2;
-	final ScriptManifest properties = super.getClass().getAnnotation(
-			ScriptManifest.class);
+	final ScriptManifest properties = super.getClass().getAnnotation(ScriptManifest.class);
 	private final int yakID = 5529;
 	private final int[] Junk = { 10814, 10816, 10818, 526 };
 	private final int[] superStrength = { 2440, 157, 159, 161 };
@@ -920,8 +873,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 
 	private String buildString(final int paramInt) {
 		if (paramInt >= 100000) {
-			return new StringBuilder().append(paramInt / 1000).append("K")
-					.toString();
+			return new StringBuilder().append(paramInt / 1000).append("K").toString();
 		}
 		double d;
 		if (paramInt >= 10000) {
@@ -1014,25 +966,14 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		if (food) {
 			g.setColor(Color.WHITE);
 			drawRect(g, item.getComponent().getArea(), Color.WHITE);
-			drawNiceBox(
-					g,
-					"Eating: "
-							+ item.getName()
-									.substring(
-											item.getName().indexOf(
-													"<col=ff9040>") + 12), item
-							.getComponent().getArea().x - 80, item
-							.getComponent().getArea().y
-							+ item.getComponent().getArea().height, new Color(
-							255, 255, 255, 100), new Color(0, 0, 0, 150),
-					Color.BLACK, false);
+			drawNiceBox(g, "Eating: "
+					+ item.getName().substring(item.getName().indexOf("<col=ff9040>") + 12), item.getComponent().getArea().x - 80, item.getComponent().getArea().y
+					+ item.getComponent().getArea().height, new Color(255, 255, 255, 100), new Color(0, 0, 0, 150), Color.BLACK, false);
 		} else {
 			g.setColor(Color.GREEN);
 			drawRect(g, item.getComponent().getArea(), Color.GREEN);
-			drawNiceBox(g, "Using: " + item.getName(), item.getComponent()
-					.getArea().x - 80, item.getComponent().getArea().y
-					+ item.getComponent().getArea().height, new Color(0, 255,
-					0, 100), new Color(0, 0, 0, 150), Color.BLACK, false);
+			drawNiceBox(g, "Using: " + item.getName(), item.getComponent().getArea().x - 80, item.getComponent().getArea().y
+					+ item.getComponent().getArea().height, new Color(0, 255, 0, 100), new Color(0, 0, 0, 150), Color.BLACK, false);
 		}
 	}
 
@@ -1087,8 +1028,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 	private void drinkPot(final String type) {
 		if (type.equals("Super Attack")) {
 			for (final int id : superAttack) {
-				if (skills.getCurrentLevel(Skills.ATTACK) <= skills
-						.getRealLevel(Skills.ATTACK) + Methods.random(2, 4)) {
+				if (skills.getCurrentLevel(Skills.ATTACK) <= skills.getRealLevel(Skills.ATTACK)
+						+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(superAttack).doAction("Drink");
 						while (getMyPlayer().getAnimation() != -1) {
@@ -1100,8 +1041,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		}
 		if (type.equals("Super Strength")) {
 			for (final int id : superStrength) {
-				if (skills.getCurrentLevel(Skills.STRENGTH) <= skills
-						.getRealLevel(Skills.STRENGTH) + Methods.random(2, 4)) {
+				if (skills.getCurrentLevel(Skills.STRENGTH) <= skills.getRealLevel(Skills.STRENGTH)
+						+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(superStrength).doAction("Drink");
 						while (getMyPlayer().getAnimation() != -1) {
@@ -1113,8 +1054,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		}
 		if (type.equals("Super Defense")) {
 			for (final int id : superDefense) {
-				if (skills.getCurrentLevel(Skills.DEFENSE) <= skills
-						.getRealLevel(Skills.DEFENSE) + Methods.random(2, 4)) {
+				if (skills.getCurrentLevel(Skills.DEFENSE) <= skills.getRealLevel(Skills.DEFENSE)
+						+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(superDefense).doAction("Drink");
 						while (getMyPlayer().getAnimation() != -1) {
@@ -1126,8 +1067,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		}
 		if (type.equals("Normal Range")) {
 			for (final int id : normalRange) {
-				if (skills.getCurrentLevel(Skills.RANGE) <= skills
-						.getRealLevel(Skills.RANGE) + Methods.random(2, 4)) {
+				if (skills.getCurrentLevel(Skills.RANGE) <= skills.getRealLevel(Skills.RANGE)
+						+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(normalRange).doAction("Drink");
 						while (getMyPlayer().getAnimation() != -1) {
@@ -1139,8 +1080,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		}
 		if (type.equals("Normal Attack")) {
 			for (final int id : normalAttack) {
-				if (skills.getCurrentLevel(Skills.ATTACK) <= skills
-						.getRealLevel(Skills.ATTACK) + Methods.random(2, 4)) {
+				if (skills.getCurrentLevel(Skills.ATTACK) <= skills.getRealLevel(Skills.ATTACK)
+						+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(normalAttack).doAction("Drink");
 						while (getMyPlayer().getAnimation() != -1) {
@@ -1152,8 +1093,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		}
 		if (type.equals("Normal Strength")) {
 			for (final int id : normalStrength) {
-				if (skills.getCurrentLevel(Skills.STRENGTH) <= skills
-						.getRealLevel(Skills.STRENGTH) + Methods.random(2, 4)) {
+				if (skills.getCurrentLevel(Skills.STRENGTH) <= skills.getRealLevel(Skills.STRENGTH)
+						+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(normalStrength).doAction("Drink");
 						while (getMyPlayer().getAnimation() != -1) {
@@ -1165,8 +1106,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		}
 		if (type.equals("Normal Defense")) {
 			for (final int id : normalDefense) {
-				if (skills.getCurrentLevel(Skills.DEFENSE) <= skills
-						.getRealLevel(Skills.DEFENSE) + Methods.random(2, 4)) {
+				if (skills.getCurrentLevel(Skills.DEFENSE) <= skills.getRealLevel(Skills.DEFENSE)
+						+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(normalDefense).doAction("Drink");
 						while (getMyPlayer().getAnimation() != -1) {
@@ -1178,10 +1119,9 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		}
 		if (type.equals("Combat potion")) {
 			for (final int id : combatPots) {
-				if (skills.getCurrentLevel(Skills.STRENGTH) <= skills
-						.getRealLevel(Skills.STRENGTH) + Methods.random(2, 4)
-						|| skills.getCurrentLevel(Skills.ATTACK) <= skills
-								.getRealLevel(Skills.ATTACK)
+				if (skills.getCurrentLevel(Skills.STRENGTH) <= skills.getRealLevel(Skills.STRENGTH)
+						+ Methods.random(2, 4)
+						|| skills.getCurrentLevel(Skills.ATTACK) <= skills.getRealLevel(Skills.ATTACK)
 								+ Methods.random(2, 4)) {
 					if (inventory.getCount(id) > 0) {
 						inventory.getItem(combatPots).doAction("Drink");
@@ -1297,8 +1237,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 			Status = "Picking up Arrows";
 			if (tiles.doAction(loots.getLocation(), 0.5, 0.5, 0, arrowName)) {
 				return true;
-			} else if (!tiles.doAction(loots.getLocation(), 0.5, 0.5, 0,
-					arrowName)) {
+			} else if (!tiles.doAction(loots.getLocation(), 0.5, 0.5, 0, arrowName)) {
 				pickupArrows(arrowPack, "Take " + arrowName);
 				Methods.sleep(Methods.random(400, 600));
 				return true;
@@ -1347,8 +1286,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		});
 
 		if (wants2Eat) {
-			if (combat.getLifePoints() <= Methods.random(hp2EatAt - 30,
-					hp2EatAt + 30)) {
+			if (combat.getLifePoints() <= Methods.random(hp2EatAt - 30, hp2EatAt + 30)) {
 				Status = "Eating Food";
 				if (inventory.contains(Food)) {
 					inventory.getItem(Food).doAction("Eat");
@@ -1392,8 +1330,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 				final Point nextNPC = yak.getScreenLocation();
 				if (nextNPC != null && getMyPlayer().isInCombat()) {
 					Status = "Hovering Yaks";
-					mouse.move(new Point(centerPoint(yak.getModel(),
-							Methods.random(3, 5))));
+					mouse.move(new Point(centerPoint(yak.getModel(), Methods.random(3, 5))));
 				}
 			}
 		}
@@ -1511,8 +1448,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 			stopScript(true);
 		}
 
-		if (serverString
-				.contentEquals("You can't log out until 10 seconds after the end of combat.")) {
+		if (serverString.contentEquals("You can't log out until 10 seconds after the end of combat.")) {
 			log("Waiting 10 seconds before logging out");
 			Methods.sleep(Methods.random(10100, 11000));
 			stopScript(true);
@@ -1535,8 +1471,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 
 	@Override
 	public void onRepaint(final Graphics g) {
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		final int mouse_x = mouse.getLocation().x;
 		final int mouse_y = mouse.getLocation().y;
 		final int mouse_press_x = mouse.getPressLocation().x;
@@ -1593,8 +1528,7 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		g.drawPolygon(po);
 
 		try {
-			final Point Mouse = new Point(mouse.getLocation().x,
-					mouse.getLocation().y);
+			final Point Mouse = new Point(mouse.getLocation().x, mouse.getLocation().y);
 			if (foodInBag != null && foodInBag.getName() != null) {
 				if (Status.equals("Eating food")
 						&& inventory.getInterface().getArea().contains(Mouse)) {
@@ -1687,22 +1621,11 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 						localStringBuilder3.append(i17);
 					}
 
-					firstSet = new StringBuilder()
-							.append(firstSet)
-							.append((currentexp[i3] - exptolevel[(currentlvl[i3] - 1)])
-									* 100
-									/ (exptolevel[currentlvl[i3]] - exptolevel[(currentlvl[i3] - 1)]))
-							.append("qaswed").toString();
+					firstSet = new StringBuilder().append(firstSet).append((currentexp[i3] - exptolevel[(currentlvl[i3] - 1)])
+							* 100
+							/ (exptolevel[currentlvl[i3]] - exptolevel[(currentlvl[i3] - 1)])).append("qaswed").toString();
 
-					localStringBuilderNew.append(new StringBuilder()
-							.append(statnames[i3]).append(" ")
-							.append(currentlvl[i3]).append('/')
-							.append(startinglvl[i3]).append("  |  EXP-TL: ")
-							.append(buildString(i5)).append("  |  Gain: ")
-							.append(buildString(diffexp[i3]))
-							.append("  |  EXP/HR: ").append(buildString(i4))
-							.append("  |  TTL: ").append(localStringBuilder3)
-							.append("qaswed").toString());
+					localStringBuilderNew.append(new StringBuilder().append(statnames[i3]).append(" ").append(currentlvl[i3]).append('/').append(startinglvl[i3]).append("  |  EXP-TL: ").append(buildString(i5)).append("  |  Gain: ").append(buildString(diffexp[i3])).append("  |  EXP/HR: ").append(buildString(i4)).append("  |  TTL: ").append(localStringBuilder3).append("qaswed").toString());
 
 					i1 += i4;
 					i2 += diffexp[i3];
@@ -1712,17 +1635,10 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 
 		}
 
-		final String str2 = new StringBuilder().append("Time ran: ")
-				.append(localStringBuilder).append("  |  Total Gain: ")
-				.append(buildString(i2)).append("  |  Total EXP/HR: ")
-				.append(buildString(i1)).append("  |  Location: ")
-				.append(locToString()).append("qaswed")
-				.append(localStringBuilderNew.toString()).toString();
+		final String str2 = new StringBuilder().append("Time ran: ").append(localStringBuilder).append("  |  Total Gain: ").append(buildString(i2)).append("  |  Total EXP/HR: ").append(buildString(i1)).append("  |  Location: ").append(locToString()).append("qaswed").append(localStringBuilderNew.toString()).toString();
 
 		final String[] arrayOfStringOne = str2.split("qaswed");
-		final String[] arrayOfStringTwo = new StringBuilder()
-				.append("100qaswed").append(firstSet).toString()
-				.split("qaswed");
+		final String[] arrayOfStringTwo = new StringBuilder().append("100qaswed").append(firstSet).toString().split("qaswed");
 
 		final int i6 = 120;
 		final int i7 = 90;
@@ -1748,9 +1664,8 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 
 			g.setColor(new Color(i6 * 2 / 3, i7 * 2 / 3, i8 * 2 / 3, 190));
 
-			g.fillRoundRect(i12, i13 + 1 + i17 * i15,
-					i14 * Integer.parseInt(arrayOfStringTwo[i17]) / 100,
-					i15 - 2, 10, 10);
+			g.fillRoundRect(i12, i13 + 1 + i17 * i15, i14
+					* Integer.parseInt(arrayOfStringTwo[i17]) / 100, i15 - 2, 10, 10);
 
 			g.setColor(Color.BLACK);
 			g.drawString(arrayOfStringOne[i17], i12 + 5, i13 - i10 + (i17 + 1)
@@ -1765,13 +1680,10 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 		yaksKilled = i2 / 200;
 		yaksPerHour = xpHour / 200;
 		final String[] arrayOfStringThree = {
-				new StringBuilder().append(properties.name()).append(" v")
-						.append(properties.version()).toString(),
-				new StringBuilder().append("Status: ").append(Status)
-						.toString(),
-				new StringBuilder().append("Yaks Killed: ").append(yaksKilled)
-						.append("  |  YaksKilled/HR: ").append(yaksPerHour)
-						.toString(), "www.powerbot.org" };
+				new StringBuilder().append(properties.name()).append(" v").append(properties.version()).toString(),
+				new StringBuilder().append("Status: ").append(Status).toString(),
+				new StringBuilder().append("Yaks Killed: ").append(yaksKilled).append("  |  YaksKilled/HR: ").append(yaksPerHour).toString(),
+				"www.powerbot.org" };
 
 		i12 = 5;
 		i13 = 30;
@@ -1879,14 +1791,14 @@ public class YakAttack extends Script implements PaintListener, MessageListener 
 	}
 
 	private boolean shouldDrinkPot() {
-		return skills.getCurrentLevel(Skills.STRENGTH) <= skills
-				.getRealLevel(Skills.STRENGTH) + Methods.random(3, 5)
-				|| skills.getCurrentLevel(Skills.ATTACK) <= skills
-						.getRealLevel(Skills.ATTACK) + Methods.random(3, 5)
-				|| skills.getCurrentLevel(Skills.DEFENSE) <= skills
-						.getRealLevel(Skills.DEFENSE) + Methods.random(3, 5)
-				|| skills.getCurrentLevel(Skills.RANGE) <= skills
-						.getRealLevel(Skills.RANGE) + Methods.random(3, 5);
+		return skills.getCurrentLevel(Skills.STRENGTH) <= skills.getRealLevel(Skills.STRENGTH)
+				+ Methods.random(3, 5)
+				|| skills.getCurrentLevel(Skills.ATTACK) <= skills.getRealLevel(Skills.ATTACK)
+						+ Methods.random(3, 5)
+				|| skills.getCurrentLevel(Skills.DEFENSE) <= skills.getRealLevel(Skills.DEFENSE)
+						+ Methods.random(3, 5)
+				|| skills.getCurrentLevel(Skills.RANGE) <= skills.getRealLevel(Skills.RANGE)
+						+ Methods.random(3, 5);
 	}
 
 	private int statInfo(final int i) {

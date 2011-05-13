@@ -90,9 +90,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				final Object value, final boolean isSelected,
 				final boolean expanded, final boolean leaf, final int row,
 				final boolean hasFocus) {
-			final JComponent c = (JComponent) renderer
-					.getTreeCellRendererComponent(tree, value, isSelected,
-							expanded, leaf, row, hasFocus);
+			final JComponent c = (JComponent) renderer.getTreeCellRendererComponent(tree, value, isSelected, expanded, leaf, row, hasFocus);
 
 			HighLightableWraps.clear();
 			HighLightableWraps.addAll(HighLightWraps);
@@ -100,8 +98,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				for (int i = 0; i < HighLightableWraps.size(); i++) {
 					NextInterface = HighLightableWraps.get(i);
 					if (NextInterface.getComp() == null) {
-						if (NextInterface.getChild().getInterface().getIndex() == ((RSInterfaceWrap) value).wrapped
-								.getIndex()) {
+						if (NextInterface.getChild().getInterface().getIndex() == ((RSInterfaceWrap) value).wrapped.getIndex()) {
 							c.setForeground(Color.blue);
 
 						}
@@ -112,18 +109,14 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				for (int i = 0; i < HighLightableWraps.size(); i++) {
 					NextInterface = HighLightableWraps.get(i);
 					if (NextInterface.getComp() == null) {
-						if (NextInterface.getChild().getInterface().getIndex() == ((RSComponentWrap) value).wrapped
-								.getInterface().getIndex()) {
-							if (NextInterface.getChild().getIndex() == ((RSComponentWrap) value).wrapped
-									.getIndex()) {
+						if (NextInterface.getChild().getInterface().getIndex() == ((RSComponentWrap) value).wrapped.getInterface().getIndex()) {
+							if (NextInterface.getChild().getIndex() == ((RSComponentWrap) value).wrapped.getIndex()) {
 								c.setForeground(Color.blue);
 							}
 						}
 					} else {
-						if (NextInterface.getChild().getIndex() == ((RSComponentWrap) value).wrapped
-								.getParent().getIndex()
-								&& NextInterface.getParent().getIndex() == ((RSComponentWrap) value).wrapped
-										.getParent().getInterface().getIndex()) {
+						if (NextInterface.getChild().getIndex() == ((RSComponentWrap) value).wrapped.getParent().getIndex()
+								&& NextInterface.getParent().getIndex() == ((RSComponentWrap) value).wrapped.getParent().getInterface().getIndex()) {
 							c.setForeground(Color.blue);
 						}
 						/*
@@ -157,8 +150,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 
 		private void fireTreeStructureChanged(final Object oldRoot) {
 			treeModelListeners.size();
-			final TreeModelEvent e = new TreeModelEvent(this,
-					new Object[] { oldRoot });
+			final TreeModelEvent e = new TreeModelEvent(this, new Object[] { oldRoot });
 			for (final TreeModelListener tml : treeModelListeners) {
 				tml.treeStructureChanged(e);
 			}
@@ -169,11 +161,9 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			if (parent == root) {
 				return interfaceWraps.get(index);
 			} else if (parent instanceof RSInterfaceWrap) {
-				return new RSComponentWrap(
-						((RSInterfaceWrap) parent).wrapped.getComponents()[index]);
+				return new RSComponentWrap(((RSInterfaceWrap) parent).wrapped.getComponents()[index]);
 			} else if (parent instanceof RSComponentWrap) {
-				return new RSComponentWrap(
-						((RSComponentWrap) parent).wrapped.getComponents()[index]);
+				return new RSComponentWrap(((RSComponentWrap) parent).wrapped.getComponents()[index]);
 			}
 			return null;
 		}
@@ -195,13 +185,9 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			if (parent == root) {
 				return interfaceWraps.indexOf(child);
 			} else if (parent instanceof RSInterfaceWrap) {
-				return Arrays.asList(
-						((RSInterfaceWrap) parent).wrapped.getComponents())
-						.indexOf(((RSComponentWrap) child).wrapped);
+				return Arrays.asList(((RSInterfaceWrap) parent).wrapped.getComponents()).indexOf(((RSComponentWrap) child).wrapped);
 			} else if (parent instanceof RSComponentWrap) {
-				return Arrays.asList(
-						((RSComponentWrap) parent).wrapped.getComponents())
-						.indexOf(((RSComponentWrap) child).wrapped);
+				return Arrays.asList(((RSComponentWrap) parent).wrapped.getComponents()).indexOf(((RSComponentWrap) child).wrapped);
 			}
 			return -1;
 		}
@@ -224,21 +210,20 @@ public class InterfaceExplorer extends Script implements PaintListener {
 
 		public boolean searchMatches(final RSComponent iface,
 				final String contains) {
-			return iface.getText().toLowerCase()
-					.contains(contains.toLowerCase());
+			return iface.getText().toLowerCase().contains(contains.toLowerCase());
 		}
 
 		public void update(final String search) {
 			interfaceWraps.clear();
 			HighLightWraps.clear();
 			for (final RSInterface iface : interfaces.getAll()) {
-				toBreak: for (final RSComponent child : iface.getComponents()) {
+				toBreak:
+				for (final RSComponent child : iface.getComponents()) {
 					if (searchMatches(child, search)) {
 						interfaceWraps.add(new RSInterfaceWrap(iface));
 						if (window.isVisible() && !listenerButton.isSelected()
 								&& !searchBox.getText().equals("")) {
-							HighLightWraps.add(new HighLightInterface(iface,
-									child, null, -1));
+							HighLightWraps.add(new HighLightInterface(iface, child, null, -1));
 						}
 						break;
 					}
@@ -249,8 +234,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 							if (window.isVisible()
 									&& !listenerButton.isSelected()
 									&& !searchBox.getText().equals("")) {
-								HighLightWraps.add(new HighLightInterface(
-										iface, child, component, -1));
+								HighLightWraps.add(new HighLightInterface(iface, child, component, -1));
 							}
 							break toBreak;
 						}
@@ -479,146 +463,107 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		// getType
 		if (a.getComponent().getType() != a.getType()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 1));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 1));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 1));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 1));
 			}
 		}
 		// SpecialType
 		if (a.getComponent().getSpecialType() != a.getSpecialType()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 2));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 2));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 2));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 2));
 			}
 		}
 		// Bounds
 		if (a.getComponent().getBoundsArrayIndex() != a.bounds()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 3));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 3));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 3));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 3));
 			}
 		}
 		// Model ID
 		if (a.getComponent().getModelID() != a.getModelID()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 4));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 4));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 4));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 4));
 			}
 		}
 		// Texture ID
 		if (a.getComponent().getBackgroundColor() != a.getColor()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 5));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 5));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 5));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 5));
 			}
 		}
 		// Parent ID
 		if (a.getComponent().getParentID() != a.getID()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 6));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 6));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 6));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 6));
 			}
 		}
 		// Text
 		if (a.getComponent().getText() != a.getText()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 7));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 7));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 7));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 7));
 			}
 		}
 		// Tooltip
 		if (a.getComponent().getTooltip() != a.getToolTip()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 8));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 8));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 8));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 8));
 			}
 		}
 		// SelActionName
 		if (a.getComponent().getSelectedActionName() != a.getSelectionName()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 9));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 9));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 9));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 9));
 			}
 		}
 		// ComID
 		if (a.getComponent().getComponentID() != a.getCompID()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 11));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 11));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 11));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 11));
 			}
 		}
 		// Comp Stack Size
 		if (a.getComponent().getComponentStackSize() != a.getCompSize()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 12));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 12));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 12));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 12));
 			}
 		}
 		// Relative Pos
 		if (a.getComponent().getRelativeX() != a.getRelativeX()
 				&& a.getComponent().getRelativeY() != a.getRelativeY()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 13));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 13));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 13));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 13));
 			}
 		}
 		// Absolute Pos
 		if (a.getComponent().getAbsoluteX() != a.getAbsoluteX()
 				&& a.getComponent().getAbsoluteY() != a.getAbsoluteY()) {
 			if (a.getComponent().getParent() == null) {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getInterface(), a.getComponent(), null, 14));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 14));
 			} else {
-				HighLightWraps.add(new HighLightInterface(a.getComponent()
-						.getParent().getInterface(), a.getComponent()
-						.getParent(), a.getComponent(), 14));
+				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 14));
 			}
 		}
 	}
@@ -640,8 +585,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 	public void onRepaint(final Graphics g) {
 		if (highlightArea != null) {
 			g.setColor(Color.ORANGE);
-			g.drawRect(highlightArea.x, highlightArea.y, highlightArea.width,
-					highlightArea.height);
+			g.drawRect(highlightArea.x, highlightArea.y, highlightArea.width, highlightArea.height);
 		}
 	}
 
@@ -656,8 +600,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		tree.setEditable(false);
 		renderer = new HighlightTreeCellRenderer(tree.getCellRenderer());
 		tree.setCellRenderer(renderer);
-		tree.getSelectionModel().setSelectionMode(
-				TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			private void addInfo(final String key, final String value,
 					final boolean highlight) {
@@ -698,27 +641,21 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				change = -1;
 				for (int i = 0; i < HighLightWraps.size(); i++) {
 					if (iface.getParent() == null) {
-						if (HighLightWraps.get(i).getChild().getIndex() == iface
-								.getIndex()
-								&& HighLightWraps.get(i).getParent().getIndex() == iface
-										.getInterface().getIndex()) {
+						if (HighLightWraps.get(i).getChild().getIndex() == iface.getIndex()
+								&& HighLightWraps.get(i).getParent().getIndex() == iface.getInterface().getIndex()) {
 							change = HighLightWraps.get(i).getChange();
 						}
 					} else {
-						if (HighLightWraps.get(i).getChild().getIndex() == iface
-								.getParent().getIndex()
-								&& HighLightWraps.get(i).getParent().getIndex() == iface
-										.getParent().getInterface().getIndex()) {
+						if (HighLightWraps.get(i).getChild().getIndex() == iface.getParent().getIndex()
+								&& HighLightWraps.get(i).getParent().getIndex() == iface.getParent().getInterface().getIndex()) {
 							change = HighLightWraps.get(i).getChange();
 						}
 					}
 				}
 				if (change == 0) {
-					addInfo("Action type: ", "-1" /* + iface.getActionType() */,
-							true);
+					addInfo("Action type: ", "-1" /* + iface.getActionType() */, true);
 				} else {
-					addInfo("Action type: ", "-1" /* + iface.getActionType() */,
-							false);
+					addInfo("Action type: ", "-1" /* + iface.getActionType() */, false);
 				}
 				if (change == 1) {
 					addInfo("Type: ", "" + iface.getType(), true);
@@ -731,11 +668,9 @@ public class InterfaceExplorer extends Script implements PaintListener {
 					addInfo("SpecialType: ", "" + iface.getSpecialType(), false);
 				}
 				if (change == 3) {
-					addInfo("Bounds Index: ", "" + iface.getBoundsArrayIndex(),
-							true);
+					addInfo("Bounds Index: ", "" + iface.getBoundsArrayIndex(), true);
 				} else {
-					addInfo("Bounds Index: ", "" + iface.getBoundsArrayIndex(),
-							false);
+					addInfo("Bounds Index: ", "" + iface.getBoundsArrayIndex(), false);
 				}
 				if (change == 4) {
 					addInfo("Model ID: ", "" + iface.getModelID(), true);
@@ -743,11 +678,9 @@ public class InterfaceExplorer extends Script implements PaintListener {
 					addInfo("Model ID: ", "" + iface.getModelID(), false);
 				}
 				if (change == 5) {
-					addInfo("Texture ID: ", "" + iface.getBackgroundColor(),
-							true);
+					addInfo("Texture ID: ", "" + iface.getBackgroundColor(), true);
 				} else {
-					addInfo("Texture ID: ", "" + iface.getBackgroundColor(),
-							false);
+					addInfo("Texture ID: ", "" + iface.getBackgroundColor(), false);
 				}
 				if (change == 6) {
 					addInfo("Parent ID: ", "" + iface.getParentID(), true);
@@ -765,11 +698,11 @@ public class InterfaceExplorer extends Script implements PaintListener {
 					addInfo("Tooltip: ", "" + iface.getTooltip(), false);
 				}
 				if (change == 9) {
-					addInfo("SelActionName: ",
-							"" + iface.getSelectedActionName(), true);
+					addInfo("SelActionName: ", ""
+							+ iface.getSelectedActionName(), true);
 				} else {
-					addInfo("SelActionName: ",
-							"" + iface.getSelectedActionName(), false);
+					addInfo("SelActionName: ", ""
+							+ iface.getSelectedActionName(), false);
 				}
 				if (iface.getActions() != null) {
 					String actions = "";
@@ -789,15 +722,14 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				if (change == 11) {
 					addInfo("Component ID: ", "" + iface.getComponentID(), true);
 				} else {
-					addInfo("Component ID: ", "" + iface.getComponentID(),
-							false);
+					addInfo("Component ID: ", "" + iface.getComponentID(), false);
 				}
 				if (change == 12) {
-					addInfo("Component Stack Size: ",
-							"" + iface.getComponentStackSize(), true);
+					addInfo("Component Stack Size: ", ""
+							+ iface.getComponentStackSize(), true);
 				} else {
-					addInfo("Component Stack Size: ",
-							"" + iface.getComponentStackSize(), false);
+					addInfo("Component Stack Size: ", ""
+							+ iface.getComponentStackSize(), false);
 				}
 				if (change == 13) {
 					addInfo("Relative Location: ", "(" + iface.getRelativeX()
@@ -834,26 +766,13 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		jTextArea1.setFont(new java.awt.Font("MS UI Gothic", 0, 12)); // NOI18N
 		jTextArea1.setLineWrap(true);
 		jTextArea1.setRows(5);
-		jTextArea1
-				.setText("Once toggled the listener feature of the interface explorer will detect any changes made to Runescapes interfaces in realtime. If a change is found that interface and data will then be highlighted within the explorers tree model. To use the listener feature you would :\n\n1) Toggle the listener button as active\n2) Wait or commit changes in Runescape\n3) Repaint tree using repaint button or reclick interface folders in GUI\n\n\nTips : While listening for changes the tree model in the GUI will not update itself, changing colors. To refresh the GUI either use the repaint button or close and open Interface folder already within the tree model.");
+		jTextArea1.setText("Once toggled the listener feature of the interface explorer will detect any changes made to Runescapes interfaces in realtime. If a change is found that interface and data will then be highlighted within the explorers tree model. To use the listener feature you would :\n\n1) Toggle the listener button as active\n2) Wait or commit changes in Runescape\n3) Repaint tree using repaint button or reclick interface folders in GUI\n\n\nTips : While listening for changes the tree model in the GUI will not update itself, changing colors. To refresh the GUI either use the repaint button or close and open Interface folder already within the tree model.");
 		jTextArea1.setWrapStyleWord(true);
 		jScrollPane1.setViewportView(jTextArea1);
 		final GroupLayout layout = new GroupLayout(Help.getContentPane());
 		Help.getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE,
-								348, Short.MAX_VALUE).addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(
-				GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE,
-								220, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)));
+		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE).addContainerGap()));
+		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		Help.pack();
 
 		JScrollPane scrollPane = new JScrollPane(tree);

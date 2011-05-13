@@ -112,16 +112,11 @@ public class PowerMiner extends Script implements PaintListener {
 		g.setColor(PowerMiner.COLOR_3);
 		g.drawString("Iron PowerMiner", 393, 22);
 		g.setFont(PowerMiner.FONT_2);
-		g.drawString("Time Run: " + hours + " : " + minutes + " : " + seconds,
-				370, 40);
+		g.drawString("Time Run: " + hours + " : " + minutes + " : " + seconds, 370, 40);
 		g.drawString("EXP Gained: " + expGained, 370, 55);
 		g.drawString("EXP/Hr: " + expHour, 370, 70);
-		g.drawString(
-				"Levels Gained: ("
-						+ startLevel
-						+ ") Gained: "
-						+ (skills.getRealLevel(PowerMiner.TRAINING_SKILL) - startLevel),
-				370, 85);
+		g.drawString("Levels Gained: (" + startLevel + ") Gained: "
+				+ (skills.getRealLevel(PowerMiner.TRAINING_SKILL) - startLevel), 370, 85);
 	}
 
 	@Override

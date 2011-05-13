@@ -14,7 +14,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -144,12 +148,7 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 			jLabel1.setForeground(new java.awt.Color(204, 204, 0));
 			jLabel1.setText("iPhQ's Alcher - Settings");
 			jPanel2.setBackground(new java.awt.Color(0, 102, 102));
-			jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-					null, "Items in your Inventory",
-					javax.swing.border.TitledBorder.CENTER,
-					javax.swing.border.TitledBorder.DEFAULT_POSITION,
-					new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255,
-							255, 0))); // NOI18N
+			jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Items in your Inventory", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 255, 0))); // NOI18N
 
 			jLabel2.setForeground(new java.awt.Color(255, 255, 0));
 			jLabel2.setText("<html><body>Select item(s) to alch from the <br/> list below (you must be logged in for this to work) :</body></body>");
@@ -164,82 +163,17 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 				}
 			});
 
-			final javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(
-					jPanel2);
+			final javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
 			jPanel2.setLayout(jPanel2Layout);
-			jPanel2Layout
-					.setHorizontalGroup(jPanel2Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel2Layout
-											.createSequentialGroup()
-											.addGroup(
-													jPanel2Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	jPanel2Layout
-																			.createSequentialGroup()
-																			.addComponent(
-																					jLabel2,
-																					javax.swing.GroupLayout.PREFERRED_SIZE,
-																					javax.swing.GroupLayout.DEFAULT_SIZE,
-																					javax.swing.GroupLayout.PREFERRED_SIZE)
-																			.addGap(16,
-																					16,
-																					16))
-															.addComponent(
-																	jScrollPane1,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	259,
-																	Short.MAX_VALUE)
-															.addComponent(
-																	jButton1,
-																	javax.swing.GroupLayout.Alignment.TRAILING,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	259,
-																	Short.MAX_VALUE))
-											.addContainerGap()));
-			jPanel2Layout
-					.setVerticalGroup(jPanel2Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel2Layout
-											.createSequentialGroup()
-											.addComponent(
-													jLabel2,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													javax.swing.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(
-													jScrollPane1,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													javax.swing.GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(
-													jButton1,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)
-											.addContainerGap()));
+			jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(16, 16, 16)).addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE).addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)).addContainerGap()));
+			jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addContainerGap()));
 
 			jPanel3.setBackground(new java.awt.Color(0, 102, 102));
 
 			jPanel5.setBackground(new java.awt.Color(0, 102, 102));
 
 			jPanel4.setBackground(new java.awt.Color(0, 102, 102));
-			jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(
-					null, "Anti-ban Settings",
-					javax.swing.border.TitledBorder.CENTER,
-					javax.swing.border.TitledBorder.DEFAULT_POSITION,
-					new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255,
-							255, 0))); // NOI18N
+			jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Anti-ban Settings", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 255, 0))); // NOI18N
 
 			jRadioButton1.setBackground(new java.awt.Color(0, 102, 102));
 			afkButtonGroup.add(jRadioButton1);
@@ -265,168 +199,24 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 
 			jTextField2.setText("25000");
 
-			final javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(
-					jPanel4);
+			final javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
 			jPanel4.setLayout(jPanel4Layout);
-			jPanel4Layout
-					.setHorizontalGroup(jPanel4Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel4Layout
-											.createSequentialGroup()
-											.addGroup(
-													jPanel4Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	jPanel4Layout
-																			.createSequentialGroup()
-																			.addGap(56,
-																					56,
-																					56)
-																			.addComponent(
-																					jLabel3))
-															.addGroup(
-																	jPanel4Layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addGroup(
-																					jPanel4Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.LEADING)
-																							.addGroup(
-																									jPanel4Layout
-																											.createSequentialGroup()
-																											.addComponent(
-																													jRadioButton1)
-																											.addPreferredGap(
-																													javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-																													223,
-																													Short.MAX_VALUE)
-																											.addComponent(
-																													jRadioButton2))
-																							.addGroup(
-																									jPanel4Layout
-																											.createSequentialGroup()
-																											.addComponent(
-																													jLabel4)
-																											.addPreferredGap(
-																													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																											.addComponent(
-																													jTextField1,
-																													javax.swing.GroupLayout.PREFERRED_SIZE,
-																													136,
-																													javax.swing.GroupLayout.PREFERRED_SIZE)
-																											.addPreferredGap(
-																													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																											.addComponent(
-																													jLabel5)
-																											.addPreferredGap(
-																													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																											.addComponent(
-																													jTextField2,
-																													javax.swing.GroupLayout.DEFAULT_SIZE,
-																													149,
-																													Short.MAX_VALUE)))))
-											.addContainerGap()));
-			jPanel4Layout
-					.setVerticalGroup(jPanel4Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel4Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addGroup(
-													jPanel4Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jRadioButton1)
-															.addComponent(
-																	jRadioButton2,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	23,
-																	javax.swing.GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jLabel3)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel4Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jTextField2,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE)
-															.addComponent(
-																	jTextField1,
-																	javax.swing.GroupLayout.PREFERRED_SIZE,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	javax.swing.GroupLayout.PREFERRED_SIZE)
-															.addComponent(
-																	jLabel4)
-															.addComponent(
-																	jLabel5))));
+			jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel4Layout.createSequentialGroup().addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel4Layout.createSequentialGroup().addGap(56, 56, 56).addComponent(jLabel3)).addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel4Layout.createSequentialGroup().addComponent(jRadioButton1).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 223, Short.MAX_VALUE).addComponent(jRadioButton2)).addGroup(jPanel4Layout.createSequentialGroup().addComponent(jLabel4).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel5).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))))).addContainerGap()));
+			jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jRadioButton1).addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel3).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(jLabel4).addComponent(jLabel5))));
 
-			final javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(
-					jPanel5);
+			final javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
 			jPanel5.setLayout(jPanel5Layout);
-			jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(
-					javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-					jPanel5Layout
-							.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(jPanel4,
-									javax.swing.GroupLayout.DEFAULT_SIZE,
-									javax.swing.GroupLayout.DEFAULT_SIZE,
-									Short.MAX_VALUE).addContainerGap()));
-			jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(
-					javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-					javax.swing.GroupLayout.Alignment.TRAILING,
-					jPanel5Layout
-							.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(jPanel4,
-									javax.swing.GroupLayout.DEFAULT_SIZE, 122,
-									Short.MAX_VALUE).addContainerGap()));
+			jPanel5Layout.setHorizontalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel5Layout.createSequentialGroup().addContainerGap().addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addContainerGap()));
+			jPanel5Layout.setVerticalGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup().addContainerGap().addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE).addContainerGap()));
 
 			jTabbedPane2.addTab("AFK", jPanel5);
 
-			final javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(
-					jPanel3);
+			final javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
 			jPanel3.setLayout(jPanel3Layout);
-			jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(
-					javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-					jPanel3Layout
-							.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(jTabbedPane2,
-									javax.swing.GroupLayout.DEFAULT_SIZE, 404,
-									Short.MAX_VALUE).addContainerGap()));
-			jPanel3Layout
-					.setVerticalGroup(jPanel3Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel3Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addComponent(
-													jTabbedPane2,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													172,
-													javax.swing.GroupLayout.PREFERRED_SIZE)
-											.addContainerGap(
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)));
+			jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE).addContainerGap()));
+			jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel3Layout.createSequentialGroup().addContainerGap().addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-			jTabbedPane2.getAccessibleContext().setAccessibleName(
-					"AFK Settings");
+			jTabbedPane2.getAccessibleContext().setAccessibleName("AFK Settings");
 
 			jTabbedPane1.addTab("Anti-ban", jPanel3);
 
@@ -438,96 +228,15 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 				}
 			});
 
-			final javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(
-					jPanel1);
+			final javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 			jPanel1.setLayout(jPanel1Layout);
-			jPanel1Layout
-					.setHorizontalGroup(jPanel1Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel1Layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING)
-															.addComponent(
-																	jLabel1,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	718,
-																	Short.MAX_VALUE)
-															.addGroup(
-																	jPanel1Layout
-																			.createSequentialGroup()
-																			.addGroup(
-																					jPanel1Layout
-																							.createParallelGroup(
-																									javax.swing.GroupLayout.Alignment.TRAILING)
-																							.addComponent(
-																									jButton2,
-																									javax.swing.GroupLayout.DEFAULT_SIZE,
-																									271,
-																									Short.MAX_VALUE)
-																							.addComponent(
-																									jPanel2,
-																									javax.swing.GroupLayout.PREFERRED_SIZE,
-																									271,
-																									javax.swing.GroupLayout.PREFERRED_SIZE))
-																			.addGap(18,
-																					18,
-																					18)
-																			.addComponent(
-																					jTabbedPane1,
-																					javax.swing.GroupLayout.DEFAULT_SIZE,
-																					429,
-																					Short.MAX_VALUE)))
-											.addContainerGap()));
-			jPanel1Layout
-					.setVerticalGroup(jPanel1Layout
-							.createParallelGroup(
-									javax.swing.GroupLayout.Alignment.LEADING)
-							.addGroup(
-									jPanel1Layout
-											.createSequentialGroup()
-											.addComponent(jLabel1)
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addGroup(
-													jPanel1Layout
-															.createParallelGroup(
-																	javax.swing.GroupLayout.Alignment.LEADING,
-																	false)
-															.addComponent(
-																	jTabbedPane1,
-																	0,
-																	0,
-																	Short.MAX_VALUE)
-															.addComponent(
-																	jPanel2,
-																	javax.swing.GroupLayout.DEFAULT_SIZE,
-																	219,
-																	Short.MAX_VALUE))
-											.addPreferredGap(
-													javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jButton2)
-											.addContainerGap(
-													javax.swing.GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)));
+			jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addContainerGap().addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE).addGroup(jPanel1Layout.createSequentialGroup().addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE).addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(18, 18, 18).addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE))).addContainerGap()));
+			jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jPanel1Layout.createSequentialGroup().addComponent(jLabel1).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(jTabbedPane1, 0, 0, Short.MAX_VALUE).addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButton2).addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					this);
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
 			setLayout(layout);
-			layout.setHorizontalGroup(layout.createParallelGroup(
-					javax.swing.GroupLayout.Alignment.LEADING).addComponent(
-					jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-					javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-			layout.setVerticalGroup(layout.createParallelGroup(
-					javax.swing.GroupLayout.Alignment.LEADING).addComponent(
-					jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-					javax.swing.GroupLayout.DEFAULT_SIZE,
-					javax.swing.GroupLayout.PREFERRED_SIZE));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE));
 
 			pack();
 		}// </editor-fold>
@@ -560,15 +269,11 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 		private void jButton2ActionPerformed(
 				final java.awt.event.ActionEvent evt) {
 			try {
-				if (jList1.getSelectedValue().toString()
-						.contains("No item in ")) {
-					JOptionPane.showMessageDialog(null,
-							"Please select an item.", "Error",
-							JOptionPane.ERROR_MESSAGE);
+				if (jList1.getSelectedValue().toString().contains("No item in ")) {
+					JOptionPane.showMessageDialog(null, "Please select an item.", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					jList1.getSelectedIndex();
-					final int ID = inventory.getItemAt(
-							jList1.getSelectedIndex()).getID();
+					final int ID = inventory.getItemAt(jList1.getSelectedIndex()).getID();
 					boolean afkon = false;
 					if (jRadioButton1.isSelected()) {
 						afkon = true;
@@ -580,14 +285,13 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 					final int afkMax = StringintTo(jTextField2.getText());
 
 					final Object[] options = { "High", "Low" };
-					final int n = JOptionPane.showOptionDialog(null,
-							"High or Low alch?",
-							"iPhQ's Alcher | What kind of alching?",
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE, null, // do not use a
-																// custom Icon
-							options, // the titles of buttons
-							options[0]); // default button title
+					final int n = JOptionPane.showOptionDialog(null, "High or Low alch?", "iPhQ's Alcher | What kind of alching?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do
+																																																	// not
+																																																	// use
+																																																	// a
+					// custom Icon
+					options, // the titles of buttons
+					options[0]); // default button title
 
 					boolean high = true;
 
@@ -602,8 +306,7 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 				}
 
 			} catch (final Exception e) {
-				JOptionPane.showMessageDialog(null, "Please select an item.",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Please select an item.", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -638,9 +341,7 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 
 	boolean showPaint = true;
 
-	private final RenderingHints antialiasing = new RenderingHints(
-			RenderingHints.KEY_TEXT_ANTIALIASING,
-			RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+	private final RenderingHints antialiasing = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 	private final Color color1 = new Color(0, 102, 102);
 
@@ -664,7 +365,9 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 	private int fade = 0; // 0 - fade in, 1 - fade out, 2 - stay still
 
 	private boolean showing = true;
-    private String link = "http://www.powerbot.org/vb/showthread.php?t=607582";
+	private final String link = "http://www.powerbot.org/vb/showthread.php?t=607582";
+
+	private NewFrame gui;
 
 	public void afk(final int chance, final int length) {
 		if (chance == 1) {
@@ -721,6 +424,29 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 				log("Should be unequiped !");
 			} else {
 			}
+		}
+	}
+
+	private void createAndWaitforGUI() {
+		if (SwingUtilities.isEventDispatchThread()) {
+			gui = new NewFrame();
+			gui.setVisible(true);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						gui = new NewFrame();
+						gui.setVisible(true);
+					}
+				});
+			} catch (final InvocationTargetException ite) {
+			} catch (final InterruptedException ie) {
+			}
+		}
+		sleep(100);
+		while (gui.isVisible()) {
+			sleep(100);
 		}
 	}
 
@@ -805,8 +531,7 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 				Methods.sleep(Methods.random(1200, 1500));
 				antiban();
 				if (AFKon) {
-					afk(Methods.random(0, 1000),
-							Methods.random(minAfkTime, maxAfkTime));
+					afk(Methods.random(0, 1000), Methods.random(minAfkTime, maxAfkTime));
 				}
 				break;
 
@@ -814,8 +539,7 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 				if (guiOpen == false) {
 					createAndWaitforGUI();
 					gui.getjList1Model().removeAllElements();
-					gui.getjList1().setSelectionMode(
-							ListSelectionModel.SINGLE_SELECTION);
+					gui.getjList1().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					for (int i = 0; i < inventory.getItems().length; i++) {
 						final RSItem[] itemI = inventory.getItems();
 						final int itemid = itemI[i].getID();
@@ -891,10 +615,8 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 		final Graphics2D g = (Graphics2D) g1;
 		g.setRenderingHints(antialiasing);
 
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-				alpha));
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		if (fade == 0) {
 			alpha += 0.05f;
@@ -993,37 +715,32 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 		g.drawString("XP Gained: " + gainedExp, 12, 75);
 		g.drawString("XP/H: " + xphour, 12, 90);
 		g.drawString("XPTL: " + expToLevel, 12, 105);
-		g.drawString("TTL: " + +hourToLvl + ":" + minToLvl + ":" + secToLvl,
-				12, 120);
+		g.drawString("TTL: " + +hourToLvl + ":" + minToLvl + ":" + secToLvl, 12, 120);
 		g.drawString("Levels Gained: " + lvlsGained, 12, 135);
 		if (high) {
 			g.drawString("Alchs To Next Lvl: " + expToLevel / alchXP, 192, 30);
 		} else {
-			g.drawString("Alchs To Next Lvl: " + expToLevel / lowAlchXP, 192,
-					30);
+			g.drawString("Alchs To Next Lvl: " + expToLevel / lowAlchXP, 192, 30);
 		}
 		g.drawString("Alches Per Hour: " + alchhour, 192, 45);
 	}
 
 	@Override
 	public void onFinish() {
-        final Object[] options = { "Visit the thread", "Stop the script" };
-					final int n = JOptionPane.showOptionDialog(null,
-							"Thank you for using iPhQ's Alcher.\n Did you find any errors or you want to give me some feedback\n on the script please visit my thread on PowerBot's forums.",
-							"iPhQ's Alcher | Thank you!",
-							JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE, null, // do not use a
-																// custom Icon
-							options, // the titles of buttons
-							options[0]); // default button title
+		final Object[] options = { "Visit the thread", "Stop the script" };
+		final int n = JOptionPane.showOptionDialog(null, "Thank you for using iPhQ's Alcher.\n Did you find any errors or you want to give me some feedback\n on the script please visit my thread on PowerBot's forums.", "iPhQ's Alcher | Thank you!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, // do
+																																																																														// not
+																																																																														// use
+																																																																														// a
+		// custom Icon
+		options, // the titles of buttons
+		options[0]); // default button title
 
-					boolean high = true;
+		if (n == 0) {
+			BotGUI.openURL(link);
+		} else {
 
-					if (n == 0) {
-                           BotGUI.openURL(link);
-					} else {
-
-					}
+		}
 		env.takeScreenshot(false);
 
 	}
@@ -1073,34 +790,9 @@ public class Alcher extends Script implements PaintListener, MouseListener,
 			final int number2 = Integer.parseInt(text);
 			return number2;
 		} catch (final Exception e) {
-			JOptionPane.showMessageDialog(null, "Invalid number.", "Error",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Invalid number.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		return 0;
 	}
-
-    private NewFrame gui;
-
-    private void createAndWaitforGUI() {
-        if (SwingUtilities.isEventDispatchThread()) {
-            gui = new NewFrame();
-            gui.setVisible(true);
-        } else {
-            try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        gui = new NewFrame();
-                        gui.setVisible(true);
-                    }
-                });
-            } catch (InvocationTargetException ite) {
-            } catch (InterruptedException ie) {
-            }
-        }
-        sleep(100);
-        while (gui.isVisible()) {
-            sleep(100);
-        }
-    }
 
 }

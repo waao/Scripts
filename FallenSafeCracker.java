@@ -259,10 +259,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 				@Override
 				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					if (loadOptions(OPTION_FILE)) {
-						JOptionPane.showMessageDialog(null,
-								"Options successfully loaded!",
-								"Option Loader",
-								JOptionPane.INFORMATION_MESSAGE, null);
+						JOptionPane.showMessageDialog(null, "Options successfully loaded!", "Option Loader", JOptionPane.INFORMATION_MESSAGE, null);
 					}
 				}
 			});
@@ -273,9 +270,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 				@Override
 				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					if (saveOptions(OPTION_FILE)) {
-						JOptionPane.showMessageDialog(null,
-								"Options successfully saved!", "Option Saver",
-								JOptionPane.INFORMATION_MESSAGE, null);
+						JOptionPane.showMessageDialog(null, "Options successfully saved!", "Option Saver", JOptionPane.INFORMATION_MESSAGE, null);
 					}
 				}
 			});
@@ -400,10 +395,9 @@ public class FallenSafeCracker extends Script implements PaintListener,
 
 			// INFO
 			TextPanel = new JTextPane();
-			TextPanel
-					.setText("Fallen's SafeCracker v4.3\n\n Start the script at Rogue Den's. Have food visible in your bank.\n\n "
-							+ "Advanced location switching will wait 1-3 minutes to check if the "
-							+ "player beneath us moves until switching location.");
+			TextPanel.setText("Fallen's SafeCracker v4.3\n\n Start the script at Rogue Den's. Have food visible in your bank.\n\n "
+					+ "Advanced location switching will wait 1-3 minutes to check if the "
+					+ "player beneath us moves until switching location.");
 			TextPanel.setEditable(false);
 			TextPanel.setFont(new Font("Verdana", Font.PLAIN, 12));
 			TextPanel.setBorder(new LineBorder(Color.black));
@@ -441,9 +435,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 
 		private boolean loadOptions(final Properties file) {
 			try {
-				file.load(new FileInputStream(new File(
-						GlobalConfiguration.Paths.getSettingsDirectory(),
-						"FallenSafeCracker.ini")));
+				file.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSafeCracker.ini")));
 			} catch (final FileNotFoundException e) {
 				return false;
 			} catch (final IOException e) {
@@ -625,11 +617,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			file.setProperty("Level", LevelLimit);
 			// Saving the file.
 			try {
-				file.store(
-						new FileWriter(new File(GlobalConfiguration.Paths
-								.getSettingsDirectory(),
-								"FallenSafeCracker.ini")),
-						"The options of FallenSafeCracker");
+				file.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSafeCracker.ini")), "The options of FallenSafeCracker");
 				return true;
 			} catch (final IOException e) {
 				return false;
@@ -677,10 +665,8 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			if (GUIString.equals("Rocktail")) {
 				FoodID = 15272;
 			}
-			FallenSafeCracker.FoodWDAmount = Integer
-					.parseInt((String) GUIString2);
-			FallenSafeCracker.EatingPoint = Integer
-					.parseInt((String) GUIString3);
+			FallenSafeCracker.FoodWDAmount = Integer.parseInt((String) GUIString2);
+			FallenSafeCracker.EatingPoint = Integer.parseInt((String) GUIString3);
 			if (Box7.isSelected()) {
 				change = true;
 				if (Box1.isSelected()) {
@@ -702,15 +688,12 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			}
 			if (Box4.isSelected()) {
 				timeLimit = true;
-				FallenSafeCracker.limitedHours = Integer
-						.parseInt((String) GUIString4);
-				FallenSafeCracker.limitedMinutes = Integer
-						.parseInt((String) GUIString5);
+				FallenSafeCracker.limitedHours = Integer.parseInt((String) GUIString4);
+				FallenSafeCracker.limitedMinutes = Integer.parseInt((String) GUIString5);
 			}
 			if (Box5.isSelected()) {
 				levelLimit = true;
-				FallenSafeCracker.limitedLevel = Integer
-						.parseInt((String) GUIString6);
+				FallenSafeCracker.limitedLevel = Integer.parseInt((String) GUIString6);
 			}
 			if (Box6.isSelected() && Box6.isEnabled()) {
 				clickFirst = true;
@@ -896,8 +879,9 @@ public class FallenSafeCracker extends Script implements PaintListener,
 	private boolean change = true, advSwitch = true, clickFirst = false,
 			up = false;
 
-	public Spot NW = new Spot(new RSTile(3055, 4970)), NE = new Spot(
-			new RSTile(3057, 4970)), SW = new Spot(new RSTile(3055, 4977)),
+	public Spot NW = new Spot(new RSTile(3055, 4970)),
+			NE = new Spot(new RSTile(3057, 4970)),
+			SW = new Spot(new RSTile(3055, 4977)),
 			SE = new Spot(new RSTile(3057, 4977));
 
 	public ArrayList<Spot> spots = new ArrayList<Spot>();
@@ -1109,8 +1093,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 	private boolean directWalk(final RSTile destination) {
 		final int distance = Methods.random(3, 5);
 		final int destX = destination.getX(), destY = destination.getY();
-		final int startX = getMyPlayer().getLocation().getX(), startY = getMyPlayer()
-				.getLocation().getY();
+		final int startX = getMyPlayer().getLocation().getX(), startY = getMyPlayer().getLocation().getY();
 		final int distX = destX - startX, distY = destY - startY;
 		final double distToGoal = Math.sqrt(Math.pow(destX - startX, 2)
 				+ Math.pow(distY, 2));
@@ -1239,12 +1222,9 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			final Color color, final boolean drawCardinalDirections,
 			final String s) {
 		final Point southwest = calc.tileToScreen(tile, 0, 0, 0);
-		final Point southeast = calc.tileToScreen(new RSTile(tile.getX() + 1,
-				tile.getY()), 0, 0, 0);
-		final Point northwest = calc.tileToScreen(
-				new RSTile(tile.getX(), tile.getY() + 1), 0, 0, 0);
-		final Point northeast = calc.tileToScreen(new RSTile(tile.getX() + 1,
-				tile.getY() + 1), 0, 0, 0);
+		final Point southeast = calc.tileToScreen(new RSTile(tile.getX() + 1, tile.getY()), 0, 0, 0);
+		final Point northwest = calc.tileToScreen(new RSTile(tile.getX(), tile.getY() + 1), 0, 0, 0);
+		final Point northeast = calc.tileToScreen(new RSTile(tile.getX() + 1, tile.getY() + 1), 0, 0, 0);
 
 		if (calc.pointOnScreen(southwest) && calc.pointOnScreen(southeast)
 				&& calc.pointOnScreen(northwest)
@@ -1252,15 +1232,15 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			render.setColor(Color.BLACK);
 			render.drawPolygon(new int[] { (int) northwest.getX(),
 					(int) northeast.getX(), (int) southeast.getX(),
-					(int) southwest.getX() },
-					new int[] { (int) northwest.getY(), (int) northeast.getY(),
-							(int) southeast.getY(), (int) southwest.getY() }, 4);
+					(int) southwest.getX() }, new int[] {
+					(int) northwest.getY(), (int) northeast.getY(),
+					(int) southeast.getY(), (int) southwest.getY() }, 4);
 			render.setColor(color);
 			render.fillPolygon(new int[] { (int) northwest.getX(),
 					(int) northeast.getX(), (int) southeast.getX(),
-					(int) southwest.getX() },
-					new int[] { (int) northwest.getY(), (int) northeast.getY(),
-							(int) southeast.getY(), (int) southwest.getY() }, 4);
+					(int) southwest.getX() }, new int[] {
+					(int) northwest.getY(), (int) northeast.getY(),
+					(int) southeast.getY(), (int) southwest.getY() }, 4);
 
 			if (drawCardinalDirections) {
 				render.setColor(Color.WHITE);
@@ -1271,8 +1251,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 
 	private boolean eat() {
 		if (inventory.containsOneOf(FoodIDS)
-				&& Integer.parseInt(interfaces.get(748).getComponent(8)
-						.getText()) <= FallenSafeCracker.EatingPoint) {
+				&& Integer.parseInt(interfaces.get(748).getComponent(8).getText()) <= FallenSafeCracker.EatingPoint) {
 			final RSItem eatMe = inventory.getItem(FoodIDS);
 			if (eatMe != null) {
 				if (eatMe.doAction("eat")) {
@@ -1281,8 +1260,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 				}
 			}
 			if (inventory.containsOneOf(FoodIDS)
-					&& Integer.parseInt(interfaces.get(748).getComponent(8)
-							.getText()) <= FallenSafeCracker.EatingPoint
+					&& Integer.parseInt(interfaces.get(748).getComponent(8).getText()) <= FallenSafeCracker.EatingPoint
 							+ skills.getRealLevel(Skills.CONSTITUTION)) {
 				final RSItem eatMe2 = inventory.getItem(FoodIDS);
 				if (eatMe2 != null) {
@@ -1310,8 +1288,8 @@ public class FallenSafeCracker extends Script implements PaintListener,
 					if (i > 0 && i < h - 1) {
 						j = h - 1;
 					}
-					final RSTile tile = new RSTile(start.getX() - offset + i,
-							start.getY() - offset + j);
+					final RSTile tile = new RSTile(start.getX() - offset + i, start.getY()
+							- offset + j);
 					final RSObject objectToList = objects.getTopAt(tile);
 					if (objectToList != null
 							&& calc.tileOnScreen(objectToList.getLocation())) {
@@ -1324,8 +1302,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			return null;
 		}
 		if (possibleTiles.size() > 0 && possibleTiles != null) {
-			final RSTile objectLoc = possibleTiles.get(randGenerator(0,
-					possibleTiles.size()));
+			final RSTile objectLoc = possibleTiles.get(randGenerator(0, possibleTiles.size()));
 			final Point objectPoint = calc.tileToScreen(objectLoc);
 			if (objectPoint != null) {
 				try {
@@ -1368,11 +1345,9 @@ public class FallenSafeCracker extends Script implements PaintListener,
 	 */
 	private int getGuidePrice(final int itemID) {
 		try {
-			final URL url = new URL(
-					"http://services.runescape.com/m=itemdb_rs/viewitem.ws?obj="
-							+ itemID);
-			final BufferedReader br = new BufferedReader(new InputStreamReader(
-					url.openStream()));
+			final URL url = new URL("http://services.runescape.com/m=itemdb_rs/viewitem.ws?obj="
+					+ itemID);
+			final BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 			String line = null;
 
 			while ((line = br.readLine()) != null) {
@@ -1580,9 +1555,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			}
 			if (inventory.isFull()) {
 				if (inventory.containsOneOf(FoodIDS)) {
-					if (Integer.parseInt(interfaces.get(748).getComponent(8)
-							.getText()) <= skills
-							.getRealLevel(Skills.CONSTITUTION) * 10 - 100) {
+					if (Integer.parseInt(interfaces.get(748).getComponent(8).getText()) <= skills.getRealLevel(Skills.CONSTITUTION) * 10 - 100) {
 						inventory.getItem(FoodIDS).doAction("eat");
 						waitForAnim(1000);
 						Methods.sleep(Methods.random(200, 400));
@@ -1642,8 +1615,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			if (UseStethoscope && !inventory.contains(Stethoscope)) {
 				if (WD(Stethoscope, 1)) {
 					CameraAntiBan();
-					waitForWithdrawnItem(Stethoscope,
-							Methods.random(2000, 3000));
+					waitForWithdrawnItem(Stethoscope, Methods.random(2000, 3000));
 				}
 				break;
 			}
@@ -1847,10 +1819,8 @@ public class FallenSafeCracker extends Script implements PaintListener,
 		seconds = millis / 1000;
 		final Point loc = mouse.getLocation();
 		g.setColor(new Color(170, 10, 170, 180));
-		g.fillRoundRect((int) loc.getX() - 10, (int) loc.getY() - 1, 21, 3, 3,
-				3);
-		g.fillRoundRect((int) loc.getX() - 1, (int) loc.getY() - 10, 3, 21, 3,
-				3);
+		g.fillRoundRect((int) loc.getX() - 10, (int) loc.getY() - 1, 21, 3, 3, 3);
+		g.fillRoundRect((int) loc.getX() - 1, (int) loc.getY() - 10, 3, 21, 3, 3);
 		if (waitingForMovement) {
 			long secondsR = switchTimer.getRemaining() / 1000;
 			final long hoursR = secondsR / (60 * 60);
@@ -1923,8 +1893,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			g.setFont(new Font("Verdana", 0, 15));
 			g.setColor(Color.WHITE);
 			if (setTime == true) {
-				g.drawString(" " + hours + ":" + minutes + ":" + seconds + ".",
-						47, 315);
+				g.drawString(" " + hours + ":" + minutes + ":" + seconds + ".", 47, 315);
 			} else {
 				g.drawString("Loading...", 47, 315);
 			}
@@ -1989,8 +1958,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 				g.setFont(new Font("Verdana", 0, 9));
 				g.setColor(Color.RED);
 				g.drawString("Stopping at level "
-						+ FallenSafeCracker.limitedLevel + " Thieving.", 363,
-						14);
+						+ FallenSafeCracker.limitedLevel + " Thieving.", 363, 14);
 			}
 			// Profit
 			g.drawString("Total profit: " + GainedProfit, 19, 234);
@@ -2100,8 +2068,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 	@Override
 	public boolean onStart() {
 		try {
-			title = ImageIO.read(new URL(
-					"http://a.imageshack.us/img641/4190/paintv20.png"));
+			title = ImageIO.read(new URL("http://a.imageshack.us/img641/4190/paintv20.png"));
 		} catch (final java.io.IOException e) {
 			e.printStackTrace();
 		}
@@ -2296,8 +2263,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 		}
 		final long Start = System.currentTimeMillis();
 		final RSTile dest = nearestFreeSpot(true);
-		while (System.currentTimeMillis() - Start < Methods
-				.random(15000, 20000)
+		while (System.currentTimeMillis() - Start < Methods.random(15000, 20000)
 				&& !getMyPlayer().getLocation().equals(dest)) {
 			if (!getMyPlayer().getLocation().equals(dest)) {
 				if (calc.tileOnScreen(dest)) {

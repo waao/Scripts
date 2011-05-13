@@ -170,16 +170,13 @@ public class CChop extends Script implements PaintListener,
 			// ---- label2 ----
 			label2.setText("Version: " + version);
 			contentPane.add(label2);
-			label2.setBounds(new Rectangle(new Point(25, 50), label2
-					.getPreferredSize()));
+			label2.setBounds(new Rectangle(new Point(25, 50), label2.getPreferredSize()));
 
 			// ---- label3 ----
 			label3.setText("Select what you wish to chop:");
-			label3.setFont(label3.getFont().deriveFont(
-					label3.getFont().getSize() + 2f));
+			label3.setFont(label3.getFont().deriveFont(label3.getFont().getSize() + 2f));
 			contentPane.add(label3);
-			label3.setBounds(new Rectangle(new Point(10, 105), label3
-					.getPreferredSize()));
+			label3.setBounds(new Rectangle(new Point(10, 105), label3.getPreferredSize()));
 
 			// ---- button1 ----
 			button1.setText("Confirm and Proceed");
@@ -214,12 +211,9 @@ public class CChop extends Script implements PaintListener,
 			{ // compute preferred size
 				final Dimension preferredSize = new Dimension();
 				for (int i = 0; i < contentPane.getComponentCount(); i++) {
-					final Rectangle bounds = contentPane.getComponent(i)
-							.getBounds();
-					preferredSize.width = Math.max(bounds.x + bounds.width,
-							preferredSize.width);
-					preferredSize.height = Math.max(bounds.y + bounds.height,
-							preferredSize.height);
+					final Rectangle bounds = contentPane.getComponent(i).getBounds();
+					preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+					preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
 				}
 				final Insets insets = contentPane.getInsets();
 				preferredSize.width += insets.right;
@@ -260,13 +254,11 @@ public class CChop extends Script implements PaintListener,
 			// ---- label2 ----
 			label2.setText("Version: " + version);
 			contentPane.add(label2);
-			label2.setBounds(new Rectangle(new Point(25, 50), label2
-					.getPreferredSize()));
+			label2.setBounds(new Rectangle(new Point(25, 50), label2.getPreferredSize()));
 
 			// ---- label4 ----
 			label4.setText("Select where you wish to chop:");
-			label4.setFont(label4.getFont().deriveFont(
-					label4.getFont().getSize() + 2f));
+			label4.setFont(label4.getFont().deriveFont(label4.getFont().getSize() + 2f));
 			contentPane.add(label4);
 			label4.setBounds(10, 210, 180, 16);
 
@@ -324,8 +316,7 @@ public class CChop extends Script implements PaintListener,
 			// ---- checkBox1 ----
 			checkBox1.setText("Take short breaks?");
 			contentPane.add(checkBox1);
-			checkBox1.setBounds(new Rectangle(new Point(120, 250), checkBox1
-					.getPreferredSize()));
+			checkBox1.setBounds(new Rectangle(new Point(120, 250), checkBox1.getPreferredSize()));
 
 			// ---- checkBox2 ----
 			// checkBox2.setText("Chop nearest?");
@@ -362,12 +353,9 @@ public class CChop extends Script implements PaintListener,
 			{ // compute preferred size
 				final Dimension preferredSize = new Dimension();
 				for (int i = 0; i < contentPane.getComponentCount(); i++) {
-					final Rectangle bounds = contentPane.getComponent(i)
-							.getBounds();
-					preferredSize.width = Math.max(bounds.x + bounds.width,
-							preferredSize.width);
-					preferredSize.height = Math.max(bounds.y + bounds.height,
-							preferredSize.height);
+					final Rectangle bounds = contentPane.getComponent(i).getBounds();
+					preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+					preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
 				}
 				final Insets insets = contentPane.getInsets();
 				preferredSize.width += insets.right;
@@ -392,9 +380,8 @@ public class CChop extends Script implements PaintListener,
 					newName += "_" + temp[i];
 				}
 			}
-			final URL url = new URL(
-					"http://services.runescape.com/m=itemdb_rs/" + newName
-							+ "/viewitem.ws?obj=" + id);
+			final URL url = new URL("http://services.runescape.com/m=itemdb_rs/"
+					+ newName + "/viewitem.ws?obj=" + id);
 			final InputStream is = url.openStream();
 			final InputStreamReader isr = new InputStreamReader(is);
 			final BufferedReader br = new BufferedReader(isr);
@@ -514,16 +501,14 @@ public class CChop extends Script implements PaintListener,
 			if (Methods.random(1, 12) == 2) {
 				game.openTab(Game.TAB_STATS);
 				Methods.sleep(Methods.random(600, 800));
-				mouse.move(Methods.random(681, 690), Methods.random(365, 370),
-						0, 0);
+				mouse.move(Methods.random(681, 690), Methods.random(365, 370), 0, 0);
 				Methods.sleep(Methods.random(1900, 2000));
 				game.openTab(Game.TAB_INVENTORY);
 			}
 		}
 		if (rand == 5) {
 			if (Methods.random(1, 12) == 2 && game.isFixed()) {
-				mouse.move(Methods.random(527, 540), Methods.random(58, 65), 0,
-						0);
+				mouse.move(Methods.random(527, 540), Methods.random(58, 65), 0, 0);
 				Methods.sleep(Methods.random(800, 1000));
 				mouse.click(true);
 				mouse.moveRandomly(20, 50);
@@ -956,8 +941,7 @@ public class CChop extends Script implements PaintListener,
 				tryAgain = true;
 				while (tryAgain) {
 					status = "Opening bank.";
-					final RSObject[] test = objects.getAllAt(new RSTile(3047,
-							3237));
+					final RSObject[] test = objects.getAllAt(new RSTile(3047, 3237));
 					RSObject bankBox = null;
 					for (final RSObject element : test) {
 						if (element.getID() == 36788) {
@@ -1136,11 +1120,8 @@ public class CChop extends Script implements PaintListener,
 
 	public boolean checkCurrentVersion() {
 		try {
-			final URL checkPage = new URL(
-					"http://www.conderogascripts.99k.org/CChopVersion.txt");
-			final BufferedReader reader = new BufferedReader(
-					new InputStreamReader(new BufferedInputStream(checkPage
-							.openConnection().getInputStream())));
+			final URL checkPage = new URL("http://www.conderogascripts.99k.org/CChopVersion.txt");
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(checkPage.openConnection().getInputStream())));
 			currentVersion = reader.readLine().trim();
 			reader.close();
 		} catch (final Exception E) {
@@ -1615,16 +1596,14 @@ public class CChop extends Script implements PaintListener,
 	}
 
 	public int distanceBetween(final RSTile t1, final RSTile t2) {
-		return (int) Math.pow(
-				Math.pow(t1.getY() - t2.getY(), 2)
-						+ Math.pow(t1.getX() - t2.getX(), 2), .5);
+		return (int) Math.pow(Math.pow(t1.getY() - t2.getY(), 2)
+				+ Math.pow(t1.getX() - t2.getX(), 2), .5);
 	}
 
 	public int distanceTo(final RSTile test) {
 		final RSTile myLoc = players.getMyPlayer().getLocation();
-		return (int) Math.pow(
-				Math.pow(test.getY() - myLoc.getY(), 2)
-						+ Math.pow(test.getX() - myLoc.getX(), 2), .5);
+		return (int) Math.pow(Math.pow(test.getY() - myLoc.getY(), 2)
+				+ Math.pow(test.getX() - myLoc.getX(), 2), .5);
 	}
 
 	public void doBank(final int num) {
@@ -1839,8 +1818,7 @@ public class CChop extends Script implements PaintListener,
 				if (tempTileToWalkTo > lastTileToWalkTo) {
 					if (calc.tileOnScreen(toWalk[tempTileToWalkTo])) {
 						if (!walking.walkTileOnScreen(toWalk[tempTileToWalkTo])) {
-							if (walking.walkTileMM(toWalk[tempTileToWalkTo], 1,
-									1)) {
+							if (walking.walkTileMM(toWalk[tempTileToWalkTo], 1, 1)) {
 								clicked = true;
 							} else {
 								clicked = false;
@@ -1849,8 +1827,7 @@ public class CChop extends Script implements PaintListener,
 							clicked = true;
 						}
 					} else {
-						clicked = walking.walkTileMM(toWalk[tempTileToWalkTo],
-								1, 1);
+						clicked = walking.walkTileMM(toWalk[tempTileToWalkTo], 1, 1);
 					}
 
 				}
@@ -1873,13 +1850,9 @@ public class CChop extends Script implements PaintListener,
 				final Point temp = calc.tileToScreen(trees[nextTree - 1]);
 				try {
 					if (temp.getY() - 50 > 1) {
-						mouse.move(
-								new Point((int) temp.getX(),
-										(int) temp.getY() - 50), 1, 1);
+						mouse.move(new Point((int) temp.getX(), (int) temp.getY() - 50), 1, 1);
 					} else {
-						mouse.move(
-								new Point((int) temp.getX(), (int) temp.getY()),
-								1, 1);
+						mouse.move(new Point((int) temp.getX(), (int) temp.getY()), 1, 1);
 					}
 				} catch (final Exception e) {
 				}
@@ -2084,8 +2057,7 @@ public class CChop extends Script implements PaintListener,
 		status = "Moving to tree: " + nextTree;
 		final RSTile[] trees = { tree1, tree2, tree3, tree4, tree5, tree6,
 				tree7 };
-		RSTile tileToWalkTo = getMidTile(players.getMyPlayer().getLocation(),
-				trees[nextTree - 1]);
+		RSTile tileToWalkTo = getMidTile(players.getMyPlayer().getLocation(), trees[nextTree - 1]);
 		if (!walking.isRunEnabled() && walking.getEnergy() > 20) {
 			walking.setRun(true);
 			Methods.sleep(Methods.random(600, 800));
@@ -2188,8 +2160,8 @@ public class CChop extends Script implements PaintListener,
 					if (System.currentTimeMillis() - start > 2000) {
 						break;
 					}
-					if (System.currentTimeMillis() - start > Methods.random(
-							600, 800) && !getMyPlayer().isMoving()) {
+					if (System.currentTimeMillis() - start > Methods.random(600, 800)
+							&& !getMyPlayer().isMoving()) {
 						walking.walkTileMM(tileToWalkTo);
 					}
 					Methods.sleep(Methods.random(100, 200));
@@ -2245,11 +2217,8 @@ public class CChop extends Script implements PaintListener,
 					if (!clickedLastTile) {
 						if (tempTileToWalkTo > lastTileToWalkTo) {
 							if (calc.tileOnScreen(paths[choice][tempTileToWalkTo])) {
-								if (!walking
-										.walkTileOnScreen(paths[choice][tempTileToWalkTo])) {
-									if (walking.walkTileMM(
-											paths[choice][tempTileToWalkTo], 1,
-											1)) {
+								if (!walking.walkTileOnScreen(paths[choice][tempTileToWalkTo])) {
+									if (walking.walkTileMM(paths[choice][tempTileToWalkTo], 1, 1)) {
 										clicked = true;
 									} else {
 										clicked = false;
@@ -2258,8 +2227,7 @@ public class CChop extends Script implements PaintListener,
 									clicked = true;
 								}
 							} else {
-								clicked = walking.walkTileMM(
-										paths[choice][tempTileToWalkTo], 1, 1);
+								clicked = walking.walkTileMM(paths[choice][tempTileToWalkTo], 1, 1);
 							}
 						}
 
@@ -2350,11 +2318,8 @@ public class CChop extends Script implements PaintListener,
 					if (!clickedLastTile) {
 						if (tempTileToWalkTo > lastTileToWalkTo) {
 							if (calc.tileOnScreen(paths[choice][tempTileToWalkTo])) {
-								if (!walking
-										.walkTileOnScreen(paths[choice][tempTileToWalkTo])) {
-									if (walking.walkTileMM(
-											paths[choice][tempTileToWalkTo], 1,
-											1)) {
+								if (!walking.walkTileOnScreen(paths[choice][tempTileToWalkTo])) {
+									if (walking.walkTileMM(paths[choice][tempTileToWalkTo], 1, 1)) {
 										clicked = true;
 									} else {
 										clicked = false;
@@ -2363,8 +2328,7 @@ public class CChop extends Script implements PaintListener,
 									clicked = true;
 								}
 							} else {
-								clicked = walking.walkTileMM(
-										paths[choice][tempTileToWalkTo], 1, 1);
+								clicked = walking.walkTileMM(paths[choice][tempTileToWalkTo], 1, 1);
 							}
 
 						}
@@ -2419,18 +2383,14 @@ public class CChop extends Script implements PaintListener,
 				}
 				calculateNextTree();
 				if (startExp == 0) {
-					startExp = skills.getCurrentExp(Skills
-							.getIndex("woodcutting"));
-					startLevel = skills.getCurrentLevel(Skills
-							.getIndex("woodcutting"));
+					startExp = skills.getCurrentExp(Skills.getIndex("woodcutting"));
+					startLevel = skills.getCurrentLevel(Skills.getIndex("woodcutting"));
 				}
-				lvlsGained = skills.getCurrentLevel(Skills
-						.getIndex("woodcutting")) - startLevel;
-				expGained = skills
-						.getCurrentExp(Skills.getIndex("woodcutting"))
+				lvlsGained = skills.getCurrentLevel(Skills.getIndex("woodcutting"))
+						- startLevel;
+				expGained = skills.getCurrentExp(Skills.getIndex("woodcutting"))
 						- startExp;
-				final long expToLvl = skills.getExpToNextLevel(Skills
-						.getIndex("woodcutting"));
+				final long expToLvl = skills.getExpToNextLevel(Skills.getIndex("woodcutting"));
 				// setting up the time
 				long ms = System.currentTimeMillis() - startTime;
 				final double ms2 = System.currentTimeMillis() - startTimeDbl;
@@ -2471,16 +2431,13 @@ public class CChop extends Script implements PaintListener,
 						if (treeType.equals("yews")) {
 							g.drawString("Yews Chopped: " + yewsCut, 395, 22);
 						} else if (treeType.equals("magics")) {
-							g.drawString("Magics Chopped: " + magicsCut, 395,
-									22);
+							g.drawString("Magics Chopped: " + magicsCut, 395, 22);
 						} else if (treeType.equals("ivy")) {
 							g.drawString("Ivy Chopped: " + ivyCut, 395, 22);
 						} else if (treeType.equals("willows")) {
-							g.drawString("Willows Chopped: " + willowsCut, 395,
-									22);
+							g.drawString("Willows Chopped: " + willowsCut, 395, 22);
 						} else if (treeType.equals("maples")) {
-							g.drawString("Maples Chopped: " + maplesCut, 395,
-									22);
+							g.drawString("Maples Chopped: " + maplesCut, 395, 22);
 						} else if (treeType.equals("oaks")) {
 							g.drawString("Oaks Chopped: " + oaksCut, 395, 22);
 						}
@@ -2489,10 +2446,8 @@ public class CChop extends Script implements PaintListener,
 								+ ":" + seconds, 16, 97);
 
 						// Determine Length:
-						final double difference = Skills.XP_TABLE[skills
-								.getCurrentLevel(Skills.getIndex("woodcutting")) + 1]
-								- Skills.XP_TABLE[skills.getCurrentLevel(Skills
-										.getIndex("woodcutting"))];
+						final double difference = Skills.XP_TABLE[skills.getCurrentLevel(Skills.getIndex("woodcutting")) + 1]
+								- Skills.XP_TABLE[skills.getCurrentLevel(Skills.getIndex("woodcutting"))];
 						final double barLength = (difference - expToLvl)
 								/ difference * 512;
 
@@ -2503,13 +2458,10 @@ public class CChop extends Script implements PaintListener,
 						g.setColor(new Color(51, 153, 0, 255)); // GREEN
 						g.fillRoundRect(4, 320, (int) barLength, 18, 4, 4);
 						g.setColor(new Color(0, 0, 0, 255));
-						g.drawString(
-								skills.getPercentToNextLevel(Skills
-										.getIndex("woodcutting"))
-										+ "% to: "
-										+ (skills.getCurrentLevel(Skills
-												.getIndex("woodcutting")) + 1)
-										+ " (" + expToLvl + " exp)", 215, 334);
+						g.drawString(skills.getPercentToNextLevel(Skills.getIndex("woodcutting"))
+								+ "% to: "
+								+ (skills.getCurrentLevel(Skills.getIndex("woodcutting")) + 1)
+								+ " (" + expToLvl + " exp)", 215, 334);
 						g.setColor(new Color(255, 255, 255, 100));
 						g.fillRoundRect(4, 320, 512, 9, 4, 4);
 
@@ -2521,57 +2473,43 @@ public class CChop extends Script implements PaintListener,
 						g.drawString("Status: " + status, 16, 22);
 
 						if (treeType.equals("yews")) {
-							g.drawString("Money Gained: " + yewPrice * yewsCut,
-									154, 22);
+							g.drawString("Money Gained: " + yewPrice * yewsCut, 154, 22);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (yewPrice * yewsCut / (ms2 / 3600000)),
-										289, 22);
+								g.drawString("Money/Hr: "
+										+ (int) (yewPrice * yewsCut / (ms2 / 3600000)), 289, 22);
 							}
 						} else if (treeType.equals("magics")) {
 							g.drawString("Money Gained: " + magicPrice
 									* magicsCut, 154, 22);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (magicPrice * magicsCut / (ms2 / 3600000)),
-										289, 22);
+								g.drawString("Money/Hr: "
+										+ (int) (magicPrice * magicsCut / (ms2 / 3600000)), 289, 22);
 							}
 						} else if (treeType.equals("ivy")) {
 							g.drawString("Nests Collected: " + nests, 154, 22);
 							if (ms2 != 0) {
 								g.drawString("Nests/Hr: "
-										+ (int) (nests / (ms2 / 3600000)), 289,
-										22);
+										+ (int) (nests / (ms2 / 3600000)), 289, 22);
 							}
 						} else if (treeType.equals("willows")) {
 							g.drawString("Money Gained: " + willowPrice
 									* willowsCut, 154, 22);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (willowPrice
-														* willowsCut / (ms2 / 3600000)),
-										289, 22);
+								g.drawString("Money/Hr: "
+										+ (int) (willowPrice * willowsCut / (ms2 / 3600000)), 289, 22);
 							}
 						} else if (treeType.equals("maples")) {
 							g.drawString("Money Gained: " + maplePrice
 									* maplesCut, 154, 22);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (maplePrice * maplesCut / (ms2 / 3600000)),
-										289, 22);
+								g.drawString("Money/Hr: "
+										+ (int) (maplePrice * maplesCut / (ms2 / 3600000)), 289, 22);
 							}
 						} else if (treeType.equals("oaks")) {
-							g.drawString("Money Gained: " + oakPrice * oaksCut,
-									154, 22);
+							g.drawString("Money Gained: " + oakPrice * oaksCut, 154, 22);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (oakPrice * oaksCut / (ms2 / 3600000)),
-										289, 22);
+								g.drawString("Money/Hr: "
+										+ (int) (oakPrice * oaksCut / (ms2 / 3600000)), 289, 22);
 							}
 						}
 						g.drawString("Est. Time to Lvl: " + time2LvlHrs + ":"
@@ -2583,8 +2521,7 @@ public class CChop extends Script implements PaintListener,
 						g.setColor(mouseColor);
 						g.drawLine(tempXCoordinate, 0, tempXCoordinate, 501);
 						g.drawLine(0, tempYCoordinate, 764, tempYCoordinate);
-						g.fillRect(tempXCoordinate - 1, tempYCoordinate - 1, 3,
-								3);
+						g.fillRect(tempXCoordinate - 1, tempYCoordinate - 1, 3, 3);
 						final Color tempColor = new Color(255, 0, 0, 100);
 						if (mouseColor.equals(tempColor)) {
 							mouseColor = new Color(51, 153, 0, 255);
@@ -2600,62 +2537,48 @@ public class CChop extends Script implements PaintListener,
 						stump7 = calc.tileToScreen(tree7);
 						// ALIVE TREES
 						if (tree1Status && tree1AliveTime != 0) {
-							g.drawString((int) (tree1TimeAlive / 1000) + "s",
-									(int) stump1.getX(), (int) stump1.getY());
+							g.drawString((int) (tree1TimeAlive / 1000) + "s", (int) stump1.getX(), (int) stump1.getY());
 						}
 						if (tree2Status && tree2AliveTime != 0) {
-							g.drawString((int) (tree2TimeAlive / 1000) + "s",
-									(int) stump2.getX(), (int) stump2.getY());
+							g.drawString((int) (tree2TimeAlive / 1000) + "s", (int) stump2.getX(), (int) stump2.getY());
 						}
 						if (tree3Status && tree3AliveTime != 0) {
-							g.drawString((int) (tree3TimeAlive / 1000) + "s",
-									(int) stump3.getX(), (int) stump3.getY());
+							g.drawString((int) (tree3TimeAlive / 1000) + "s", (int) stump3.getX(), (int) stump3.getY());
 						}
 						if (tree4Status && tree4AliveTime != 0) {
-							g.drawString((int) (tree4TimeAlive / 1000) + "s",
-									(int) stump4.getX(), (int) stump4.getY());
+							g.drawString((int) (tree4TimeAlive / 1000) + "s", (int) stump4.getX(), (int) stump4.getY());
 						}
 						if (tree5Status && tree5AliveTime != 0) {
-							g.drawString((int) (tree5TimeAlive / 1000) + "s",
-									(int) stump5.getX(), (int) stump5.getY());
+							g.drawString((int) (tree5TimeAlive / 1000) + "s", (int) stump5.getX(), (int) stump5.getY());
 						}
 						if (tree6Status && tree6AliveTime != 0) {
-							g.drawString((int) (tree6TimeAlive / 1000) + "s",
-									(int) stump6.getX(), (int) stump6.getY());
+							g.drawString((int) (tree6TimeAlive / 1000) + "s", (int) stump6.getX(), (int) stump6.getY());
 						}
 						if (tree7Status && tree7AliveTime != 0) {
-							g.drawString((int) (tree7TimeAlive / 1000) + "s",
-									(int) stump7.getX(), (int) stump7.getY());
+							g.drawString((int) (tree7TimeAlive / 1000) + "s", (int) stump7.getX(), (int) stump7.getY());
 						}
 						// DEAD TREES
 						g.setColor(Color.MAGENTA);
 						if (!tree1Status && tree1DeadTime != 0) {
-							g.drawString((int) (tree1TimeDead / 1000) + "s",
-									(int) stump1.getX(), (int) stump1.getY());
+							g.drawString((int) (tree1TimeDead / 1000) + "s", (int) stump1.getX(), (int) stump1.getY());
 						}
 						if (!tree2Status && tree2DeadTime != 0) {
-							g.drawString((int) (tree2TimeDead / 1000) + "s",
-									(int) stump2.getX(), (int) stump2.getY());
+							g.drawString((int) (tree2TimeDead / 1000) + "s", (int) stump2.getX(), (int) stump2.getY());
 						}
 						if (!tree3Status && tree3DeadTime != 0) {
-							g.drawString((int) (tree3TimeDead / 1000) + "s",
-									(int) stump3.getX(), (int) stump3.getY());
+							g.drawString((int) (tree3TimeDead / 1000) + "s", (int) stump3.getX(), (int) stump3.getY());
 						}
 						if (!tree4Status && tree4DeadTime != 0) {
-							g.drawString((int) (tree4TimeDead / 1000) + "s",
-									(int) stump4.getX(), (int) stump4.getY());
+							g.drawString((int) (tree4TimeDead / 1000) + "s", (int) stump4.getX(), (int) stump4.getY());
 						}
 						if (!tree5Status && tree5DeadTime != 0) {
-							g.drawString((int) (tree5TimeDead / 1000) + "s",
-									(int) stump5.getX(), (int) stump5.getY());
+							g.drawString((int) (tree5TimeDead / 1000) + "s", (int) stump5.getX(), (int) stump5.getY());
 						}
 						if (!tree6Status && tree6DeadTime != 0) {
-							g.drawString((int) (tree6TimeDead / 1000) + "s",
-									(int) stump6.getX(), (int) stump6.getY());
+							g.drawString((int) (tree6TimeDead / 1000) + "s", (int) stump6.getX(), (int) stump6.getY());
 						}
 						if (!tree7Status && tree7DeadTime != 0) {
-							g.drawString((int) (tree7TimeDead / 1000) + "s",
-									(int) stump7.getX(), (int) stump7.getY());
+							g.drawString((int) (tree7TimeDead / 1000) + "s", (int) stump7.getX(), (int) stump7.getY());
 						}
 					} else {
 						g.setColor(new Color(51, 153, 0, 255));
@@ -2678,16 +2601,13 @@ public class CChop extends Script implements PaintListener,
 						if (treeType.equals("yews")) {
 							g.drawString("Yews Chopped: " + yewsCut, 344, 207);
 						} else if (treeType.equals("magics")) {
-							g.drawString("Magics Chopped: " + magicsCut, 344,
-									207);
+							g.drawString("Magics Chopped: " + magicsCut, 344, 207);
 						} else if (treeType.equals("ivy")) {
 							g.drawString("Ivy Chopped: " + ivyCut, 344, 207);
 						} else if (treeType.equals("willows")) {
-							g.drawString("Willows Chopped: " + willowsCut, 344,
-									207);
+							g.drawString("Willows Chopped: " + willowsCut, 344, 207);
 						} else if (treeType.equals("maples")) {
-							g.drawString("Maples Chopped: " + maplesCut, 344,
-									207);
+							g.drawString("Maples Chopped: " + maplesCut, 344, 207);
 						} else if (treeType.equals("oaks")) {
 							g.drawString("Oaks Chopped: " + oaksCut, 344, 207);
 						}
@@ -2701,87 +2621,63 @@ public class CChop extends Script implements PaintListener,
 						g.fillRoundRect(344, 241, 150, 20, 8, 8); // Bar
 																	// background
 						g.setColor(new Color(0, 255, 0, 255)); // GREEN
-						g.fillRoundRect(344, 241, (int) (skills
-								.getPercentToNextLevel(Skills
-										.getIndex("woodcutting")) * 1.5), 20,
-								8, 8);
+						g.fillRoundRect(344, 241, (int) (skills.getPercentToNextLevel(Skills.getIndex("woodcutting")) * 1.5), 20, 8, 8);
 						g.setColor(new Color(255, 255, 255, 100));
-						g.drawString(
-								skills.getPercentToNextLevel(Skills
-										.getIndex("woodcutting"))
-										+ "% to: "
-										+ (skills.getCurrentLevel(Skills
-												.getIndex("woodcutting")) + 1)
-										+ " (" + expToLvl + " exp)", 348, 256);
+						g.drawString(skills.getPercentToNextLevel(Skills.getIndex("woodcutting"))
+								+ "% to: "
+								+ (skills.getCurrentLevel(Skills.getIndex("woodcutting")) + 1)
+								+ " (" + expToLvl + " exp)", 348, 256);
 						g.fillRoundRect(345, 251, 148, 10, 8, 8);
 						g.setColor(new Color(0, 0, 0, 255));
-						g.drawString(
-								skills.getPercentToNextLevel(Skills
-										.getIndex("woodcutting"))
-										+ "% to: "
-										+ (skills.getCurrentLevel(Skills
-												.getIndex("woodcutting")) + 1)
-										+ " (" + expToLvl + " exp)", 347, 255);
+						g.drawString(skills.getPercentToNextLevel(Skills.getIndex("woodcutting"))
+								+ "% to: "
+								+ (skills.getCurrentLevel(Skills.getIndex("woodcutting")) + 1)
+								+ " (" + expToLvl + " exp)", 347, 255);
 						g.setColor(new Color(255, 0, 0, 255));
 						if (ms2 != 0) {
 							g.drawString("Exp/Hr: "
-									+ (int) (expGained / (ms2 / 3600000)), 344,
-									274);
+									+ (int) (expGained / (ms2 / 3600000)), 344, 274);
 						}
 						g.drawString("Status: " + status, 344, 289);
 
 						if (treeType.equals("yews")) {
-							g.drawString("Money Gained: " + yewPrice * yewsCut,
-									344, 304);
+							g.drawString("Money Gained: " + yewPrice * yewsCut, 344, 304);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (yewPrice * yewsCut / (ms2 / 3600000)),
-										344, 319);
+								g.drawString("Money/Hr: "
+										+ (int) (yewPrice * yewsCut / (ms2 / 3600000)), 344, 319);
 							}
 						} else if (treeType.equals("magics")) {
 							g.drawString("Money Gained: " + magicPrice
 									* magicsCut, 344, 304);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (magicPrice * magicsCut / (ms2 / 3600000)),
-										344, 319);
+								g.drawString("Money/Hr: "
+										+ (int) (magicPrice * magicsCut / (ms2 / 3600000)), 344, 319);
 							}
 						} else if (treeType.equals("ivy")) {
 							g.drawString("Nests Collected: " + nests, 344, 304);
 							if (ms2 != 0) {
 								g.drawString("Nests/Hr: "
-										+ (int) (nests / (ms2 / 3600000)), 344,
-										319);
+										+ (int) (nests / (ms2 / 3600000)), 344, 319);
 							}
 						} else if (treeType.equals("willows")) {
 							g.drawString("Money Gained: " + willowPrice
 									* willowsCut, 344, 304);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (willowPrice
-														* willowsCut / (ms2 / 3600000)),
-										344, 319);
+								g.drawString("Money/Hr: "
+										+ (int) (willowPrice * willowsCut / (ms2 / 3600000)), 344, 319);
 							}
 						} else if (treeType.equals("maples")) {
 							g.drawString("Money Gained: " + maplePrice
 									* maplesCut, 344, 304);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (maplePrice * maplesCut / (ms2 / 3600000)),
-										344, 319);
+								g.drawString("Money/Hr: "
+										+ (int) (maplePrice * maplesCut / (ms2 / 3600000)), 344, 319);
 							}
 						} else if (treeType.equals("oaks")) {
-							g.drawString("Money Gained: " + oakPrice * oaksCut,
-									344, 304);
+							g.drawString("Money Gained: " + oakPrice * oaksCut, 344, 304);
 							if (ms2 != 0) {
-								g.drawString(
-										"Money/Hr: "
-												+ (int) (oakPrice * oaksCut / (ms2 / 3600000)),
-										344, 319);
+								g.drawString("Money/Hr: "
+										+ (int) (oakPrice * oaksCut / (ms2 / 3600000)), 344, 319);
 							}
 						}
 						g.drawString("Est. Time to Lvl: " + time2LvlHrs + ":"
@@ -2804,62 +2700,48 @@ public class CChop extends Script implements PaintListener,
 						stump7 = calc.tileToScreen(tree7);
 						// ALIVE TREES
 						if (tree1Status && tree1AliveTime != 0) {
-							g.drawString((int) (tree1TimeAlive / 1000) + "s",
-									(int) stump1.getX(), (int) stump1.getY());
+							g.drawString((int) (tree1TimeAlive / 1000) + "s", (int) stump1.getX(), (int) stump1.getY());
 						}
 						if (tree2Status && tree2AliveTime != 0) {
-							g.drawString((int) (tree2TimeAlive / 1000) + "s",
-									(int) stump2.getX(), (int) stump2.getY());
+							g.drawString((int) (tree2TimeAlive / 1000) + "s", (int) stump2.getX(), (int) stump2.getY());
 						}
 						if (tree3Status && tree3AliveTime != 0) {
-							g.drawString((int) (tree3TimeAlive / 1000) + "s",
-									(int) stump3.getX(), (int) stump3.getY());
+							g.drawString((int) (tree3TimeAlive / 1000) + "s", (int) stump3.getX(), (int) stump3.getY());
 						}
 						if (tree4Status && tree4AliveTime != 0) {
-							g.drawString((int) (tree4TimeAlive / 1000) + "s",
-									(int) stump4.getX(), (int) stump4.getY());
+							g.drawString((int) (tree4TimeAlive / 1000) + "s", (int) stump4.getX(), (int) stump4.getY());
 						}
 						if (tree5Status && tree5AliveTime != 0) {
-							g.drawString((int) (tree5TimeAlive / 1000) + "s",
-									(int) stump5.getX(), (int) stump5.getY());
+							g.drawString((int) (tree5TimeAlive / 1000) + "s", (int) stump5.getX(), (int) stump5.getY());
 						}
 						if (tree6Status && tree6AliveTime != 0) {
-							g.drawString((int) (tree6TimeAlive / 1000) + "s",
-									(int) stump6.getX(), (int) stump6.getY());
+							g.drawString((int) (tree6TimeAlive / 1000) + "s", (int) stump6.getX(), (int) stump6.getY());
 						}
 						if (tree7Status && tree7AliveTime != 0) {
-							g.drawString((int) (tree7TimeAlive / 1000) + "s",
-									(int) stump7.getX(), (int) stump7.getY());
+							g.drawString((int) (tree7TimeAlive / 1000) + "s", (int) stump7.getX(), (int) stump7.getY());
 						}
 						// DEAD TREES
 						g.setColor(Color.MAGENTA);
 						if (!tree1Status && tree1DeadTime != 0) {
-							g.drawString((int) (tree1TimeDead / 1000) + "s",
-									(int) stump1.getX(), (int) stump1.getY());
+							g.drawString((int) (tree1TimeDead / 1000) + "s", (int) stump1.getX(), (int) stump1.getY());
 						}
 						if (!tree2Status && tree2DeadTime != 0) {
-							g.drawString((int) (tree2TimeDead / 1000) + "s",
-									(int) stump2.getX(), (int) stump2.getY());
+							g.drawString((int) (tree2TimeDead / 1000) + "s", (int) stump2.getX(), (int) stump2.getY());
 						}
 						if (!tree3Status && tree3DeadTime != 0) {
-							g.drawString((int) (tree3TimeDead / 1000) + "s",
-									(int) stump3.getX(), (int) stump3.getY());
+							g.drawString((int) (tree3TimeDead / 1000) + "s", (int) stump3.getX(), (int) stump3.getY());
 						}
 						if (!tree4Status && tree4DeadTime != 0) {
-							g.drawString((int) (tree4TimeDead / 1000) + "s",
-									(int) stump4.getX(), (int) stump4.getY());
+							g.drawString((int) (tree4TimeDead / 1000) + "s", (int) stump4.getX(), (int) stump4.getY());
 						}
 						if (!tree5Status && tree5DeadTime != 0) {
-							g.drawString((int) (tree5TimeDead / 1000) + "s",
-									(int) stump5.getX(), (int) stump5.getY());
+							g.drawString((int) (tree5TimeDead / 1000) + "s", (int) stump5.getX(), (int) stump5.getY());
 						}
 						if (!tree6Status && tree6DeadTime != 0) {
-							g.drawString((int) (tree6TimeDead / 1000) + "s",
-									(int) stump6.getX(), (int) stump6.getY());
+							g.drawString((int) (tree6TimeDead / 1000) + "s", (int) stump6.getX(), (int) stump6.getY());
 						}
 						if (!tree7Status && tree7DeadTime != 0) {
-							g.drawString((int) (tree7TimeDead / 1000) + "s",
-									(int) stump7.getX(), (int) stump7.getY());
+							g.drawString((int) (tree7TimeDead / 1000) + "s", (int) stump7.getX(), (int) stump7.getY());
 						}
 
 					} else {
@@ -2904,11 +2786,7 @@ public class CChop extends Script implements PaintListener,
 		startTime = System.currentTimeMillis();
 		startTimeDbl = System.currentTimeMillis();
 		// Credits to Zombieknight for this:-----------------
-		final int welcome = JOptionPane
-				.showConfirmDialog(
-						null,
-						"Before using my script, would you like to thank me\nby clicking some adverts?",
-						"Welcome", JOptionPane.YES_NO_OPTION);
+		final int welcome = JOptionPane.showConfirmDialog(null, "Before using my script, would you like to thank me\nby clicking some adverts?", "Welcome", JOptionPane.YES_NO_OPTION);
 		if (welcome == 0) {
 			final String message = "<html>Thank you for your support!<br /></html>";
 			JOptionPane.showMessageDialog(null, message);
@@ -2932,22 +2810,19 @@ public class CChop extends Script implements PaintListener,
 		final String osName = System.getProperty("os.name");
 		try {
 			if (osName.startsWith("Mac OS")) {
-				final Class<?> fileMgr = Class
-						.forName("com.apple.eio.FileManager");
-				final Method openURL = fileMgr.getDeclaredMethod("openURL",
-						new Class[] { String.class });
+				final Class<?> fileMgr = Class.forName("com.apple.eio.FileManager");
+				final Method openURL = fileMgr.getDeclaredMethod("openURL", new Class[] { String.class });
 				openURL.invoke(null, new Object[] { url });
 			} else if (osName.startsWith("Windows")) {
-				Runtime.getRuntime().exec(
-						"rundll32 url.dll,FileProtocolHandler " + url);
+				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "
+						+ url);
 			} else { // assume Unix or Linux
 				final String[] browsers = { "firefox", "opera", "konqueror",
 						"epiphany", "mozilla", "netscape" };
 				String browser = null;
 				for (int count = 0; count < browsers.length && browser == null; count++) {
-					if (Runtime.getRuntime()
-							.exec(new String[] { "which", browsers[count] })
-							.waitFor() == 0) {
+					if (Runtime.getRuntime().exec(new String[] { "which",
+							browsers[count] }).waitFor() == 0) {
 						browser = browsers[count];
 					}
 				}
@@ -3005,20 +2880,15 @@ public class CChop extends Script implements PaintListener,
 		final String serverString = a.getMessage();
 		if (serverString.toLowerCase().contains("you get some yew logs")) {
 			yewsCut++;
-		} else if (serverString.toLowerCase().contains(
-				"you get some magic logs")) {
+		} else if (serverString.toLowerCase().contains("you get some magic logs")) {
 			magicsCut++;
-		} else if (serverString.toLowerCase().contains(
-				"your inventory is too full to hold any more logs")) {
+		} else if (serverString.toLowerCase().contains("your inventory is too full to hold any more logs")) {
 			full = true;
-		} else if (serverString.toLowerCase().contains(
-				"you successfully chop away some ivy")) {
+		} else if (serverString.toLowerCase().contains("you successfully chop away some ivy")) {
 			ivyCut++;
-		} else if (serverString.toLowerCase().contains(
-				"you get some willow logs")) {
+		} else if (serverString.toLowerCase().contains("you get some willow logs")) {
 			willowsCut++;
-		} else if (serverString.toLowerCase().contains(
-				"you get some maple logs")) {
+		} else if (serverString.toLowerCase().contains("you get some maple logs")) {
 			maplesCut++;
 		}
 	}
@@ -3733,8 +3603,7 @@ public class CChop extends Script implements PaintListener,
 	public boolean update() {
 		try {
 
-			saveUrl("http://www.conderogascripts.99k.org/CChop.txt",
-					"CChop.java");
+			saveUrl("http://www.conderogascripts.99k.org/CChop.txt", "CChop.java");
 
 			log("Update was successful. The new CChop.java file is wherever your RSBot file is.");
 			log("Copy the file into your RSBot/Scripts/Sources folder, compile, and restart the script.");
@@ -3836,8 +3705,7 @@ public class CChop extends Script implements PaintListener,
 					} else {
 						for (int inc = 0; inc < 3; inc++) {
 							RSObject stairs = null;
-							final RSObject[] tester = objects
-									.getAllAt(new RSTile(2446, 3435));
+							final RSObject[] tester = objects.getAllAt(new RSTile(2446, 3435));
 							for (final RSObject element : tester) {
 								if (element.getID() == 1742) {
 									stairs = element;

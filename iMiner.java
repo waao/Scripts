@@ -207,8 +207,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 		private void comboBox1ActionPerformed(final ActionEvent e) {
 			Location = comboBox1.getSelectedItem().toString();
 			if (Location.equals("World Wide")) {
-				comboBox2.setModel(new DefaultComboBoxModel(
-						new String[] { "PowerMine" }));
+				comboBox2.setModel(new DefaultComboBoxModel(new String[] { "PowerMine" }));
 			} else {
 				comboBox2.setModel(new DefaultComboBoxModel(new String[] {
 						"Bank", "PowerMine" }));
@@ -246,8 +245,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 				// ---- textPane2 ----
 				textPane2.setBackground(SystemColor.menu);
 				textPane2.setEditable(false);
-				textPane2
-						.setText("I'm iMiner one of the most advanced Rsbot Miners in the World. I will get you the Mining levels you have always wanted. Use the settings tab to set your settings. Then watch me train for you!");
+				textPane2.setText("I'm iMiner one of the most advanced Rsbot Miners in the World. I will get you the Mining levels you have always wanted. Use the settings tab to set your settings. Then watch me train for you!");
 				tabbedPane6.addTab("Intro", textPane2);
 
 				// ======== panel3 ========
@@ -263,10 +261,9 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 
 					// ---- comboBox1 ----
 					comboBox1.setMaximumRowCount(10);
-					comboBox1.setModel(new DefaultComboBoxModel(
-							new String[] { "East Varrock", "West Varrock",
-									"Rimmington", "Yanille (North)",
-									"Yanille (South)", "World Wide" }));
+					comboBox1.setModel(new DefaultComboBoxModel(new String[] {
+							"East Varrock", "West Varrock", "Rimmington",
+							"Yanille (North)", "Yanille (South)", "World Wide" }));
 					comboBox1.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(final ActionEvent e) {
@@ -286,14 +283,12 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 					label10.setText("Mode:");
 					label10.setFont(new Font("Tahoma", Font.PLAIN, 14));
 					panel3.add(label10);
-					label10.setBounds(5, 50, label10.getPreferredSize().width,
-							25);
+					label10.setBounds(5, 50, label10.getPreferredSize().width, 25);
 
 					{ // compute preferred size
 						final Dimension preferredSize = new Dimension();
 						for (int i = 0; i < panel3.getComponentCount(); i++) {
-							final Rectangle bounds = panel3.getComponent(i)
-									.getBounds();
+							final Rectangle bounds = panel3.getComponent(i).getBounds();
 							preferredSize.width = Math.max(bounds.x
 									+ bounds.width, preferredSize.width);
 							preferredSize.height = Math.max(bounds.y
@@ -314,8 +309,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 
 			// ---- label1 ----
 			try {
-				label1.setIcon(new ImageIcon(new URL(
-						"http://tehgamer.info/AutoIron/Banner.png")));
+				label1.setIcon(new ImageIcon(new URL("http://tehgamer.info/AutoIron/Banner.png")));
 			} catch (final IOException e) {
 				log("Failed to upload Pic for GUI.");
 				e.printStackTrace();
@@ -337,12 +331,9 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 			{ // compute preferred size
 				final Dimension preferredSize = new Dimension();
 				for (int i = 0; i < contentPane.getComponentCount(); i++) {
-					final Rectangle bounds = contentPane.getComponent(i)
-							.getBounds();
-					preferredSize.width = Math.max(bounds.x + bounds.width,
-							preferredSize.width);
-					preferredSize.height = Math.max(bounds.y + bounds.height,
-							preferredSize.height);
+					final Rectangle bounds = contentPane.getComponent(i).getBounds();
+					preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+					preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
 				}
 				final Insets insets = contentPane.getInsets();
 				preferredSize.width += insets.right;
@@ -437,8 +428,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 	@SuppressWarnings("static-access")
 	public boolean Antideadrock() {
 		if (lastclicked != null) {
-			final RSObject[] clickedrock = objects.getAt(
-					lastclicked.getLocation(), objects.TYPE_INTERACTABLE);
+			final RSObject[] clickedrock = objects.getAt(lastclicked.getLocation(), objects.TYPE_INTERACTABLE);
 			for (final RSObject clickedrock2 : clickedrock) {
 				if (dead.contains(clickedrock2.getID())) {
 					return true;
@@ -494,12 +484,10 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 		URLConnection url = null;
 		BufferedReader in = null;
 		try {
-			url = new URL("http://tehgamer.info/AutoIron/Version.txt")
-					.openConnection();
+			url = new URL("http://tehgamer.info/AutoIron/Version.txt").openConnection();
 			in = new BufferedReader(new InputStreamReader(url.getInputStream()));
 			final double newVer = Double.parseDouble(in.readLine());
-			final double currentVer = iMiner.class.getAnnotation(
-					ScriptManifest.class).version();
+			final double currentVer = iMiner.class.getAnnotation(ScriptManifest.class).version();
 			if (newVer > currentVer) {
 				log("[UPDATE]iMiner v" + newVer + " is available!");
 				log("[UPDATE]Please check the iMiner thread for the lastest version.");
@@ -541,8 +529,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 
 						boolean found = false;
 						for (int i = 0; i < items.length && !found; ++i) {
-							found = items[i] == inventory.getItems()[c + r * 4]
-									.getID();
+							found = items[i] == inventory.getItems()[c + r * 4].getID();
 						}
 						if (!found) {
 							dropItem(c, r);
@@ -576,8 +563,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 		p = mouse.getLocation();
 		if (p.x < 563 + col * 42 || p.x >= 563 + col * 42 + 32
 				|| p.y < 213 + row * 36 || p.y >= 213 + row * 36 + 32) {
-			mouse.hop(inventory.getInterface().getComponents()[row * 4 + col]
-					.getCenter(), 10, 10);
+			mouse.hop(inventory.getInterface().getComponents()[row * 4 + col].getCenter(), 10, 10);
 		}
 		mouse.click(false);
 		Methods.sleep(Methods.random(10, 25));
@@ -942,8 +928,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 			startmineExp = skills.getCurrentExp(14);
 			oldmineExp = 0;
 		}
-		final int xpHr = (int) (mineexp * 3600000D / (System
-				.currentTimeMillis() - startTime));
+		final int xpHr = (int) (mineexp * 3600000D / (System.currentTimeMillis() - startTime));
 		final int oreHr = (int) (mined * 3600000D / (System.currentTimeMillis() - startTime));
 		// Mouse lines
 		g.setColor(new Color(0, 0, 0, 170));
@@ -967,8 +952,7 @@ public class iMiner extends Script implements PaintListener, MessageListener {
 		g.drawString("Levels Gained: " + gained, row2, 300);
 		g.drawString("Gems Found: " + gem, row2, 315);
 		if (Mode.equals("Bank")) {
-			g.drawString("Money Earned: " + iMiner.formatValue(MoneyGained),
-					row2, 330);
+			g.drawString("Money Earned: " + iMiner.formatValue(MoneyGained), row2, 330);
 		}
 	}
 

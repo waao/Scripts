@@ -72,143 +72,97 @@ public class WorldMinerPro extends Script implements PaintListener,
 			setResizable(false);
 
 			jTree1.setFont(new java.awt.Font("Comic Sans MS", 0, 11)); // NOI18N
-			final javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Miner");
-			javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Banking");
-			javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"East Varrock [Iron]");
+			final javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Miner");
+			javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Banking");
+			javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("East Varrock [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"South Varrock [Iron]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("South Varrock [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Iron]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Rimmington [Iron]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Rimmington [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Rimmington [Copper]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Rimmington [Copper]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Lumbridge Swamp [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Lumbridge Swamp [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Barbarian Village [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Barbarian Village [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Barbarian Village [Tin]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Barbarian Village [Tin]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Mining Guild [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Mining Guild [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Mining Guild [Coal, Mithril]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Mining Guild [Coal, Mithril]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Mithril]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Mithril]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Silver]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Silver]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Adamant]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Adamant]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Copper]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Copper]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Tin]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Tin]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Gold]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Gold]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Yanille [Iron]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Yanille [Iron]");
 			treeNode2.add(treeNode3);
 			treeNode1.add(treeNode2);
-			treeNode2 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Powermining");
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"East Varrock [Iron]");
+			treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Powermining");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("East Varrock [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"South Varrock [Iron]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("South Varrock [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Iron]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Mithril]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Mithril]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Silver]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Silver]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Adamant]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Adamant]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Copper]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Copper]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Tin]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Tin]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Al Kharid [Gold]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Al Kharid [Gold]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Rimmington [Iron]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Rimmington [Iron]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Lumbridge Swamp [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Lumbridge Swamp [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Barbarian Village [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Barbarian Village [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Barbarian Village [Tin]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Barbarian Village [Tin]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Mining Guild [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Mining Guild [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Mining Guild [Coal, Mithril]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Mining Guild [Coal, Mithril]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Crafting Guild [Gold]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Crafting Guild [Gold]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Crafting Guild [Silver]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Crafting Guild [Silver]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Crafting Guild [Clay]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Crafting Guild [Clay]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Rimmington [Clay]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Rimmington [Clay]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Rimmington [Copper]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Rimmington [Copper]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Karamja Dungeon [Gold]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Karamja Dungeon [Gold]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Crandor [Coal]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Crandor [Coal]");
 			treeNode2.add(treeNode3);
-			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode(
-					"Lumbridge Swamp [Copper]");
+			treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Lumbridge Swamp [Copper]");
 			treeNode2.add(treeNode3);
 			treeNode1.add(treeNode2);
 			jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-			jTree1.setCursor(new java.awt.Cursor(
-					java.awt.Cursor.CROSSHAIR_CURSOR));
+			jTree1.setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
 			jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
 				@Override
 				public void mouseClicked(final java.awt.event.MouseEvent evt) {
@@ -236,158 +190,18 @@ public class WorldMinerPro extends Script implements PaintListener,
 			jLabel3.setFont(new java.awt.Font("Comic Sans MS", 0, 11)); // NOI18N
 			jLabel3.setText("Mouse Speed");
 
-			jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(
-					new String[] { "Red & Black", "Safe Paint", "None" }));
+			jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
+					"Red & Black", "Safe Paint", "None" }));
 
 			jLabel4.setFont(new java.awt.Font("Comic Sans MS", 0, 11)); // NOI18N
 			jLabel4.setText("Paint");
 
 			jCheckBox1.setText("Rest");
 
-			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-					getContentPane());
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout.setHorizontalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addComponent(
-											jScrollPane1,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											226,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.LEADING)
-													.addGroup(
-															layout.createSequentialGroup()
-																	.addGroup(
-																			layout.createParallelGroup(
-																					javax.swing.GroupLayout.Alignment.TRAILING)
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																									.addGroup(
-																											layout.createParallelGroup(
-																													javax.swing.GroupLayout.Alignment.TRAILING)
-																													.addComponent(
-																															jLabel1,
-																															javax.swing.GroupLayout.Alignment.LEADING)
-																													.addComponent(
-																															jLabel2,
-																															javax.swing.GroupLayout.Alignment.LEADING,
-																															javax.swing.GroupLayout.DEFAULT_SIZE,
-																															459,
-																															Short.MAX_VALUE)))
-																					.addGroup(
-																							layout.createSequentialGroup()
-																									.addGroup(
-																											layout.createParallelGroup(
-																													javax.swing.GroupLayout.Alignment.LEADING)
-																													.addGroup(
-																															layout.createSequentialGroup()
-																																	.addGap(6,
-																																			6,
-																																			6)
-																																	.addComponent(
-																																			jComboBox1,
-																																			javax.swing.GroupLayout.PREFERRED_SIZE,
-																																			144,
-																																			javax.swing.GroupLayout.PREFERRED_SIZE)
-																																	.addPreferredGap(
-																																			javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-																																			129,
-																																			Short.MAX_VALUE)
-																																	.addComponent(
-																																			jCheckBox1))
-																													.addGroup(
-																															layout.createSequentialGroup()
-																																	.addGap(57,
-																																			57,
-																																			57)
-																																	.addComponent(
-																																			jLabel4)))
-																									.addGap(18,
-																											18,
-																											18)
-																									.addComponent(
-																											jButton1,
-																											javax.swing.GroupLayout.PREFERRED_SIZE,
-																											107,
-																											javax.swing.GroupLayout.PREFERRED_SIZE)
-																									.addGap(12,
-																											12,
-																											12))
-																					.addGroup(
-																							javax.swing.GroupLayout.Alignment.LEADING,
-																							layout.createSequentialGroup()
-																									.addPreferredGap(
-																											javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																									.addComponent(
-																											jSlider1,
-																											javax.swing.GroupLayout.DEFAULT_SIZE,
-																											453,
-																											Short.MAX_VALUE)))
-																	.addGap(0,
-																			0,
-																			0))
-													.addGroup(
-															javax.swing.GroupLayout.Alignment.TRAILING,
-															layout.createSequentialGroup()
-																	.addPreferredGap(
-																			javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																	.addComponent(
-																			jLabel3)
-																	.addGap(192,
-																			192,
-																			192)))));
-			layout.setVerticalGroup(layout
-					.createParallelGroup(
-							javax.swing.GroupLayout.Alignment.LEADING)
-					.addComponent(jScrollPane1,
-							javax.swing.GroupLayout.DEFAULT_SIZE, 354,
-							Short.MAX_VALUE)
-					.addGroup(
-							layout.createSequentialGroup()
-									.addContainerGap()
-									.addComponent(jLabel1)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(
-											jLabel2,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											186,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addGap(16, 16, 16)
-									.addComponent(jLabel3)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-									.addComponent(
-											jSlider1,
-											javax.swing.GroupLayout.PREFERRED_SIZE,
-											javax.swing.GroupLayout.DEFAULT_SIZE,
-											javax.swing.GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(
-											javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-											27, Short.MAX_VALUE)
-									.addGroup(
-											layout.createParallelGroup(
-													javax.swing.GroupLayout.Alignment.BASELINE)
-													.addComponent(jCheckBox1)
-													.addComponent(jButton1)
-													.addComponent(
-															jComboBox1,
-															javax.swing.GroupLayout.PREFERRED_SIZE,
-															javax.swing.GroupLayout.DEFAULT_SIZE,
-															javax.swing.GroupLayout.PREFERRED_SIZE))
-									.addContainerGap())
-					.addGroup(
-							layout.createSequentialGroup()
-									.addGap(302, 302, 302)
-									.addComponent(jLabel4)
-									.addContainerGap(35, Short.MAX_VALUE)));
+			layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(layout.createSequentialGroup().addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING).addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGap(6, 6, 6).addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE).addComponent(jCheckBox1)).addGroup(layout.createSequentialGroup().addGap(57, 57, 57).addComponent(jLabel4))).addGap(18, 18, 18).addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(12, 12, 12)).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup().addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE))).addGap(0, 0, 0)).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel3).addGap(192, 192, 192)))));
+			layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel1).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(16, 16, 16).addComponent(jLabel3).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jCheckBox1).addComponent(jButton1).addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addContainerGap()).addGroup(layout.createSequentialGroup().addGap(302, 302, 302).addComponent(jLabel4).addContainerGap(35, Short.MAX_VALUE)));
 
 			pack();
 		}// </editor-fold>
@@ -395,8 +209,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 		private void jButton1ActionPerformed(
 				final java.awt.event.ActionEvent evt) {
 			MouseSpeed = jSlider1.getValue();
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Barbarian Village [Coal]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Barbarian Village [Coal]")) {
 				final RSTile[] path = { new RSTile(3084, 3421),
 						new RSTile(3085, 3433), new RSTile(3085, 3439),
 						new RSTile(3090, 3449), new RSTile(3089, 3455),
@@ -414,8 +227,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Barbarian Village [Tin]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Barbarian Village [Tin]")) {
 				final RSTile[] path = { new RSTile(3084, 3421),
 						new RSTile(3085, 3433), new RSTile(3085, 3439),
 						new RSTile(3090, 3449), new RSTile(3089, 3455),
@@ -433,8 +245,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 11934, 11933, 11935 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Lumbridge Swamp [Coal]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Lumbridge Swamp [Coal]")) {
 				final RSTile[] path = { new RSTile(3146, 3150),
 						new RSTile(3145, 3156), new RSTile(3146, 3158),
 						new RSTile(3145, 3160), new RSTile(3145, 3161),
@@ -483,8 +294,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 3032, 3233 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Iron]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Iron]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -521,8 +331,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 37309, 37307, 37308 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("South Varrock [Iron]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("South Varrock [Iron]")) {
 				final RSTile[] path = { new RSTile(3287, 3370),
 						new RSTile(3291, 3375), new RSTile(3293, 3374),
 						new RSTile(3292, 3376), new RSTile(3294, 3382),
@@ -542,8 +351,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 						37307, 37308, 37309 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("East Varrock [Iron]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("East Varrock [Iron]")) {
 				final RSTile[] path = { new RSTile(3175, 3367),
 						new RSTile(3172, 3372), new RSTile(3173, 3381),
 						new RSTile(3172, 3387), new RSTile(3172, 3394),
@@ -565,8 +373,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			if (jTree1.getSelectionPath().toString().contains("Powermining")) {
 				PowerMine = true;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Rimmington [Iron]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Rimmington [Iron]")) {
 				final RSTile[] path = { new RSTile(2968, 3240),
 						new RSTile(2970, 3244), new RSTile(2974, 3248),
 						new RSTile(2977, 3254), new RSTile(2981, 3260),
@@ -593,8 +400,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 						37307, 37308, 37309 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Rimmington [Copper]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Rimmington [Copper]")) {
 				final RSTile[] path = { new RSTile(2968, 3240),
 						new RSTile(2970, 3244), new RSTile(2974, 3248),
 						new RSTile(2977, 3254), new RSTile(2981, 3260),
@@ -620,46 +426,38 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 9708, 9709, 9710, 11937, 19936, 11938 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Rimmington [Clay]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Rimmington [Clay]")) {
 				final int[] mineRock = { 11189, 11190, 11191, 9711, 9713 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Crafting Guild [Clay]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Crafting Guild [Clay]")) {
 				final int[] mineRock = { 11189, 11190, 11191, 9711, 9713 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Crafting Guild [Gold]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Crafting Guild [Gold]")) {
 				final int[] mineRock = { 11183, 11184, 11185 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Crandor [Coal]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Crandor [Coal]")) {
 				final int[] mineRock = { 14850, 14852, 14851 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Crafting Guild [Silver]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Crafting Guild [Silver]")) {
 				final int[] mineRock = { 11186, 11187, 11188 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Lumbridge Swamp [Copper]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Lumbridge Swamp [Copper]")) {
 				final int[] mineRock = { 3229, 3027 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Karamja Dungeon [Gold]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Karamja Dungeon [Gold]")) {
 				final int[] mineRock = { 32432, 32434, 32433 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getSelectionPath().toString().contains("Powermining")) {
 				PowerMine = true;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Mining Guild [Coal]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Mining Guild [Coal]")) {
 				final RSTile[] path = { new RSTile(3045, 9748),
 						new RSTile(3045, 9741), new RSTile(3041, 9738),
 						new RSTile(3035, 9738), new RSTile(3029, 9738),
@@ -681,8 +479,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				Rocks = mineRock;
 				MineGuild = true;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Mining Guild [Coal, Mithril]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Mining Guild [Coal, Mithril]")) {
 				final RSTile[] path = { new RSTile(3045, 9748),
 						new RSTile(3045, 9741), new RSTile(3041, 9738),
 						new RSTile(3035, 9738), new RSTile(3029, 9738),
@@ -705,8 +502,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				Rocks = mineRock;
 				MineGuild = true;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Yanille [Iron]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Yanille [Iron]")) {
 				final RSTile[] path = { new RSTile(2629, 3136),
 						new RSTile(2627, 3127), new RSTile(2623, 3115),
 						new RSTile(2615, 3104), new RSTile(2612, 3092) };
@@ -721,8 +517,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 37307, 37308, 37309 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Wilderness Goblins [Coal]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Wilderness Goblins [Coal]")) {
 				final RSTile[] path = { new RSTile(3096, 3494),
 						new RSTile(3088, 3493), new RSTile(3088, 3495),
 						new RSTile(3088, 3496), new RSTile(3087, 3499),
@@ -765,8 +560,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				Rocks = mineRock;
 				wildi = true;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Copper]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Copper]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -803,8 +597,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 11936, 11937, 11938 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Mithril]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Mithril]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -841,8 +634,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 11942, 11944 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Silver]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Silver]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -879,8 +671,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 37304, 37306, 37305, 2311 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Adamant]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Adamant]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -917,8 +708,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 11939, 11941 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Coal]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Coal]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -955,8 +745,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 11932, 11930 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Tin]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Tin]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -993,8 +782,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				final int[] mineRock = { 11933 };
 				Rocks = mineRock;
 			}
-			if (jTree1.getLastSelectedPathComponent().toString()
-					.contains("Al Kharid [Gold]")) {
+			if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Gold]")) {
 				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
@@ -1051,194 +839,157 @@ public class WorldMinerPro extends Script implements PaintListener,
 
 		private void jTree1MouseClicked(final java.awt.event.MouseEvent evt) {
 			try {
-				jLabel1.setText(jTree1.getLastSelectedPathComponent()
-						.toString());
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Lumbridge Swamp [Copper]")) {
+				jLabel1.setText(jTree1.getLastSelectedPathComponent().toString());
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Lumbridge Swamp [Copper]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/2ilejbp.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i56.tinypic.com/2ilejbp.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Lumbridge Swamp [Coal]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Lumbridge Swamp [Coal]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i53.tinypic.com/2v8fkft.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i53.tinypic.com/2v8fkft.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("East Varrock [Iron]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("East Varrock [Iron]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i54.tinypic.com/ak7803.jpg"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i54.tinypic.com/ak7803.jpg"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("South Varrock [Iron]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("South Varrock [Iron]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/o7uk5e.jpg"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i51.tinypic.com/o7uk5e.jpg"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Crafting Guild [Gold]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Crafting Guild [Gold]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i55.tinypic.com/6pt5w1.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i55.tinypic.com/6pt5w1.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Crafting Guild [Silver]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Crafting Guild [Silver]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/oacdj5.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i56.tinypic.com/oacdj5.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Crafting Guild [Clay]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Crafting Guild [Clay]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/sw4nl4.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i51.tinypic.com/sw4nl4.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Rimmington [Iron]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Rimmington [Iron]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/hvqovm.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i56.tinypic.com/hvqovm.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Rimmington [Clay]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Rimmington [Clay]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i54.tinypic.com/jkgd5k.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i54.tinypic.com/jkgd5k.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Rimmington [Copper]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Rimmington [Copper]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/qya36b.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i51.tinypic.com/qya36b.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Mining Guild [Coal]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Mining Guild [Coal]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/xf0wlw.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i56.tinypic.com/xf0wlw.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Mining Guild [Coal, Mithril]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Mining Guild [Coal, Mithril]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/xf0wlw.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i56.tinypic.com/xf0wlw.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
@@ -1246,32 +997,26 @@ public class WorldMinerPro extends Script implements PaintListener,
 					}.getIcon());
 				}
 
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Al Kharid [Iron]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Al Kharid [Iron]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i53.tinypic.com/97l5bm.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i53.tinypic.com/97l5bm.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
 						}
 					}.getIcon());
 				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Barbarian Village [Coal]")) {
+				if (jTree1.getLastSelectedPathComponent().toString().contains("Barbarian Village [Coal]")) {
 					jLabel2.setIcon(new javax.swing.JLabel() {
 						@Override
 						public javax.swing.Icon getIcon() {
 
 							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/2guxxmf.png"));
+								return new javax.swing.ImageIcon(new java.net.URL("http://i51.tinypic.com/2guxxmf.png"));
 							} catch (final java.net.MalformedURLException e) {
 							}
 							return null;
@@ -1296,8 +1041,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 	public RSTile BankTile;
 	public RSTile MineTile;
 	public RSTile FixGate = new RSTile(3045, 9742);
-	public RSArea guildarea = new RSArea(new RSTile(3055, 9757), new RSTile(
-			3026, 9732));
+	public RSArea guildarea = new RSArea(new RSTile(3055, 9757), new RSTile(3026, 9732));
 	/**
 	 * Objects
 	 */
@@ -1365,8 +1109,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 		if (calc.distanceTo(BankTile) < 5) {
 			if (!isObjectValid("Banker")) {
 				while (isObjectValid("Banker")) {
-					if (calc.distanceTo(walking.getDestination()) < Methods
-							.random(3, 5)) {
+					if (calc.distanceTo(walking.getDestination()) < Methods.random(3, 5)) {
 						toBank.traverse();
 					}
 				}
@@ -1402,8 +1145,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			} else {
 				// walking.walkPathMM(toBank, 2 ,2);
 
-				if (calc.distanceTo(walking.getDestination()) < Methods.random(
-						3, 5)) {
+				if (calc.distanceTo(walking.getDestination()) < Methods.random(3, 5)) {
 					toBank.traverse();
 				}
 
@@ -1424,8 +1166,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			if (randomizer == 3) {
 				if (getMyPlayer().getAnimation() == 624) {
 					game.openTab(Game.TAB_STATS);
-					mouse.move(704 + Methods.random(-30, 29),
-							223 + Methods.random(-13, 13));
+					mouse.move(704 + Methods.random(-30, 29), 223 + Methods.random(-13, 13));
 					Methods.sleep(Methods.random(500, 1250));
 					game.openTab(Game.TAB_INVENTORY);
 				}
@@ -1615,13 +1356,11 @@ public class WorldMinerPro extends Script implements PaintListener,
 						final RSObject NextOre = getSecondNearest(ore, Rocks);
 						if (NextOre != null) {
 							if (NextOre.isOnScreen()) {
-								mouse.move(calc.tileToScreen(NextOre
-										.getLocation()), 13, 13);
+								mouse.move(calc.tileToScreen(NextOre.getLocation()), 13, 13);
 								return;
 							} else {
 								camera.turnTo(NextOre);
-								mouse.move(calc.tileToScreen(NextOre
-										.getLocation()), 13, 13);
+								mouse.move(calc.tileToScreen(NextOre.getLocation()), 13, 13);
 								return;
 							}
 						}
@@ -1697,8 +1436,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 					if (!isObjectValid("Rocks")) {
 						// log.severe("If you see this! THEN MAKE SURE TO REPORT THIS AT WORLDMINERPRO THREAD");
 						while (isObjectValid("Rocks")) {
-							if (calc.distanceTo(walking.getDestination()) < Methods
-									.random(3, 5)) {
+							if (calc.distanceTo(walking.getDestination()) < Methods.random(3, 5)) {
 								toMine.traverse();
 							}
 						}
@@ -1706,8 +1444,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 				} else {
 					// walking.walkPathMM(toMine, 2 ,2);
 					while (calc.distanceTo(MineTile) > 6) {
-						if (calc.distanceTo(walking.getDestination()) < Methods
-								.random(3, 5)) {
+						if (calc.distanceTo(walking.getDestination()) < Methods.random(3, 5)) {
 							toMine.traverse();
 						}
 					}
@@ -1741,8 +1478,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 		if (Start) {
 			if (paint) {
 
-				drawModel(g, objects.getNearest(Rocks), Color.BLUE, "",
-						Color.BLACK);
+				drawModel(g, objects.getNearest(Rocks), Color.BLUE, "", Color.BLACK);
 
 				final int lvlGain = skills.getCurrentLevel(Skills.MINING)
 						- startlvl;
@@ -1761,16 +1497,13 @@ public class WorldMinerPro extends Script implements PaintListener,
 					final int TTL = skills.getExpToNextLevel(Skills.MINING)
 							/ xpPerHour;
 					final int XPtoLvl = skills.getExpToNextLevel(Skills.MINING);
-					final int T99 = (13034431 - skills
-							.getCurrentExp(Skills.MINING)) / xpPerHour;
-					final int percent = skills
-							.getPercentToNextLevel(Skills.MINING);
+					final int T99 = (13034431 - skills.getCurrentExp(Skills.MINING))
+							/ xpPerHour;
+					final int percent = skills.getPercentToNextLevel(Skills.MINING);
 					countpaint = countpaint + 1;
 
-					g.drawLine(0, mouse.getLocation().y, 765,
-							mouse.getLocation().y);
-					g.drawLine(mouse.getLocation().x, 0, mouse.getLocation().x,
-							506);
+					g.drawLine(0, mouse.getLocation().y, 765, mouse.getLocation().y);
+					g.drawLine(mouse.getLocation().x, 0, mouse.getLocation().x, 506);
 
 					final Rectangle r = new Rectangle(496, 345, 15, 14);
 					if (r.contains(mouse.getLocation())) {
@@ -1811,17 +1544,14 @@ public class WorldMinerPro extends Script implements PaintListener,
 						g.drawString("Exp TL: " + XPtoLvl, 16, 445);
 						g.drawString("Time T99: " + T99 + " Hours", 16, 459);
 						g.drawString(percent + "% to next level", 156, 375);
-						g.drawString(
-								"Exp: " + skills.getCurrentExp(Skills.MINING),
-								156, 389);
+						g.drawString("Exp: "
+								+ skills.getCurrentExp(Skills.MINING), 156, 389);
 						// g.drawString("Profit: " + profit + "gp", 156, 403);
 						g.drawString("Levels Gained: " + lvlGain, 156, 417);
 						g.drawString("Ores/H: " + orePerHour, 156, 431);
 						g.drawString("Exp Gained: " + xpGained, 156, 445);
-						g.drawString(
-								"Level: "
-										+ skills.getCurrentLevel(Skills.MINING),
-								156, 459);
+						g.drawString("Level: "
+								+ skills.getCurrentLevel(Skills.MINING), 156, 459);
 						// g.drawString("Profit/H: " + profPerHour, 296, 375);
 						g.drawString("Banked: " + timebanked, 156, 403);
 						// Cape Image
@@ -1855,8 +1585,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			g.drawString("WorldMinerPro", 13, 364);
 			g.setFont(new Font("Calibri", 0, 14));
 			g.setColor(new Color(255, 0, 0));
-			g.drawString("Runtime: " + hours + ":" + minutes + ":" + seconds,
-					14, 380);
+			g.drawString("Runtime: " + hours + ":" + minutes + ":" + seconds, 14, 380);
 			g.drawString("Gems Mined: " + GemsMined, 180, 380);
 			g.setFont(new Font("Calibri", 0, 14));
 			g.setColor(new Color(255, 0, 0));
@@ -1868,13 +1597,11 @@ public class WorldMinerPro extends Script implements PaintListener,
 			g.setFont(new Font("Calibri", 0, 14));
 			g.setColor(new Color(255, 0, 0));
 			g.drawString("Ores Mined: " + OreMined, 14, 424);
-			g.drawString("Level: " + skills.getCurrentLevel(Skills.MINING),
-					180, 424);
+			g.drawString("Level: " + skills.getCurrentLevel(Skills.MINING), 180, 424);
 			g.setFont(new Font("Calibri", 0, 14));
 			g.setColor(new Color(255, 0, 0));
 			g.drawString("Ores/H: " + orePerHour, 14, 438);
-			g.drawString("EXP: " + skills.getCurrentExp(Skills.MINING), 180,
-					438);
+			g.drawString("EXP: " + skills.getCurrentExp(Skills.MINING), 180, 438);
 			g.setFont(new Font("Calibri", 0, 14));
 			g.setColor(new Color(255, 0, 0));
 			g.drawString("Levels Gained: " + lvlGain, 14, 452);

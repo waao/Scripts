@@ -64,9 +64,7 @@ public class GuildRanger extends Script implements PaintListener {
 
 		Color TEXT_COLOR = new Color(255, 255, 255, 255);
 
-		RenderingHints ANTI_ALIASING = new RenderingHints(
-				RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		RenderingHints ANTI_ALIASING = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 	}
 
@@ -257,8 +255,7 @@ public class GuildRanger extends Script implements PaintListener {
 	}
 
 	private boolean inShootingArea() {
-		return GameConstants.SHOOTING_AREA
-				.contains(getMyPlayer().getLocation());
+		return GameConstants.SHOOTING_AREA.contains(getMyPlayer().getLocation());
 	}
 
 	private boolean isAttackingRanger() {
@@ -325,15 +322,13 @@ public class GuildRanger extends Script implements PaintListener {
 			g.setColor(GameConstants.TEXT_COLOR);
 			g.drawRect(10, 35, 205, 195);
 			g.drawString("GuildRanger by Vastico", 20, 55);
-			g.drawString(Timer.format(System.currentTimeMillis() - startTime),
-					20, 75);
+			g.drawString(Timer.format(System.currentTimeMillis() - startTime), 20, 75);
 			g.drawString(action != null ? action.getDescription()
 					: "Calculating...", 20, 95);
 			g.drawString("XP Gained: "
 					+ (skills.getCurrentExp(Skills.RANGE) - startXp), 20, 115);
 			g.drawString("XP Per Hour: " + calculateXpPerHour(), 20, 135);
-			g.drawString("Current Level: " + skills.getRealLevel(Skills.RANGE),
-					20, 155);
+			g.drawString("Current Level: " + skills.getRealLevel(Skills.RANGE), 20, 155);
 			g.drawString("Levels Gained: "
 					+ (skills.getRealLevel(Skills.RANGE) - startLvl), 20, 175);
 			g.drawString("Current Score: " + settings.getSetting(157), 20, 195);
@@ -351,8 +346,7 @@ public class GuildRanger extends Script implements PaintListener {
 
 			@Override
 			public void execute() {
-				final RSComponent closeInterface = interfaces.getComponent(
-						GameConstants.TARGET_INTERFACE, 40);
+				final RSComponent closeInterface = interfaces.getComponent(GameConstants.TARGET_INTERFACE, 40);
 				if (closeInterface != null && closeInterface.isValid()) {
 					closeInterface.doClick();
 					Methods.sleep(500);
@@ -376,8 +370,7 @@ public class GuildRanger extends Script implements PaintListener {
 
 			@Override
 			public void execute() {
-				final RSComponent paymentInterface = interfaces.getComponent(
-						GameConstants.PAYMENT_INTERFACE, 1);
+				final RSComponent paymentInterface = interfaces.getComponent(GameConstants.PAYMENT_INTERFACE, 1);
 				if (paymentInterface != null && paymentInterface.isValid()) {
 					paymentInterface.doClick();
 					Methods.sleep(500);
@@ -400,8 +393,7 @@ public class GuildRanger extends Script implements PaintListener {
 
 			@Override
 			public void execute() {
-				final RSItem bronzeArrow = inventory
-						.getItem(GameConstants.BRONZE_ARROW);
+				final RSItem bronzeArrow = inventory.getItem(GameConstants.BRONZE_ARROW);
 				if (bronzeArrow != null) {
 					bronzeArrow.doAction("Wield");
 					Methods.sleep(1200);
@@ -423,17 +415,14 @@ public class GuildRanger extends Script implements PaintListener {
 		actions.add(new WalkToArea(GameConstants.SAFE_AREA, "safe area") {
 			@Override
 			public void execute() {
-				final RSObject obj = objects
-						.getNearest(GameConstants.GUILD_DOOR);
+				final RSObject obj = objects.getNearest(GameConstants.GUILD_DOOR);
 				if (obj != null
-						&& calc.distanceBetween(obj.getLocation(),
-								GameConstants.GUILD_DOOR_TILE) < 2) {
+						&& calc.distanceBetween(obj.getLocation(), GameConstants.GUILD_DOOR_TILE) < 2) {
 					if (obj.isOnScreen()) {
 						if (obj.doAction("Open")) {
 							Methods.sleep(Methods.random(1000, 2000));
 						}
-					} else if (!GameConstants.GUILD_DOOR_TILE.equals(walking
-							.getDestination())) {
+					} else if (!GameConstants.GUILD_DOOR_TILE.equals(walking.getDestination())) {
 						walking.walkTo(GameConstants.GUILD_DOOR_TILE);
 					}
 				} else {
@@ -450,17 +439,14 @@ public class GuildRanger extends Script implements PaintListener {
 		actions.add(new WalkToArea(GameConstants.SHOOTING_AREA, "shooting area") {
 			@Override
 			public void execute() {
-				final RSObject obj = objects
-						.getNearest(GameConstants.GUILD_DOOR);
+				final RSObject obj = objects.getNearest(GameConstants.GUILD_DOOR);
 				if (obj != null
-						&& calc.distanceBetween(obj.getLocation(),
-								GameConstants.SAFE_DOOR_TILE) < 2) {
+						&& calc.distanceBetween(obj.getLocation(), GameConstants.SAFE_DOOR_TILE) < 2) {
 					if (obj.isOnScreen()) {
 						if (obj.doAction("Open")) {
 							Methods.sleep(Methods.random(1000, 2000));
 						}
-					} else if (!GameConstants.SAFE_DOOR_TILE.equals(walking
-							.getDestination())) {
+					} else if (!GameConstants.SAFE_DOOR_TILE.equals(walking.getDestination())) {
 						walking.walkTo(GameConstants.SAFE_DOOR_TILE);
 					}
 				} else {
