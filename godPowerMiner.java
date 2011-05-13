@@ -40,6 +40,9 @@ public class godPowerMiner extends Script implements PaintListener, MessageListe
 		if (getMyPlayer().isMoving()) {
 			return random(500, 1280);
 		}
+		if (interfaces.canContinue()) {
+			interfaces.clickContinue();
+		}
 		if (walking.getEnergy() > 20 && !walking.isRunEnabled()) {
 			walking.setRun(true);
 		}
