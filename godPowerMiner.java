@@ -165,7 +165,7 @@ public class godPowerMiner extends Script implements PaintListener, MessageListe
 
 	public void messageReceived(MessageEvent e) {
 		if (e.getID() == MessageEvent.MESSAGE_SERVER) {
-			if (e.getMessage().toLowerCase().contains("do not have") || e.getMessage().toLowerCase().contains("level")) {
+			if (e.getMessage().toLowerCase().contains("do not have")) {
 				stopScript();
 			}
 		}
