@@ -33,6 +33,7 @@ public class godFlax extends Script implements PaintListener {
 					}
 				}
 			}
+			return 1500;
 		}
 		if (!FLAX_FIELD.contains(getMyPlayer().getLocation())) {
 			RSWeb walkingWeb = web.getWeb(getMyPlayer().getLocation(), FLAX_TILE);
