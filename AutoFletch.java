@@ -15,7 +15,7 @@ import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.Timer;
 import org.rsbot.script.wrappers.RSItem;
 
-@ScriptManifest(authors = { "LastCoder" }, keywords = " Auto", name = "AutoFletch", version = 1.0, description = "Start, all options are in GUI.")
+@ScriptManifest(authors = { "BryCol" }, keywords = " Auto", name = "AutoFletch", version = 1.0, description = "Start, all options are in GUI.")
 public class AutoFletch extends Script implements MessageListener,
 		PaintListener {
 
