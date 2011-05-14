@@ -24,9 +24,21 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 	private static final String[] TREES = {"Tree", "Oak", "Willow", "Maple"};
 	private static final Filter<RSObject> TREE = new Filter<RSObject>() {
 		public boolean accept(RSObject rsObject) {
-			return rsObject != null && rsObject.getName() != null && rsObject.getName().equals(treeName);
+			return rsObject != null && rsObject.getName() != null && rsObject.getName().equals(treeName) && containsAction(rsObject.getDef().getActions(), "Chop");
 		}
 	};
+
+	private static boolean containsAction(String[] actions, String str) {
+		for (String a : actions) {
+			if (a != null) {
+				if (a.contains(str)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private Timer timer = new Timer(60000);
 	private RSTile returnTile = null;
 	private RSWeb walkWeb = null;
