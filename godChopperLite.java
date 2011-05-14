@@ -17,7 +17,7 @@ import java.awt.*;
  * Please remember paid scripts are always better!
  */
 
-@ScriptManifest(name = "godCopperLite", authors = {"Timer"}, description = "Cuts and banks trees, oaks, willows, and maples.", version = 0.1, keywords = {"tree", "oak", "willow", "maple"})
+@ScriptManifest(name = "godChopperLite", authors = {"Timer"}, description = "Cuts and banks trees, oaks, willows, and maples.", version = 0.1, keywords = {"tree", "oak", "willow", "maple"})
 public class godChopperLite extends Script implements PaintListener, MessageListener {
 	private RSObject object = null;
 	private static String treeName = "";
@@ -115,6 +115,9 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 				returnTile = null;
 			}
 			return 0;
+		}
+		if (bank.isOpen()) {
+			bank.close();
 		}
 		RSObject tree = objects.getNearest(TREE);
 		if (tree == null) {
