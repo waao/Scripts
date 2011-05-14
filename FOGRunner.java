@@ -64,9 +64,8 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.util.GlobalConfiguration;
 
-@ScriptManifest(authors = { "TerraBubble" }, keywords = "Combat", name = "FOGRunner", version = 1.51, description = "A Fist of Guthix playing script by TerraBubble")
+@ScriptManifest(authors = { "TerraBubble" }, keywords = "Combat", name = "FOGRunner", version = 1.51, description = "A Fist of Guthix playing script by TerraBubble", requiresVersion = 242)
 @SuppressWarnings("deprecation")
 public class FOGRunner extends Script implements PaintListener,
 		MessageListener, MouseListener, MouseMotionListener {
@@ -3021,9 +3020,9 @@ public class FOGRunner extends Script implements PaintListener,
 	private boolean dieScript = false;
 	private BufferedImage banner = null;
 	private boolean success = false;
-	public final File scriptFile = new File(new File(GlobalConfiguration.Paths.getScriptCacheDirectory()), "FOGRunner.java");
-	private final File settingsFile = new File(new File(GlobalConfiguration.Paths.getScriptCacheDirectory()), "FOGRunner.txt");
-	private final File bannerFile = new File(new File(GlobalConfiguration.Paths.getScriptsDirectory()), "FOGRunner.png");
+	public final File scriptFile = new File(getCacheDirectory(), "FOGRunner.java");
+	private final File settingsFile = new File(getCacheDirectory(), "FOGRunner.txt");
+	private final File bannerFile = new File(getCacheDirectory(), "FOGRunner.png");
 	private boolean loadBannerFromFile = true;
 	// Misc Options
 	private boolean useAntiBan = true;
@@ -6674,8 +6673,7 @@ public class FOGRunner extends Script implements PaintListener,
 			status = "Logging in...";
 			log(">>> GUI WILL OPEN AFTER LOGIN <<<");
 		}
-		final File out_dir = new File(GlobalConfiguration.Paths.getScriptCacheDirectory()
-				+ "/images/");
+		final File out_dir = new File(getCacheDirectory(), "images");
 		if (!out_dir.exists()) {
 			try {
 				out_dir.createNewFile();// createNewDirectory

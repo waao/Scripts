@@ -54,7 +54,6 @@ import org.rsbot.script.wrappers.RSObjectDef;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.script.wrappers.RSTilePath;
-import org.rsbot.util.GlobalConfiguration;
 
 @ScriptManifest(authors = { "icnhzabot", "Aut0r" }, keywords = "Clay, Softener", name = "Aut0ClaySoftener", version = 1.0, description = "Softens clay at multiple locations!")
 public class Aut0ClaySoftener extends Script implements PaintListener,
@@ -2356,8 +2355,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 	private long mousemovet = System.currentTimeMillis();
 	private final Walking walker = new Walking();
 	private RSTile[] drawPath = null;
-	private SettingsManager sm = new SettingsManager(GlobalConfiguration.Paths.getSettingsDirectory()
-			+ File.separator + "Aut0ClaySoftener.SETTINGS");
+	private SettingsManager sm = new SettingsManager(getCacheDirectory() + File.separator + "Aut0ClaySoftener.SETTINGS");
 	BufferedImage nmouse = null;
 	BufferedImage nclicked = null;
 	/* GUI Options */
@@ -2456,8 +2454,7 @@ public class Aut0ClaySoftener extends Script implements PaintListener,
 
 	private void createAndWaitforGUI() {
 		if (sm == null) {
-			sm = new SettingsManager(GlobalConfiguration.Paths.getSettingsDirectory()
-					+ File.separator + "Aut0ClaySoftener.dat");
+			sm = new SettingsManager(getCacheDirectory() + File.separator + "Aut0ClaySoftener.dat");
 		}
 		if (SwingUtilities.isEventDispatchThread()) {
 			gui = new GUI(sm);

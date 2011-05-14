@@ -53,7 +53,6 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.util.GlobalConfiguration;
 
 /* @Updated 2.15.2011.
  * 
@@ -435,7 +434,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 
 		private boolean loadOptions(final Properties file) {
 			try {
-				file.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSafeCracker.ini")));
+				file.load(new FileInputStream(new File(getCacheDirectory(), "FallenSafeCracker.ini")));
 			} catch (final FileNotFoundException e) {
 				return false;
 			} catch (final IOException e) {
@@ -617,7 +616,7 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			file.setProperty("Level", LevelLimit);
 			// Saving the file.
 			try {
-				file.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSafeCracker.ini")), "The options of FallenSafeCracker");
+				file.store(new FileWriter(new File(getCacheDirectory(), "FallenSafeCracker.ini")), "The options of FallenSafeCracker");
 				return true;
 			} catch (final IOException e) {
 				return false;

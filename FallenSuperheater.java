@@ -55,7 +55,6 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.util.GlobalConfiguration;
 
 /* @Updated 2.1.2011.
  * * * * *  Version 5.99  * * * *
@@ -620,7 +619,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 
 		private boolean loadOptions(final Properties file) {
 			try {
-				file.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSuperheater.ini")));
+				file.load(new FileInputStream(new File(getCacheDirectory(), "FallenSuperheater.ini")));
 			} catch (final FileNotFoundException e) {
 				return false;
 			} catch (final IOException e) {
@@ -738,7 +737,7 @@ public class FallenSuperheater extends Script implements PaintListener,
 			file.setProperty("Mouse", Mouse);
 			// Saving the file.
 			try {
-				file.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "FallenSuperheater.ini")), "Options for FallenSuperheater.");
+				file.store(new FileWriter(new File(getCacheDirectory(), "FallenSuperheater.ini")), "Options for FallenSuperheater.");
 				return true;
 			} catch (final IOException e) {
 				return false;

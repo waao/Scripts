@@ -71,7 +71,6 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.util.GlobalConfiguration;
 
 @ScriptManifest(authors = { "WhiteBear" }, keywords = "Magic All in One", name = "White Bear AIO Magic", version = 2.11, description = "Flawless All-in-One script for training magic!", website = "http://whitebearrs.orgfree.com")
 public class WhiteBearAIOMagic extends Script implements PaintListener,
@@ -183,7 +182,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		private boolean load() {
 			try {
-				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(getCacheDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final java.lang.Exception e) {
 				log.severe("[ERROR] Could not load settings file!");
 				return false;
@@ -334,7 +333,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		private boolean personalize() {
 			try {
-				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(getCacheDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final java.lang.Exception e) {
 			}
 			if (WBini.getProperty("ABallRand") == null) {
@@ -364,7 +363,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				WBini.setProperty("ABmoveMouseB", Integer.toString(Methods.random(55, 105)));
 			}
 			try {
-				WBini.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
+				WBini.store(new FileWriter(new File(getCacheDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
 						+ Double.toString(properties.version()) + ")");
 			} catch (final java.lang.Exception e) {
 				log.severe("[ERROR] Could not save settings file!");
@@ -796,7 +795,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 				WBini.setProperty("CRcustomTO", formattedTextField1.getText());
 				WBini.setProperty("CRcustomTOR", formattedTextField3.getText());
 				try {
-					WBini.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
+					WBini.store(new FileWriter(new File(getCacheDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
 							+ Double.toString(properties.version()) + ")");
 				} catch (final IOException ioe) {
 					log.warning("[GUI] Error occurred when saving GUI settings!");
@@ -1295,7 +1294,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		public boolean loadSettings() {
 			try {
-				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(getCacheDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final FileNotFoundException e) {
 				return false;
 			} catch (final IOException e) {
@@ -1924,7 +1923,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 					WBini.setProperty("RelogTime", formattedTextField31.getText());
 				}
 				try {
-					WBini.store(new FileWriter(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
+					WBini.store(new FileWriter(new File(getCacheDirectory(), "WhiteBearAIOMagicV2.ini")), "The GUI Settings for White Bear AIO Magic (Version: "
 							+ Double.toString(properties.version()) + ")");
 					if (first) {
 						log("[GUI] Created a settings file!");
@@ -2930,7 +2929,7 @@ public class WhiteBearAIOMagic extends Script implements PaintListener,
 
 		public boolean loadSettings() {
 			try {
-				WBini.load(new FileInputStream(new File(GlobalConfiguration.Paths.getSettingsDirectory(), "WhiteBearAIOMagicV2.ini")));
+				WBini.load(new FileInputStream(new File(getCacheDirectory(), "WhiteBearAIOMagicV2.ini")));
 			} catch (final FileNotFoundException e) {
 				log.warning("[GUI] Settings file was not found!");
 				first = true;

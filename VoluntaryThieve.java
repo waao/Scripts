@@ -52,9 +52,8 @@ import org.rsbot.script.wrappers.RSItem;
 import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.util.GlobalConfiguration;
 
-@ScriptManifest(authors = "vilon", name = "Voluntary Thieve", keywords = "Thieving", version = 1.13, description = "Blackjacks/pickpockets the trainers and volunteers in the Thieves' Guild.")
+@ScriptManifest(authors = "vilon", name = "Voluntary Thieve", keywords = "Thieving", version = 1.13, description = "Blackjacks/pickpockets the trainers and volunteers in the Thieves' Guild.", requiresVersion = 242)
 public final class VoluntaryThieve extends Script implements
 		MouseInputListener, PaintListener, MessageListener {
 
@@ -2703,7 +2702,7 @@ public final class VoluntaryThieve extends Script implements
 		 *         successfully; otherwise <tt>false</tt>.
 		 */
 		private boolean downloadUpdate() {
-			final String savePath = GlobalConfiguration.Paths.getScriptsSourcesDirectory()
+			final String savePath = org.rsbot.Configuration.Paths.getScriptsSourcesDirectory()
 					+ File.separator + VoluntaryThieve.class.getName();
 
 			BufferedReader bufferedReader = null;
