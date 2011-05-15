@@ -15,11 +15,11 @@ import java.awt.*;
  * Please remember paid scripts are always better!
  */
 
-@ScriptManifest(name = "godChopperLite", authors = {"Timer"}, description = "Cuts and banks trees, oaks, willows, and maples.", website = "http://www.powerbot.org/vb/showthread.php?t=783709", version = 0.1, keywords = {"tree", "oak", "willow", "maple"}, requiresVersion = 242)
+@ScriptManifest(name = "godChopperLite", authors = {"Timer"}, description = "Cuts and banks trees, oaks, willows, maples, yews, and magics.", website = "http://www.powerbot.org/vb/showthread.php?t=783709", version = 0.1, keywords = {"tree", "oak", "willow", "maple"}, requiresVersion = 242)
 public class godChopperLite extends Script implements PaintListener, MessageListener {
 	private RSObject object = null;
 	private static String treeName = "";
-	private static final String[] TREES = {"Tree", "Oak", "Willow", "Maple"};
+	private static final String[] TREES = {"Tree", "Oak", "Willow", "Maple", "Yew", "Magic"};
 	private static final Filter<RSObject> TREE = new Filter<RSObject>() {
 		public boolean accept(RSObject rsObject) {
 			return rsObject != null && rsObject.getName() != null && rsObject.getName().equals(treeName) && containsAction(rsObject.getDef().getActions(), "Chop");
@@ -58,6 +58,13 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 			return 1800;
 		}
 		if (timer != null && timer.isRunning() && getMyPlayer().getAnimation() != -1 && (object == null || (verify(object) && TREE.accept(object)))) {
+			if (random(0, 10) == 0) {
+				mouse.moveRandomly(300);
+			} else if (random(0, 5) == 0) {
+				if (calc.pointOnScreen(mouse.getLocation())) {
+					mouse.moveOffScreen();
+				}
+			}
 			return 80;
 		}
 		if (inventory.isFull()) {

@@ -49,6 +49,13 @@ public class godMinerLite extends Script implements PaintListener, MessageListen
 			return 1800;
 		}
 		if (timer != null && timer.isRunning() && isMining()) {
+			if (random(0, 10) == 0) {
+				mouse.moveRandomly(300);
+			} else if (random(0, 5) == 0) {
+				if (calc.pointOnScreen(mouse.getLocation())) {
+					mouse.moveOffScreen();
+				}
+			}
 			return 80;
 		}
 		if (inventory.isFull()) {

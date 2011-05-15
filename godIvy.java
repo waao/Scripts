@@ -35,9 +35,9 @@ public class godIvy extends Script implements PaintListener {
 			return -1;
 		}
 		if ((getMyPlayer().isMoving() && walkWeb == null) || getMyPlayer().getAnimation() != -1) {
-			if (random(0, 150) == 0) {
+			if (random(0, 10) == 0) {
 				mouse.moveRandomly(300);
-			} else if (random(0, 10) == 0) {
+			} else if (random(0, 5) == 0) {
 				if (calc.pointOnScreen(mouse.getLocation())) {
 					mouse.moveOffScreen();
 				}
