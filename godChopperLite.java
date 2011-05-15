@@ -5,11 +5,9 @@ import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.util.Timer;
-import org.rsbot.script.wrappers.RSModel;
-import org.rsbot.script.wrappers.RSObject;
-import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.script.wrappers.RSWeb;
+import org.rsbot.script.wrappers.*;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -42,6 +40,7 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 	private Timer timer = new Timer(60000);
 	private RSTile returnTile = null;
 	private RSWeb walkWeb = null;
+	private boolean powerChop = true;
 
 	@Override
 	public int loop() {
@@ -60,44 +59,53 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 			return 80;
 		}
 		if (inventory.isFull()) {
-			final RSTile tile = getMyPlayer().getLocation();
-			if (returnTile == null) {
-				returnTile = tile;
-			}
-			final RSTile bankTile = web.getNearestBank(tile);
-			if (bankTile != null) {
-				if (calc.distanceTo(bankTile) < 4) {
-					final int h = inventoryHatchetID();
-					if (bank.isOpen() || bank.open()) {
-						for (int i = 0; i < 10; i++) {
-							if (inventory.getCount() > 0) {
-								if (h != -1) {
-									bank.depositAllExcept(h);
-								} else {
-									bank.depositAll();
+			if (powerChop) {
+				for (RSItem item : inventory.getItems()) {
+					if (item != null && item.getID() != -1 && !item.getName().contains("hatchet")) {
+						item.doAction(random(0, 150) == 0 ? "Examine" : "Drop");
+						sleep(random(20, 480));
+					}
+				}
+			} else {
+				final RSTile tile = getMyPlayer().getLocation();
+				if (returnTile == null) {
+					returnTile = tile;
+				}
+				final RSTile bankTile = web.getNearestBank(tile);
+				if (bankTile != null) {
+					if (calc.distanceTo(bankTile) < 4) {
+						final int h = inventoryHatchetID();
+						if (bank.isOpen() || bank.open()) {
+							for (int i = 0; i < 10; i++) {
+								if (inventory.getCount() > 0) {
+									if (h != -1) {
+										bank.depositAllExcept(h);
+									} else {
+										bank.depositAll();
+									}
+									sleep(250);
 								}
-								sleep(250);
 							}
-						}
-						walkWeb = null;
-					}
-				} else {
-					if (walkWeb == null) {
-						walkWeb = web.getWeb(tile, bankTile);
-					}
-					if (!walkWeb.finished()) {
-						if (!walkWeb.step()) {
 							walkWeb = null;
-							return 0;
 						}
 					} else {
-						walkWeb = null;
+						if (walkWeb == null) {
+							walkWeb = web.getWeb(tile, bankTile);
+						}
+						if (!walkWeb.finished()) {
+							if (!walkWeb.step()) {
+								walkWeb = null;
+								return 0;
+							}
+						} else {
+							walkWeb = null;
+						}
 					}
 				}
 			}
 			return 200;
 		}
-		if (returnTile != null) {
+		if (!powerChop && returnTile != null) {
 			final RSTile tile = getMyPlayer().getLocation();
 			if (calc.distanceTo(returnTile) > 4) {
 				if (walkWeb == null) {
@@ -139,6 +147,17 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 	}
 
 	public boolean onStart() {
+		int returnInt = JOptionPane.showConfirmDialog(null, "Do you wish to bank the logs?", "Powerchop or Bank", JOptionPane.YES_NO_OPTION);
+		switch (returnInt) {
+			case JOptionPane.YES_OPTION:
+				powerChop = false;
+				break;
+			case JOptionPane.NO_OPTION:
+				powerChop = true;
+				break;
+			default:
+				return false;
+		}
 		double distance = 100.0;
 		String finalTree = null;
 		for (String tree : TREES) {
