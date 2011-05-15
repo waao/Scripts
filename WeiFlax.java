@@ -45,7 +45,6 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-
 		// JFormDesigner - Variables declaration - DO NOT MODIFY
 		// //GEN-BEGIN:variables
 		private JButton button1;
@@ -112,10 +111,8 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		}
 	}
 
-	Rectangle close = new Rectangle(7, 344, 499, 465);// this is the point on
-	// screen you click in
-	// to turn pain on and
-	// off.
+	// this is the point on screen you click in to turn pain on and off.
+	Rectangle close = new Rectangle(7, 344, 499, 465);
 	Point p;
 
 	boolean hide = false;
@@ -238,8 +235,10 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 					}
 				} else {
 					bank.depositAll();
-					if (bank.getCount(flax) < 28) {
-						game.logout(true);
+					if (bank.getCount(flax) < 28
+							&& option == "Lumbridge Spinning") {
+						env.saveScreenshot(true);
+						stopScript(true);
 					}
 				}
 			}
@@ -352,8 +351,6 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		} catch (final Exception ignore) {
 		}
 	}
-
-	// END: Code generated using Enfilade's Easel
 
 	// START: Code generated using Enfilade's Easel
 	private Image getImage(final String url) {
@@ -664,6 +661,8 @@ public class WeiFlax extends Script implements PaintListener, MessageListener,
 		}
 
 	}
+
+	// END: Code generated using Enfilade's Easel
 
 	@Override
 	public void mouseDragged(final MouseEvent arg0) {
