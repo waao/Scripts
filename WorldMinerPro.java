@@ -12,6 +12,7 @@ import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.methods.Game;
+import org.rsbot.script.methods.Methods;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.RSArea;
@@ -23,645 +24,26 @@ import org.rsbot.script.wrappers.RSTilePath;
 @ScriptManifest(authors = "Brian", website = "http://www.powerbot.org/vb/showthread.php?t=641161", keywords = "Mining", name = "WorldMinerPro", version = 4.5, description = "Multiple Location Miner")
 public class WorldMinerPro extends Script implements PaintListener,
 		MessageListener {
-	private minegui minegui;
-	/**
-	 * Tiles
-	 */
-	// public RSTile[] toBank;
-	// public RSTile[] toMine;
-	public RSTilePath toBank;
-	public RSTilePath toMine;
-	public RSTile BankTile;
-	public RSTile MineTile;
-	public RSTile FixGate = new RSTile(3045, 9742);
-	public RSArea guildarea = new RSArea(new RSTile(3055, 9757), new RSTile(
-			3026, 9732));
-	/**
-	 * Objects
-	 */
-	public RSObject Rock;
-	/**
-	 * Integers
-	 */
-	int countpaint;
-	int AntiBan;
-	int SleepTime;
-	int MouseSpeed;
-	int[] Rocks;
-	int OreMined;
-	int GemsMined;
-	int profit;
-	int coalprice;
-	int copperprice;
-	int silverprice;
-	int ironprice;
-	int clayprice;
-	int tinprice;
-	int startexp;
-	int xpGained;
-	int startlvl;
-	int timebanked;
-	int pickID[] = { 1265, 1269, 1267, 1273, 1271, 1275, 15259, 15261 };
-	int[] goladdup = { 6226 };
-	int[] goladdown = { 2113 };
-	int[] thebankid = { 11402, 11758, 11402, 2213, 35647, 26972 };
-	int[] cross = { 14504 };
-	Color thecoller;
-
-	/**
-	 * Strings
-	 */
-
-	/**
-	 * Booleans
-	 */
-	boolean PowerMine;
-	boolean Start = false;
-	boolean Settings = false;
-	boolean MineGuild = false;
-	boolean HidePaint = false;
-	boolean wildi = false;
-	boolean paint = true;
-	boolean rest = false;
-	boolean safepaint = false;
-	/**
-	 * Others
-	 */
-	BufferedImage normal = null;
-	BufferedImage clicked = null;
-	BufferedImage cape = null;
-	long startTime = System.currentTimeMillis();
-
-	@Override
-	public boolean onStart() {
-		log("Welcome to WorldMinerPro 4");
-		minegui = new minegui();
-		minegui.setVisible(true);
-		startlvl = skills.getCurrentLevel(Skills.MINING);
-		startexp = skills.getCurrentExp(Skills.MINING);
-
-		// coalprice = grandExchange.getMarketPrice(453);
-		// copperprice = grandExchange.getMarketPrice(436);
-		// ironprice = grandExchange.getMarketPrice(440);
-		// tinprice = grandExchange.getMarketPrice(438);
-		// silverprice = grandExchange.getMarketPrice(442);
-		// clayprice = grandExchange.getMarketPrice(434);
-		return true;
-	}
-
-	@Override
-	public void messageReceived(MessageEvent e) {
-		String svrmsg = e.getMessage();
-		if (svrmsg.contains("iron")) {
-			OreMined = OreMined + 1;
-			// profit = ironprice * OreMined;
-		}
-		if (svrmsg.contains("tin")) {
-			OreMined = OreMined + 1;
-			// profit = tinprice * OreMined;
-		}
-		if (svrmsg.contains("copper")) {
-			OreMined = OreMined + 1;
-			// profit = copperprice * OreMined;
-		}
-		if (svrmsg.contains("coal")) {
-			OreMined = OreMined + 1;
-			// profit = coalprice * OreMined;
-		}
-		if (svrmsg.contains("silver")) {
-			OreMined = OreMined + 1;
-			// profit = silverprice * OreMined;
-		}
-		if (svrmsg.contains("gold")) {
-			OreMined = OreMined + 1;
-		}
-		if (svrmsg.contains("clay")) {
-			// profit = clayprice * OreMined;
-			OreMined = OreMined + 1;
-		}
-		if (svrmsg.contains("just found")) {
-			GemsMined = GemsMined + 1;
-		}
-	}
-
-	@Override
-	public int loop() {
-		if (Start) {
-			if (Settings) {
-				mouse.setSpeed(MouseSpeed);
-				camera.setPitch(random(90, 100));
-				Settings = false;
-			}
-			if (walking.getEnergy() > random(60, 100)) {
-				walking.setRun(true);
-			}
-			if (rest) {
-				if (walking.getEnergy() < 2) {
-					walking.rest();
-				}
-			}
-			DoAntiBan();
-			if (inventory.isFull()) {
-				if (PowerMine) {
-					DropOre();
-				} else if (!PowerMine) {
-					Bank();
-				}
-			} else if (!inventory.isFull()) {
-				Mine();
-
-			}
-		}
-		return 10;
-
-	}
-
-	public boolean DropOre() {
-		while (inventory.getCount() > 1) {
-			inventory.dropAllExcept(pickID);
-		}
-		return true;
-	}
-
-	public void DoAntiBan() {
-		AntiBan = AntiBan + 1;
-		if (AntiBan == 400) {
-			sleep(random(200, 300));
-			int randomizer = random(1, 5);
-			if (randomizer == 2) {
-				camera.setAngle(random(0, 180));
-				camera.setPitch(random(80, 100));
-			}
-			if (randomizer == 3) {
-				if (getMyPlayer().getAnimation() == 624) {
-					game.openTab(Game.TAB_STATS);
-					mouse.move(704 + random(-30, 29), 223 + random(-13, 13));
-					sleep(random(500, 1250));
-					game.openTab(Game.TAB_INVENTORY);
-				}
-			}
-			if (randomizer == 4) {
-				if (getMyPlayer().getAnimation() == 624) {
-					game.openTab(Game.TAB_FRIENDS);
-					sleep(random(500, 1250));
-					game.openTab(Game.TAB_INVENTORY);
-				}
-			}
-			AntiBan = 0;
-		}
-	}
-
-	public void Mine() {
-		SleepTime = 1;
-		RSObject ore = objects.getNearest(Rocks);
-		if (ore != null) {
-			if (calc.distanceTo(ore) < 6) {
-
-				if (getMyPlayer().getAnimation() == 624) {
-					// Already mining
-					if (!onHorizontalOrVertTile(ore.getLocation())) {
-						// Death Rock
-						if (ore.isOnScreen()) {
-							if (MineGuild) {
-								if (guildarea.contains(ore.getLocation())) {
-
-								} else {
-									walking.walkTo(FixGate);
-									sleep(1500);
-									return;
-								}
-							}
-							ore.doAction("Mine");
-							SleepTime = 1000;
-
-						} else {
-							if (MineGuild) {
-								if (guildarea.contains(ore.getLocation())) {
-
-								} else {
-									walking.walkTo(FixGate);
-									sleep(1500);
-									return;
-								}
-							}
-							camera.turnTo(ore);
-							ore.doAction("Mine");
-							SleepTime = 1000;
-						}
-					}
-					if (menu.contains("Mine")) {
-					} else {
-						RSObject NextOre = getSecondNearest(ore, Rocks);
-						if (NextOre != null) {
-							if (NextOre.isOnScreen()) {
-								mouse.move(calc.tileToScreen(NextOre
-										.getLocation()), 13, 13);
-								return;
-							} else {
-								camera.turnTo(NextOre);
-								mouse.move(calc.tileToScreen(NextOre
-										.getLocation()), 13, 13);
-								return;
-							}
-						}
-					}
-				}
-				if (getMyPlayer().getAnimation() == -1) {
-					if (ore.isOnScreen()) {
-						if (getMyPlayer().isMoving()) {
-						} else {
-							if (MineGuild) {
-								if (guildarea.contains(ore.getLocation())) {
-
-								} else {
-									walking.walkTo(FixGate);
-									sleep(1500);
-									return;
-								}
-							}
-							ore.doAction("Mine");
-							SleepTime = 1000;
-						}
-					} else {
-						if (getMyPlayer().isMoving()) {
-						} else {
-							if (MineGuild) {
-								if (guildarea.contains(ore.getLocation())) {
-
-								} else {
-									walking.walkTo(FixGate);
-									sleep(1500);
-									return;
-								}
-							}
-							camera.turnTo(ore);
-							ore.doAction("Mine");
-							SleepTime = 1000;
-						}
-					}
-
-				}
-			} else {
-				if (MineGuild) {
-					if (guildarea.contains(ore.getLocation())) {
-
-					} else {
-						walking.walkTo(FixGate);
-						sleep(1500);
-						return;
-					}
-				}
-				walking.walkTileMM(ore.getLocation());
-				SleepTime = 1500;
-			}
-		} else {
-			if (MineGuild) {
-				RSObject LadderDown = objects.getNearest(goladdown);
-				if (LadderDown != null) {
-					if (calc.distanceTo(LadderDown) < 4) {
-						camera.turnTo(LadderDown);
-						LadderDown.doAction("Climb-down");
-						SleepTime = 2000;
-					} else {
-						// walking.walkPathMM(toMine, 2 ,2);
-						toMine.traverse();
-						SleepTime = 1500;
-					}
-				} else {
-					// walking.walkPathMM(toMine, 2 ,2);
-					toMine.traverse();
-				}
-			} else {
-				if (calc.distanceTo(MineTile) < 7) {
-					if (!isObjectValid("Rocks")) {
-						// log.severe("If you see this! THEN MAKE SURE TO REPORT THIS AT WORLDMINERPRO THREAD");
-						while (isObjectValid("Rocks")) {
-							if (calc.distanceTo(walking.getDestination()) < random(
-									3, 5)) {
-								toMine.traverse();
-							}
-						}
-					}
-				} else {
-					// walking.walkPathMM(toMine, 2 ,2);
-					while (calc.distanceTo(MineTile) > 6) {
-						if (calc.distanceTo(walking.getDestination()) < random(
-								3, 5)) {
-							toMine.traverse();
-						}
-					}
-				}
-			}
-			SleepTime = 1500;
-		}
-		sleep(SleepTime);
-	}
-
-	public void Bank() {
-		SleepTime = 1;
-		RSObject BankBooth = objects.getNearest(thebankid);
-		if (calc.distanceTo(BankTile) < 5) {
-			if (!isObjectValid("Banker")) {
-				while (isObjectValid("Banker")) {
-					if (calc.distanceTo(walking.getDestination()) < random(3, 5)) {
-						toBank.traverse();
-					}
-				}
-			}
-			if (!bank.isOpen()) {
-				BankBooth.doAction("Use-quickly");
-				sleep(3000);
-				SleepTime = 1500;
-			}
-			if (bank.isOpen()) {
-				bank.depositAllExcept(pickID);
-				bank.close();
-				timebanked = timebanked + 1;
-				SleepTime = 1500;
-			}
-		} else {
-			SleepTime = 1500;
-			if (MineGuild) {
-				RSObject LadderUp = objects.getNearest(goladdup);
-				if (LadderUp != null) {
-					if (calc.distanceTo(LadderUp) < 4) {
-						camera.turnTo(LadderUp);
-						LadderUp.doAction("Climb-up");
-						SleepTime = 1500;
-					} else {
-						// walking.walkPathMM(toBank, 2,2);
-						toBank.traverse();
-					}
-				} else {
-					// walking.walkPathMM(toBank, 2 ,2);
-					toBank.traverse();
-				}
-			} else {
-				// walking.walkPathMM(toBank, 2 ,2);
-
-				if (calc.distanceTo(walking.getDestination()) < random(3, 5)) {
-					toBank.traverse();
-				}
-
-			}
-		}
-		sleep(SleepTime);
-	}
-
-	public void AntiBan() {
-
-	}
-
-	@Override
-	public void onRepaint(Graphics g) {
-		if (Start) {
-			if (paint) {
-
-				drawModel(g, objects.getNearest(Rocks), Color.BLUE, "",
-						Color.BLACK);
-
-				int lvlGain = skills.getCurrentLevel(Skills.MINING) - startlvl;
-				xpGained = skills.getCurrentExp(Skills.MINING) - startexp;
-				if (xpGained == 0) {
-				} else {
-					long millis = System.currentTimeMillis() - startTime;
-					int xpPerHour = (int) (3600000.0 / millis * xpGained);
-					int orePerHour = (int) (3600000.0 / millis * OreMined);
-					// int profPerHour = (int) (3600000.0 / millis * profit);
-					long hours = millis / (1000 * 60 * 60);
-					millis -= hours * (1000 * 60 * 60);
-					long minutes = millis / (1000 * 60);
-					millis -= minutes * (1000 * 60);
-					long seconds = millis / 1000;
-					int TTL = skills.getExpToNextLevel(Skills.MINING)
-							/ xpPerHour;
-					int XPtoLvl = skills.getExpToNextLevel(Skills.MINING);
-					int T99 = (13034431 - skills.getCurrentExp(Skills.MINING))
-							/ xpPerHour;
-					int percent = skills.getPercentToNextLevel(Skills.MINING);
-					countpaint = countpaint + 1;
-
-					g.drawLine(0, mouse.getLocation().y, 765,
-							mouse.getLocation().y);
-					g.drawLine(mouse.getLocation().x, 0, mouse.getLocation().x,
-							506);
-
-					Rectangle r = new Rectangle(496, 345, 15, 14);
-					if (r.contains(mouse.getLocation())) {
-						HidePaint = true;
-					} else {
-						HidePaint = false;
-					}
-					// End Mouse
-					if (HidePaint == true) {
-						g.setColor(new Color(255, 0, 0, 250));
-						g.fillRect(496, 345, 15, 14);
-					}
-					// Screen Paint
-					if (HidePaint == false) {
-						g.setColor(new Color(0, 0, 0, 203));
-						g.fillRect(7, 345, 505, 128);
-						g.setColor(new Color(255, 0, 0, 250));
-						g.fillRect(496, 345, 15, 14);
-						g.setColor(new Color(0, 0, 0));
-						g.drawLine(510, 345, 496, 359);
-						g.setColor(new Color(0, 0, 0));
-						g.drawLine(510, 359, 496, 345);
-						g.setFont(new Font("Comic Sans MS", 0, 16));
-						g.setColor(new Color(255, 0, 0));
-						g.drawString("Brian's World Miner Pro", 16, 360);
-						g.setFont(new Font("Century Schoolbook", 0, 12));
-						g.setColor(new Color(255, 0, 0));
-						g.drawString("Runtime: " + hours + ":" + minutes + ":"
-								+ seconds, 16, 375);
-						g.setFont(new Font("Century Schoolbook", 0, 12));
-						g.setColor(new Color(255, 0, 0));
-						g.drawString("Exp/H: " + xpPerHour, 16, 389);
-						g.setFont(new Font("Century Schoolbook", 0, 12));
-						g.setColor(new Color(255, 0, 0));
-						g.drawString("Ores Mined: " + OreMined, 16, 403);
-						g.drawString("Gems Mined: " + GemsMined, 16, 417);
-						g.drawString("TTL: " + TTL + " Hours", 16, 431);
-						g.drawString("Exp TL: " + XPtoLvl, 16, 445);
-						g.drawString("Time T99: " + T99 + " Hours", 16, 459);
-						g.drawString(percent + "% to next level", 156, 375);
-						g.drawString(
-								"Exp: " + skills.getCurrentExp(Skills.MINING),
-								156, 389);
-						// g.drawString("Profit: " + profit + "gp", 156, 403);
-						g.drawString("Levels Gained: " + lvlGain, 156, 417);
-						g.drawString("Ores/H: " + orePerHour, 156, 431);
-						g.drawString("Exp Gained: " + xpGained, 156, 445);
-						g.drawString(
-								"Level: "
-										+ skills.getCurrentLevel(Skills.MINING),
-								156, 459);
-						// g.drawString("Profit/H: " + profPerHour, 296, 375);
-						g.drawString("Banked: " + timebanked, 156, 403);
-						// Cape Image
-
-						// g.drawImage(cape, 441, 339, null);
-					}
-
-				}
-			}
-		}
-		if (safepaint) {
-			if (startexp == 0) {
-				startexp = skills.getCurrentExp(Skills.MINING);
-			}
-			int lvlGain = skills.getCurrentLevel(Skills.MINING) - startlvl;
-			xpGained = skills.getCurrentExp(Skills.MINING) - startexp;
-			long millis = System.currentTimeMillis() - startTime;
-			int orePerHour = (int) (3600000.0 / millis * OreMined);
-			int xpPerHour = (int) (3600000.0 / millis * xpGained);
-			long hours = millis / (1000 * 60 * 60);
-			millis -= hours * (1000 * 60 * 60);
-			long minutes = millis / (1000 * 60);
-			millis -= minutes * (1000 * 60);
-			long seconds = millis / 1000;
-
-			g.setColor(new Color(0, 0, 0, 215));
-			g.fillRect(7, 345, 507, 114);
-			g.setFont(new Font("Calibri", 0, 20));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("WorldMinerPro", 13, 364);
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("Runtime: " + hours + ":" + minutes + ":" + seconds,
-					14, 380);
-			g.drawString("Gems Mined: " + GemsMined, 180, 380);
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("Exp Gained: " + xpGained, 13, 394);
-
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("Exp/H: " + xpPerHour, 14, 409);
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("Ores Mined: " + OreMined, 14, 424);
-			g.drawString("Level: " + skills.getCurrentLevel(Skills.MINING),
-					180, 424);
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("Ores/H: " + orePerHour, 14, 438);
-			g.drawString("EXP: " + skills.getCurrentExp(Skills.MINING), 180,
-					438);
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("Levels Gained: " + lvlGain, 14, 452);
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			// g.drawString("Profit:" + profit + " gp", 180, 452);
-			g.setFont(new Font("Calibri", 0, 14));
-			g.setColor(new Color(255, 0, 0));
-			g.drawString("Brianpsv1", 451, 452);
-
-			g.setColor(Color.BLACK);
-			g.setColor(Color.RED);
-
-			final int percent = skills.getPercentToNextLevel(Skills.MINING);
-
-			g.setColor(Color.red);
-			g.fillRoundRect(180, 400, 100, 10, 15, 15); // these must be on same
-														// cordinates
-			g.setColor(Color.black);
-			g.fillRoundRect(180, 400, percent, 10, 15, 15); // these must be on
-															// same cordinates
-			g.setColor(Color.red);
-			g.drawString("" + percent + "%", 220, 410); // this must be in the
-														// center of the bar
-			g.setColor(Color.blue);
-
-			g.setColor(Color.black);
-			g.drawRoundRect(180, 400, 100, 10, 15, 15); // these must be on same
-														// cordinates
-		}
-
-	}
-
-	@Override
-	public void onFinish() {
-		log("Thanks for using.");
-	}
-
-	public boolean onHorizontalOrVertTile(RSTile tile) {
-		boolean bool = false;
-		if (getMyPlayer().getLocation().getX() == tile.getX()
-				|| getMyPlayer().getLocation().getY() == tile.getY()) {
-			if (calc.distanceTo(tile) == 1) {
-				bool = true;
-			} else
-				bool = false;
-		}
-		return bool;
-	}
-
-	public void drawModel(Graphics g, RSObject o, Color c, String s, Color tc) {
-		if (o != null) {
-			Polygon[] model = o.getModel().getTriangles();
-			Point point = calc.tileToScreen(o.getLocation());
-			for (Polygon p : model) {
-				g.setColor(c);
-				g.fillPolygon(p);
-				g.setColor(c.darker());
-				g.drawPolygon(p);
-			}
-
-			g.setColor(tc);
-			g.drawString(s, point.x - 75, point.y - 35);
-		}
-	}
-
-	public RSTile[] reversePath(RSTile[] other) {
-		RSTile[] t = new RSTile[other.length];
-		for (int i = 0; i < t.length; i++) {
-			t[i] = other[other.length - i - 1];
-		}
-		return t;
-	}
-
-	/*
-	 * public boolean isObjectValid(final String ObjName) { objects.getAll(new
-	 * Filter<RSObject>() { public boolean accept(RSObject t) { boolean b =
-	 * false; try { String a = t.getDef().getName(); if(a == ObjName) { b =
-	 * true; }
-	 * 
-	 * } catch(NullPointerException ignored) {}
-	 * 
-	 * return b; } }); return true; }
-	 */
-	public boolean isObjectValid(final String name) {
-		return objects.getAll(new Filter<RSObject>() {
-			@Override
-			public boolean accept(RSObject t) {
-
-				RSObjectDef def = t.getDef();
-
-				return def != null && def.getName() != null
-						&& def.getName().equals(name);
-			}
-		}).length > 0;
-	}
-
-	public RSObject getSecondNearest(final RSObject curRock, final int... ids) {
-		return objects.getNearest(new Filter<RSObject>() {
-			@Override
-			public boolean accept(RSObject o) {
-				if (curRock.equals(o))
-					return false;
-				for (int id : ids)
-					if (o.getID() == id)
-						return true;
-				return false;
-			}
-		});
-	}
-
 	@SuppressWarnings("serial")
 	public class minegui extends javax.swing.JFrame {
 
+		// Variables declaration - do not modify
+		private javax.swing.JButton jButton1;
+
+		private javax.swing.JCheckBox jCheckBox1;
+
+		private javax.swing.JComboBox jComboBox1;
+
+		private javax.swing.JLabel jLabel1;
+
+		private javax.swing.JLabel jLabel2;
+		private javax.swing.JLabel jLabel3;
+		private javax.swing.JLabel jLabel4;
+		private javax.swing.JScrollPane jScrollPane1;
+		private javax.swing.JSlider jSlider1;
+		private javax.swing.JTree jTree1;
+
+		// End of variables declaration
 		/** Creates new form minegui */
 		public minegui() {
 			initComponents();
@@ -690,7 +72,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			setResizable(false);
 
 			jTree1.setFont(new java.awt.Font("Comic Sans MS", 0, 11)); // NOI18N
-			javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode(
+			final javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode(
 					"Miner");
 			javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode(
 					"Banking");
@@ -829,7 +211,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 					java.awt.Cursor.CROSSHAIR_CURSOR));
 			jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
 				@Override
-				public void mouseClicked(java.awt.event.MouseEvent evt) {
+				public void mouseClicked(final java.awt.event.MouseEvent evt) {
 					jTree1MouseClicked(evt);
 				}
 			});
@@ -842,7 +224,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			jButton1.setText("Run");
 			jButton1.addActionListener(new java.awt.event.ActionListener() {
 				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					jButton1ActionPerformed(evt);
 				}
 			});
@@ -862,7 +244,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 
 			jCheckBox1.setText("Rest");
 
-			javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
+			final javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
 					getContentPane());
 			getContentPane().setLayout(layout);
 			layout.setHorizontalGroup(layout
@@ -1010,283 +392,50 @@ public class WorldMinerPro extends Script implements PaintListener,
 			pack();
 		}// </editor-fold>
 
-		private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {
-			try {
-				jLabel1.setText(jTree1.getLastSelectedPathComponent()
-						.toString());
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Lumbridge Swamp [Copper]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/2ilejbp.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Lumbridge Swamp [Coal]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i53.tinypic.com/2v8fkft.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("East Varrock [Iron]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i54.tinypic.com/ak7803.jpg"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("South Varrock [Iron]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/o7uk5e.jpg"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Crafting Guild [Gold]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i55.tinypic.com/6pt5w1.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Crafting Guild [Silver]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/oacdj5.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Crafting Guild [Clay]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/sw4nl4.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Rimmington [Iron]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/hvqovm.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Rimmington [Clay]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i54.tinypic.com/jkgd5k.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Rimmington [Copper]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/qya36b.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Mining Guild [Coal]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/xf0wlw.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Mining Guild [Coal, Mithril]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i56.tinypic.com/xf0wlw.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Al Kharid [Iron]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i53.tinypic.com/97l5bm.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-				if (jTree1.getLastSelectedPathComponent().toString()
-						.contains("Barbarian Village [Coal]")) {
-					jLabel2.setIcon(new javax.swing.JLabel() {
-						@Override
-						public javax.swing.Icon getIcon() {
-
-							try {
-								return new javax.swing.ImageIcon(
-										new java.net.URL(
-												"http://i51.tinypic.com/2guxxmf.png"));
-							} catch (java.net.MalformedURLException e) {
-							}
-							return null;
-						}
-					}.getIcon());
-				}
-			} catch (NullPointerException e) {
-
-			}
-		}
-
-		private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+		private void jButton1ActionPerformed(
+				final java.awt.event.ActionEvent evt) {
 			MouseSpeed = jSlider1.getValue();
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Barbarian Village [Coal]")) {
-				RSTile[] path = { new RSTile(3084, 3421),
+				final RSTile[] path = { new RSTile(3084, 3421),
 						new RSTile(3085, 3433), new RSTile(3085, 3439),
 						new RSTile(3090, 3449), new RSTile(3089, 3455),
 						new RSTile(3087, 3461), new RSTile(3082, 3466),
 						new RSTile(3080, 3476), new RSTile(3080, 3484),
 						new RSTile(3086, 3488), new RSTile(3094, 3491) };
-				RSTile bank = new RSTile(3094, 3491);
-				RSTile mine = new RSTile(3084, 3420);
+				final RSTile bank = new RSTile(3094, 3491);
+				final RSTile mine = new RSTile(3084, 3420);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772 };
+				final int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Barbarian Village [Tin]")) {
-				RSTile[] path = { new RSTile(3084, 3421),
+				final RSTile[] path = { new RSTile(3084, 3421),
 						new RSTile(3085, 3433), new RSTile(3085, 3439),
 						new RSTile(3090, 3449), new RSTile(3089, 3455),
 						new RSTile(3087, 3461), new RSTile(3082, 3466),
 						new RSTile(3080, 3476), new RSTile(3080, 3484),
 						new RSTile(3086, 3488), new RSTile(3094, 3491) };
-				RSTile bank = new RSTile(3094, 3491);
-				RSTile mine = new RSTile(3084, 3420);
+				final RSTile bank = new RSTile(3094, 3491);
+				final RSTile mine = new RSTile(3084, 3420);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11934, 11933, 11935 };
+				final int[] mineRock = { 11934, 11933, 11935 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Lumbridge Swamp [Coal]")) {
-				RSTile[] path = { new RSTile(3146, 3150),
+				final RSTile[] path = { new RSTile(3146, 3150),
 						new RSTile(3145, 3156), new RSTile(3146, 3158),
 						new RSTile(3145, 3160), new RSTile(3145, 3161),
 						new RSTile(3144, 3163), new RSTile(3145, 3164),
@@ -1323,20 +472,20 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3099, 3245), new RSTile(3097, 3247),
 						new RSTile(3094, 3247), new RSTile(3092, 3248),
 						new RSTile(3092, 3244) };
-				RSTile bank = new RSTile(3092, 3244);
-				RSTile mine = new RSTile(3146, 3150);
+				final RSTile bank = new RSTile(3092, 3244);
+				final RSTile mine = new RSTile(3146, 3150);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 3032, 3233 };
+				final int[] mineRock = { 3032, 3233 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Iron]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1361,55 +510,55 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 37309, 37307, 37308 };
+				final int[] mineRock = { 37309, 37307, 37308 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("South Varrock [Iron]")) {
-				RSTile[] path = { new RSTile(3287, 3370),
+				final RSTile[] path = { new RSTile(3287, 3370),
 						new RSTile(3291, 3375), new RSTile(3293, 3374),
 						new RSTile(3292, 3376), new RSTile(3294, 3382),
 						new RSTile(3291, 3394), new RSTile(3291, 3406),
 						new RSTile(3287, 3419), new RSTile(3278, 3429),
 						new RSTile(3268, 3429), new RSTile(3258, 3429),
 						new RSTile(3253, 3420) };
-				RSTile bank = new RSTile(3253, 3420);
-				RSTile mine = new RSTile(3287, 3370);
+				final RSTile bank = new RSTile(3253, 3420);
+				final RSTile mine = new RSTile(3287, 3370);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 9719, 9718, 9717, 11954, 11955, 11956,
+				final int[] mineRock = { 9719, 9718, 9717, 11954, 11955, 11956,
 						37307, 37308, 37309 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("East Varrock [Iron]")) {
-				RSTile[] path = { new RSTile(3175, 3367),
+				final RSTile[] path = { new RSTile(3175, 3367),
 						new RSTile(3172, 3372), new RSTile(3173, 3381),
 						new RSTile(3172, 3387), new RSTile(3172, 3394),
 						new RSTile(3170, 3403), new RSTile(3170, 3413),
 						new RSTile(3170, 3421), new RSTile(3176, 3428),
 						new RSTile(3183, 3430), new RSTile(3187, 3436) };
-				RSTile bank = new RSTile(3187, 3436);
-				RSTile mine = new RSTile(3175, 3367);
+				final RSTile bank = new RSTile(3187, 3436);
+				final RSTile mine = new RSTile(3175, 3367);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 9719, 9718, 9717, 11954, 11955, 11956,
+				final int[] mineRock = { 9719, 9718, 9717, 11954, 11955, 11956,
 						37307, 37308, 37309 };
 				Rocks = mineRock;
 			}
@@ -1418,7 +567,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Rimmington [Iron]")) {
-				RSTile[] path = { new RSTile(2968, 3240),
+				final RSTile[] path = { new RSTile(2968, 3240),
 						new RSTile(2970, 3244), new RSTile(2974, 3248),
 						new RSTile(2977, 3254), new RSTile(2981, 3260),
 						new RSTile(2985, 3266), new RSTile(2990, 3273),
@@ -1432,21 +581,21 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3006, 3357), new RSTile(3007, 3360),
 						new RSTile(3010, 3360), new RSTile(3012, 3359),
 						new RSTile(3012, 3355) };
-				RSTile bank = new RSTile(3012, 3355);
-				RSTile mine = new RSTile(2968, 3240);
+				final RSTile bank = new RSTile(3012, 3355);
+				final RSTile mine = new RSTile(2968, 3240);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 9719, 9718, 9717, 11954, 11955, 11956,
+				final int[] mineRock = { 9719, 9718, 9717, 11954, 11955, 11956,
 						37307, 37308, 37309 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Rimmington [Copper]")) {
-				RSTile[] path = { new RSTile(2968, 3240),
+				final RSTile[] path = { new RSTile(2968, 3240),
 						new RSTile(2970, 3244), new RSTile(2974, 3248),
 						new RSTile(2977, 3254), new RSTile(2981, 3260),
 						new RSTile(2985, 3266), new RSTile(2990, 3273),
@@ -1460,50 +609,50 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3006, 3357), new RSTile(3007, 3360),
 						new RSTile(3010, 3360), new RSTile(3012, 3359),
 						new RSTile(3012, 3355) };
-				RSTile bank = new RSTile(3012, 3355);
-				RSTile mine = new RSTile(2977, 3248);
+				final RSTile bank = new RSTile(3012, 3355);
+				final RSTile mine = new RSTile(2977, 3248);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 9708, 9709, 9710, 11937, 19936, 11938 };
+				final int[] mineRock = { 9708, 9709, 9710, 11937, 19936, 11938 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Rimmington [Clay]")) {
-				int[] mineRock = { 11189, 11190, 11191, 9711, 9713 };
+				final int[] mineRock = { 11189, 11190, 11191, 9711, 9713 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Crafting Guild [Clay]")) {
-				int[] mineRock = { 11189, 11190, 11191, 9711, 9713 };
+				final int[] mineRock = { 11189, 11190, 11191, 9711, 9713 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Crafting Guild [Gold]")) {
-				int[] mineRock = { 11183, 11184, 11185 };
+				final int[] mineRock = { 11183, 11184, 11185 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Crandor [Coal]")) {
-				int[] mineRock = { 14850, 14852, 14851 };
+				final int[] mineRock = { 14850, 14852, 14851 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Crafting Guild [Silver]")) {
-				int[] mineRock = { 11186, 11187, 11188 };
+				final int[] mineRock = { 11186, 11187, 11188 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Lumbridge Swamp [Copper]")) {
-				int[] mineRock = { 3229, 3027 };
+				final int[] mineRock = { 3229, 3027 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Karamja Dungeon [Gold]")) {
-				int[] mineRock = { 32432, 32434, 32433 };
+				final int[] mineRock = { 32432, 32434, 32433 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getSelectionPath().toString().contains("Powermining")) {
@@ -1511,7 +660,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Mining Guild [Coal]")) {
-				RSTile[] path = { new RSTile(3045, 9748),
+				final RSTile[] path = { new RSTile(3045, 9748),
 						new RSTile(3045, 9741), new RSTile(3041, 9738),
 						new RSTile(3035, 9738), new RSTile(3029, 9738),
 						new RSTile(3024, 9739), new RSTile(3021, 9739),
@@ -1520,21 +669,21 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3025, 3349), new RSTile(3022, 3353),
 						new RSTile(3019, 3358), new RSTile(3015, 3360),
 						new RSTile(3013, 3355) };
-				RSTile bank = new RSTile(3013, 3355);
-				RSTile mine = new RSTile(3045, 9748);
+				final RSTile bank = new RSTile(3013, 3355);
+				final RSTile mine = new RSTile(3045, 9748);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772 };
+				final int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772 };
 				Rocks = mineRock;
 				MineGuild = true;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Mining Guild [Coal, Mithril]")) {
-				RSTile[] path = { new RSTile(3045, 9748),
+				final RSTile[] path = { new RSTile(3045, 9748),
 						new RSTile(3045, 9741), new RSTile(3041, 9738),
 						new RSTile(3035, 9738), new RSTile(3029, 9738),
 						new RSTile(3024, 9739), new RSTile(3021, 9739),
@@ -1543,38 +692,38 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3025, 3349), new RSTile(3022, 3353),
 						new RSTile(3019, 3358), new RSTile(3015, 3360),
 						new RSTile(3013, 3355) };
-				RSTile bank = new RSTile(3013, 3355);
-				RSTile mine = new RSTile(3045, 9748);
+				final RSTile bank = new RSTile(3013, 3355);
+				final RSTile mine = new RSTile(3045, 9748);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772, 5786,
-						5785, 5784 };
+				final int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772,
+						5786, 5785, 5784 };
 				Rocks = mineRock;
 				MineGuild = true;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Yanille [Iron]")) {
-				RSTile[] path = { new RSTile(2629, 3136),
+				final RSTile[] path = { new RSTile(2629, 3136),
 						new RSTile(2627, 3127), new RSTile(2623, 3115),
 						new RSTile(2615, 3104), new RSTile(2612, 3092) };
-				RSTile bank = new RSTile(2612, 3092);
-				RSTile mine = new RSTile(2629, 3136);
+				final RSTile bank = new RSTile(2612, 3092);
+				final RSTile mine = new RSTile(2629, 3136);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 37307, 37308, 37309 };
+				final int[] mineRock = { 37307, 37308, 37309 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Wilderness Goblins [Coal]")) {
-				RSTile[] path = { new RSTile(3096, 3494),
+				final RSTile[] path = { new RSTile(3096, 3494),
 						new RSTile(3088, 3493), new RSTile(3088, 3495),
 						new RSTile(3088, 3496), new RSTile(3087, 3499),
 						new RSTile(3087, 3500), new RSTile(3088, 3502),
@@ -1604,21 +753,21 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3025, 3588), new RSTile(3024, 3590),
 						new RSTile(3022, 3592), new RSTile(3020, 3593),
 						new RSTile(3019, 3593) };
-				RSTile bank = new RSTile(3096, 3494);
-				RSTile mine = new RSTile(3019, 3593);
+				final RSTile bank = new RSTile(3096, 3494);
+				final RSTile mine = new RSTile(3019, 3593);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = walking.reversePath(path);
 				// toMine = path;
-				int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772 };
+				final int[] mineRock = { 11932, 11930, 11931, 5770, 5771, 5772 };
 				Rocks = mineRock;
 				wildi = true;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Copper]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1643,20 +792,20 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11936, 11937, 11938 };
+				final int[] mineRock = { 11936, 11937, 11938 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Mithril]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1681,20 +830,20 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11942, 11944 };
+				final int[] mineRock = { 11942, 11944 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Silver]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1719,20 +868,20 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				BankTile = bank;
 				MineTile = mine;
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 37304, 37306, 37305, 2311 };
+				final int[] mineRock = { 37304, 37306, 37305, 2311 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Adamant]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1757,20 +906,20 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				BankTile = bank;
 				MineTile = mine;
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11939, 11941 };
+				final int[] mineRock = { 11939, 11941 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Coal]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1795,20 +944,20 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11932, 11930 };
+				final int[] mineRock = { 11932, 11930 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Tin]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1833,20 +982,20 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 11933 };
+				final int[] mineRock = { 11933 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getLastSelectedPathComponent().toString()
 					.contains("Al Kharid [Gold]")) {
-				RSTile[] path = { new RSTile(3303, 3312),
+				final RSTile[] path = { new RSTile(3303, 3312),
 						new RSTile(3301, 3312), new RSTile(3299, 3311),
 						new RSTile(3298, 3307), new RSTile(3299, 3306),
 						new RSTile(3298, 3301), new RSTile(3298, 3299),
@@ -1871,15 +1020,15 @@ public class WorldMinerPro extends Script implements PaintListener,
 						new RSTile(3276, 3173), new RSTile(3275, 3168),
 						new RSTile(3274, 3167), new RSTile(3270, 3168),
 						new RSTile(3269, 3168) };
-				RSTile bank = new RSTile(3269, 3167);
-				RSTile mine = new RSTile(3301, 3310);
+				final RSTile bank = new RSTile(3269, 3167);
+				final RSTile mine = new RSTile(3301, 3310);
 				toMine = walking.newTilePath(reversePath(path));
 				toBank = walking.newTilePath(path);
 				BankTile = bank;
 				MineTile = mine;
 				// toBank = path;
 				// toMine = walking.reversePath(path);
-				int[] mineRock = { 37312, 37310 };
+				final int[] mineRock = { 37312, 37310 };
 				Rocks = mineRock;
 			}
 			if (jTree1.getSelectionPath().toString().contains("Powermining")) {
@@ -1900,18 +1049,887 @@ public class WorldMinerPro extends Script implements PaintListener,
 			Settings = true;
 		}
 
-		// Variables declaration - do not modify
-		private javax.swing.JButton jButton1;
-		private javax.swing.JCheckBox jCheckBox1;
-		private javax.swing.JComboBox jComboBox1;
-		private javax.swing.JLabel jLabel1;
-		private javax.swing.JLabel jLabel2;
-		private javax.swing.JLabel jLabel3;
-		private javax.swing.JLabel jLabel4;
-		private javax.swing.JScrollPane jScrollPane1;
-		private javax.swing.JSlider jSlider1;
-		private javax.swing.JTree jTree1;
-		// End of variables declaration
+		private void jTree1MouseClicked(final java.awt.event.MouseEvent evt) {
+			try {
+				jLabel1.setText(jTree1.getLastSelectedPathComponent()
+						.toString());
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Lumbridge Swamp [Copper]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
 
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i56.tinypic.com/2ilejbp.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Lumbridge Swamp [Coal]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i53.tinypic.com/2v8fkft.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("East Varrock [Iron]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i54.tinypic.com/ak7803.jpg"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("South Varrock [Iron]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i51.tinypic.com/o7uk5e.jpg"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Crafting Guild [Gold]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i55.tinypic.com/6pt5w1.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Crafting Guild [Silver]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i56.tinypic.com/oacdj5.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Crafting Guild [Clay]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i51.tinypic.com/sw4nl4.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Rimmington [Iron]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i56.tinypic.com/hvqovm.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Rimmington [Clay]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i54.tinypic.com/jkgd5k.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Rimmington [Copper]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i51.tinypic.com/qya36b.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Mining Guild [Coal]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i56.tinypic.com/xf0wlw.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Mining Guild [Coal, Mithril]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i56.tinypic.com/xf0wlw.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Al Kharid [Iron]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i53.tinypic.com/97l5bm.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+				if (jTree1.getLastSelectedPathComponent().toString()
+						.contains("Barbarian Village [Coal]")) {
+					jLabel2.setIcon(new javax.swing.JLabel() {
+						@Override
+						public javax.swing.Icon getIcon() {
+
+							try {
+								return new javax.swing.ImageIcon(
+										new java.net.URL(
+												"http://i51.tinypic.com/2guxxmf.png"));
+							} catch (final java.net.MalformedURLException e) {
+							}
+							return null;
+						}
+					}.getIcon());
+				}
+			} catch (final NullPointerException e) {
+
+			}
+		}
+
+	}
+
+	private minegui minegui;
+	/**
+	 * Tiles
+	 */
+	// public RSTile[] toBank;
+	// public RSTile[] toMine;
+	public RSTilePath toBank;
+	public RSTilePath toMine;
+	public RSTile BankTile;
+	public RSTile MineTile;
+	public RSTile FixGate = new RSTile(3045, 9742);
+	public RSArea guildarea = new RSArea(new RSTile(3055, 9757), new RSTile(
+			3026, 9732));
+	/**
+	 * Objects
+	 */
+	public RSObject Rock;
+	/**
+	 * Integers
+	 */
+	int countpaint;
+	int AntiBan;
+	int SleepTime;
+	int MouseSpeed;
+	int[] Rocks;
+	int OreMined;
+	int GemsMined;
+	int profit;
+	int coalprice;
+	int copperprice;
+	int silverprice;
+	int ironprice;
+	int clayprice;
+	int tinprice;
+	int startexp;
+	int xpGained;
+	int startlvl;
+	int timebanked;
+	int pickID[] = { 1265, 1269, 1267, 1273, 1271, 1275, 15259, 15261 };
+	int[] goladdup = { 6226 };
+	int[] goladdown = { 2113 };
+	int[] thebankid = { 11402, 11758, 11402, 2213, 35647, 26972 };
+	int[] cross = { 14504 };
+
+	/**
+	 * Strings
+	 */
+
+	Color thecoller;
+	/**
+	 * Booleans
+	 */
+	boolean PowerMine;
+	boolean Start = false;
+	boolean Settings = false;
+	boolean MineGuild = false;
+	boolean HidePaint = false;
+	boolean wildi = false;
+	boolean paint = true;
+	boolean rest = false;
+	boolean safepaint = false;
+	/**
+	 * Others
+	 */
+	BufferedImage normal = null;
+	BufferedImage clicked = null;
+	BufferedImage cape = null;
+
+	long startTime = System.currentTimeMillis();
+
+	public void AntiBan() {
+
+	}
+
+	public void Bank() {
+		SleepTime = 1;
+		final RSObject BankBooth = objects.getNearest(thebankid);
+		if (calc.distanceTo(BankTile) < 5) {
+			if (!isObjectValid("Banker")) {
+				while (isObjectValid("Banker")) {
+					if (calc.distanceTo(walking.getDestination()) < Methods
+							.random(3, 5)) {
+						toBank.traverse();
+					}
+				}
+			}
+			if (!bank.isOpen()) {
+				BankBooth.doAction("Use-quickly");
+				Methods.sleep(3000);
+				SleepTime = 1500;
+			}
+			if (bank.isOpen()) {
+				bank.depositAllExcept(pickID);
+				bank.close();
+				timebanked = timebanked + 1;
+				SleepTime = 1500;
+			}
+		} else {
+			SleepTime = 1500;
+			if (MineGuild) {
+				final RSObject LadderUp = objects.getNearest(goladdup);
+				if (LadderUp != null) {
+					if (calc.distanceTo(LadderUp) < 4) {
+						camera.turnTo(LadderUp);
+						LadderUp.doAction("Climb-up");
+						SleepTime = 1500;
+					} else {
+						// walking.walkPathMM(toBank, 2,2);
+						toBank.traverse();
+					}
+				} else {
+					// walking.walkPathMM(toBank, 2 ,2);
+					toBank.traverse();
+				}
+			} else {
+				// walking.walkPathMM(toBank, 2 ,2);
+
+				if (calc.distanceTo(walking.getDestination()) < Methods.random(
+						3, 5)) {
+					toBank.traverse();
+				}
+
+			}
+		}
+		Methods.sleep(SleepTime);
+	}
+
+	public void DoAntiBan() {
+		AntiBan = AntiBan + 1;
+		if (AntiBan == 400) {
+			Methods.sleep(Methods.random(200, 300));
+			final int randomizer = Methods.random(1, 5);
+			if (randomizer == 2) {
+				camera.setAngle(Methods.random(0, 180));
+				camera.setPitch(Methods.random(80, 100));
+			}
+			if (randomizer == 3) {
+				if (getMyPlayer().getAnimation() == 624) {
+					game.openTab(Game.TAB_STATS);
+					mouse.move(704 + Methods.random(-30, 29),
+							223 + Methods.random(-13, 13));
+					Methods.sleep(Methods.random(500, 1250));
+					game.openTab(Game.TAB_INVENTORY);
+				}
+			}
+			if (randomizer == 4) {
+				if (getMyPlayer().getAnimation() == 624) {
+					game.openTab(Game.TAB_FRIENDS);
+					Methods.sleep(Methods.random(500, 1250));
+					game.openTab(Game.TAB_INVENTORY);
+				}
+			}
+			AntiBan = 0;
+		}
+	}
+
+	public void drawModel(final Graphics g, final RSObject o, final Color c,
+			final String s, final Color tc) {
+		if (o != null) {
+			final Polygon[] model = o.getModel().getTriangles();
+			final Point point = calc.tileToScreen(o.getLocation());
+			for (final Polygon p : model) {
+				g.setColor(c);
+				g.fillPolygon(p);
+				g.setColor(c.darker());
+				g.drawPolygon(p);
+			}
+
+			g.setColor(tc);
+			g.drawString(s, point.x - 75, point.y - 35);
+		}
+	}
+
+	public boolean DropOre() {
+		while (inventory.getCount() > 1) {
+			inventory.dropAllExcept(pickID);
+		}
+		return true;
+	}
+
+	public RSObject getSecondNearest(final RSObject curRock, final int... ids) {
+		return objects.getNearest(new Filter<RSObject>() {
+			@Override
+			public boolean accept(final RSObject o) {
+				if (curRock.equals(o)) {
+					return false;
+				}
+				for (final int id : ids) {
+					if (o.getID() == id) {
+						return true;
+					}
+				}
+				return false;
+			}
+		});
+	}
+
+	/*
+	 * public boolean isObjectValid(final String ObjName) { objects.getAll(new
+	 * Filter<RSObject>() { public boolean accept(RSObject t) { boolean b =
+	 * false; try { String a = t.getDef().getName(); if(a == ObjName) { b =
+	 * true; }
+	 * 
+	 * } catch(NullPointerException ignored) {}
+	 * 
+	 * return b; } }); return true; }
+	 */
+	public boolean isObjectValid(final String name) {
+		return objects.getAll(new Filter<RSObject>() {
+			@Override
+			public boolean accept(final RSObject t) {
+
+				final RSObjectDef def = t.getDef();
+
+				return def != null && def.getName() != null
+						&& def.getName().equals(name);
+			}
+		}).length > 0;
+	}
+
+	@Override
+	public int loop() {
+		if (Start) {
+			if (Settings) {
+				mouse.setSpeed(MouseSpeed);
+				camera.setPitch(Methods.random(90, 100));
+				Settings = false;
+			}
+			if (walking.getEnergy() > Methods.random(60, 100)) {
+				walking.setRun(true);
+			}
+			if (rest) {
+				if (walking.getEnergy() < 2) {
+					walking.rest();
+				}
+			}
+			DoAntiBan();
+			if (inventory.isFull()) {
+				if (PowerMine) {
+					DropOre();
+				} else if (!PowerMine) {
+					Bank();
+				}
+			} else if (!inventory.isFull()) {
+				Mine();
+
+			}
+		}
+		return 10;
+
+	}
+
+	@Override
+	public void messageReceived(final MessageEvent e) {
+		final String svrmsg = e.getMessage();
+		if (svrmsg.contains("iron")) {
+			OreMined = OreMined + 1;
+			// profit = ironprice * OreMined;
+		}
+		if (svrmsg.contains("tin")) {
+			OreMined = OreMined + 1;
+			// profit = tinprice * OreMined;
+		}
+		if (svrmsg.contains("copper")) {
+			OreMined = OreMined + 1;
+			// profit = copperprice * OreMined;
+		}
+		if (svrmsg.contains("coal")) {
+			OreMined = OreMined + 1;
+			// profit = coalprice * OreMined;
+		}
+		if (svrmsg.contains("silver")) {
+			OreMined = OreMined + 1;
+			// profit = silverprice * OreMined;
+		}
+		if (svrmsg.contains("gold")) {
+			OreMined = OreMined + 1;
+		}
+		if (svrmsg.contains("clay")) {
+			// profit = clayprice * OreMined;
+			OreMined = OreMined + 1;
+		}
+		if (svrmsg.contains("just found")) {
+			GemsMined = GemsMined + 1;
+		}
+	}
+
+	public void Mine() {
+		SleepTime = 1;
+		final RSObject ore = objects.getNearest(Rocks);
+		if (ore != null) {
+			if (calc.distanceTo(ore) < 6) {
+
+				if (getMyPlayer().getAnimation() == 624) {
+					// Already mining
+					if (!onHorizontalOrVertTile(ore.getLocation())) {
+						// Death Rock
+						if (ore.isOnScreen()) {
+							if (MineGuild) {
+								if (guildarea.contains(ore.getLocation())) {
+
+								} else {
+									walking.walkTo(FixGate);
+									Methods.sleep(1500);
+									return;
+								}
+							}
+							ore.doAction("Mine");
+							SleepTime = 1000;
+
+						} else {
+							if (MineGuild) {
+								if (guildarea.contains(ore.getLocation())) {
+
+								} else {
+									walking.walkTo(FixGate);
+									Methods.sleep(1500);
+									return;
+								}
+							}
+							camera.turnTo(ore);
+							ore.doAction("Mine");
+							SleepTime = 1000;
+						}
+					}
+					if (menu.contains("Mine")) {
+					} else {
+						final RSObject NextOre = getSecondNearest(ore, Rocks);
+						if (NextOre != null) {
+							if (NextOre.isOnScreen()) {
+								mouse.move(calc.tileToScreen(NextOre
+										.getLocation()), 13, 13);
+								return;
+							} else {
+								camera.turnTo(NextOre);
+								mouse.move(calc.tileToScreen(NextOre
+										.getLocation()), 13, 13);
+								return;
+							}
+						}
+					}
+				}
+				if (getMyPlayer().getAnimation() == -1) {
+					if (ore.isOnScreen()) {
+						if (getMyPlayer().isMoving()) {
+						} else {
+							if (MineGuild) {
+								if (guildarea.contains(ore.getLocation())) {
+
+								} else {
+									walking.walkTo(FixGate);
+									Methods.sleep(1500);
+									return;
+								}
+							}
+							ore.doAction("Mine");
+							SleepTime = 1000;
+						}
+					} else {
+						if (getMyPlayer().isMoving()) {
+						} else {
+							if (MineGuild) {
+								if (guildarea.contains(ore.getLocation())) {
+
+								} else {
+									walking.walkTo(FixGate);
+									Methods.sleep(1500);
+									return;
+								}
+							}
+							camera.turnTo(ore);
+							ore.doAction("Mine");
+							SleepTime = 1000;
+						}
+					}
+
+				}
+			} else {
+				if (MineGuild) {
+					if (guildarea.contains(ore.getLocation())) {
+
+					} else {
+						walking.walkTo(FixGate);
+						Methods.sleep(1500);
+						return;
+					}
+				}
+				walking.walkTileMM(ore.getLocation());
+				SleepTime = 1500;
+			}
+		} else {
+			if (MineGuild) {
+				final RSObject LadderDown = objects.getNearest(goladdown);
+				if (LadderDown != null) {
+					if (calc.distanceTo(LadderDown) < 4) {
+						camera.turnTo(LadderDown);
+						LadderDown.doAction("Climb-down");
+						SleepTime = 2000;
+					} else {
+						// walking.walkPathMM(toMine, 2 ,2);
+						toMine.traverse();
+						SleepTime = 1500;
+					}
+				} else {
+					// walking.walkPathMM(toMine, 2 ,2);
+					toMine.traverse();
+				}
+			} else {
+				if (calc.distanceTo(MineTile) < 7) {
+					if (!isObjectValid("Rocks")) {
+						// log.severe("If you see this! THEN MAKE SURE TO REPORT THIS AT WORLDMINERPRO THREAD");
+						while (isObjectValid("Rocks")) {
+							if (calc.distanceTo(walking.getDestination()) < Methods
+									.random(3, 5)) {
+								toMine.traverse();
+							}
+						}
+					}
+				} else {
+					// walking.walkPathMM(toMine, 2 ,2);
+					while (calc.distanceTo(MineTile) > 6) {
+						if (calc.distanceTo(walking.getDestination()) < Methods
+								.random(3, 5)) {
+							toMine.traverse();
+						}
+					}
+				}
+			}
+			SleepTime = 1500;
+		}
+		Methods.sleep(SleepTime);
+	}
+
+	@Override
+	public void onFinish() {
+		log("Thanks for using.");
+	}
+
+	public boolean onHorizontalOrVertTile(final RSTile tile) {
+		boolean bool = false;
+		if (getMyPlayer().getLocation().getX() == tile.getX()
+				|| getMyPlayer().getLocation().getY() == tile.getY()) {
+			if (calc.distanceTo(tile) == 1) {
+				bool = true;
+			} else {
+				bool = false;
+			}
+		}
+		return bool;
+	}
+
+	@Override
+	public void onRepaint(final Graphics g) {
+		if (Start) {
+			if (paint) {
+
+				drawModel(g, objects.getNearest(Rocks), Color.BLUE, "",
+						Color.BLACK);
+
+				final int lvlGain = skills.getCurrentLevel(Skills.MINING)
+						- startlvl;
+				xpGained = skills.getCurrentExp(Skills.MINING) - startexp;
+				if (xpGained == 0) {
+				} else {
+					long millis = System.currentTimeMillis() - startTime;
+					final int xpPerHour = (int) (3600000.0 / millis * xpGained);
+					final int orePerHour = (int) (3600000.0 / millis * OreMined);
+					// int profPerHour = (int) (3600000.0 / millis * profit);
+					final long hours = millis / (1000 * 60 * 60);
+					millis -= hours * 1000 * 60 * 60;
+					final long minutes = millis / (1000 * 60);
+					millis -= minutes * 1000 * 60;
+					final long seconds = millis / 1000;
+					final int TTL = skills.getExpToNextLevel(Skills.MINING)
+							/ xpPerHour;
+					final int XPtoLvl = skills.getExpToNextLevel(Skills.MINING);
+					final int T99 = (13034431 - skills
+							.getCurrentExp(Skills.MINING)) / xpPerHour;
+					final int percent = skills
+							.getPercentToNextLevel(Skills.MINING);
+					countpaint = countpaint + 1;
+
+					g.drawLine(0, mouse.getLocation().y, 765,
+							mouse.getLocation().y);
+					g.drawLine(mouse.getLocation().x, 0, mouse.getLocation().x,
+							506);
+
+					final Rectangle r = new Rectangle(496, 345, 15, 14);
+					if (r.contains(mouse.getLocation())) {
+						HidePaint = true;
+					} else {
+						HidePaint = false;
+					}
+					// End Mouse
+					if (HidePaint == true) {
+						g.setColor(new Color(255, 0, 0, 250));
+						g.fillRect(496, 345, 15, 14);
+					}
+					// Screen Paint
+					if (HidePaint == false) {
+						g.setColor(new Color(0, 0, 0, 203));
+						g.fillRect(7, 345, 505, 128);
+						g.setColor(new Color(255, 0, 0, 250));
+						g.fillRect(496, 345, 15, 14);
+						g.setColor(new Color(0, 0, 0));
+						g.drawLine(510, 345, 496, 359);
+						g.setColor(new Color(0, 0, 0));
+						g.drawLine(510, 359, 496, 345);
+						g.setFont(new Font("Comic Sans MS", 0, 16));
+						g.setColor(new Color(255, 0, 0));
+						g.drawString("Brian's World Miner Pro", 16, 360);
+						g.setFont(new Font("Century Schoolbook", 0, 12));
+						g.setColor(new Color(255, 0, 0));
+						g.drawString("Runtime: " + hours + ":" + minutes + ":"
+								+ seconds, 16, 375);
+						g.setFont(new Font("Century Schoolbook", 0, 12));
+						g.setColor(new Color(255, 0, 0));
+						g.drawString("Exp/H: " + xpPerHour, 16, 389);
+						g.setFont(new Font("Century Schoolbook", 0, 12));
+						g.setColor(new Color(255, 0, 0));
+						g.drawString("Ores Mined: " + OreMined, 16, 403);
+						g.drawString("Gems Mined: " + GemsMined, 16, 417);
+						g.drawString("TTL: " + TTL + " Hours", 16, 431);
+						g.drawString("Exp TL: " + XPtoLvl, 16, 445);
+						g.drawString("Time T99: " + T99 + " Hours", 16, 459);
+						g.drawString(percent + "% to next level", 156, 375);
+						g.drawString(
+								"Exp: " + skills.getCurrentExp(Skills.MINING),
+								156, 389);
+						// g.drawString("Profit: " + profit + "gp", 156, 403);
+						g.drawString("Levels Gained: " + lvlGain, 156, 417);
+						g.drawString("Ores/H: " + orePerHour, 156, 431);
+						g.drawString("Exp Gained: " + xpGained, 156, 445);
+						g.drawString(
+								"Level: "
+										+ skills.getCurrentLevel(Skills.MINING),
+								156, 459);
+						// g.drawString("Profit/H: " + profPerHour, 296, 375);
+						g.drawString("Banked: " + timebanked, 156, 403);
+						// Cape Image
+
+						// g.drawImage(cape, 441, 339, null);
+					}
+
+				}
+			}
+		}
+		if (safepaint) {
+			if (startexp == 0) {
+				startexp = skills.getCurrentExp(Skills.MINING);
+			}
+			final int lvlGain = skills.getCurrentLevel(Skills.MINING)
+					- startlvl;
+			xpGained = skills.getCurrentExp(Skills.MINING) - startexp;
+			long millis = System.currentTimeMillis() - startTime;
+			final int orePerHour = (int) (3600000.0 / millis * OreMined);
+			final int xpPerHour = (int) (3600000.0 / millis * xpGained);
+			final long hours = millis / (1000 * 60 * 60);
+			millis -= hours * 1000 * 60 * 60;
+			final long minutes = millis / (1000 * 60);
+			millis -= minutes * 1000 * 60;
+			final long seconds = millis / 1000;
+
+			g.setColor(new Color(0, 0, 0, 215));
+			g.fillRect(7, 345, 507, 114);
+			g.setFont(new Font("Calibri", 0, 20));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("WorldMinerPro", 13, 364);
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("Runtime: " + hours + ":" + minutes + ":" + seconds,
+					14, 380);
+			g.drawString("Gems Mined: " + GemsMined, 180, 380);
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("Exp Gained: " + xpGained, 13, 394);
+
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("Exp/H: " + xpPerHour, 14, 409);
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("Ores Mined: " + OreMined, 14, 424);
+			g.drawString("Level: " + skills.getCurrentLevel(Skills.MINING),
+					180, 424);
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("Ores/H: " + orePerHour, 14, 438);
+			g.drawString("EXP: " + skills.getCurrentExp(Skills.MINING), 180,
+					438);
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("Levels Gained: " + lvlGain, 14, 452);
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			// g.drawString("Profit:" + profit + " gp", 180, 452);
+			g.setFont(new Font("Calibri", 0, 14));
+			g.setColor(new Color(255, 0, 0));
+			g.drawString("Brianpsv1", 451, 452);
+
+			g.setColor(Color.BLACK);
+			g.setColor(Color.RED);
+
+			final int percent = skills.getPercentToNextLevel(Skills.MINING);
+
+			g.setColor(Color.red);
+			g.fillRoundRect(180, 400, 100, 10, 15, 15); // these must be on same
+														// cordinates
+			g.setColor(Color.black);
+			g.fillRoundRect(180, 400, percent, 10, 15, 15); // these must be on
+															// same cordinates
+			g.setColor(Color.red);
+			g.drawString("" + percent + "%", 220, 410); // this must be in the
+														// center of the bar
+			g.setColor(Color.blue);
+
+			g.setColor(Color.black);
+			g.drawRoundRect(180, 400, 100, 10, 15, 15); // these must be on same
+														// cordinates
+		}
+
+	}
+
+	@Override
+	public boolean onStart() {
+		log("Welcome to WorldMinerPro 4");
+		minegui = new minegui();
+		minegui.setVisible(true);
+		startlvl = skills.getCurrentLevel(Skills.MINING);
+		startexp = skills.getCurrentExp(Skills.MINING);
+
+		// coalprice = grandExchange.getMarketPrice(453);
+		// copperprice = grandExchange.getMarketPrice(436);
+		// ironprice = grandExchange.getMarketPrice(440);
+		// tinprice = grandExchange.getMarketPrice(438);
+		// silverprice = grandExchange.getMarketPrice(442);
+		// clayprice = grandExchange.getMarketPrice(434);
+		return true;
+	}
+
+	public RSTile[] reversePath(final RSTile[] other) {
+		final RSTile[] t = new RSTile[other.length];
+		for (int i = 0; i < t.length; i++) {
+			t[i] = other[other.length - i - 1];
+		}
+		return t;
 	}
 }

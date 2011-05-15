@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -47,6 +48,7 @@ import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -56,12 +58,11 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.methods.Environment;
 import org.rsbot.script.methods.Game;
 import org.rsbot.script.methods.Skills;
+import org.rsbot.script.util.PaintUtil;
 import org.rsbot.script.wrappers.RSInterface;
 import org.rsbot.script.wrappers.RSTile;
-import org.rsbot.util.GlobalConfiguration;
-import org.rsbot.script.util.PaintUtil;
 
-@ScriptManifest(authors = { "Fletch To 99" }, keywords = "Fletching", name = "UFletch", website = "http://www.universalscripts.org", version = 2.22, description = "The best fletcher!")
+@ScriptManifest(authors = { "Fletch To 99" }, keywords = "Fletching", name = "UFletch", website = "http://www.universalscripts.org", version = 2.23, description = "The best fletcher!")
 /**
  * All-in-One Fletching script for RSBot 2.XX
  * @author Fletch To 99
@@ -124,6 +125,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	private boolean isClicking = false;
 	private boolean fletchAndString = false;
 	private boolean pause = false;
+	private boolean tray = false;
 
 	private String status = "";
 	private String name = null;
@@ -725,9 +727,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				env.saveScreenshot(true);
 				has99 = true;
 			}
-			trayInfo.systray.displayMessage("Level UP", "You are now level: "
-					+ skills.getCurrentLevel(Skills.FLETCHING),
-					TrayIcon.MessageType.INFO);
+			if (tray) {
+				trayInfo.systray.displayMessage(
+						"Level UP",
+						"You are now level: "
+								+ skills.getCurrentLevel(Skills.FLETCHING),
+						TrayIcon.MessageType.INFO);
+			}
 			sleep(150, 1500);
 			interfaces.get(740).getComponent(3).doClick(true);
 			sleep(150, 400);
@@ -1152,6 +1158,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		}
 	}
 
+	@Override
 	public void messageReceived(MessageEvent e) {
 		try {
 			String m = e.getMessage().toLowerCase();
@@ -1182,8 +1189,10 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				if (person == MessageEvent.MESSAGE_CHAT
 						|| person == MessageEvent.MESSAGE_CLAN_CHAT
 						|| person == MessageEvent.MESSAGE_PRIVATE_IN) {
-					trayInfo.systray.displayMessage(e.getSender() + ":",
-							e.getMessage(), TrayIcon.MessageType.WARNING);
+					if (tray) {
+						trayInfo.systray.displayMessage(e.getSender() + ":",
+								e.getMessage(), TrayIcon.MessageType.WARNING);
+					}
 				}
 			}
 		} catch (Exception e1) {
@@ -1252,26 +1261,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			return false;
 		}
 		JOptionPane.showMessageDialog(null, "Please wait while gui loads.");
-		gui = new gui();
-		gui.progressBar1.setValue(skills
-				.getPercentToNextLevel(Skills.FLETCHING));
-		gui.setVisible(true);
-		loadSettings();
-		gui.checkBox16.setSelected(false);
-		if (gui.textField2.getText().equals("All")) {
-			gui.textField2.setEnabled(true);
-			gui.button4.setEnabled(true);
-		} else {
-			gui.textField2.setEnabled(false);
-			gui.button4.setEnabled(false);
-		}
-		name = gui.textField2.getText();
-		gui.label1
-				.setText("<html><img src =http://universalscripts.org/UFletch_generate.php?user="
-						+ name + "> </html>");
-		while (gui.isVisible()) {
-			sleep(random(200, 400));
-		}
+		createAndWaitforGUI();
 		if (gui.checkBox16.isSelected()) {
 			beep = new beeper();
 			b = new Thread(beep);
@@ -1286,30 +1276,74 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	}
 
 	private void getExtraInfo() {
-		invPaint = paintUT.getImage("ufletchpaint2.png", true,
-				"http://www.universalscripts.org/UFletch/ufletchpaint2.png");
-		paintp = paintUT.getImage("ufletchpaint.png", true,
-				"http://www.universalscripts.org/UFletch/ufletchpaint.png");
-		hide = paintUT.getImage("hidepaint.png", true,
-				"http://www.universalscripts.org/UFletch/hidepaint.png");
-		show = paintUT.getImage("showpaint.png", true,
-				"http://www.universalscripts.org/UFletch/showpaint.png");
+		invPaint = paintUT
+				.getImage("ufletchpaint2.png", true,
+						"http://www.universalscripts.org/ufletch/UFletch/ufletchpaint2.png");
+		paintp = paintUT
+				.getImage("ufletchpaint.png", true,
+						"http://www.universalscripts.org/ufletch/UFletch/ufletchpaint.png");
+		hide = paintUT
+				.getImage("hidepaint.png", true,
+						"http://www.universalscripts.org/ufletch/UFletch/hidepaint.png");
+		show = paintUT
+				.getImage("showpaint.png", true,
+						"http://www.universalscripts.org/ufletch/UFletch/showpaint.png");
 		guiButton = paintUT.getImage("button.png", true,
-				"http://www.universalscripts.org/UFletch/button.png");
-		watermark = paintUT.getImage("watermark.png", true,
-				"http://www.universalscripts.org/UFletch/watermark.png");
+				"http://www.universalscripts.org/ufletch/UFletch/button.png");
+		watermark = paintUT
+				.getImage("watermark.png", true,
+						"http://www.universalscripts.org/ufletch/UFletch/watermark.png");
 		icon = paintUT.getImage("icon.png", true,
-				"http://www.universalscripts.org/UFletch/icon.png");
+				"http://www.universalscripts.org/ufletch/UFletch/icon.png");
 		sleep(random(400, 500));
 		startXP = skills.getCurrentExp(Skills.FLETCHING);
 		sleep(random(100, 250));
+	}
+
+	private void createAndWaitforGUI() {
+		if (SwingUtilities.isEventDispatchThread()) {
+			gui = new gui();
+			gui.setVisible(true);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						gui = new gui();
+						gui.setVisible(true);
+					}
+				});
+			} catch (InvocationTargetException ite) {
+			} catch (InterruptedException ie) {
+			}
+		}
+		sleep(100);
+		gui.progressBar1.setValue(skills
+				.getPercentToNextLevel(Skills.FLETCHING));
+		loadSettings();
+		gui.checkBox16.setSelected(false);
+		if (gui.textField2.getText().equals("All")) {
+			gui.textField2.setEnabled(true);
+			gui.button4.setEnabled(true);
+		} else {
+			gui.textField2.setEnabled(false);
+			gui.button4.setEnabled(false);
+		}
+		name = gui.textField2.getText();
+		gui.label1
+				.setText("<html><img src =http://universalscripts.org/ufletch/UFletch_generate.php?user="
+						+ name + "> </html>");
+		while (gui.isVisible()) {
+			sleep(100);
+		}
+
 	}
 
 	private void createSignature() {
 		try {
 			URL url;
 			URLConnection urlConn;
-			url = new URL("http://www.universalscripts.org/UFletch_submit.php");
+			url = new URL(
+					"http://www.universalscripts.org/ufletch/UFletch_submit.php");
 			urlConn = url.openConnection();
 			urlConn.setRequestProperty("User-Agent", "UFletchAgent");
 			urlConn.setDoInput(true);
@@ -1343,6 +1377,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 
 	private void updateSignature() {
 		try {
+			if (xpGained > 3000000 && fletched < 20000) {
+				xpGained = 0;
+				fletched = 0;
+			}
+			if (xpGained < 0) {
+				xpGained = 1;
+			}
 			long xpGained = skills.getCurrentExp(Skills.FLETCHING) - startXP;
 			long millis = System.currentTimeMillis() - startTime;
 			long days = millis / (1000 * 60 * 60 * 24);
@@ -1354,7 +1395,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			long seconds = millis / 1000;
 			URL url;
 			URLConnection urlConn;
-			url = new URL("http://www.universalscripts.org/UFletch_submit.php");
+			url = new URL(
+					"http://www.universalscripts.org/ufletch/UFletch_submit.php");
 			urlConn = url.openConnection();
 			urlConn.setRequestProperty("User-Agent", "UFletchAgent");
 			urlConn.setDoInput(true);
@@ -1391,8 +1433,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 
 	public void loadSettings() {
 		Properties props = new Properties();
-		File f = new File(GlobalConfiguration.Paths.getCacheDirectory()
-				+ "UFletch.ini");
+		File f = new File(getCacheDirectory() + "UFletch.ini");
 		if (f.exists()) {
 			try {
 				props.load(new FileInputStream(f));
@@ -1579,8 +1620,8 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		p.setProperty("Beep", getValue(gui.checkBox16.isSelected()));
 		p.setProperty("Speed", String.valueOf(gui.slider1.getValue()));
 		try {
-			p.store(new FileOutputStream(GlobalConfiguration.Paths
-					.getCacheDirectory() + "UFletch.ini"), "UFletch settings");
+			p.store(new FileOutputStream(getCacheDirectory() + "UFletch.ini"),
+					"UFletch settings");
 		} catch (IOException e) {
 		}
 	}
@@ -1599,7 +1640,9 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		if (gui.checkBox1.isSelected()) {
 			env.saveScreenshot(true);
 		}
-		SystemTray.getSystemTray().remove(trayInfo.systray);
+		if (tray) {
+			SystemTray.getSystemTray().remove(trayInfo.systray);
+		}
 		if (gui.checkBox16.isSelected()) {
 			b.interrupt();
 			b.suspend();
@@ -1880,13 +1923,25 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 								+ getHourly(skills
 										.getCurrentExp(Skills.FLETCHING)
 										- startXP), 560, 370);
-				g2.drawString("Fletched/Strung:  " + fletched, 560, 390);
-				g2.drawString(
-						"Fletched/Hr:  "
-								+ ((int) (new Double(fletched)
-										/ new Double(System.currentTimeMillis()
-												- startTime) * new Double(
-										60 * 60 * 1000))), 560, 410);
+				if (getMethod() != 2) {
+					g2.drawString("Fletched/Strung:  " + fletched, 560, 390);
+					g2.drawString(
+							"Fletched/Hr:  "
+									+ ((int) (new Double(fletched)
+											/ new Double(System
+													.currentTimeMillis()
+													- startTime) * new Double(
+											60 * 60 * 1000))), 560, 410);
+				} else if (getMethod() == 2) {
+					g2.drawString("Fletched/Strung:  " + strung, 560, 390);
+					g2.drawString(
+							"Fletched/Hr:  "
+									+ ((int) (new Double(strung)
+											/ new Double(System
+													.currentTimeMillis()
+													- startTime) * new Double(
+											60 * 60 * 1000))), 560, 410);
+				}
 				g2.drawString("Status:  " + status, 560, 430);
 				g2.setFont(new Font("Arial", 1, 10));
 				g2.drawString("(Click to Fade) Hide Perminatly:", 560, 461);
@@ -2139,90 +2194,6 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		}
 	}
 
-	public class trayInfo extends MenuItem {
-		private static final long serialVersionUID = 1L;
-		private PopupMenu menu = new PopupMenu();
-		public TrayIcon systray;
-
-		public trayInfo() {
-			initComponents();
-		}
-
-		private void item1ActionPerformed(ActionEvent e) {
-			stopScript(false);
-		}
-
-		private void item2ActionPerformed(ActionEvent e) {
-			env.setUserInput(Environment.INPUT_KEYBOARD
-					| Environment.INPUT_MOUSE);
-			pause = true;
-		}
-
-		private void item3ActionPerformed(ActionEvent e) {
-			pause = false;
-			env.setUserInput(Environment.INPUT_KEYBOARD);
-			log("Resuming..");
-		}
-
-		private void item4ActionPerformed(ActionEvent e) {
-			gui.button1.setText("Update");
-			gui.setVisible(true);
-		}
-
-		private void item5ActionPerformed(ActionEvent e) {
-			gui.tabbedPane1.setSelectedIndex(4);
-			gui.button1.setText("Update");
-			gui.setVisible(true);
-		}
-
-		private void initComponents() {
-			if (!SystemTray.isSupported()) {
-				JOptionPane.showMessageDialog(null, "SystemTray not supported");
-			} else {
-				menu.add(constants.item1);
-				constants.item1.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						item1ActionPerformed(e);
-					}
-				});
-				menu.add(constants.item2);
-				constants.item2.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						item2ActionPerformed(e);
-					}
-				});
-				menu.add(constants.item3);
-				constants.item3.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						item3ActionPerformed(e);
-					}
-				});
-				menu.add(constants.item4);
-				constants.item4.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						item4ActionPerformed(e);
-					}
-				});
-				menu.add(constants.item5);
-				constants.item5.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						item5ActionPerformed(e);
-					}
-				});
-				try {
-					systray = new TrayIcon(
-							icon.getScaledInstance(SystemTray.getSystemTray()
-									.getTrayIconSize().width, SystemTray
-									.getSystemTray().getTrayIconSize().height,
-									0), "UFletch", menu);
-					SystemTray.getSystemTray().add(systray);
-				} catch (Exception e) {
-					log("Error setting up system tray!");
-				}
-			}
-		}
-	}
-
 	public class gui extends JFrame {
 		private static final long serialVersionUID = 1L;
 
@@ -2231,12 +2202,11 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		}
 
 		private String getMessage() {
-
 			URLConnection url = null;
 			BufferedReader in = null;
 			try {
 				url = new URL(
-						"http://www.universalscripts.org/UFletch/message.txt")
+						"http://www.universalscripts.org/ufletch/UFletch/message.txt")
 						.openConnection();
 				in = new BufferedReader(new InputStreamReader(
 						url.getInputStream()));
@@ -2244,13 +2214,14 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			} catch (MalformedURLException e) {
 			} catch (IOException e) {
 			}
-			return null;
+			return "Error getting message.";
 		}
 
 		private void button3ActionPerformed(ActionEvent e) {
 			try {
 				Desktop.getDesktop().browse(
-						new URL("http://www.universalscripts.org").toURI());
+						new URL("http://www.universalscripts.org/ufletch")
+								.toURI());
 			} catch (MalformedURLException e1) {
 			} catch (IOException e1) {
 			} catch (URISyntaxException e1) {
@@ -2261,7 +2232,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			try {
 				Desktop.getDesktop().browse(
 						new URL(
-								"http://www.universalscripts.org/UFletch_generate.php?user="
+								"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
 										+ gui.textField2.getText()).toURI());
 			} catch (MalformedURLException e1) {
 			} catch (IOException e1) {
@@ -2272,14 +2243,15 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		private void button4ActionPerformed(ActionEvent e) {
 			createSignature();
 			name = textField2.getText();
-			label1.setText("<html><img src =http://universalscripts.org/UFletch_generate.php?user="
+			label1.setText("<html><img src =http://universalscripts.org/ufletch/UFletch_generate.php?user="
 					+ name + "> </html>");
 		}
 
 		private void button2ActionPerformed(ActionEvent e) {
 			try {
-				Desktop.getDesktop().browse(
-						new URL("http://universalscripts.org/highscores.php")
+				Desktop.getDesktop()
+						.browse(new URL(
+								"http://universalscripts.org/ufletch/highscores.php")
 								.toURI());
 			} catch (MalformedURLException e1) {
 			} catch (IOException e1) {
@@ -2446,7 +2418,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					label25.setBounds(80, 265, 340, 25);
 
 					// ---- label2 ----
-					label2.setText("<html> <img src = http://images.wikia.com/runescape/images/5/58/MagicLogs.png> </html>");
+					label2.setText("<html> <img src = http://www.universalscripts.org/ufletch/UFletch/logs.png> </html>");
 					panel4.add(label2);
 					label2.setBounds(new Rectangle(new Point(5, 35), label2
 							.getPreferredSize()));
@@ -2457,7 +2429,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					comboBox2.setBounds(50, 35, 160, 30);
 
 					// ---- label3 ----
-					label3.setText("<html> <img src=http://images.wikia.com/runescape/images/7/7f/Magic_longbow.png> </html>");
+					label3.setText("<html> <img src=http://www.universalscripts.org/ufletch/UFletch/bow.png> </html>");
 					panel4.add(label3);
 					label3.setBounds(new Rectangle(new Point(5, 110), label3
 							.getPreferredSize()));
@@ -2468,13 +2440,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					comboBox3.setBounds(50, 110, 160, 30);
 
 					// ---- label4 ----
-					label4.setText("<html> <img src = http://images.wikia.com/runescape/images/c/cf/Knife_inventory.png> </html>");
+					label4.setText("<html> <img src = http://www.universalscripts.org/ufletch/UFletch/knife.png> </html>");
 					panel4.add(label4);
 					label4.setBounds(220, 110, 25,
 							label4.getPreferredSize().height);
 
 					// ---- label5 ----
-					label5.setText("<html> <img src= http://images.wikia.com/runescape/images/0/0e/Dragon_hatchet.png> </html>");
+					label5.setText("<html> <img src= http://www.universalscripts.org/ufletch/UFletch/axe.png> </html>");
 					panel4.add(label5);
 					label5.setBounds(220, 35, label5.getPreferredSize().width,
 							30);
@@ -2490,13 +2462,13 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					comboBox5.setBounds(255, 35, 170, 30);
 
 					// ---- label6 ----
-					label6.setText("<html> <img src = http://www.veryicon.com/icon/preview/Application/Apollo/Settings%20Icon.jpg> </html>");
+					label6.setText("<html> <img src = http://www.universalscripts.org/ufletch/UFletch/settings.png> </html>");
 					panel4.add(label6);
 					label6.setBounds(new Rectangle(new Point(5, 180), label6
 							.getPreferredSize()));
 
 					// ---- label7 ----
-					label7.setText("<html> <img src = http://www.veryicon.com/icon/preview/Application/Apollo/Settings%20Icon.jpg> </html>");
+					label7.setText("<html> <img src = http://www.universalscripts.org/ufletch/UFletch/settings.png> </html>");
 					panel4.add(label7);
 					label7.setBounds(375, 180, 47, 50);
 
@@ -2772,7 +2744,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 							comboBox15.getPreferredSize().height);
 
 					// ---- label47 ----
-					label47.setText("<html> <img src= http://4.bp.blogspot.com/_xlKcL0Tlp-E/SHbVnh5BQHI/AAAAAAAAAQU/dUFrkZcvXWQ/s400/paintbrush.png> </html>");
+					label47.setText("<html> <img src= http://www.universalscripts.org/ufletch/UFletch/paint.png> </html>");
 					panel2.add(label47);
 					label47.setBounds(265, -5, 125, 115);
 
@@ -2827,7 +2799,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					label18.setBounds(180, 5, 88, 25);
 
 					// ---- label1 ----
-					label1.setText("<html><img src =http://universalscripts.org/UFletch_generate.php?user=All> </html>");
+					label1.setText("<html><img src =http://universalscripts.org/ufletch/UFletch_generate.php?user=All> </html>");
 					label1.addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
@@ -2912,7 +2884,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 					checkBox2.setBounds(240, 165, 110, 25);
 
 					// ---- label28 ----
-					label28.setText("<html> <img src =http://cemetery.canadagenweb.org/NB/NBC0002/camera.gif> </html>");
+					label28.setText("<html> <img src =http://www.universalscripts.org/ufletch/UFletch/camera.png> </html>");
 					panel3.add(label28);
 					label28.setBounds(new Rectangle(new Point(0, 165), label28
 							.getPreferredSize()));
@@ -3244,6 +3216,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			return;
 		}
 
+		@Override
 		public void run() {
 			while (!b.isInterrupted()) {
 				text();
@@ -3263,6 +3236,93 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				}
 			}
 			return "";
+		}
+	}
+
+	public class trayInfo extends MenuItem {
+		private static final long serialVersionUID = 1L;
+		private PopupMenu menu = new PopupMenu();
+		public TrayIcon systray;
+
+		public trayInfo() {
+			initComponents();
+		}
+
+		private void item1ActionPerformed(ActionEvent e) {
+			stopScript(false);
+		}
+
+		private void item2ActionPerformed(ActionEvent e) {
+			env.setUserInput(Environment.INPUT_KEYBOARD
+					| Environment.INPUT_MOUSE);
+			pause = true;
+		}
+
+		private void item3ActionPerformed(ActionEvent e) {
+			pause = false;
+			env.setUserInput(Environment.INPUT_KEYBOARD);
+			log("Resuming..");
+		}
+
+		private void item4ActionPerformed(ActionEvent e) {
+			gui.button1.setText("Update");
+			gui.setVisible(true);
+		}
+
+		private void item5ActionPerformed(ActionEvent e) {
+			gui.tabbedPane1.setSelectedIndex(4);
+			gui.button1.setText("Update");
+			gui.setVisible(true);
+		}
+
+		private void initComponents() {
+			if (!SystemTray.isSupported()) {
+				JOptionPane.showMessageDialog(null, "SystemTray not supported");
+			} else {
+				menu.add(constants.item1);
+				constants.item1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						item1ActionPerformed(e);
+					}
+				});
+				menu.add(constants.item2);
+				constants.item2.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						item2ActionPerformed(e);
+					}
+				});
+				menu.add(constants.item3);
+				constants.item3.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						item3ActionPerformed(e);
+					}
+				});
+				menu.add(constants.item4);
+				constants.item4.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						item4ActionPerformed(e);
+					}
+				});
+				menu.add(constants.item5);
+				constants.item5.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						item5ActionPerformed(e);
+					}
+				});
+				try {
+					systray = new TrayIcon(
+							icon.getScaledInstance(SystemTray.getSystemTray()
+									.getTrayIconSize().width, SystemTray
+									.getSystemTray().getTrayIconSize().height,
+									0), "UFletch", menu);
+					SystemTray.getSystemTray().add(systray);
+					tray = true;
+				} catch (Exception e) {
+					log("Error setting up system tray!");
+					e.printStackTrace();
+					tray = false;
+				}
+			}
 		}
 	}
 
