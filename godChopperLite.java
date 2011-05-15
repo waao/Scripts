@@ -46,7 +46,7 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 
 	@Override
 	public int loop() {
-		if (getMyPlayer().isMoving()) {
+		if (getMyPlayer().isMoving() && walkWeb == null) {
 			return random(500, 1280);
 		}
 		if (interfaces.canContinue()) {
