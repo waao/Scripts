@@ -182,8 +182,8 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 	}
 
 	public void onRepaint(Graphics render) {
-		render.drawString("Running for: " + timeRunning.toElapsedString(), 15, 15);
-		render.drawString("Chopped Logs: " + cutCount, 15, 30);
+		render.drawString("Running for: " + timeRunning.toElapsedString(), 15, 50);
+		render.drawString("Chopped Logs: " + cutCount, 15, 65);
 		if (object != null) {
 			RSModel model = object.getModel();
 			if (model != null) {
@@ -204,7 +204,7 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 		if (e.getID() == MessageEvent.MESSAGE_SERVER) {
 			if (e.getMessage().toLowerCase().contains("do not have")) {
 				stopScript();
-			} else if (e.getMessage().toLowerCase().contains("You get some")) {
+			} else if (e.getMessage().toLowerCase().contains("you get some")) {
 				cutCount++;
 			}
 		}
