@@ -44,8 +44,9 @@ public class godMinerLite extends Script implements PaintListener, MessageListen
 		if (interfaces.canContinue()) {
 			interfaces.clickContinue();
 		}
-		if (walking.getEnergy() > 20 && !walking.isRunEnabled()) {
+		if (walking.getEnergy() > 50 && !walking.isRunEnabled()) {
 			walking.setRun(true);
+			return 1800;
 		}
 		if (timer != null && timer.isRunning() && isMining()) {
 			return 80;

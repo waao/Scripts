@@ -51,9 +51,9 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 			interfaces.clickContinue();
 			return 200;
 		}
-		if (walking.getEnergy() > 20 && !walking.isRunEnabled()) {
+		if (walking.getEnergy() > 50 && !walking.isRunEnabled()) {
 			walking.setRun(true);
-			return 800;
+			return 1800;
 		}
 		if (timer != null && timer.isRunning() && getMyPlayer().getAnimation() != -1 && (object == null || (verify(object) && TREE.accept(object)))) {
 			return 80;
