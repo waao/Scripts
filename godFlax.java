@@ -10,7 +10,7 @@ import java.awt.*;
  * Please remember paid scripts are always better!
  */
 
-@ScriptManifest(name = "godFlax", authors = {"Timer"}, description = "Picks and banks flax.", version = 0.1, keywords = {"bank", "flax", "money", "coins"}, requiresVersion = 242)
+@ScriptManifest(name = "godFlax", authors = {"Timer"}, description = "Picks and banks flax.", website = "http://www.powerbot.org/vb/showthread.php?t=783724", version = 0.1, keywords = {"bank", "flax", "money", "coins"}, requiresVersion = 242)
 public class godFlax extends Script implements PaintListener {
 	private static final RSArea FLAX_FIELD = new RSArea(new RSTile(2737, 3437), new RSTile(2751, 3451));
 	private static final RSTile BANK_TILE = new RSTile(2726, 3492, 0), FLAX_TILE = FLAX_FIELD.getCentralTile();
