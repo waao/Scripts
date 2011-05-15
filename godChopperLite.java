@@ -204,10 +204,10 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 		if (e.getID() == MessageEvent.MESSAGE_SERVER) {
 			if (e.getMessage().toLowerCase().contains("do not have")) {
 				stopScript();
-			} else if (e.getID() == MessageEvent.MESSAGE_ACTION) {
-				if (e.getMessage().toLowerCase().contains("ou get some")) {
-					cutCount++;
-				}
+			}
+		} else if (e.getID() == MessageEvent.MESSAGE_ACTION) {
+			if (e.getMessage().toLowerCase().contains("ou get some")) {
+				cutCount++;
 			}
 		}
 	}
