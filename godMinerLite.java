@@ -17,7 +17,7 @@ import java.util.List;
  * Please remember paid scripts are always better!
  */
 
-@ScriptManifest(name = "godMinerLite", authors = {"Timer"}, description = "Bank [or power mine] copper, tin, and iron.", version = 0.1, keywords = {"copper", "tin", "iron", "power", "mine", "bank", "mining"})
+@ScriptManifest(name = "godMinerLite", authors = {"Timer"}, description = "Bank [or power mine] copper, tin, and iron.", version = 0.1, keywords = {"copper", "tin", "iron", "power", "mine", "bank", "mining"}, requiresVersion = 242)
 public class godMinerLite extends Script implements PaintListener, MessageListener {
 	private static final int[] COPPER_ROCK_IDS = {3229, 3027, 9708, 9709, 9710, 11936, 11937, 11938, 11960, 11961, 11962,
 			11963, 31080, 31082, 29230, 29231, 5780, 5779, 5781}, TIN_ROCK_IDS = {3038, 3245, 9714, 9716, 11933, 11934,

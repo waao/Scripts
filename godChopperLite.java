@@ -15,7 +15,7 @@ import java.awt.*;
  * Please remember paid scripts are always better!
  */
 
-@ScriptManifest(name = "godChopperLite", authors = {"Timer"}, description = "Cuts and banks trees, oaks, willows, and maples.", version = 0.1, keywords = {"tree", "oak", "willow", "maple"})
+@ScriptManifest(name = "godChopperLite", authors = {"Timer"}, description = "Cuts and banks trees, oaks, willows, and maples.", version = 0.1, keywords = {"tree", "oak", "willow", "maple"}, requiresVersion = 242)
 public class godChopperLite extends Script implements PaintListener, MessageListener {
 	private RSObject object = null;
 	private static String treeName = "";
@@ -41,6 +41,8 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 	private RSTile returnTile = null;
 	private RSWeb walkWeb = null;
 	private boolean powerChop = true;
+	private static final Timer timeRunning = new Timer(0);
+	private int cutCount = 0;
 
 	@Override
 	public int loop() {
@@ -180,6 +182,8 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 	}
 
 	public void onRepaint(Graphics render) {
+		render.drawString("Running for: " + timeRunning.toElapsedString(), 15, 15);
+		render.drawString("Chopped Logs: " + cutCount, 15, 30);
 		if (object != null) {
 			RSModel model = object.getModel();
 			if (model != null) {
@@ -200,6 +204,8 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 		if (e.getID() == MessageEvent.MESSAGE_SERVER) {
 			if (e.getMessage().toLowerCase().contains("do not have")) {
 				stopScript();
+			} else if (e.getMessage().toLowerCase().contains("You get some")) {
+				cutCount++;
 			}
 		}
 	}

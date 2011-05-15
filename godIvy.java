@@ -12,7 +12,7 @@ import java.awt.*;
  * Please remember paid scripts are always better!
  */
 
-@ScriptManifest(name = "godIvy", authors = {"Timer"}, description = "Cuts down ivy.", version = 0.1, keywords = {"bank", "ivy", "nest", "woodcutting"})
+@ScriptManifest(name = "godIvy", authors = {"Timer"}, description = "Cuts down ivy.", version = 0.1, keywords = {"bank", "ivy", "nest", "woodcutting"}, requiresVersion = 242)
 public class godIvy extends Script implements PaintListener {
 	private static final Filter<RSGroundItem> BIRD_NEST = new Filter<RSGroundItem>() {
 		public boolean accept(RSGroundItem rsGroundItem) {
