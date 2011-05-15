@@ -61,7 +61,6 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 		}
 	}
 
-<<<<<<< HEAD
 	@Override
 	public boolean onStart() {
 		try {
@@ -78,14 +77,13 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 				log.severe("User terminated script from gui.");
 				log.severe("Quitting...");
 				return false;
-=======
+
 	public class CameraRotateThread extends Thread {
 		@Override
 		public void run() {
 			char LR = KeyEvent.VK_RIGHT;
 			if (Methods.random(0, 2) == 0) {
 				LR = KeyEvent.VK_LEFT;
->>>>>>> 0e5330642ee80cdb651b07c5b9fce31d9950f3b1
 			}
 			keyboard.pressKey(LR);
 			try {
@@ -96,7 +94,6 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 		}
 	}
 
-<<<<<<< HEAD
 	private void createAndWaitforGUI() {
 		if (SwingUtilities.isEventDispatchThread()) {
 			gui = new GUI();
@@ -132,7 +129,6 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 			barPrice = grandExchange.lookup(barID).getGuidePrice();
 			log("Loading " + itemName + " Prices...");
 			itemsPrice = grandExchange.lookup(itemID).getGuidePrice();
-=======
 	public class GUI extends JFrame {
 
 		private static final long serialVersionUID = 1L;
@@ -164,7 +160,6 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 
 		public GUI() {
 			initComponents();
->>>>>>> 0e5330642ee80cdb651b07c5b9fce31d9950f3b1
 		}
 
 		private void CancelActionPerformed(final java.awt.event.ActionEvent evt) {
@@ -1972,8 +1967,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 	@Override
 	public boolean onStart() {
 		try {
-			final GUI g = new GUI();
-			g.setVisible(true);
+			createAndWaitforGUI();		
 			while (g.isVisible()) {
 				Methods.sleep(100);
 			}
