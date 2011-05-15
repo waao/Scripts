@@ -99,7 +99,7 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 		}
 		if (returnTile != null) {
 			final RSTile tile = getMyPlayer().getLocation();
-			if (calc.distanceTo(returnTile) < 4) {
+			if (calc.distanceTo(returnTile) > 4) {
 				if (walkWeb == null) {
 					walkWeb = web.getWeb(tile, returnTile);
 				}
@@ -110,9 +110,12 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 					}
 				} else {
 					walkWeb = null;
-					returnTile = null;
+					if (calc.distanceTo(returnTile) < 4) {
+						returnTile = null;
+					}
 				}
 			} else {
+				walkWeb = null;
 				returnTile = null;
 			}
 			return 0;
