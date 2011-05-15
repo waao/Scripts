@@ -77,6 +77,7 @@ public class godIvy extends Script implements PaintListener {
 						}
 					} else {
 						walkWeb = null;
+						returnTile = null;
 					}
 				}
 			}

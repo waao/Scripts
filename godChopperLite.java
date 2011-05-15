@@ -110,6 +110,7 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 					}
 				} else {
 					walkWeb = null;
+					returnTile = null;
 				}
 			} else {
 				returnTile = null;
