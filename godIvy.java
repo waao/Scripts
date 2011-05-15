@@ -1,6 +1,8 @@
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Game;
+import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.util.Timer;
 import org.rsbot.script.wrappers.*;
@@ -41,8 +43,16 @@ public class godIvy extends Script implements PaintListener {
 				if (calc.pointOnScreen(mouse.getLocation())) {
 					mouse.moveOffScreen();
 				}
+			} else if (random(0, 10) == 0) {
+				camera.moveRandomly(5000);
+			} else if (random(0, 4) == 0) {
+				game.openTab(Game.TAB_STATS);
+				sleep(150);
+				skills.doHover(Skills.WOODCUTTING);
+				sleep(random(0, 5000));
+				game.openTab(Game.TAB_INVENTORY);
 			}
-			return random(1500, 2000);
+			return random(2500, 4000);
 		}
 		if (inventory.isFull()) {
 			final RSTile tile = getMyPlayer().getLocation();
@@ -107,47 +117,41 @@ public class godIvy extends Script implements PaintListener {
 				returnTile = null;
 			}
 			return 0;
-		} else {
-			RSObject ivyObject = objects.getNearest(IVY);
-			if (ivyObject != null) {
-				if (ivyObject.isOnScreen()) {
-					RSModel ivyModel = ivyObject.getModel();
-					if (ivyModel != null) {
-						Timer timer = new Timer(10000);
-						while (timer.isRunning()) {
-							Point p = ivyModel.getPoint();
-							if (calc.pointOnScreen(p)) {
-								mouse.move(p);
-								Timer waitTimer = new Timer(250);
-								while (waitTimer.isRunning()) {
-									if (mouse.getLocation().equals(p)) {
-										break;
-									}
-									sleep(random(25, 70));
+		}
+		RSObject ivyObject = objects.getNearest(IVY);
+		if (ivyObject != null) {
+			if (ivyObject.isOnScreen()) {
+				RSModel ivyModel = ivyObject.getModel();
+				if (ivyModel != null) {
+					Timer timer = new Timer(10000);
+					while (timer.isRunning()) {
+						Point p = ivyModel.getPoint();
+						if (calc.pointOnScreen(p)) {
+							mouse.move(p);
+							Timer waitTimer = new Timer(250);
+							while (waitTimer.isRunning()) {
+								if (mouse.getLocation().equals(p)) {
+									break;
 								}
-								sleep(random(150, 180));
-								if (menu.doAction("Chop")) {
-									ivy = ivyObject;
-									return 250;
-								}
+								sleep(random(25, 70));
+							}
+							sleep(random(150, 180));
+							if (menu.doAction("Chop")) {
+								ivy = ivyObject;
+								camera.turnTo(ivy);
+								return 250;
 							}
 						}
-					} else {
-						if (ivyObject.doAction("Chop")) {
-							ivy = ivyObject;
-							return 250;
-						}
-						return 0;
 					}
-				} else {
-					if (calc.canReach(ivyObject.getLocation(), false)) {
-						walking.walkTileMM(ivyObject.getLocation());
-					}
-					return 2500;
 				}
+			} else {
+				if (calc.canReach(ivyObject.getLocation(), false)) {
+					walking.walkTileMM(ivyObject.getLocation());
+				}
+				return 2500;
 			}
-			return 0;
 		}
+		return 0;
 	}
 
 	public int inventoryHatchetID() {
