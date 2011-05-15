@@ -25,11 +25,7 @@ import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
-import org.rsbot.script.methods.Bank;
-import org.rsbot.script.methods.Equipment;
-import org.rsbot.script.methods.Game;
-import org.rsbot.script.methods.Methods;
-import org.rsbot.script.methods.Skills;
+import org.rsbot.script.methods.*;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.util.Timer;
 import org.rsbot.script.wrappers.RSArea;
@@ -1187,11 +1183,11 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 		Methods.sleep(1500, 1800);
 		int blueUsers = 0;
 		int redUsers = 0;
-		String[] clanUsers;
+		FriendChat.User[] clanUsers;
 		try {
-			clanUsers = friendChat.getChannelUsers();
-			for (final String clanUser : clanUsers) {
-				final RSPlayer temp = players.getNearest(clanUser);
+			clanUsers = friendChat.getUsers();
+			for (final FriendChat.User clanUser : clanUsers) {
+				final RSPlayer temp = players.getNearest(clanUser.getName());
 				if (temp != null) {
 					final RSTile tempTile = temp.getLocation();
 					if (tempTile != null) {
