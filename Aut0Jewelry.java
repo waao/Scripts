@@ -154,8 +154,7 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 	@Override
 	public boolean onStart() {
 		try {
-			GUI g = new GUI();
-			g.setVisible(true);
+			createAndWaitforGUI();
 			while (g.isVisible())
 				sleep(100);
 			if (!globalBanking) {
@@ -185,6 +184,28 @@ public class Aut0Jewelry extends Script implements PaintListener, MouseListener 
 		return true;
 	}
 
+	private void createAndWaitforGUI() {
+		if (SwingUtilities.isEventDispatchThread()) {
+			gui = new GUI();
+			gui.setVisible(true);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						gui = new GUI();
+						gui.setVisible(true);
+					}
+				});
+			} catch (InvocationTargetException ite) {
+			} catch (InterruptedException ie) {
+			}
+		}
+		sleep(100);
+		while (gui.isVisible()) {
+			sleep(100);
+		}
+	}
+	
 	public void priceLoader() {
 		if (gem && !globalBanking) {
 			log("Loading " + gemName + " Prices...");
