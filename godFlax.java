@@ -61,7 +61,7 @@ public class godFlax extends Script implements PaintListener {
 		if (flax != null) {
 			if (flax.doAction("Pick")) {
 				ob = flax;
-				return random(800, 1800);
+				return random(200, 900);
 			}
 		}
 		return 0;
