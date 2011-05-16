@@ -16,34 +16,47 @@ public class godFlax extends Script implements PaintListener {
 	private static final RSTile BANK_TILE = new RSTile(2726, 3492, 0), FLAX_TILE = FLAX_FIELD.getCentralTile();
 
 	private RSObject ob = null;
+	private RSWeb walkingWeb = null;
 
 	@Override
 	public int loop() {
 		if (inventory.isFull()) {
 			if (calc.distanceTo(BANK_TILE) < 3) {
+				walkingWeb = null;
 				if (bank.isOpen() || bank.open()) {
 					bank.depositAll();
 					return 1500;
 				}
 			} else {
-				RSWeb walkingWeb = web.getWeb(getMyPlayer().getLocation(), BANK_TILE);
-				while (!walkingWeb.finished()) {
+				if (walkingWeb == null) {
+					walkingWeb = web.getWeb(getMyPlayer().getLocation(), BANK_TILE);
+				}
+				if (!walkingWeb.finished()) {
 					if (!walkingWeb.step()) {
-						break;
+						walkingWeb = null;
+						return 1200;
 					}
+				} else {
+					walkingWeb = null;
 				}
 			}
 			return 1500;
 		}
 		if (!FLAX_FIELD.contains(getMyPlayer().getLocation())) {
-			RSWeb walkingWeb = web.getWeb(getMyPlayer().getLocation(), FLAX_TILE);
-			while (!walkingWeb.finished()) {
+			if (walkingWeb == null) {
+				walkingWeb = web.getWeb(getMyPlayer().getLocation(), FLAX_TILE);
+			}
+			if (!walkingWeb.finished()) {
 				if (!walkingWeb.step()) {
-					break;
+					walkingWeb = null;
+					return 1200;
 				}
+			} else {
+				walkingWeb = null;
 			}
 			return 300;
 		}
+		walkingWeb = null;
 		RSObject flax = objects.getNearest(2646);
 		if (flax != null) {
 			if (flax.doAction("Pick")) {
