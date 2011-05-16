@@ -79,4 +79,10 @@ public class godFlax extends Script implements PaintListener {
 			}
 		}
 	}
+
+	@Override
+	public boolean onBreakStart() {
+		walkingWeb = null;
+		return true;
+	}
 }

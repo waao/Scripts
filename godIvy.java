@@ -170,4 +170,10 @@ public class godIvy extends Script implements PaintListener {
 			}
 		}
 	}
+
+	@Override
+	public boolean onBreakStart() {
+		walkWeb = null;
+		return true;
+	}
 }

@@ -146,6 +146,7 @@ public class godMinerLite extends Script implements PaintListener, MessageListen
 		return random(1000, 3000);
 	}
 
+	@Override
 	public boolean onStart() {
 		int returnInt = JOptionPane.showConfirmDialog(null, "Do you wish to bank the ore?", "Powermine or Bank", JOptionPane.YES_NO_OPTION);
 		switch (returnInt) {
@@ -261,5 +262,11 @@ public class godMinerLite extends Script implements PaintListener, MessageListen
 
 	public int inventoryPickaxeID() {
 		return inventory.getItemID("pickaxe");
+	}
+
+	@Override
+	public boolean onBreakStart() {
+		walkWeb = null;
+		return true;
 	}
 }

@@ -155,6 +155,7 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 		return random(1000, 3000);
 	}
 
+	@Override
 	public boolean onStart() {
 		int returnInt = JOptionPane.showConfirmDialog(null, "Do you wish to bank the logs?", "Powerchop or Bank", JOptionPane.YES_NO_OPTION);
 		switch (returnInt) {
@@ -217,5 +218,11 @@ public class godChopperLite extends Script implements PaintListener, MessageList
 				cutCount++;
 			}
 		}
+	}
+
+	@Override
+	public boolean onBreakStart() {
+		walkWeb = null;
+		return true;
 	}
 }
