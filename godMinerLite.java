@@ -38,11 +38,12 @@ public class godMinerLite extends Script implements PaintListener, MessageListen
 
 	@Override
 	public int loop() {
-		if (getMyPlayer().isMoving()) {
+		if (getMyPlayer().isMoving() && walkWeb == null) {
 			return random(500, 1280);
 		}
 		if (interfaces.canContinue()) {
 			interfaces.clickContinue();
+			return 0;
 		}
 		if (walking.getEnergy() > 50 && !walking.isRunEnabled()) {
 			walking.setRun(true);
