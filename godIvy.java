@@ -147,6 +147,16 @@ public class godIvy extends Script implements PaintListener, MessageListener {
 	}
 
 	public void onRepaint(Graphics render) {
+		if (ivyRecord != null) {
+			RSModel model = ivyRecord.getModel();
+			if (model != null) {
+				render.setColor(new Color(0, 0, 255, 75));
+				Polygon[] modelArray = model.getTriangles();
+				for (Polygon modelIndex : modelArray) {
+					render.fillPolygon(modelIndex);
+				}
+			}
+		}
 		long millis = runningTimer.getElapsed();
 		long hours = millis / (1000 * 60 * 60);
 		millis -= hours * (1000 * 60 * 60);
@@ -175,10 +185,10 @@ public class godIvy extends Script implements PaintListener, MessageListener {
 		render.fillRect(5, 5, 220, 68);
 		render.fillRect(5, 5, 220, 34);
 		render.setColor(Color.white);
-		render.drawString("godIvy Free (" + runningTimer.toElapsedString() + ")", 8, 15);
-		render.drawString("EXP Gained [Ivy Chopped]: " + xpGained + " [" + ivyChopped + "]", 8, 30);
-		render.drawString("EXP Hour: " + expPerHour, 8, 45);
-		render.drawString("Time until level: " + daysTNL + ":" + hoursTNL + ":" + minsTNL + ":" + secTNL, 8, 60);
+		render.drawString("godIvy Free (" + runningTimer.toElapsedString() + ")", 8, 17);
+		render.drawString("EXP Gained [Ivy Chopped]: " + xpGained + " [" + ivyChopped + "]", 8, 32);
+		render.drawString("EXP Hour: " + expPerHour, 8, 47);
+		render.drawString("Time until level: " + daysTNL + ":" + hoursTNL + ":" + minsTNL + ":" + secTNL, 8, 62);
 	}
 
 	private static final int roundOrient(int orientation) {
