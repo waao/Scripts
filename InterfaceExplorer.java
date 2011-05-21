@@ -373,7 +373,6 @@ public class InterfaceExplorer extends Script implements PaintListener {
 	private final ArrayList<HighLightInterface> HighLightWraps = new ArrayList<HighLightInterface>();
 	private final ArrayList<RSComponentListener> OldInterfaces = new ArrayList<RSComponentListener>();
 	threadlistener o = null;
-	private int change = -1;
 	private Rectangle highlightArea = null;
 	private HighlightTreeCellRenderer renderer = null;
 	private JFrame window;
