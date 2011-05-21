@@ -37,7 +37,6 @@ public class godIvy extends Script implements PaintListener, MessageListener {
 	private int ivyChopped = 0;
 	private Timer runningTimer = new Timer(0);
 	private int startXP = -1;
-	private int generalXDifference = 1;
 
 	@Override
 	public boolean onStart() {
@@ -116,7 +115,10 @@ public class godIvy extends Script implements PaintListener, MessageListener {
 				RSModel ivyModel = ivy.getModel();
 				for (int i = 0; i < 5; i++) {
 					if (i > 2) {
-						camera.turnTo(getViewTile());
+						final RSTile t = getViewTile();
+						if (t != null) {
+							camera.turnTo(t);
+						}
 					}
 					final Point ivyPoint = ivyModel.getPoint();
 					mouse.move(ivyPoint);
