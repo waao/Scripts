@@ -65,7 +65,7 @@ import org.rsbot.script.methods.Skills;
 import org.rsbot.script.wrappers.RSInterface;
 import org.rsbot.script.wrappers.RSItem;
 
-@ScriptManifest(authors = { "Fletch To 99" }, keywords = "Fletching", name = "UFletch", website = "http://www.universalscripts.org/ufletch", version = 2.26, description = "The best fletcher!")
+@ScriptManifest(authors = { "Fletch To 99" }, keywords = "Fletching", name = "UFletch", website = "http://www.universalscripts.org/ufletch", version = 2.27, description = "The best fletcher!")
 /**
  * All-in-One Fletching script for RSBot 2.XX
  * @author Fletch To 99
@@ -116,7 +116,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			fletchAndString = false, fullPaint = false, tabOne = false,
 			tabTwo = false, tabThree = false, connection = true;
 
-	private String status = null, name = null, buttonOption = "Unhide";
+	private String status = null, name = "All", buttonOption = "Unhide";
 
 	private Point p = null;
 
@@ -1763,6 +1763,12 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			gui.button4.setEnabled(false);
 		}
 		name = gui.textField2.getText();
+		if (name != "All") {
+			siggy = getImage("", false,
+					"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
+							+ name);
+			gui.label1 = new JLabel(new ImageIcon(siggy));
+		}
 	}
 
 	private void getExtraInfo() {
@@ -1808,7 +1814,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 						"http://www.universalscripts.org/ufletch/Images/knife.png");
 				brush = getImage("brush.png", true,
 						"http://www.universalscripts.org/ufletch/Images/brush.png");
-				siggy = getImage("siggy.png", false,
+				siggy = getImage("", false,
 						"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
 								+ name);
 				pic = getImage("camera.png", true,
@@ -2683,6 +2689,9 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		private void button4ActionPerformed(ActionEvent e) {
 			createSignature();
 			name = textField2.getText();
+			siggy = getImage("", false,
+					"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
+							+ name);
 			label1 = new JLabel(new ImageIcon(siggy));
 		}
 
@@ -3181,7 +3190,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 						}
 					});
 					panel1.add(label1);
-					label1.setBounds(0, 25, 425, 265);
+					label1.setBounds(0, 25, 500, 275);
 
 					// ---- button4 ----
 					button4.setText("Generate Signature");
