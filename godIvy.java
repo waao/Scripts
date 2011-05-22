@@ -12,7 +12,7 @@ import org.rsbot.script.wrappers.*;
 import javax.swing.*;
 import java.awt.*;
 
-@ScriptManifest(name = "godIvy FREE", authors = {"Timer"}, version = 0x1.999999999999ap-4, description = "A simple free ivy chopper.", requiresVersion = 243)
+@ScriptManifest(name = "godIvy FREE", authors = {"Timer"}, version = 0x1.999999999999ap-4, description = "A simple free ivy chopper.", requiresVersion = 244)
 public class godIvy extends Script implements PaintListener, MessageListener {
 	private static final Filter<RSGroundItem> BIRDS_NEST_FILTER = new Filter<RSGroundItem>() {
 		public boolean accept(final RSGroundItem rsGroundItem) {
