@@ -1,245 +1,123 @@
 import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
+import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import org.rsbot.script.wrappers.RSObject;
-import org.rsbot.script.methods.Game;
-import org.rsbot.script.methods.Skills;
-import org.rsbot.script.util.Filter;
-import org.rsbot.script.Script;
-import java.util.Random;
-import org.rsbot.script.wrappers.RSPlayer;
-
-import java.awt.*;
-import javax.imageio.ImageIO;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-
-import java.io.IOException;
-import java.net.URL;
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Game;
+import org.rsbot.script.methods.Skills;
 import org.rsbot.script.wrappers.RSArea;
+import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSTile;
 
 @ScriptManifest(authors = { "Wei Su" }, name = "Ultimate Cannon ball smelter", version = 0.1, description = "Balls deep", keywords = {
-        "cannon", "balls", "money" }, website = "http://www.powerbot.org/vb/showthread.php?t=783447", requiresVersion = 244)
+		"cannon", "balls", "money" }, website = "http://www.powerbot.org/vb/showthread.php?t=783447", requiresVersion = 244)
 /* Save as script.java - who could get that wrong! :) */
-public class UltimateAmmo extends Script implements PaintListener, MessageListener,
-        ActionListener, MouseMotionListener, MouseListener {
+public class UltimateAmmo extends Script implements PaintListener,
+		MessageListener, ActionListener, MouseMotionListener, MouseListener {
 
-
-    
 	public int steelBar = 2353;
 	public int mould = 4;
 	public int bankBoothID = 26972;
 	public int furnaceID = 26814;
-	
+
 	public int nullCheck;
-	
-	RSArea bankarea = new RSArea(3094, 3495 ,3098, 3499);
+
+	RSArea bankarea = new RSArea(3094, 3495, 3098, 3499);
 	RSTile bankTile = new RSTile(3097, 3496);
-	
+
 	RSArea furnace = new RSArea(3106, 3498, 3110, 3502);
 	RSTile furnaceTile = new RSTile(3108, 3501);
-	
+
 	public String status;
-	
+
 	public long startTime, millis, hours, minutes, seconds, last;
 	public int startExp;
 	public int currExp;
 	public int gainedExp;
-	
-	
-    @Override
-    public boolean onStart() {
-    	startTime = System.currentTimeMillis();
-    	startExp = skills.getCurrentExp(skills.SMITHING);
-    	
-        return true;
-    }
 
-  
+	private final Color color1 = new Color(0, 0, 0);
 
-    public int loop() {
-    	try{
-    	if (getMyPlayer().getAnimation() == -1) {
-    		nullCheck++;
-    	} else {
-    		nullCheck = 0;
-    	}
-    	
-    	if (!inFurnace()){
-    		nullCheck = 50;
-    	}
-    	
-    	
-    	
-    	switch (getCase()){
-    	case 1:
-    		walkToFurnace();
-    		status = "Walking to the furnace";
-    		return random(50,100);
-    		
-    	case 2:
-    		useFurnace();
-    		status = "Using furnace";
-    		return random(50,100);
-    		
-    	case 3:
-    		walkToBank();
-    		status = "Walking to bank";
-    		return random(50,100);
-    		
-    	case 4:
-    		useBank();
-    		status = "Using bank";
-    	}
-    	 } catch (Exception ignore) {
-         }
-    	
-		return random(50,100);
-        
-        }
-    
-    
-    public int getCase() {
-    	if (needToFurnace() && !inFurnace()){
-    		return 1;
-    	}
-    	
-    	if (inventory.contains(steelBar) && inFurnace()){
-    		return 2;
-    	}
-    	
-    	if (needToBank() && !inBank()){
-    		return 3;
-    	}
-    	
-    	if (needToBank() && inBank()){
-    		return 4;
-    	}
-    	
-    	return -1;
-    }
-    
+	private final Color color2 = new Color(255, 255, 255);
 
-    public void walkToBank() {
-    	RSPath path = null;
-        if (path == null) {
-            path = walking.getPath(bankTile);
-        }
-        path.traverse();
-    }
-    
-    public void walkToFurnace() {
-    	RSPath path = null;
-        if (path == null) {
-            path = walking.getPath(furnaceTile);
-        }
-        path.traverse();
-    }
-    
-    
-    public void useFurnace() {
-    	Point test;
-    	RSObject furnaces = objects.getNearest(furnaceID);
-    	RSObject bankBooth = objects.getNearest(bankBoothID);
-    	camera.turnTo(bankBooth);
-    	camera.setPitch(100);
-    	if (nullCheck > 25) {
-    		test = furnaces.getModel().getCentralPoint();
-    		inventory.selectItem(steelBar);
-    			mouse.move(test);
-    			mouse.click(true);
-    		interfaces.getComponent(905,14).getComponent(57).doClick();
-    		nullCheck = 0;
-    		antibanlist();
-    		sleep(random(1200,1400));
-    	} 
-    		
-    	
-    }
-    
-    public void useBank() {
-    	RSObject bankBooth = objects.getNearest(bankBoothID);
-    	camera.turnTo(bankBooth);
-    	if (bank.isOpen()){
-    		if (bank.getCount(steelBar)<27){
-    			env.saveScreenshot(true);
-    			stopScript(true);
-    		}
-    		if (inventory.contains(mould)){
-    			if (inventory.getCount(steelBar) < 27) {
-    				bank.depositAllExcept(mould);
-    				bank.withdraw(steelBar, 27);
-    			}
-    		} else {
-    			bank.depositAll();
-    			bank.withdraw(mould,1);
-    		}
-    	} else {
-    		bankBooth.doAction("Use-q");
-    		sleep(random(1200,1300));
-    	}
-    }
-    
-    public boolean needToFurnace() {
-    	if (inventory.isFull()) {
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-    
-    public boolean needToBank() {
-    	if (inventory.contains(steelBar)) {
-    		return false;
-    	} else {
-    		return true;
-    	}
-    }
-    	
-    public boolean inBank() {
-    	if (bankarea.contains(getMyPlayer().getLocation())){
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-    
-    public boolean inFurnace() {
-    	if (furnace.contains(getMyPlayer().getLocation())){
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-    
-    
-    public void chooserandomAFK() {
+	private final Font font1 = new Font("Arial", 0, 12);
+
+	private final Font font2 = new Font("Arial", 0, 11);
+
+	private final Image img1 = getImage("http://imageshack.us/m/705/37/cannonpaint.png");
+
+	@Override
+	public void actionPerformed(final ActionEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public int antibanlist() {
+		switch (random(0, 350)) {
+		case 0:
+			chooserandomAFK();
+			break;
+		case 1:
+		case 2:
+		case 3:
+			chooserandomAFK();
+			break;
+		case 4:
+			mouse.moveSlightly();
+			break;
+		case 5:
+			chooserandomAFK();
+			break;
+		case 6:
+		case 7:
+
+			break;
+		case 8:
+			superAntiMoveMouse();
+			break;
+		case 9:
+			randomXPcheck();
+			break;
+		case 10:
+			randomtab();
+			break;
+		case 11:
+		case 12:
+			randomtab();
+			break;
+		case 13:
+			superAntiMoveMouse();
+			break;
+		case 14:
+			randomXPcheck();
+			break;
+		case 15:
+		case 16:
+		case 17:
+			break;
+		default:
+			break;
+		}
+		return 100;
+	}
+
+	public void chooserandomAFK() {
 		switch (random(0, 4)) {
 		case 0:
 			sleep(random(500, 900));
@@ -259,32 +137,223 @@ public class UltimateAmmo extends Script implements PaintListener, MessageListen
 		}
 	}
 
-	public void superAntiMoveMouse() {
-		switch (random(0, 10)) {
-		case 0:
-			log("Doing superAnti! Wiggling mouse a lot");
-			mouse.setSpeed(random(6, 9));
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			break;
-		case 1:
-			log("Doing superAnti! Wiggling mouse ");
-			mouse.setSpeed(random(6, 9));
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			break;
-		case 2:
-			log("Doing superAnti! Wiggling mouse a lot");
-			mouse.setSpeed(random(6, 9));
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			mouse.moveSlightly();
-			break;
+	public int getCase() {
+		if (needToFurnace() && !inFurnace()) {
+			return 1;
 		}
+
+		if (inventory.contains(steelBar) && inFurnace()) {
+			return 2;
+		}
+
+		if (needToBank() && !inBank()) {
+			return 3;
+		}
+
+		if (needToBank() && inBank()) {
+			return 4;
+		}
+
+		return -1;
+	}
+
+	// START: Code generated using Enfilade's Easel
+	private Image getImage(final String url) {
+		try {
+			return ImageIO.read(new URL(url));
+		} catch (final IOException e) {
+			return null;
+		}
+	}
+
+	public boolean inBank() {
+		if (bankarea.contains(getMyPlayer().getLocation())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean inFurnace() {
+		if (furnace.contains(getMyPlayer().getLocation())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int loop() {
+		try {
+			if (getMyPlayer().getAnimation() == -1) {
+				nullCheck++;
+			} else {
+				nullCheck = 0;
+			}
+
+			if (!inFurnace()) {
+				nullCheck = 50;
+			}
+
+			switch (getCase()) {
+			case 1:
+				walkToFurnace();
+				status = "Walking to the furnace";
+				return random(50, 100);
+
+			case 2:
+				useFurnace();
+				status = "Using furnace";
+				return random(50, 100);
+
+			case 3:
+				walkToBank();
+				status = "Walking to bank";
+				return random(50, 100);
+
+			case 4:
+				useBank();
+				status = "Using bank";
+			}
+		} catch (final Exception ignore) {
+		}
+
+		return random(50, 100);
+
+	}
+
+	@Override
+	public void messageReceived(final MessageEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseClicked(final MouseEvent e) {// this is the mouse listener,
+													// it listen's for the
+													// click.
+
+	}
+
+	// END: Code generated using Enfilade's Easel
+
+	@Override
+	public void mouseDragged(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	// START: Code generated using Enfilade's Easel
+
+	@Override
+	public void mouseExited(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseMoved(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(final MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public boolean needToBank() {
+		if (inventory.contains(steelBar)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public boolean needToFurnace() {
+		if (inventory.isFull()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public void onFinish() {
+
+	}
+
+	@Override
+	public void onRepaint(final Graphics g1) {
+		double ballsMade;
+		currExp = skills.getCurrentExp(Skills.SMITHING);
+		gainedExp = currExp - startExp;
+		millis = System.currentTimeMillis() - startTime;
+		hours = millis / (1000 * 60 * 60);
+		millis -= hours * 1000 * 60 * 60;
+		minutes = millis / (1000 * 60);
+		millis -= minutes * 1000 * 60;
+		seconds = millis / 1000;
+		ballsMade = gainedExp / 25.6 * 4;
+
+		final long totalSeconds = (System.currentTimeMillis() - startTime) / 1000;
+		if (totalSeconds == 0) {
+
+		} else {
+		}
+		float xpsec = 0;
+
+		if ((minutes > 0 || hours > 0 || seconds > 0) && gainedExp > 0) {
+			xpsec = (float) gainedExp
+					/ (float) (seconds + minutes * 60 + hours * 60 * 60);
+		}
+
+		float glasssec = 0;
+		if ((minutes > 0 || hours > 0 || seconds > 0) && ballsMade > 0) {
+
+			glasssec = (float) ballsMade
+					/ (seconds + minutes * 60 + hours * 60 * 60);
+		}
+
+		final float xpmin = xpsec * 60;
+		final float xphour = xpmin * 60;
+		final float glassmin = glasssec * 60;
+		final float glasshour = glassmin * 60;
+
+		final Graphics2D g = (Graphics2D) g1;
+		g.drawImage(img1, 520, 164, null);
+		g.setFont(font1);
+		g.setColor(color1);
+		g.drawString("Time elapse: " + hours + ":" + minutes + ":" + seconds, 552, 285);
+		g.drawString("Balls made: " + ballsMade, 552, 305);
+		g.drawString("Balls/hour: " + glasshour, 552, 325);
+		g.drawString("Exp gained: " + gainedExp, 553, 345);
+		g.drawString("Exp/hour: " + xphour, 551, 365);
+		g.setFont(font2);
+		g.setColor(color2);
+		g.drawString("If you have a suggestion feel free to email me on wei@powerbot.org or visit me at links.powerbot.org/wei", 4, 333);
+	}
+
+	// END: Code generated using Enfilade's Easel
+
+	@Override
+	public boolean onStart() {
+		startTime = System.currentTimeMillis();
+		startExp = skills.getCurrentExp(Skills.SMITHING);
+
+		return true;
 	}
 
 	public void randomtab() {
@@ -446,197 +515,90 @@ public class UltimateAmmo extends Script implements PaintListener, MessageListen
 		}
 	}
 
-	public int antibanlist() {
-		switch (random(0, 350)) {
+	public void superAntiMoveMouse() {
+		switch (random(0, 10)) {
 		case 0:
-			chooserandomAFK();
-			break;
-		case 1:
-		case 2:
-		case 3:
-			chooserandomAFK();
-			break;
-		case 4:
+			log("Doing superAnti! Wiggling mouse a lot");
+			mouse.setSpeed(random(6, 9));
+			mouse.moveSlightly();
+			mouse.moveSlightly();
 			mouse.moveSlightly();
 			break;
-		case 5:
-			chooserandomAFK();
+		case 1:
+			log("Doing superAnti! Wiggling mouse ");
+			mouse.setSpeed(random(6, 9));
+			mouse.moveSlightly();
+			mouse.moveSlightly();
 			break;
-		case 6:
-		case 7:
-
-			break;
-		case 8:
-			superAntiMoveMouse();
-			break;
-		case 9:
-			randomXPcheck();
-			break;
-		case 10:
-			randomtab();
-			break;
-		case 11:
-		case 12:
-			randomtab();
-			break;
-		case 13:
-			superAntiMoveMouse();
-			break;
-		case 14:
-			randomXPcheck();
-			break;
-		case 15:
-		case 16:
-		case 17:
-			break;
-		default:
+		case 2:
+			log("Doing superAnti! Wiggling mouse a lot");
+			mouse.setSpeed(random(6, 9));
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
+			mouse.moveSlightly();
 			break;
 		}
-		return 100;
 	}
-    
-    @Override
-    public void onFinish() {
 
-    }
-
-    // START: Code generated using Enfilade's Easel
-   
-    
-    public void mouseClicked(MouseEvent e) {//this is the mouse listener, it listen's for the click.
-		
-		
-	}
-    // END: Code generated using Enfilade's Easel
-
-    
-  
-
-    @Override
-    public void mouseEntered(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void messageReceived(MessageEvent arg0) {
-
-
-    }
-
-
-    //START: Code generated using Enfilade's Easel
-    private Image getImage(String url) {
-        try {
-            return ImageIO.read(new URL(url));
-        } catch(IOException e) {
-            return null;
-        }
-    }
-
-    private final Color color1 = new Color(0, 0, 0);
-    private final Color color2 = new Color(255, 255, 255);
-
-    private final Font font1 = new Font("Arial", 0, 12);
-    private final Font font2 = new Font("Arial", 0, 11);
-
-    private final Image img1 = getImage("http://imageshack.us/m/705/37/cannonpaint.png");
-
-    public void onRepaint(Graphics g1) {
-    	double ballsMade;
-    	currExp = skills.getCurrentExp(skills.SMITHING);
-    	gainedExp = currExp - startExp;
-		millis = System.currentTimeMillis() - startTime;
-		hours = millis / (1000 * 60 * 60);
-		millis -= hours * (1000 * 60 * 60);
-		minutes = millis / (1000 * 60);
-		millis -= minutes * (1000 * 60);
-		seconds = millis / 1000;
-		ballsMade = (gainedExp / 25.6) * 4;
-    	
-
-    	final long totalSeconds = ((System.currentTimeMillis() - startTime) / 1000);
-		int xpPerHour = 0;
-		int glassHour= 0;
-
-		
-		if (totalSeconds == 0) {
-			xpPerHour = 0;
-			glassHour = 0;
-
+	public void useBank() {
+		final RSObject bankBooth = objects.getNearest(bankBoothID);
+		camera.turnTo(bankBooth);
+		if (bank.isOpen()) {
+			if (bank.getCount(steelBar) < 27) {
+				env.saveScreenshot(true);
+				stopScript(true);
+			}
+			if (inventory.contains(mould)) {
+				if (inventory.getCount(steelBar) < 27) {
+					bank.depositAllExcept(mould);
+					bank.withdraw(steelBar, 27);
+				}
+			} else {
+				bank.depositAll();
+				bank.withdraw(mould, 1);
+			}
 		} else {
-			xpPerHour = (int) ((gainedExp * 3600) / totalSeconds);
-			glassHour = (int) ((ballsMade * 3600) / totalSeconds);
+			bankBooth.doAction("Use-q");
+			sleep(random(1200, 1300));
 		}
-		float xpsec = 0;
-		
-		if ((minutes > 0 || hours > 0 || seconds > 0) && gainedExp > 0) {
-			xpsec = ((float) gainedExp)
-					/ (float) (seconds + (minutes * 60) + (hours * 60 * 60));
+	}
+
+	public void useFurnace() {
+		Point test;
+		final RSObject furnaces = objects.getNearest(furnaceID);
+		final RSObject bankBooth = objects.getNearest(bankBoothID);
+		camera.turnTo(bankBooth);
+		camera.setPitch(100);
+		if (nullCheck > 25) {
+			test = furnaces.getModel().getCentralPoint();
+			inventory.selectItem(steelBar);
+			mouse.move(test);
+			mouse.click(true);
+			interfaces.getComponent(905, 14).getComponent(57).doClick();
+			nullCheck = 0;
+			antibanlist();
+			sleep(random(1200, 1400));
 		}
-		
-		float glasssec = 0;
-		if ((minutes > 0 || hours > 0 || seconds > 0) && ballsMade > 0) {
-			
-			glasssec = ((float) ballsMade)
-					/ (float) (seconds + (minutes * 60) + (hours * 60 * 60));
+
+	}
+
+	public void walkToBank() {
+		RSPath path = null;
+		if (path == null) {
+			path = walking.getPath(bankTile);
 		}
-		
-		float xpmin = xpsec * 60;
-		float xphour = xpmin * 60;
-		float glassmin = glasssec * 60;
-		float glasshour = glassmin * 60;
-		
-		
-        Graphics2D g = (Graphics2D)g1;
-        g.drawImage(img1, 520, 164, null);
-        g.setFont(font1);
-        g.setColor(color1);
-        g.drawString("Time elapse: "+ hours + ":" + minutes + ":" + seconds, 552, 285);
-        g.drawString("Balls made: "+ballsMade, 552, 305);
-        g.drawString("Balls/hour: "+glasshour, 552, 325);
-        g.drawString("Exp gained: "+gainedExp, 553, 345);
-        g.drawString("Exp/hour: "+xphour, 551, 365);
-        g.setFont(font2);
-        g.setColor(color2);
-        g.drawString("If you have a suggestion feel free to email me on wei@powerbot.org or visit me at links.powerbot.org/wei", 4, 333);
-    }
-    //END: Code generated using Enfilade's Easel
-   
+		path.traverse();
+	}
+
+	public void walkToFurnace() {
+		RSPath path = null;
+		if (path == null) {
+			path = walking.getPath(furnaceTile);
+		}
+		path.traverse();
+	}
+
 }

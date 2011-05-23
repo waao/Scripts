@@ -1,23 +1,48 @@
-import org.rsbot.event.listeners.PaintListener;
-import org.rsbot.script.Script;
-import org.rsbot.script.ScriptManifest;
-import org.rsbot.script.wrappers.RSComponent;
-import org.rsbot.script.wrappers.RSInterface;
-
-import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@ScriptManifest(authors = {"Iscream", "joku.rules"}, keywords = "Development", name = "Interface Explorer", version = 0.5, description = "Fetches various interface data for developers.", requiresVersion = 244)
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.JTree;
+import javax.swing.WindowConstants;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
+import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.script.Script;
+import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.wrappers.RSComponent;
+import org.rsbot.script.wrappers.RSInterface;
+
+@ScriptManifest(authors = { "Iscream", "joku.rules" }, keywords = "Development", name = "Interface Explorer", version = 0.5, description = "Fetches various interface data for developers.", requiresVersion = 244)
 public class InterfaceExplorer extends Script implements PaintListener {
 	private class HighLightInterface {
 		private RSInterface parent = null;
@@ -25,7 +50,8 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		private RSComponent component = null;
 		private final int change;
 
-		HighLightInterface(final RSInterface a, final RSComponent b, final RSComponent c, final int change) {
+		HighLightInterface(final RSInterface a, final RSComponent b,
+				final RSComponent c, final int change) {
 			parent = a;
 			child = b;
 			component = c;
@@ -60,7 +86,10 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		}
 
 		@Override
-		public Component getTreeCellRendererComponent(final JTree tree, final Object value, final boolean isSelected, final boolean expanded, final boolean leaf, final int row, final boolean hasFocus) {
+		public Component getTreeCellRendererComponent(final JTree tree,
+				final Object value, final boolean isSelected,
+				final boolean expanded, final boolean leaf, final int row,
+				final boolean hasFocus) {
 			final JComponent c = (JComponent) renderer.getTreeCellRendererComponent(tree, value, isSelected, expanded, leaf, row, hasFocus);
 			HighLightableWraps.clear();
 			HighLightableWraps.addAll(HighLightWraps);
@@ -84,7 +113,8 @@ public class InterfaceExplorer extends Script implements PaintListener {
 							}
 						}
 					} else {
-						if (NextInterface.getChild().getIndex() == ((RSComponentWrap) value).wrapped.getParent().getIndex() && NextInterface.getParent().getIndex() == ((RSComponentWrap) value).wrapped.getParent().getInterface().getIndex()) {
+						if (NextInterface.getChild().getIndex() == ((RSComponentWrap) value).wrapped.getParent().getIndex()
+								&& NextInterface.getParent().getIndex() == ((RSComponentWrap) value).wrapped.getParent().getInterface().getIndex()) {
 							c.setForeground(Color.blue);
 						}
 					}
@@ -99,18 +129,20 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		private final ArrayList<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
 		private final ArrayList<RSInterfaceWrap> interfaceWraps = new ArrayList<RSInterfaceWrap>();
 
+		@Override
 		public void addTreeModelListener(final TreeModelListener l) {
 			treeModelListeners.add(l);
 		}
 
 		private void fireTreeStructureChanged(final Object oldRoot) {
 			treeModelListeners.size();
-			final TreeModelEvent e = new TreeModelEvent(this, new Object[]{oldRoot});
+			final TreeModelEvent e = new TreeModelEvent(this, new Object[] { oldRoot });
 			for (final TreeModelListener tml : treeModelListeners) {
 				tml.treeStructureChanged(e);
 			}
 		}
 
+		@Override
 		public Object getChild(final Object parent, final int index) {
 			if (parent == root) {
 				return interfaceWraps.get(index);
@@ -122,6 +154,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			return null;
 		}
 
+		@Override
 		public int getChildCount(final Object parent) {
 			if (parent == root) {
 				return interfaceWraps.size();
@@ -133,6 +166,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			return 0;
 		}
 
+		@Override
 		public int getIndexOfChild(final Object parent, final Object child) {
 			if (parent == root) {
 				return interfaceWraps.indexOf(child);
@@ -144,19 +178,24 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			return -1;
 		}
 
+		@Override
 		public Object getRoot() {
 			return root;
 		}
 
+		@Override
 		public boolean isLeaf(final Object o) {
-			return o instanceof RSComponentWrap && ((RSComponentWrap) o).wrapped.getComponents().length == 0;
+			return o instanceof RSComponentWrap
+					&& ((RSComponentWrap) o).wrapped.getComponents().length == 0;
 		}
 
+		@Override
 		public void removeTreeModelListener(final TreeModelListener l) {
 			treeModelListeners.remove(l);
 		}
 
-		public boolean searchMatches(final RSComponent iface, final String contains) {
+		public boolean searchMatches(final RSComponent iface,
+				final String contains) {
 			return iface.getText().toLowerCase().contains(contains.toLowerCase());
 		}
 
@@ -168,7 +207,8 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				for (final RSComponent child : iface.getComponents()) {
 					if (searchMatches(child, search)) {
 						interfaceWraps.add(new RSInterfaceWrap(iface));
-						if (window.isVisible() && !listenerButton.isSelected() && !searchBox.getText().equals("")) {
+						if (window.isVisible() && !listenerButton.isSelected()
+								&& !searchBox.getText().equals("")) {
 							HighLightWraps.add(new HighLightInterface(iface, child, null, -1));
 						}
 						break;
@@ -176,7 +216,9 @@ public class InterfaceExplorer extends Script implements PaintListener {
 					for (final RSComponent component : child.getComponents()) {
 						if (searchMatches(component, search)) {
 							interfaceWraps.add(new RSInterfaceWrap(iface));
-							if (window.isVisible() && !listenerButton.isSelected() && !searchBox.getText().equals("")) {
+							if (window.isVisible()
+									&& !listenerButton.isSelected()
+									&& !searchBox.getText().equals("")) {
 								HighLightWraps.add(new HighLightInterface(iface, child, component, -1));
 							}
 							break toBreak;
@@ -187,7 +229,9 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			fireTreeStructureChanged(root);
 		}
 
-		public void valueForPathChanged(final TreePath path, final Object newValue) {
+		@Override
+		public void valueForPathChanged(final TreePath path,
+				final Object newValue) {
 		}
 	}
 
@@ -230,18 +274,6 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			zRot = child.getZRotation();
 		}
 
-		private int getXRotation() {
-			return xRot;
-		}
-
-		private int getYRotation() {
-			return yRot;
-		}
-
-		private int getZRotation() {
-			return zRot;
-		}
-
 		private int bounds() {
 			return bounds;
 		}
@@ -252,6 +284,10 @@ public class InterfaceExplorer extends Script implements PaintListener {
 
 		private int getAbsoluteY() {
 			return absoluteloc.y;
+		}
+
+		public Rectangle getArea() {
+			return area;
 		}
 
 		private int getColor() {
@@ -306,8 +342,16 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			return type;
 		}
 
-		public Rectangle getArea() {
-			return area;
+		private int getXRotation() {
+			return xRot;
+		}
+
+		private int getYRotation() {
+			return yRot;
+		}
+
+		private int getZRotation() {
+			return zRot;
 		}
 	}
 
@@ -320,7 +364,8 @@ public class InterfaceExplorer extends Script implements PaintListener {
 
 		@Override
 		public boolean equals(final Object o) {
-			return o instanceof RSComponentWrap && wrapped == ((RSComponentWrap) o).wrapped;
+			return o instanceof RSComponentWrap
+					&& wrapped == ((RSComponentWrap) o).wrapped;
 		}
 
 		@Override
@@ -338,7 +383,8 @@ public class InterfaceExplorer extends Script implements PaintListener {
 
 		@Override
 		public boolean equals(final Object o) {
-			return o instanceof RSInterfaceWrap && wrapped == ((RSInterfaceWrap) o).wrapped;
+			return o instanceof RSInterfaceWrap
+					&& wrapped == ((RSInterfaceWrap) o).wrapped;
 		}
 
 		@Override
@@ -356,6 +402,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			Thread.interrupted();
 		}
 
+		@Override
 		public void run() {
 			try {
 				while (isRunning() && listenerButton.isSelected()) {
@@ -481,24 +528,30 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 12));
 			}
 		}
-		if (a.getComponent().getRelativeX() != a.getRelativeX() || a.getComponent().getRelativeY() != a.getRelativeY()) {
+		if (a.getComponent().getRelativeX() != a.getRelativeX()
+				|| a.getComponent().getRelativeY() != a.getRelativeY()) {
 			if (a.getComponent().getParent() == null) {
 				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 13));
 			} else {
 				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 13));
 			}
 		}
-		if (a.getComponent().getAbsoluteX() != a.getAbsoluteX() || a.getComponent().getAbsoluteY() != a.getAbsoluteY()) {
+		if (a.getComponent().getAbsoluteX() != a.getAbsoluteX()
+				|| a.getComponent().getAbsoluteY() != a.getAbsoluteY()) {
 			if (a.getComponent().getParent() == null) {
 				HighLightWraps.add(new HighLightInterface(a.getComponent().getInterface(), a.getComponent(), null, 14));
 			} else {
 				HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 14));
 			}
 		}
-		if (a.getComponent().getArea() != null && a.getArea() != null && a.getComponent().getArea().getSize().equals(a.getArea().getSize())) {
+		if (a.getComponent().getArea() != null
+				&& a.getArea() != null
+				&& a.getComponent().getArea().getSize().equals(a.getArea().getSize())) {
 			HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 15));
 		}
-		if (a.getComponent().getXRotation() != a.getXRotation() || a.getComponent().getYRotation() != a.getYRotation() || a.getComponent().getZRotation() != a.getZRotation()) {
+		if (a.getComponent().getXRotation() != a.getXRotation()
+				|| a.getComponent().getYRotation() != a.getYRotation()
+				|| a.getComponent().getZRotation() != a.getZRotation()) {
 			HighLightWraps.add(new HighLightInterface(a.getComponent().getParent().getInterface(), a.getComponent().getParent(), a.getComponent(), 16));
 		}
 	}
@@ -516,15 +569,12 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		o.kill();
 	}
 
+	@Override
 	public void onRepaint(final Graphics g) {
 		if (highlightArea != null) {
 			g.setColor(Color.ORANGE);
 			g.drawRect(highlightArea.x, highlightArea.y, highlightArea.width, highlightArea.height);
 		}
-	}
-
-	public void setHighlightArea(Rectangle r) {
-		this.highlightArea = r;
 	}
 
 	@Override
@@ -539,11 +589,12 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		tree.setCellRenderer(renderer);
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			private void addInfo(final String key, final String value, final boolean highlight) {
+			private void addInfo(final String key, final String value,
+					final boolean highlight) {
 				final JPanel row = new JPanel();
 				row.setAlignmentX(Component.LEFT_ALIGNMENT);
 				row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
-				for (final String data : new String[]{key, value}) {
+				for (final String data : new String[] { key, value }) {
 					final JLabel label = new JLabel(data);
 					label.setAlignmentY(Component.TOP_ALIGNMENT);
 					if (highlight) {
@@ -554,6 +605,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				infoArea.add(row);
 			}
 
+			@Override
 			public void valueChanged(final TreeSelectionEvent e) {
 				final Object node = tree.getLastSelectedPathComponent();
 				if (node == null || node instanceof RSInterfaceWrap) {
@@ -567,14 +619,16 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				if (iface == null) {
 					return;
 				}
-				List<Integer> changes = new ArrayList<Integer>();
+				final List<Integer> changes = new ArrayList<Integer>();
 				for (int i = 0; i < HighLightWraps.size(); i++) {
 					if (iface.getParent() == null) {
-						if (HighLightWraps.get(i).getChild().getIndex() == iface.getIndex() && HighLightWraps.get(i).getParent().getIndex() == iface.getInterface().getIndex()) {
+						if (HighLightWraps.get(i).getChild().getIndex() == iface.getIndex()
+								&& HighLightWraps.get(i).getParent().getIndex() == iface.getInterface().getIndex()) {
 							changes.add(HighLightWraps.get(i).getChange());
 						}
 					} else {
-						if (HighLightWraps.get(i).getChild().getIndex() == iface.getParent().getIndex() && HighLightWraps.get(i).getParent().getIndex() == iface.getParent().getInterface().getIndex()) {
+						if (HighLightWraps.get(i).getChild().getIndex() == iface.getParent().getIndex()
+								&& HighLightWraps.get(i).getParent().getIndex() == iface.getParent().getInterface().getIndex()) {
 							changes.add(HighLightWraps.get(i).getChange());
 						}
 					}
@@ -583,7 +637,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 				addInfo("SpecialType: ", "" + iface.getSpecialType(), changes.contains(2));
 				addInfo("Bounds Index: ", "" + iface.getBoundsArrayIndex(), changes.contains(3));
 				if (iface.getArea() != null) {
-					Rectangle size = iface.getArea();
+					final Rectangle size = iface.getArea();
 					addInfo("Size: ", size.width + "," + size.height, changes.contains(15));
 				}
 				addInfo("Model ID: ", "" + iface.getModelID(), changes.contains(4));
@@ -603,10 +657,14 @@ public class InterfaceExplorer extends Script implements PaintListener {
 					addInfo("Actions: ", actions, changes.contains(10));
 				}
 				addInfo("Component ID: ", "" + iface.getComponentID(), changes.contains(11));
-				addInfo("Component Stack Size: ", "" + iface.getComponentStackSize(), changes.contains(12));
-				addInfo("Relative Location: ", "(" + iface.getRelativeX() + "," + iface.getRelativeY() + ")", changes.contains(13));
-				addInfo("Absolute Location: ", "(" + iface.getAbsoluteX() + "," + iface.getAbsoluteY() + ")", changes.contains(14));
-				addInfo("Rotation: ", "x: " + iface.getXRotation() + "  y: " + iface.getYRotation() + "  z: " + iface.getZRotation(), changes.contains(16));
+				addInfo("Component Stack Size: ", ""
+						+ iface.getComponentStackSize(), changes.contains(12));
+				addInfo("Relative Location: ", "(" + iface.getRelativeX() + ","
+						+ iface.getRelativeY() + ")", changes.contains(13));
+				addInfo("Absolute Location: ", "(" + iface.getAbsoluteX() + ","
+						+ iface.getAbsoluteY() + ")", changes.contains(14));
+				addInfo("Rotation: ", "x: " + iface.getXRotation() + "  y: "
+						+ iface.getYRotation() + "  z: " + iface.getZRotation(), changes.contains(16));
 				setHighlightArea(iface.getArea());
 				infoArea.validate();
 				infoArea.repaint();
@@ -642,6 +700,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		scrollPane.setPreferredSize(new Dimension(250, 500));
 		window.add(scrollPane, BorderLayout.CENTER);
 		final ActionListener actionListener = new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				treeModel.update(searchBox.getText());
 				infoArea.removeAll();
@@ -650,6 +709,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			}
 		};
 		final ActionListener toggleListener = new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				if (listenerButton.isSelected()) {
 					log("Cleared");
@@ -659,6 +719,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			}
 		};
 		final ActionListener repaintListener = new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				log("Refreshed Tree");
 				treeModel.fireTreeStructureChanged(treeModel.getRoot());
@@ -668,6 +729,7 @@ public class InterfaceExplorer extends Script implements PaintListener {
 			}
 		};
 		final ActionListener helpListener = new ActionListener() {
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				Help.setVisible(true);
 			}
@@ -694,5 +756,9 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		window.pack();
 		window.setVisible(true);
 		return true;
+	}
+
+	public void setHighlightArea(final Rectangle r) {
+		highlightArea = r;
 	}
 }
