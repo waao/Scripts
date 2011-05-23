@@ -39,7 +39,7 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = "Debauchery", name = "DebaucherySoulWars", version = 0.51, description = "Start the script in soulwars lobby")
+@ScriptManifest(authors = "Debauchery", name = "DebaucherySoulWars", version = 0.51, description = "Start the script in soulwars lobby", requiresVersion = 244)
 public class DebaucherySoulWars extends Script implements MouseListener,
 		MessageListener, PaintListener {
 

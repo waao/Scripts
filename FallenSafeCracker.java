@@ -61,7 +61,7 @@ import org.rsbot.script.wrappers.RSTile;
  * Added a temp. fix for prices.
  */
 
-@ScriptManifest(authors = { "Fallen" }, keywords = "Thieving", name = "Fallen's Safe Cracker", version = 4.3, description = "Cracks safes at Rogue Den's.")
+@ScriptManifest(authors = { "Fallen" }, keywords = "Thieving", name = "Fallen's Safe Cracker", version = 4.3, description = "Cracks safes at Rogue Den's.", requiresVersion = 244)
 public class FallenSafeCracker extends Script implements PaintListener,
 		MessageListener, MouseListener, MouseMotionListener {
 
