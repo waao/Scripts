@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@ScriptManifest(authors = {"Iscream", "joku.rules"}, keywords = "Development", name = "Interface Explorer", version = 0.5, description = "Fetches various interface data for developers.", requiresVersion = 242)
+@ScriptManifest(authors = {"Iscream", "joku.rules"}, keywords = "Development", name = "Interface Explorer", version = 0.5, description = "Fetches various interface data for developers.", requiresVersion = 244)
 public class InterfaceExplorer extends Script implements PaintListener {
 	private class HighLightInterface {
 		private RSInterface parent = null;

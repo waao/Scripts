@@ -33,7 +33,7 @@ import org.rsbot.script.methods.Methods;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.wrappers.RSItem;
 
-@ScriptManifest(authors = { "iPhQ" }, keywords = { "Magic" }, name = "iPhQ's Alcher", version = 2.1, description = "Alch it baby - Now works with the new version of powerbot.")
+@ScriptManifest(authors = { "iPhQ" }, keywords = { "Magic" }, name = "iPhQ's Alcher", version = 2.1, description = "Alch it baby - Now works with the new version of powerbot.", requiresVersion = 244)
 public class Alcher extends Script implements PaintListener, MouseListener,
 		MessageListener {
 
