@@ -38,7 +38,7 @@ import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.methods.Skills;
 
-@ScriptManifest(authors = "Himekp", keywords = "Construction", name = "ProConstruction", version = 1.03, description = "ProConstruction, By: Himekp", website = "http://dl.dropbox.com/u/27626614/ProFisher.java", requiresVersion = 244)
+@ScriptManifest(authors = { "Himekp" }, keywords = { "Construction" }, name = "ProConstruction", version = 1.03, description = "ProConstruction, By: Himekp", website = "http://www.powerbot.org/vb/showthread.php?t=787874", requiresVersion = 244)
 public class ProConstruction extends Script implements PaintListener{
 	public int oakPlank = 8778;
 	public int oakDungeon = 13345;

@@ -21,7 +21,7 @@ import org.rsbot.script.wrappers.RSObjectDef;
 import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.script.wrappers.RSTilePath;
 
-@ScriptManifest(authors = "Brian", website = "http://www.powerbot.org/vb/showthread.php?t=641161", keywords = "Mining", name = "WorldMinerPro", version = 4.5, description = "Multiple Location Miner", requiresVersion = 244)
+@ScriptManifest(authors = { "Brian" }, website = "http://www.powerbot.org/vb/showthread.php?t=641161", keywords = "Mining", name = "WorldMinerPro", version = 4.5, description = "Multiple Location Miner", requiresVersion = 244)
 public class WorldMinerPro extends Script implements PaintListener,
 		MessageListener {
 	@SuppressWarnings("serial")

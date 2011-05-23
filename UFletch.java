@@ -65,7 +65,7 @@ import org.rsbot.script.methods.Skills;
 import org.rsbot.script.wrappers.RSInterface;
 import org.rsbot.script.wrappers.RSItem;
 
-@ScriptManifest(authors = { "Fletch To 99" }, keywords = "Fletching", name = "UFletch", website = "http://www.universalscripts.org/ufletch", version = 2.27, description = "The best fletcher!", requiresVersion = 244)
+@ScriptManifest(authors = { "Fletch To 99" }, keywords = "Fletching", name = "UFletch", website = "http://www.powerbot.org/vb/showthread.php?t=542486", version = 2.27, description = "The best fletcher!", requiresVersion = 244)
 /**
  * All-in-One Fletching script for RSBot 2.XX
  * @author Fletch To 99

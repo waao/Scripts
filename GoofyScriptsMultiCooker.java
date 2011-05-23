@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 
 //end
-@ScriptManifest(authors = "Ryan & Truemenskeet", name = "GoofyScriptsMultiCooker", version = 1.0, description = "Cooks food in Al Kharid and Rogues Den", requiresVersion = 244)
+@ScriptManifest(authors = { "Ryan", "Truemenskeet" }, name = "GoofyScriptsMultiCooker", version = 1.0, description = "Cooks food in Al Kharid and Rogues Den", website = "http://www.powerbot.org/vb/showthread.php?t=768104", requiresVersion = 244)
 public class GoofyScriptsMultiCooker extends Script  implements PaintListener, MessageListener, MouseListener{
 
 	String antiban = "Idle";

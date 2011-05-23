@@ -7,7 +7,7 @@ import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.*;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = {"hellomot0123"}, keywords = {"Combat"}, name = "BanditKiller", description = "Start somewhere in Bandit Camp.", version = 2.1, requiresVersion = 244)
+@ScriptManifest(authors = {"hellomot0123"}, keywords = {"Combat"}, name = "BanditKiller", description = "Start somewhere in Bandit Camp.", version = 2.1, website = "http://www.powerbot.org/vb/showthread.php?t=764939", requiresVersion = 244)
 public class BanditKillerNew extends Script implements PaintListener, MessageListener {
 
     RSItem noted, shield, weapon, noted2;

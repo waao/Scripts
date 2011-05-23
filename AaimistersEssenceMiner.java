@@ -57,7 +57,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner", keywords = "Mining", version = 1.31, description = ("Mines Essence."), requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner", keywords = "Mining", version = 1.31, description = ("Mines Essence."), website = "http://www.powerbot.org/vb/showthread.php?t=651251", requiresVersion = 244)
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {

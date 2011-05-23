@@ -66,7 +66,7 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer", keywords = "Combat", version = 1.24, description = ("Kills chickens."), requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer", keywords = "Combat", version = 1.24, description = "Kills chickens.", website = "http://www.powerbot.org/vb/showthread.php?t=644016", requiresVersion = 244)
 public class AaimistersChickenKiller extends Script implements MessageListener, PaintListener, MouseListener {
 
 	private RSTile InPen;

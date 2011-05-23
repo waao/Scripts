@@ -50,7 +50,7 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = "Ubuntu4life", name = "AIORuneCrafter", version = 0.4, description = "Crafts all F2P runes.", website = "http://www.powerbot.org/vb/showthread.php?t=764525&p", requiresVersion = 244)
+@ScriptManifest(authors = { "Ubuntu4life" }, name = "AIORuneCrafter", version = 0.4, description = "Crafts all F2P runes.", website = "http://www.powerbot.org/vb/showthread.php?t=764525", requiresVersion = 244)
 public class AIORuneCrafter extends Script implements PaintListener,
 MessageListener, MouseListener {
 

@@ -56,7 +56,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher", keywords = "Cooking & Fishing", version = 1.07, description = ("Fishes and cooks crayfish behind Lumbridge Castle."), requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher", keywords = "Cooking & Fishing", version = 1.07, description = "Fishes and cooks crayfish behind Lumbridge Castle.", website = "http://www.powerbot.org/vb/showthread.php?t=684846", requiresVersion = 244)
 public class AaimistersLumbridgeCookerFisher extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {

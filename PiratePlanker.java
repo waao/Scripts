@@ -27,7 +27,7 @@ import org.rsbot.script.*;
 import org.rsbot.script.methods.*;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "ElyzianPirate" }, name = "PiratePlanker", version = 1.52, website = "www.thedealer.site11.com", description = "Fastest planker from N,S,E and W.", requiresVersion = 244)
+@ScriptManifest(authors = { "ElyzianPirate" }, name = "PiratePlanker", version = 1.52, website = "http://www.powerbot.org/vb/showthread.php?t=544986", description = "Fastest planker from N,S,E and W.", requiresVersion = 244)
 public class PiratePlanker extends Script implements PaintListener,
 		MessageListener, MouseListener, MouseMotionListener {
 

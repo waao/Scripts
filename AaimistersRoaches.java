@@ -70,7 +70,7 @@ import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer", keywords = "Combat", version = 1.11, description = ("Kills roaches in Edgville."), requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer", keywords = "Combat", version = 1.11, description = "Kills roaches in Edgville.", website = "http://www.powerbot.org/vb/showthread.php?t=769805", requiresVersion = 244)
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {

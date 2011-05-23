@@ -73,7 +73,7 @@ import org.rsbot.Configuration;
  * v0.91: Oops, forgot to add mouse speed settings!
  * v0.9: Initial release
  */
-@ScriptManifest(name = "TFighterEE", authors = "!@!@! And Zalgo2462", keywords = {"universal", "fighter", "!@!@!", "Zalgo2462"}, version = 1.61, description = "TFighter by !@!@! with additions by Zalgo2462", requiresVersion = 244)
+@ScriptManifest(name = "TFighterEE", authors = { "!@!@!", "Zalgo2462" }, version = 1.61, description = "TFighter by !@!@! with additions by Zalgo2462", website = "http://www.powerbot.org/vb/showthread.php?t=477661", requiresVersion = 244)
 public class TFighterEE extends Script implements PaintListener, MouseListener {
 
 	private final static ScriptManifest mani = TFighterEE.class.getAnnotation(ScriptManifest.class);

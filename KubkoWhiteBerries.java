@@ -23,7 +23,7 @@ import java.net.SocketAddress;
 import java.net.URL;
 
 
-@ScriptManifest(authors = { "Kubko" }, keywords = { "White", "Berry", "Picker" }, name = "KubkoWhiteBerries", description = "Pickin' up them berries.", version = 1.0, requiresVersion = 244)
+@ScriptManifest(authors = { "Kubko" }, keywords = { "White", "Berry", "Picker" }, name = "KubkoWhiteBerries", description = "Pickin' up them berries.", version = 1.0, website = "http://www.powerbot.org/vb/showthread.php?t=722427", requiresVersion = 244)
 public class KubkoWhiteBerries extends Script implements PaintListener,
 		MessageListener {
 	int berryId;
