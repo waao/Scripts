@@ -21,7 +21,7 @@ import org.rsbot.script.wrappers.RSObjectDef;
 import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.script.wrappers.RSTilePath;
 
-@ScriptManifest(authors = { "Brian" }, website = "http://www.powerbot.org/vb/showthread.php?t=641161", keywords = "Mining", name = "WorldMinerPro", version = 4.5, description = "Multiple Location Miner", requiresVersion = 244)
+@ScriptManifest(authors = { "Gunnerx19" }, website = "http://www.powerbot.org/vb/showthread.php?t=641161", keywords = "Mining", name = "WorldMinerPro", version = 4.5, description = "Multiple Location Miner", requiresVersion = 244)
 public class WorldMinerPro extends Script implements PaintListener,
 		MessageListener {
 	@SuppressWarnings("serial")
@@ -67,7 +67,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 			jLabel4 = new javax.swing.JLabel();
 			jCheckBox1 = new javax.swing.JCheckBox();
 
-			setTitle("Brian's WorldMinerPro");
+			setTitle("WorldMinerPro");
 			setCursor(new java.awt.Cursor(java.awt.Cursor.CROSSHAIR_CURSOR));
 			setResizable(false);
 
@@ -1528,7 +1528,7 @@ public class WorldMinerPro extends Script implements PaintListener,
 						g.drawLine(510, 359, 496, 345);
 						g.setFont(new Font("Comic Sans MS", 0, 16));
 						g.setColor(new Color(255, 0, 0));
-						g.drawString("Brian's World Miner Pro", 16, 360);
+						g.drawString("World Miner Pro", 16, 360);
 						g.setFont(new Font("Century Schoolbook", 0, 12));
 						g.setColor(new Color(255, 0, 0));
 						g.drawString("Runtime: " + hours + ":" + minutes + ":"
