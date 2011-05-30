@@ -79,24 +79,18 @@ public class AIORuneCrafter extends Script implements PaintListener,
 							final int random3 = random.nextInt(Math.abs(4 - 0));
 							if (random.nextInt(Math.abs(3 - 0)) == 0) {
 								keyboard.pressKey(LR[random1]);
-								Thread.sleep(random
-										.nextInt(Math.abs(101 - 402)));
+								Thread.sleep(random.nextInt(Math.abs(101 - 402)));
 								keyboard.pressKey(UD[random2]);
-								Thread.sleep(random
-										.nextInt(Math.abs(301 - 601)));
+								Thread.sleep(random.nextInt(Math.abs(301 - 601)));
 								keyboard.releaseKey(UD[random2]);
-								Thread
-										.sleep(random.nextInt(Math
-												.abs(99 - 399)));
+								Thread.sleep(random.nextInt(Math.abs(99 - 399)));
 								keyboard.releaseKey(LR[random1]);
 							} else {
 								keyboard.pressKey(LRUD[random3]);
 								if (random3 > 1) {
-									Thread.sleep(random.nextInt(Math
-											.abs(601 - 298)));
+									Thread.sleep(random.nextInt(Math.abs(601 - 298)));
 								} else {
-									Thread.sleep(random.nextInt(Math
-											.abs(903 - 501)));
+									Thread.sleep(random.nextInt(Math.abs(903 - 501)));
 								}
 								keyboard.releaseKey(LRUD[random3]);
 							}
@@ -152,13 +146,9 @@ public class AIORuneCrafter extends Script implements PaintListener,
 		}
 
 		public void drawTo(final Graphics g, final Line line) {
-			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-			((Graphics2D) g).setRenderingHint(
-					RenderingHints.KEY_COLOR_RENDERING,
-					RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_RENDERING,
-					RenderingHints.VALUE_RENDER_QUALITY);
+			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			if (!calc.tileOnMap(t1) || !calc.tileOnMap(t2)) {
 				return;
 			}
@@ -231,14 +221,14 @@ public class AIORuneCrafter extends Script implements PaintListener,
 		}
 
 		public RSTile translate(final double length) {
-			return new RSTile((int) Math.round(length * xdist / dist) + x,
-					(int) Math.round(length * ydist / dist) + y);
+			return new RSTile((int) Math.round(length * xdist / dist) + x, (int) Math.round(length
+					* ydist / dist)
+					+ y);
 		}
 
 		public RSTile translateFromCenter(final double length) {
-			return new RSTile(
-					(int) Math.round(centerX - xdist / dist * length),
-					(int) Math.round(centerY - ydist / dist * length));
+			return new RSTile((int) Math.round(centerX - xdist / dist * length), (int) Math.round(centerY
+					- ydist / dist * length));
 		}
 	}
 
@@ -280,8 +270,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					musicianID = 5442;
 					altarWalkTile = new RSTile(2788, 4839);
 					portalWalkTile = new RSTile(2793, 4828);
-					ALTAR_AREA = new RSArea(new RSTile(2781, 4824), new RSTile(
-							2797, 4847));
+					ALTAR_AREA = new RSArea(new RSTile(2781, 4824), new RSTile(2797, 4847));
 					TORUINS = new Line[] { new Line(2944, 3368, 2949, 3368),
 							new Line(2945, 3374, 2949, 3374),
 							new Line(2949, 3377, 2954, 3377),
@@ -317,8 +306,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					bankTile = new RSTile(3269, 3169);
 					altarWalkTile = new RSTile(3486, 4836);
 					portalWalkTile = new RSTile(3496, 4832);
-					ALTAR_AREA = new RSArea(new RSTile(3474, 4845), new RSTile(
-							3500, 4822));
+					ALTAR_AREA = new RSArea(new RSTile(3474, 4845), new RSTile(3500, 4822));
 					TORUINS = new Line[] { new Line(3269, 3172, 3270, 3162),
 							new Line(3262, 3176, 3262, 3171),
 							new Line(3255, 3174, 3255, 3167),
@@ -343,8 +331,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					musicianID = 8700;
 					altarWalkTile = new RSTile(2658, 4839);
 					portalWalkTile = new RSTile(2655, 4830);
-					ALTAR_AREA = new RSArea(new RSTile(2651, 4821), new RSTile(
-							2665, 4845));
+					ALTAR_AREA = new RSArea(new RSTile(2651, 4821), new RSTile(2665, 4845));
 					TORUINS = new Line[] { new Line(3251, 3420, 3256, 3420),
 							new Line(3258, 3431, 3260, 3421),
 							new Line(3267, 3430, 3268, 3426),
@@ -364,8 +351,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					portalID = 2469;
 					altarWalkTile = new RSTile(2583, 4839);
 					portalWalkTile = new RSTile(2577, 4845);
-					ALTAR_AREA = new RSArea(new RSTile(2574, 4832), new RSTile(
-							2595, 4851));
+					ALTAR_AREA = new RSArea(new RSTile(2574, 4832), new RSTile(2595, 4851));
 					TORUINS = new Line[] { new Line(3383, 3271, 3383, 3268),
 							new Line(3379, 3266, 3379, 3265),
 							new Line(3373, 3267, 3373, 3265),
@@ -388,8 +374,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					portalID = 2470;
 					altarWalkTile = new RSTile(2521, 4842);
 					portalWalkTile = new RSTile(2521, 4834);
-					ALTAR_AREA = new RSArea(new RSTile(2515, 4831), new RSTile(
-							2531, 4849));
+					ALTAR_AREA = new RSArea(new RSTile(2515, 4831), new RSTile(2531, 4849));
 					TORUINS = new Line[] { new Line(3094, 3489, 3094, 3493),
 							new Line(3090, 3483, 3084, 3487),
 							new Line(3082, 3482, 3078, 3482),
@@ -494,170 +479,8 @@ public class AIORuneCrafter extends Script implements PaintListener,
 			jButton2.addActionListener(this);
 			final GroupLayout layout = new GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
-			layout
-					.setHorizontalGroup(layout
-							.createParallelGroup(GroupLayout.Alignment.LEADING)
-							.addGroup(
-									layout
-											.createSequentialGroup()
-											.addGroup(
-													layout
-															.createParallelGroup(
-																	GroupLayout.Alignment.LEADING)
-															.addGroup(
-																	layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addComponent(
-																					jButton2,
-																					GroupLayout.DEFAULT_SIZE,
-																					141,
-																					Short.MAX_VALUE))
-															.addGroup(
-																	layout
-																			.createSequentialGroup()
-																			.addContainerGap()
-																			.addComponent(
-																					jButton1,
-																					GroupLayout.DEFAULT_SIZE,
-																					141,
-																					Short.MAX_VALUE))
-															.addGroup(
-																	layout
-																			.createSequentialGroup()
-																			.addGap(
-																					60,
-																					60,
-																					60)
-																			.addGroup(
-																					layout
-																							.createParallelGroup(
-																									GroupLayout.Alignment.LEADING)
-																							.addComponent(
-																									jComboBox1,
-																									GroupLayout.PREFERRED_SIZE,
-																									GroupLayout.DEFAULT_SIZE,
-																									GroupLayout.PREFERRED_SIZE)
-																							.addComponent(
-																									jLabel2))))
-											.addContainerGap())
-							.addGroup(
-									GroupLayout.Alignment.TRAILING,
-									layout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addComponent(jLabel4)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.RELATED,
-													17, Short.MAX_VALUE)
-											.addComponent(
-													jTextField1,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													23,
-													GroupLayout.PREFERRED_SIZE)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(
-													jTextField2,
-													javax.swing.GroupLayout.PREFERRED_SIZE,
-													23,
-													GroupLayout.PREFERRED_SIZE)
-											.addGap(14, 14, 14)).addGroup(
-									layout.createSequentialGroup()
-											.addContainerGap().addComponent(
-													jCheckBox5)
-											.addContainerGap(28,
-													Short.MAX_VALUE)).addGroup(
-									layout.createSequentialGroup()
-											.addContainerGap().addComponent(
-													jCheckBox4)
-											.addContainerGap(14,
-													Short.MAX_VALUE)).addGroup(
-									layout.createSequentialGroup()
-											.addContainerGap().addComponent(
-													jCheckBox3)
-											.addContainerGap(30,
-													Short.MAX_VALUE)).addGroup(
-									layout.createSequentialGroup()
-											.addContainerGap().addComponent(
-													jCheckBox2)
-											.addContainerGap(74,
-													Short.MAX_VALUE)).addGroup(
-									layout.createSequentialGroup()
-											.addContainerGap().addComponent(
-													jLabel1).addContainerGap(
-													121, Short.MAX_VALUE))
-							.addGroup(
-									layout.createSequentialGroup()
-											.addContainerGap().addComponent(
-													jCheckBox1)
-											.addContainerGap(88,
-													Short.MAX_VALUE)));
-			layout
-					.setVerticalGroup(layout
-							.createParallelGroup(GroupLayout.Alignment.LEADING)
-							.addGroup(
-									layout
-											.createSequentialGroup()
-											.addComponent(jLabel2)
-											.addGap(7, 7, 7)
-											.addGroup(
-													layout
-															.createParallelGroup(
-																	GroupLayout.Alignment.BASELINE)
-															.addComponent(
-																	jLabel1)
-															.addComponent(
-																	jComboBox1,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE))
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jCheckBox1)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jCheckBox2)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jCheckBox3)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.UNRELATED)
-											.addComponent(jCheckBox4)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jCheckBox5)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.UNRELATED)
-											.addGroup(
-													layout
-															.createParallelGroup(
-																	GroupLayout.Alignment.TRAILING)
-															.addGroup(
-																	layout
-																			.createParallelGroup(
-																					GroupLayout.Alignment.BASELINE)
-																			.addComponent(
-																					jTextField1,
-																					GroupLayout.PREFERRED_SIZE,
-																					GroupLayout.DEFAULT_SIZE,
-																					GroupLayout.PREFERRED_SIZE)
-																			.addComponent(
-																					jTextField2,
-																					GroupLayout.PREFERRED_SIZE,
-																					GroupLayout.DEFAULT_SIZE,
-																					GroupLayout.PREFERRED_SIZE))
-															.addComponent(
-																	jLabel4))
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.UNRELATED)
-											.addComponent(jButton1)
-											.addPreferredGap(
-													LayoutStyle.ComponentPlacement.RELATED)
-											.addComponent(jButton2)
-											.addContainerGap(
-													GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)));
+			layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jButton2, GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jButton1, GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addGap(60, 60, 60).addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(jLabel2)))).addContainerGap()).addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addContainerGap().addComponent(jLabel4).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE).addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE).addGap(14, 14, 14)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jCheckBox5).addContainerGap(28, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jCheckBox4).addContainerGap(14, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jCheckBox3).addContainerGap(30, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jCheckBox2).addContainerGap(74, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jLabel1).addContainerGap(121, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addContainerGap().addComponent(jCheckBox1).addContainerGap(88, Short.MAX_VALUE)));
+			layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(jLabel2).addGap(7, 7, 7).addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(jLabel1).addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jCheckBox1).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jCheckBox2).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jCheckBox3).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jCheckBox4).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jCheckBox5).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addComponent(jLabel4)).addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jButton1).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(jButton2).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 			pack();
 			setLocationRelativeTo(getOwner());
 			setVisible(true);
@@ -678,8 +501,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					if (GUI.screenOnLevel) {
 						if (skills.getRealLevel(Skills.RUNECRAFTING)
 								- screenLevel > 0) {
-							screenLevel = skills
-									.getRealLevel(Skills.RUNECRAFTING);
+							screenLevel = skills.getRealLevel(Skills.RUNECRAFTING);
 							env.saveScreenshot(true);
 						}
 					}
@@ -760,12 +582,13 @@ public class AIORuneCrafter extends Script implements PaintListener,
 	private final java.util.Random f = new java.util.Random();
 	private PerfectGUI GUI;
 	private Timer hourTimer;
-	RSArea ALTAR_AREA = new RSArea(new RSTile(2835, 4823), new RSTile(2851,
-			4843));
-	RSTile altarWalkTile = new RSTile(2843, 4832), portalWalkTile = new RSTile(
-			2841, 4829), ruinsTile = new RSTile(3187, 3164),
-			bankTile = new RSTile(3269, 3169), errorTile1 = new RSTile(3250,
-					3419), errorTile2 = new RSTile(3257, 3419);
+	RSArea ALTAR_AREA = new RSArea(new RSTile(2835, 4823), new RSTile(2851, 4843));
+	RSTile altarWalkTile = new RSTile(2843, 4832),
+			portalWalkTile = new RSTile(2841, 4829),
+			ruinsTile = new RSTile(3187, 3164),
+			bankTile = new RSTile(3269, 3169),
+			errorTile1 = new RSTile(3250, 3419),
+			errorTile2 = new RSTile(3257, 3419);
 	private AntiBan antiBan;
 	private FreeMemory freeMemory;
 	private ScreenShotter screenShotter;
@@ -870,18 +693,6 @@ public class AIORuneCrafter extends Script implements PaintListener,
 		return false;
 	}
 
-	private double getDelay(Point p) {
-		double Distance = calc.distanceBetween(mouse.getLocation(), p);
-		if (Distance > 200) {
-			return 100;
-		} else {
-			if (Distance >= 40) {
-				return Distance / 4;
-			}
-			return 10;
-		}
-	}
-
 	private boolean clickObject(final RSObject object, final String action) {
 		try {
 			Point p;
@@ -899,8 +710,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				}
 				final String[] items = menu.getItems();
 				if (items.length > 0
-						&& items[0].toLowerCase().startsWith(
-								action.toLowerCase())) {
+						&& items[0].toLowerCase().startsWith(action.toLowerCase())) {
 					mouse.click(true);
 					return true;
 				} else if (menu.contains(action)) {
@@ -1036,8 +846,8 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				xdist /= dist;
 				ydist /= dist;
 				for (int j = 0; j < dist; j++) {
-					path.add(new RSTile((int) Math.round(xdist * j + lastX),
-							(int) Math.round(ydist * j + lastY)));
+					path.add(new RSTile((int) Math.round(xdist * j + lastX), (int) Math.round(ydist
+							* j + lastY)));
 				}
 				last = distOnLine;
 				lastX = curX;
@@ -1086,8 +896,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 						return Action.WITHDRAW;
 					} else {
 						if (inAltarArea()) {
-							final RSObject Portal = objects
-									.getNearest(portalID);
+							final RSObject Portal = objects.getNearest(portalID);
 							if (Portal != null && isOnScreen(Portal.getModel())) {
 								return Action.LEAVEALTAR;
 							}
@@ -1114,6 +923,18 @@ public class AIORuneCrafter extends Script implements PaintListener,
 			}
 		} catch (final Exception e) {
 			return Action.UNKNOWN;
+		}
+	}
+
+	private double getDelay(final Point p) {
+		final double Distance = calc.distanceBetween(mouse.getLocation(), p);
+		if (Distance > 200) {
+			return 100;
+		} else {
+			if (Distance >= 40) {
+				return Distance / 4;
+			}
+			return 10;
 		}
 	}
 
@@ -1144,8 +965,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 			final Polygon[] tris = m.getTriangles();
 			for (final Polygon p : tris) {
 				for (int j = 0; j < p.xpoints.length; j++) {
-					final Point firstPoint = new Point(p.xpoints[j],
-							p.ypoints[j]);
+					final Point firstPoint = new Point(p.xpoints[j], p.ypoints[j]);
 					if (calc.pointOnScreen(firstPoint)) {
 						return firstPoint;
 					}
@@ -1184,21 +1004,18 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					final RSNPC Musician = npcs.getNearest(musicianID);
 					if (walking.getEnergy() < Methods.random(29, 38)
 							&& Musician != null
-							&& calc.distanceTo(Musician) < Methods.random(19,
-									21)) {
+							&& calc.distanceTo(Musician) < Methods.random(19, 21)) {
 						if (isOnScreen(Musician.getModel())) {
 							if (clickNPC(Musician, "Listen-to")) {
 								if (sleepWhile(new Condition() {
 									public boolean isTrue() {
-										return players.getMyPlayer()
-												.getAnimation() == -1;
+										return players.getMyPlayer().getAnimation() == -1;
 									}
 								}, Musician, 1000)) {
 									Status = "Resting";
 									int energy = walking.getEnergy();
 									int maxsleep = 0;
-									int targetEnergy = randomGauss(69, 99,
-											(uniqueNumber + 77), 12);
+									final int targetEnergy = randomGauss(69, 99, (uniqueNumber + 77), 12);
 									while (energy <= targetEnergy
 											&& maxsleep++ <= 1401) {
 										Methods.sleep(Methods.random(20, 30));
@@ -1208,8 +1025,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 							}
 						}
 						if (walking.getEnergy() < Methods.random(29, 38)) {
-							walking.walkTo(Musician.getLocation().randomize(3,
-									3));
+							walking.walkTo(Musician.getLocation().randomize(3, 3));
 							return 400;
 						}
 					}
@@ -1218,8 +1034,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				if (walking.getEnergy() <= nextPercentageRest) {
 					Status = "Resting";
 					walking.rest(random(69, 99));
-					nextPercentageRest = randomGauss(0, 28, (uniqueNumber + 5),
-							14);
+					nextPercentageRest = randomGauss(0, 28, (uniqueNumber + 5), 14);
 				}
 			}
 			if (!walking.isRunEnabled()
@@ -1258,8 +1073,8 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				}
 				if (players.getMyPlayer().getLocation().equals(errorTile1)
 						&& getAction() == Action.OPENBANK
-						|| players.getMyPlayer().getLocation().equals(
-								errorTile2) && getAction() == Action.OPENBANK) {
+						|| players.getMyPlayer().getLocation().equals(errorTile2)
+						&& getAction() == Action.OPENBANK) {
 					final RSNPC Banker = npcs.getNearest(bankerID);
 					if (clickNPC(Banker, "Bank Banker")) {
 						Status = "Opening bank";
@@ -1421,8 +1236,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 		} catch (final Exception e) {
 			return 1;
 		}
-		return (randomGauss(Methods.random(159, 141), Methods.random(328, 321),
-				191, 40));
+		return randomGauss(Methods.random(159, 141), Methods.random(328, 321), 191, 40);
 	}
 
 	@Override
@@ -1487,7 +1301,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 	}
 
 	private void moveMouse(final double time, final Point p) {
-		double endTime = System.currentTimeMillis() + time;
+		final double endTime = System.currentTimeMillis() + time;
 		while (System.currentTimeMillis() < endTime) {
 			mouse.move(p, 0, 0);
 		}
@@ -1557,8 +1371,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 						- startExp;
 			}
 			g2.setColor(Mouse);
-			g2.drawImage(img1, ((int) mouse.getLocation().getX() - 31),
-					((int) mouse.getLocation().getY() - 31), null);
+			g2.drawImage(img1, ((int) mouse.getLocation().getX() - 31), ((int) mouse.getLocation().getY() - 31), null);
 			g2.drawImage(img2, 396, 5, null);
 			if (Rune == 554) { // Fire rune
 				if (getAction() == Action.WALKTORUINS) {
@@ -1576,16 +1389,14 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				}
 			}
 
-			final long epxTillLevel = skills
-					.getExpToNextLevel(Skills.RUNECRAFTING);
+			final long epxTillLevel = skills.getExpToNextLevel(Skills.RUNECRAFTING);
 			final int profit = runePrice * runesCrafted - essencePrice
 					* essenceUsed;
 			final long expPerHour = expGained * 3600000l / millis;
 			final long craftedPerHour = runesCrafted * 3600000l / millis;
 			final long essUsedPerHour = essenceUsed * 3600000l / millis;
 			final long profitPerHour = profit * 3600000l / millis;
-			final long essTillLevel = skills
-					.getExpToNextLevel(Skills.RUNECRAFTING) / 6;
+			final long essTillLevel = skills.getExpToNextLevel(Skills.RUNECRAFTING) / 6;
 
 			final int x = 15;
 
@@ -1593,23 +1404,20 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				g2.drawImage(tabOne, -1, 293, null);
 
 				drawString(g2, "Status: " + Status, x, 365);
-				drawString(g2, "Time running: " + getFormattedTime(millis), x,
-						381);
+				drawString(g2, "Time running: " + getFormattedTime(millis), x, 381);
 
 				drawString(g2, "Rune crafting: " + runeString, x, 417);
 				if (runesCrafted > 0) {
 					drawString(g2, "Runes crafted: "
 							+ getFormattedMoney(runesCrafted) + " ("
-							+ getFormattedMoney(craftedPerHour) + "/hr)", x,
-							433);
+							+ getFormattedMoney(craftedPerHour) + "/hr)", x, 433);
 				} else {
 					drawString(g2, "Runes crafted: 0 (0/h)", x, 433);
 				}
 				if (runesCrafted > 0) {
 					drawString(g2, "Essence used: "
 							+ getFormattedMoney(essenceUsed) + " ("
-							+ getFormattedMoney(essUsedPerHour) + "/hr)", x,
-							449);
+							+ getFormattedMoney(essUsedPerHour) + "/hr)", x, 449);
 				} else {
 					drawString(g2, "Essence used: 0 (0/h)", x, 449);
 				}
@@ -1626,27 +1434,23 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				drawString(g2, "Current level: "
 						+ skills.getCurrentLevel(Skills.RUNECRAFTING), x, 381);
 
-				final String string = skills
-						.getPercentToNextLevel(Skills.RUNECRAFTING)
+				final String string = skills.getPercentToNextLevel(Skills.RUNECRAFTING)
 						+ "% until level "
 						+ (skills.getCurrentLevel(Skills.RUNECRAFTING) + 1);
 				final FontMetrics fontMetrics = g2.getFontMetrics();
-				final Rectangle2D stringWidth = fontMetrics.getStringBounds(
-						string, g2);
+				final Rectangle2D stringWidth = fontMetrics.getStringBounds(string, g2);
 
 				g2.setColor(new Color(76, 13, 13));
 				g2.drawRect(x, 390, 250, 16);
 				g2.setColor(new Color(0, 0, 0, 50));
-				g2.fillRect(x, 390, (int) (skills
-						.getPercentToNextLevel(Skills.RUNECRAFTING) * 2.5), 16);
+				g2.fillRect(x, 390, (int) (skills.getPercentToNextLevel(Skills.RUNECRAFTING) * 2.5), 16);
 				drawString(g2, string, x + 250 / 2
 						- (int) stringWidth.getWidth() / 2, 390 + 13);
 
 				long timeToLevel = 0;
 				String timeToLevel2 = "Calculating";
 				if (expPerHour > 0) {
-					timeToLevel = (long) (skills
-							.getExpToNextLevel(Skills.RUNECRAFTING) * 60 / expPerHour);
+					timeToLevel = (long) (skills.getExpToNextLevel(Skills.RUNECRAFTING) * 60 / expPerHour);
 					if (timeToLevel >= 60) {
 						final long thours = (int) timeToLevel / 60;
 						final long tmin = timeToLevel - thours * 60;
@@ -1675,8 +1479,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 					drawString(g2, "Rune per Essence ratio: " + runeRatio
 							+ "/1", 275, 465);
 				} else {
-					drawString(g2, "Rune per Essence ratio: Calculating", 275,
-							465);
+					drawString(g2, "Rune per Essence ratio: Calculating", 275, 465);
 				}
 			} else { // closed
 				g.drawImage(closed, 162, 293, null);
@@ -1687,8 +1490,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 	@Override
 	public boolean onStart() {
 		if (!game.isFixed()) {
-			log
-					.severe("It is highly recommended to bot with fixed screen mode.");
+			log.severe("It is highly recommended to bot with fixed screen mode.");
 			return false;
 		}
 		GUI = new PerfectGUI();
@@ -1728,8 +1530,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 				closed = getImage("http://img39.imageshack.us/img39/3215/aioruneclosed.png");
 				img2 = getImage("http://www.ubuntu.com/sites/default/themes/ubuntu10/images/footer_logo.png");
 				runePrice = grandExchange.lookup(Rune).getGuidePrice();
-				essencePrice = grandExchange.lookup(runeEssence)
-						.getGuidePrice();
+				essencePrice = grandExchange.lookup(runeEssence).getGuidePrice();
 			}
 		}).start();
 		if (inventory.containsOneOf(runeEssence)) {
@@ -1897,8 +1698,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 	}
 
 	private int step(final ArrayList<RSTile> path) {
-		if (calc.distanceBetween(getMyPlayer().getLocation(), path.get(path
-				.size() - 1)) < 2) {
+		if (calc.distanceBetween(getMyPlayer().getLocation(), path.get(path.size() - 1)) < 2) {
 			return path.size();
 		}
 		final RSTile dest = walking.getDestination();
@@ -1920,8 +1720,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 			}
 		}
 		if (index >= 0
-				&& (dest == null || index > shortest || !players.getMyPlayer()
-						.isMoving())) {
+				&& (dest == null || index > shortest || !players.getMyPlayer().isMoving())) {
 			if (walkTile(path.get(index), 0, 0)) {
 				sleepToMove(Methods.random(600, 900));
 			}
@@ -1929,8 +1728,7 @@ public class AIORuneCrafter extends Script implements PaintListener,
 			return index;
 		}
 		if (!sleepToMove(Methods.random(5000, 8000))) {
-			RSWeb walkingWeb = web.getWeb(getMyPlayer().getLocation(), path
-					.get(getNearestTile(path)));
+			final RSWeb walkingWeb = web.getWeb(getMyPlayer().getLocation(), path.get(getNearestTile(path)));
 			while (!walkingWeb.finished()) {
 				if (!walkingWeb.step()) {
 					break;

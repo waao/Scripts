@@ -128,6 +128,7 @@ public class BanditKillerNew extends Script implements PaintListener,
 			startButton.setText("START");
 			startButton.addActionListener(new java.awt.event.ActionListener() {
 
+				@Override
 				public void actionPerformed(final java.awt.event.ActionEvent evt) {
 					startButtonActionPerformed(evt);
 				}
@@ -661,6 +662,7 @@ public class BanditKillerNew extends Script implements PaintListener,
 		}
 	}
 
+	@Override
 	public void messageReceived(final MessageEvent me) {
 		if (me.getMessage().toLowerCase().contains("just advanced a")) {
 			levelsGained++;

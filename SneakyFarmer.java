@@ -56,6 +56,7 @@ public class SneakyFarmer extends Script implements MessageListener,
 			randomGenerator = new Random();
 		}
 
+		@Override
 		public void run() {
 			try {
 				while (scriptRunning) {
@@ -129,6 +130,7 @@ public class SneakyFarmer extends Script implements MessageListener,
 			contentPane.add(button1);
 			button1.setBounds(10, 50, 215, 35);
 			button1.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(final ActionEvent e) {
 					startActionPerformed(e);
 				}
@@ -727,6 +729,7 @@ public class SneakyFarmer extends Script implements MessageListener,
 		currentState = State.CHECK_CROPS;
 	}
 
+	@Override
 	public int loop() {
 		if (checkInventory() || status == "Logging back in") {
 			if (status == "Logging back in") {
