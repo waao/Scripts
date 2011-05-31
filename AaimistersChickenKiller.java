@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.24 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.26 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -44,7 +44,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -71,7 +70,7 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer", keywords = "Combat", version = 1.24, description = "Kills chickens.", website = "http://www.powerbot.org/vb/showthread.php?t=644016", requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer v1.26", keywords = "Combat", version = 1.26, description = "Kills chickens.")
 public class AaimistersChickenKiller extends Script implements MessageListener,
 		PaintListener, MouseListener {
 
@@ -191,7 +190,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 				}
 			});
 
-			AaimistersGUI.setTitle("Aaimister's Chciken Killer v1.24");
+			AaimistersGUI.setTitle("Aaimister's Chciken Killer v1.26");
 			AaimistersGUI.setForeground(new Color(255, 255, 255));
 			AaimistersGUI.setBackground(Color.LIGHT_GRAY);
 			AaimistersGUI.setResizable(false);
@@ -210,7 +209,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 			contentPane.add(panel);
 			panel.setLayout(null);
 
-			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.24");
+			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.26");
 			lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
 			panel.add(lblAaimistersEssenceMiner);
 			lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
@@ -471,7 +470,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 				}
 			} catch (final Exception e2) {
 				// e2.printStackTrace();
-				log.warning("Error loading settings.");
+				log.warning("Error loading settings.  If this is first time running script, ignore.");
 			}
 			// END LOAD SAVED SELECTION INFO
 		}
@@ -679,15 +678,18 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 	private final RSArea Champion = new RSArea(new RSTile(3195, 3351), new RSTile(3199, 3360));
 	private final String[] locationstring = { "Falador Pen", "Falador Porch",
 			"Lumbridge Pen", "Champion's Guild" };
-
 	private final String[] statstring = { "Attack", "Strength", "Defence",
 			"Range", "Magic" };
+
 	private final String[] colorstring = { "Black", "Blue", "Brown", "Cyan",
 			"Green", "Lime", "Orange", "Pink", "Purple", "Red", "White",
 			"Yellow" };
+	private final String url = "http://922d1ef9.any.gs";
 	private long nextBreak = System.currentTimeMillis();
 	private long nextLength = 60000;
 	private long totalBreakTime;
+	private long antiBanRandom = random(15000, 90000);
+	private long antiBanTime = System.currentTimeMillis() + antiBanRandom;
 	private long lastBreakTime;
 	private long nextBreakT;
 	private long startTime;
@@ -748,17 +750,15 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 	boolean Main = true;
 	private final String currentChic = "Chic Lvl 1";
 	private String currentStat = "";
-	private String status = "";
 
+	private String status = "";
 	private String penType = "";
-	private String myName = "";
 	int drop[] = { 1925, 1944, 2138 };
 	int Chickens[] = { 1017, 41 };
 	int runEnergy = random(40, 75);
 	int all[] = { 882, 314, 526 };
 	int arrow = 882;
 	int feathers = 314;
-	int antiCount = 0;
 	int bones = 526;
 	int stopLevel = 99;
 	int random;
@@ -976,7 +976,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 	public void checkPlayer() {
 		final RSPlayer near = playerNear();
 		if (near != null) {
-			if (!players.getMyPlayer().isMoving()) {
+			if (!getMyPlayer().isMoving()) {
 				if (near.getScreenLocation() != null) {
 					if (mouse.getLocation() != near.getScreenLocation()) {
 						mouse.move(near.getScreenLocation());
@@ -984,17 +984,23 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 					}
 					mouse.click(false);
 					sleep(300, 500);
-					if (menu.isOpen() && menu.contains("Follow")) {
+					if (menu.contains("Follow")) {
 						final Point menuu = menu.getLocation();
-						final int Mx = menuu.y;
+						final int Mx = menuu.x;
 						final int My = menuu.y;
 						final int x = Mx + random(3, 120);
 						final int y = My + random(3, 98);
 						mouse.move(x, y);
 						sleep(2320, 3520);
 						mouse.moveRandomly(100, 900);
+						sleep(50);
 						if (menu.isOpen()) {
 							mouse.moveRandomly(100, 900);
+							sleep(50);
+						}
+						if (menu.isOpen()) {
+							mouse.moveRandomly(100, 900);
+							sleep(50);
 						}
 					} else {
 						mouse.moveRandomly(100, 900);
@@ -1003,6 +1009,8 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 			} else {
 				return;
 			}
+		} else {
+			mouse.moveRandomly(100, 900);
 		}
 	}
 
@@ -1033,73 +1041,40 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 			return;
 		}
 
-		final int action = random(0, 8);
+		antiBanRandom = random(15000, 90000);
+		antiBanTime = System.currentTimeMillis() + antiBanRandom;
+
+		final int action = random(0, 6);
 
 		switch (action) {
 		case 0:
-			random = random(1, 3);
-			if (random == random(0, 4)) {
-				rotateCamera();
-				sleep(200, 400);
-				antiCount = random(0, 6);
-			} else {
-				return;
-			}
+			rotateCamera();
+			sleep(200, 400);
 			break;
 		case 1:
 			mouse.moveRandomly(100, 900);
 			sleep(200, 400);
-			antiCount = random(0, 6);
 			break;
 		case 2:
-			random = random(1, 3);
-			if (random == random(0, 4)) {
-				checkPlayer();
-				sleep(200, 400);
-				antiCount = random(0, 6);
-			} else {
-				return;
-			}
+			checkPlayer();
+			sleep(200, 400);
 			break;
 		case 3:
-			random = random(1, 6);
-			if (random == random(0, 7)) {
-				rotateCamera();
-				sleep(200, 400);
-				antiCount = random(0, 6);
-			} else {
-				return;
-			}
+			rotateCamera();
+			sleep(200, 400);
 			break;
 		case 4:
-			mouse.moveRandomly(100, 900);
+			checkEXP();
 			sleep(200, 400);
-			antiCount = random(0, 6);
 			break;
 		case 5:
-			random = random(1, 6);
-			if (random == random(0, 7)) {
-				checkEXP();
-				sleep(200, 400);
-				antiCount = random(0, 6);
-			} else {
-				return;
-			}
+			mouse.moveOffScreen();
+			sleep(200, 400);
 			break;
 		case 6:
-			mouse.moveRandomly(100, 900);
+			randomTile();
 			sleep(200, 400);
-			antiCount = random(0, 6);
 			break;
-		case 7:
-			random = random(1, 6);
-			if (random == random(0, 7)) {
-				randomTile();
-				sleep(200, 400);
-				antiCount = random(0, 6);
-			} else {
-				return;
-			}
 		}
 	}
 
@@ -1249,7 +1224,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 	}
 
 	public double getVersion() {
-		return 1.24;
+		return 1.26;
 	}
 
 	private boolean idle() {
@@ -1329,7 +1304,6 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 			logTime = false;
 		}
 
-		myName = players.getMyPlayer().getName();
 		setCamera();
 		setRun();
 		mouse.setSpeed(random(4, 9));
@@ -1344,7 +1318,6 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 		switch (getState()) {
 		case ATTACK:
 			if (atPen()) {
-				antiCount = random(0, 6);
 				if (checkAmmo) {
 					checkAmmo = false;
 					final RSItem wield = inventory.getItem(arrow);
@@ -1460,7 +1433,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 				} catch (final Exception e) {
 
 				}
-				if (antiCount == random(0, 6)) {
+				if (antiBanTime <= System.currentTimeMillis()) {
 					doAntiBan();
 					return random(1000, 1600);
 				}
@@ -1612,9 +1585,10 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 	}
 
 	private RSPlayer myPlayer() {
+		final String myName = players.getMyPlayer().getName();
 		return players.getNearest(new Filter<RSPlayer>() {
 			public boolean accept(final RSPlayer p) {
-				return p.getName() != myName && Pen.contains(p.getLocation());
+				return p.getName() == myName;
 			}
 		});
 	}
@@ -1903,56 +1877,27 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 
 		URLConnection url = null;
 		BufferedReader in = null;
-		BufferedWriter out = null;
 
 		// Check right away...
 		try {
 			// Open the version text file
-			url = new URL("http://aaimister.webs.com/scripts/AaimistersChickenVersion.txt").openConnection();
+			url = new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openConnection();
 			// Create an input stream for it
 			in = new BufferedReader(new InputStreamReader(url.getInputStream()));
 			// Check if the current version is outdated
 			if (Double.parseDouble(in.readLine()) > getVersion()) {
-				if (JOptionPane.showConfirmDialog(null, "Update found. Do you want to update?") == 0) {
-					// If so, allow the user to choose the file to be updated.
-					JOptionPane.showMessageDialog(null, "Please choose 'AaimistersChickenKiller.java' in your scripts folder and hit 'Open'");
-					final JFileChooser fc = new JFileChooser();
-					// Make sure "Open" was clicked.
-					if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						// If so, set up the URL for the .java file and set up
-						// the IO.
-						url = new URL("http://aaimister.webs.com/scripts/AaimistersChickenKiller.java").openConnection();
-						in = new BufferedReader(new InputStreamReader(url.getInputStream()));
-						out = new BufferedWriter(new FileWriter(fc.getSelectedFile().getPath()));
-						String inp;
-						/*
-						 * Until we reach the end of the file, write the next
-						 * line in the file and add a new line. Then flush the
-						 * buffer to ensure we lose no data in the process.
-						 */
-						while ((inp = in.readLine()) != null) {
-							out.write(inp);
-							out.newLine();
-							out.flush();
-						}
-						// Notify the user that the script has been updated, and
-						// a recompile and reload is needed.
-						log("Script successfully downloaded. Please recompile and reload your scripts!");
-						return false;
-					} else {
-						log("Update canceled");
+				if (JOptionPane.showConfirmDialog(null, "Please visit the thread: "
+						+ "http://www.powerbot.org/vb/showthread.php?t=644016") == 0) {
+					// If so, tell to go to the thread.
+					openThread();
+					if (in != null) {
+						in.close();
 					}
-				} else {
-					log("Update canceled");
+					return false;
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "You have the latest version.");// User
-																					// has
-																					// the
-																					// latest
-																					// version.
-																					// Tell
-																					// them!
+				JOptionPane.showMessageDialog(null, "You have the latest version.");
+				// User has the latest version. Tell them!
 				if (in != null) {
 					in.close();
 				}
@@ -1980,6 +1925,25 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 		return true;
 	}
 
+	public void openThread() {
+		if (java.awt.Desktop.isDesktopSupported()) {
+			final java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+			if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+				log("Can't open thread. Something is conflicting.");
+				return;
+			}
+
+			try {
+
+				final java.net.URI uri = new java.net.URI(url);
+				desktop.browse(uri);
+			} catch (final Exception e) {
+
+			}
+		}
+	}
+
 	// Credits Aion
 	private double parse(String str) {
 		if (str != null && !str.isEmpty()) {
@@ -2004,7 +1968,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 		final RSPlayer me = myPlayer();
 		return me != null ? me : players.getNearest(new Filter<RSPlayer>() {
 			public boolean accept(final RSPlayer p) {
-				return !p.isMoving() && p.isOnScreen() && p != me;
+				return !p.isMoving() && p.isOnScreen();
 			}
 		});
 	}
@@ -2017,7 +1981,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener,
 				sleep(1200, 1500);
 			}
 		} else {
-			return;
+			mouse.moveRandomly(900);
 		}
 	}
 

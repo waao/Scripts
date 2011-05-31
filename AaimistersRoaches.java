@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.11 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.13 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Panel;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -32,20 +33,23 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -54,6 +58,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -68,9 +74,10 @@ import org.rsbot.script.wrappers.RSItem;
 import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPath;
+import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer", keywords = "Combat", version = 1.11, description = "Kills roaches in Edgville.", website = "http://www.powerbot.org/vb/showthread.php?t=769805", requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.13", keywords = "Combat", version = 1.13, description = "Kills roaches in Edgville.")
 public class AaimistersRoaches extends Script implements PaintListener,
 		MouseListener, MessageListener {
 
@@ -81,7 +88,9 @@ public class AaimistersRoaches extends Script implements PaintListener,
 		private JPanel contentPane;
 
 		private JComboBox colorBox;
+
 		private JCheckBox antibanBox;
+
 		private JCheckBox paintBox;
 		private JCheckBox breakBox;
 		private JCheckBox randomBox;
@@ -94,6 +103,12 @@ public class AaimistersRoaches extends Script implements PaintListener,
 		private JSpinner minTimeBeBox;
 		private JSpinner maxBreakBox;
 		private JSpinner minBreakBox;
+		private JList doList;
+		private JList noList;
+		private DefaultListModel lootTable;
+		private JScrollPane lootScroll;
+		private DefaultListModel noTable;
+		private JScrollPane noScroll;
 		private JButton submit;
 
 		private AaimistersGUI() {
@@ -117,6 +132,10 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			minTimeBeBox = new JSpinner();
 			maxBreakBox = new JSpinner();
 			minBreakBox = new JSpinner();
+			lootTable = new DefaultListModel();
+			lootScroll = new JScrollPane();
+			noTable = new DefaultListModel();
+			noScroll = new JScrollPane();
 			submit = new JButton();
 
 			AaimistersGUI.setResizable(false);
@@ -136,7 +155,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 
 			final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-			final JLabel lblAaimistersRoachKiller = new JLabel("Aaimister's Roach Killer v1.11");
+			final JLabel lblAaimistersRoachKiller = new JLabel("<html><img src=http://i88.photobucket.com/albums/k170/aaimister/Untitled-2-2.png /></html>");
 			lblAaimistersRoachKiller.setHorizontalAlignment(SwingConstants.CENTER);
 			lblAaimistersRoachKiller.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
 
@@ -148,9 +167,6 @@ public class AaimistersRoaches extends Script implements PaintListener,
 					submitActionPerformed(e);
 				}
 			});
-			final GroupLayout gl_contentPane = new GroupLayout(contentPane);
-			gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(lblAaimistersRoachKiller, GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE).addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE).addGroup(gl_contentPane.createSequentialGroup().addGap(169).addComponent(submit, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE).addContainerGap(170, Short.MAX_VALUE)));
-			gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane.createSequentialGroup().addComponent(lblAaimistersRoachKiller, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED).addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 214, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.UNRELATED).addComponent(submit).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 			final JPanel panel = new JPanel();
 			tabbedPane.addTab("General", null, panel, null);
@@ -174,7 +190,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			final JLabel lblPaintColor = new JLabel("Paint Color:");
 			lblPaintColor.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
 
-			healText.setModel(new SpinnerNumberModel(new Integer(200), null, null, new Integer(1)));
+			healText.setModel(new SpinnerNumberModel(new Integer(300), null, null, new Integer(1)));
 
 			colorBox.setModel(new DefaultComboBoxModel(colorstring));
 
@@ -189,6 +205,41 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			gl_panel.setVerticalGroup(gl_panel.createParallelGroup(Alignment.TRAILING).addGroup(gl_panel.createSequentialGroup().addGap(21).addGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(gl_panel.createSequentialGroup().addComponent(room2Box).addGap(18).addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(antibanBox).addComponent(lblPaintColor).addComponent(colorBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGap(18).addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(paintBox).addComponent(lblFoodId).addComponent(foodText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))).addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(lblEatWhenBelow).addComponent(healText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))).addGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(gl_panel.createSequentialGroup().addGap(18).addGroup(gl_panel.createParallelGroup(Alignment.BASELINE).addComponent(freeBox).addComponent(lblWitdraw))).addGroup(gl_panel.createSequentialGroup().addGap(18).addComponent(withText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))).addGap(22)));
 			panel.setLayout(gl_panel);
 
+			final Panel panel_3 = new Panel();
+			tabbedPane.addTab("Loot", null, panel_3, null);
+			panel_3.setLayout(null);
+
+			final JLabel lblWhatToLoot = new JLabel("What to Loot");
+			lblWhatToLoot.setFont(new Font("Comic Sans MS", Font.PLAIN, 13));
+			lblWhatToLoot.setBounds(43, 21, 93, 14);
+			panel_3.add(lblWhatToLoot);
+
+			final JLabel lblDoNotLoot = new JLabel("Do not Loot");
+			lblDoNotLoot.setFont(new Font("Comic Sans MS", Font.PLAIN, 13));
+			lblDoNotLoot.setBounds(300, 21, 93, 14);
+			panel_3.add(lblDoNotLoot);
+
+			doList = new JList(lootTable);
+			readLoot("http://aaimister.webs.com/scripts/rLoot.txt", lootTable);
+			lootScroll.setBounds(14, 49, 155, 127);
+			lootScroll.getViewport().setView(doList);
+			panel_3.add(lootScroll);
+			doList.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(final ListSelectionEvent e) {
+					list2ValueChanged(e);
+				}
+			});
+
+			noList = new JList(noTable);
+			noScroll.setBounds(268, 49, 155, 127);
+			noScroll.getViewport().setView(noList);
+			panel_3.add(noScroll);
+			noList.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(final ListSelectionEvent e) {
+					list1ValueChanged(e);
+				}
+			});
+
 			final JPanel panel_1 = new JPanel();
 			tabbedPane.addTab("Breaks", null, panel_1, null);
 
@@ -199,7 +250,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			final JLabel lblTimeBetweenBreaks = new JLabel("Time Between Breaks:");
 			lblTimeBetweenBreaks.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
 
-			minTimeBeBox.setModel(new SpinnerNumberModel(new Integer(60), null, null, new Integer(1)));
+			minTimeBeBox.setModel(new SpinnerNumberModel(new Integer(120), null, null, new Integer(1)));
 
 			final JLabel lblMins = new JLabel("mins");
 			lblMins.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
@@ -207,7 +258,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			final JLabel lblTo = new JLabel("to");
 			lblTo.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 
-			maxTimeBeBox.setModel(new SpinnerNumberModel(new Integer(120), null, null, new Integer(1)));
+			maxTimeBeBox.setModel(new SpinnerNumberModel(new Integer(220), null, null, new Integer(1)));
 
 			final JLabel label = new JLabel("mins");
 			label.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
@@ -215,7 +266,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			final JLabel lblBreakLengths = new JLabel("Break Lengths:");
 			lblBreakLengths.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
 
-			minBreakBox.setModel(new SpinnerNumberModel(new Integer(25), null, null, new Integer(1)));
+			minBreakBox.setModel(new SpinnerNumberModel(new Integer(15), null, null, new Integer(1)));
 
 			final JLabel label_1 = new JLabel("mins");
 			label_1.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
@@ -223,7 +274,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			final JLabel label_2 = new JLabel("to");
 			label_2.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 
-			maxBreakBox.setModel(new SpinnerNumberModel(new Integer(70), null, null, new Integer(1)));
+			maxBreakBox.setModel(new SpinnerNumberModel(new Integer(60), null, null, new Integer(1)));
 
 			final JLabel label_3 = new JLabel("mins");
 			label_3.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
@@ -231,8 +282,104 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			gl_panel_1.setHorizontalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_1.createSequentialGroup().addGap(42).addComponent(breakBox).addPreferredGap(ComponentPlacement.RELATED, 56, Short.MAX_VALUE).addComponent(randomBox).addGap(62)).addGroup(gl_panel_1.createSequentialGroup().addContainerGap().addComponent(lblTimeBetweenBreaks).addContainerGap(269, Short.MAX_VALUE)).addGroup(gl_panel_1.createSequentialGroup().addContainerGap().addComponent(lblBreakLengths).addContainerGap(371, Short.MAX_VALUE)).addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup().addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING).addGroup(gl_panel_1.createSequentialGroup().addContainerGap().addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE).addGap(5).addComponent(label_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE).addGap(60).addComponent(label_2, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE).addGap(108).addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE).addGap(5).addComponent(label_3, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)).addGroup(gl_panel_1.createSequentialGroup().addGap(41).addGroup(gl_panel_1.createSequentialGroup().addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED).addComponent(lblMins).addGap(60).addComponent(lblTo)).addPreferredGap(ComponentPlacement.RELATED, 56, Short.MAX_VALUE).addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED).addComponent(label, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))).addGap(40)));
 			gl_panel_1.setVerticalGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addGroup(gl_panel_1.createSequentialGroup().addContainerGap().addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE).addComponent(breakBox).addComponent(randomBox)).addPreferredGap(ComponentPlacement.UNRELATED).addComponent(lblTimeBetweenBreaks).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING).addComponent(label, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE).addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE).addComponent(lblTo).addComponent(lblMins)).addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addGap(18).addComponent(lblBreakLengths).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING).addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGroup(gl_panel_1.createSequentialGroup().addGap(2).addComponent(label_1, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)).addGroup(gl_panel_1.createSequentialGroup().addGap(2).addComponent(label_2, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)).addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGroup(gl_panel_1.createSequentialGroup().addGap(2).addComponent(label_3, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))).addContainerGap(95, Short.MAX_VALUE)));
 			panel_1.setLayout(gl_panel_1);
+			final GroupLayout gl_contentPane = new GroupLayout(contentPane);
+			gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(lblAaimistersRoachKiller, GroupLayout.PREFERRED_SIZE, 434, GroupLayout.PREFERRED_SIZE).addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 434, GroupLayout.PREFERRED_SIZE).addGroup(gl_contentPane.createSequentialGroup().addGap(169).addComponent(submit, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)));
+			gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane.createSequentialGroup().addComponent(lblAaimistersRoachKiller, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE).addGap(6).addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 214, GroupLayout.PREFERRED_SIZE).addGap(11).addComponent(submit)));
 			contentPane.setLayout(gl_contentPane);
 			// LOAD SAVED SELECTION INFO
+			try {
+				final String filename = getCacheDirectory()
+						+ "\\GoodLootList.txt";
+				final BufferedReader in = new BufferedReader(new FileReader(filename));
+				String line;
+				lootTable.clear();
+				while ((line = in.readLine()) != null) {
+					final String[] add = line.split(",");
+					String fin;
+					for (int i = 0; i < add.length; i++) {
+						if (!lootTable.contains(add[i].toString())) {
+							fin = add[i].toString();
+							if (add[i].contains("[")) {
+								fin = add[i].replace("[", "");
+							}
+							if (add[i].contains("]")) {
+								fin = add[i].replace("]", "");
+							}
+							if (add[i].contains("[]")) {
+								fin = add[i].replace("[]", "");
+							}
+							lootTable.addElement(fin.trim());
+						}
+					}
+				}
+				in.close();
+			} catch (final Exception e) {
+				// e2.printStackTrace();
+				log.warning("Failed to load your good loot. If this is first time running script, ignore.");
+			}
+
+			try {
+				final String filename = getCacheDirectory()
+						+ "\\BadLootList.txt";
+				final BufferedReader in = new BufferedReader(new FileReader(filename));
+				String line;
+				noTable.clear();
+				while ((line = in.readLine()) != null) {
+					final String[] add = line.split(",");
+					String fin;
+					for (int i = 0; i < add.length; i++) {
+						if (!lootTable.contains(add[i].toString())) {
+							fin = add[i].toString();
+							if (add[i].contains("[")) {
+								fin = add[i].replace("[", "");
+							}
+							if (add[i].contains("]")) {
+								fin = add[i].replace("]", "");
+							}
+							if (add[i].contains("[]")) {
+								fin = add[i].replace("[]", "");
+							}
+							noTable.addElement(fin.trim());
+						}
+					}
+				}
+				in.close();
+			} catch (final Exception e) {
+				// e2.printStackTrace();
+				log.warning("Failed to load your bad loot. If this is first time running script, ignore.");
+			}
+
+			try {
+				final String filename = getCacheDirectory()
+						+ "\\RealLootList.txt";
+				final BufferedReader in = new BufferedReader(new FileReader(filename));
+				String line;
+				doLoot.clear();
+				while ((line = in.readLine()) != null) {
+					final String[] add = line.split(",");
+					String fin;
+					for (int i = 0; i < add.length; i++) {
+						if (!lootTable.contains(add[i].toString())) {
+							fin = add[i].toString();
+							if (add[i].contains("[")) {
+								fin = add[i].replace("[", "");
+							}
+							if (add[i].contains("]")) {
+								fin = add[i].replace("]", "");
+							}
+							if (add[i].contains("[]")) {
+								fin = add[i].replace("[]", "");
+							}
+							doLoot.add(fin.trim());
+						}
+					}
+				}
+				in.close();
+			} catch (final Exception e) {
+				// e2.printStackTrace();
+				log.warning("Failed to load your loot. If this is first time running script, ignore.");
+			}
+
 			try {
 				final String filename = getCacheDirectory()
 						+ "\\AaimistersRKillerSettings.txt";
@@ -291,6 +438,24 @@ public class AaimistersRoaches extends Script implements PaintListener,
 				log.warning("Error loading settings.  If this is first time running script, ignore.");
 			}
 			// END LOAD SAVED SELECTION INFO
+		}
+
+		private void list1ValueChanged(final ListSelectionEvent e) {
+			final String text = (String) noList.getSelectedValue();
+			if (text == null || text.isEmpty()) {
+				return;
+			}
+			lootTable.addElement(text);
+			noTable.remove(noList.getSelectedIndex());
+		}
+
+		private void list2ValueChanged(final ListSelectionEvent e) {
+			final String text = (String) doList.getSelectedValue();
+			if (text == null || text.isEmpty()) {
+				return;
+			}
+			noTable.addElement(text);
+			lootTable.remove(doList.getSelectedIndex());
 		}
 
 		public void submitActionPerformed(final ActionEvent e) {
@@ -400,8 +565,49 @@ public class AaimistersRoaches extends Script implements PaintListener,
 					}
 				}
 			}
+			if (lootTable.getSize() > 1) {
+				doLoot.clear();
+				String fin;
+				for (int i = 0; i < lootTable.getSize(); i++) {
+					final String add = cleaned(lootTable.get(i).toString(), "(", ")");
+					fin = add.toString();
+					if (add.contains("[")) {
+						fin = add.replace("[", "");
+					}
+					if (add.contains("]")) {
+						fin = add.replace("]", "");
+					}
+					if (add.contains("[]")) {
+						fin = add.replace("[]", "");
+					}
+					doLoot.add(fin.substring(1).trim());
+				}
+				if (doLoot.contains("1111")) {
+					for (final int citem : Citems) {
+						doLoot.add(Integer.toString(citem));
+					}
+					doLoot.remove("1111");
+				}
+			}
 
 			// Write settings
+			try {
+				final BufferedWriter out = new BufferedWriter(new FileWriter(glootFile));
+				final BufferedWriter out2 = new BufferedWriter(new FileWriter(blootFile));
+				final BufferedWriter out3 = new BufferedWriter(new FileWriter(flootFile));
+				final String good = lootTable.toString();
+				final String bad = noTable.toString();
+				final String fin = cleaned(good, "(", ")");
+				out.write(good);
+				out.close();
+				out2.write(bad);
+				out2.close();
+				out3.write(fin);
+				out3.close();
+			} catch (final Exception e1) {
+				log.warning("Error saving loot.");
+			}
+
 			try {
 				final BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
 				out.write((room2Box.isSelected() ? true : false) + ":" // 0
@@ -442,6 +648,8 @@ public class AaimistersRoaches extends Script implements PaintListener,
 
 		// Areas
 		final RSArea bankArea = new RSArea(new RSTile(3090, 3488), new RSTile(3098, 3499));
+		// final RSArea dropArea = new RSArea(new RSTile(3074, 3461), new
+		// RSTile(3080, 3466));
 		final RSArea rArea1 = new RSArea(new RSTile(3146, 4274), new RSTile(3160, 4281));
 		final RSArea rArea2 = new RSArea(new RSTile(3170, 4229), new RSTile(3196, 4273));
 
@@ -457,6 +665,8 @@ public class AaimistersRoaches extends Script implements PaintListener,
 	private RSArea rArea;
 	private long nextBreak = System.currentTimeMillis();
 	private long nextLength = 60000;
+	private long antiBanRandom = random(15000, 90000);
+	private long antiBanTime = System.currentTimeMillis() + antiBanRandom;
 	private long totalBreakTime;
 	private long lastBreakTime;
 	private long nextBreakT;
@@ -468,9 +678,15 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			"Green", "Lime", "Orange", "Pink", "Purple", "Red", "White",
 			"Yellow" };
 
+	private String[] lootString;
+	private final ArrayList<String> doLoot = new ArrayList<String>(50);
 	AaimistersGUI g = new AaimistersGUI();
-
 	public final File settingsFile = new File(getCacheDirectory(), "AaimistersRKillerSettings.txt");
+	public final File glootFile = new File(getCacheDirectory(), "GoodLootList.txt");
+
+	public final File blootFile = new File(getCacheDirectory(), "BadLootList.txt");
+
+	public final File flootFile = new File(getCacheDirectory(), "RealLootList.txt");
 	NumberFormat formatter = new DecimalFormat("#,###,###");
 
 	Font Cam10 = new Font("Cambria Math", Font.BOLD, 10);
@@ -496,8 +712,9 @@ public class AaimistersRoaches extends Script implements PaintListener,
 	final NumberFormat nf = NumberFormat.getInstance();
 	private final String currentNPC = "Roach";
 	private String currentStat;
-
 	private String status = "";
+
+	private final String url = "http://3ff8d067.any.gs";
 	// All Arrows
 	int Aitems[] = { 890, 882, 11212, 19157, 884, 888, 2866, 892, 19152, 886,
 			19162 };
@@ -522,6 +739,8 @@ public class AaimistersRoaches extends Script implements PaintListener,
 	// Black helm, Mithril med, Rune sq, Rune scimi, Rune javelin, Dragon spear,
 	// Rune spear
 	int Witems[] = { 1165, 1143, 1185, 1333, 830, 1249, 1247 };
+	// Check Price
+	int checkItems[] = { 448, 563, 560, 450, 554, 565, 562, 995 };
 
 	// All
 	int Zitems[] = { 995, 6004, 1462, 2366, 987, 985, 5104, 5311, 5100, 5298,
@@ -631,6 +850,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 	boolean opened;
 	boolean closed;
 	boolean wLoot;
+	boolean skip;
 	// Paint Buttons
 	boolean xButton;;
 	boolean StatAT;
@@ -665,6 +885,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			final long varTime = random(3660000, 10800000);
 			nextBreak = System.currentTimeMillis() + varTime;
 			nextBreakT = varTime;
+			random(900000, 3600000);
 			nextLength = nextBreakT;
 		} else {
 			final int diff = random(0, 5) * 1000 * 60;
@@ -678,6 +899,47 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			nextLength = varLength;
 		}
 		logTime = true;
+	}
+
+	public void checkPlayer() {
+		final RSPlayer near = playerNear();
+		if (near != null) {
+			if (!getMyPlayer().isMoving()) {
+				if (near.getScreenLocation() != null) {
+					if (mouse.getLocation() != near.getScreenLocation()) {
+						mouse.move(near.getScreenLocation());
+						sleep(300, 550);
+					}
+					mouse.click(false);
+					sleep(300, 500);
+					if (menu.contains("Follow")) {
+						final Point menuu = menu.getLocation();
+						final int Mx = menuu.x;
+						final int My = menuu.y;
+						final int x = Mx + random(3, 120);
+						final int y = My + random(3, 98);
+						mouse.move(x, y);
+						sleep(2320, 3520);
+						mouse.moveRandomly(100, 900);
+						sleep(50);
+						if (menu.isOpen()) {
+							mouse.moveRandomly(100, 900);
+							sleep(50);
+						}
+						if (menu.isOpen()) {
+							mouse.moveRandomly(100, 900);
+							sleep(50);
+						}
+					} else {
+						mouse.moveRandomly(100, 900);
+					}
+				}
+			} else {
+				return;
+			}
+		} else {
+			mouse.moveRandomly(100, 900);
+		}
 	}
 
 	private void checkPrice(final int x, int y) {
@@ -743,39 +1005,54 @@ public class AaimistersRoaches extends Script implements PaintListener,
 		mouse.moveRandomly(50, 900);
 	}
 
-	private void clickNPC(final RSNPC x) {
-		try {
-			if (x != null) {
-				if (x.isOnScreen()) {
-					x.doAction("Att");
-					sleep(50);
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(walking.getClosestTileOnMap(x.getLocation()).randomize(1, 1));
-					}
+	private String cleaned(final String s, final String char1,
+			final String char2) {
+		final ArrayList<Integer> start = new ArrayList<Integer>(50);
+		final ArrayList<Integer> end = new ArrayList<Integer>(50);
+		final ArrayList<String> fin = new ArrayList<String>(50);
+		for (int i = 0; i < s.lastIndexOf(char1); i++) {
+			if (s.indexOf(char1, i) > 0) {
+				if (!start.contains(s.indexOf(char1, i))) {
+					start.add(s.indexOf(char1, i));
 				}
 			}
+		}
+		for (int e = 0; e < s.lastIndexOf(char2); e++) {
+			if (s.indexOf(char2, e) > 0) {
+				if (!end.contains(s.indexOf(char2, e))) {
+					end.add(s.indexOf(char2, e));
+				}
+			}
+		}
+		for (int f = 0; f < start.size(); f++) {
+			fin.add(s.substring(start.get(f) + 1, end.get(f)));
+		}
+		return fin.toString();
+	}
+
+	private void clickNPC(final RSNPC x, final String y) {
+		try {
+			final Point c = calc.tileToScreen(x.getLocation());
+			if (c != null && !x.doAction(y)) {
+				mouse.move(c);
+				sleep(150, 300);
+				x.doAction(y);
+			}
 		} catch (final Exception e) {
-			return;
+
 		}
 	}
 
 	private void clickObj(final RSObject x, final String y) {
 		try {
-			if (x != null) {
-				if (x.isOnScreen()) {
-					x.doAction(y);
-					sleep(50);
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(walking.getClosestTileOnMap(x.getLocation()).randomize(1, 1));
-					}
-				}
+			final Point c = calc.tileToScreen(x.getLocation());
+			if (c != null && !x.doAction(y)) {
+				mouse.move(c);
+				sleep(150, 300);
+				x.doAction(y);
 			}
 		} catch (final Exception e) {
-			return;
+
 		}
 	}
 
@@ -785,7 +1062,6 @@ public class AaimistersRoaches extends Script implements PaintListener,
 		} else {
 			try {
 				SwingUtilities.invokeAndWait(new Runnable() {
-
 					public void run() {
 						g.AaimistersGUI.setVisible(true);
 					}
@@ -802,46 +1078,35 @@ public class AaimistersRoaches extends Script implements PaintListener,
 
 	public void doAntiBan() {
 
-		if (random(0, 8) != random(0, 8)) {
-			return;
-		}
-
 		if (!antiBanOn) {
 			return;
 		}
 
-		final int action = random(0, 6);
+		antiBanRandom = random(15000, 90000);
+		antiBanTime = System.currentTimeMillis() + antiBanRandom;
+
+		final int action = random(0, 4);
 
 		switch (action) {
 		case 0:
-			if (random(0, 3) == random(1, 3)) {
-				rotateCamera();
-				sleep(200, 400);
-			}
+			rotateCamera();
+			sleep(200, 400);
 			break;
 		case 1:
 			mouse.moveRandomly(100, 900);
 			sleep(200, 400);
 			break;
 		case 2:
-			mouse.moveRandomly(100, 900);
+			checkXP();
 			sleep(200, 400);
 			break;
 		case 3:
-			if (random(0, 10) == random(0, 10)) {
-				checkXP();
-				sleep(200, 400);
-			}
-			break;
-		case 4:
-			mouse.moveRandomly(100, 900);
+			mouse.moveOffScreen();
 			sleep(200, 400);
 			break;
-		case 5:
-			if (random(0, 3) == random(1, 3)) {
-				rotateCamera();
-				sleep(200, 400);
-			}
+		case 4:
+			checkPlayer();
+			sleep(200, 400);
 			break;
 		}
 	}
@@ -869,6 +1134,17 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			g.drawLine(loc.x + 1, 0, loc.x + 1, 505);
 			g.drawLine(loc.x - 1, 0, loc.x - 1, 505);
 		}
+	}
+
+	public boolean dyingRo() {
+		for (final RSNPC i : npcs.getAll()) {
+			if (i.getAnimation() == 8789
+					&& calc.distanceTo(i.getLocation()) < 3
+					&& getMyPlayer().isInCombat()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	String formatTime(final int milliseconds) {
@@ -963,16 +1239,16 @@ public class AaimistersRoaches extends Script implements PaintListener,
 				}
 			}
 		} else {
-			if (!AM.bankArea.contains(getMyPlayer().getLocation())) {
-				return State.TOBANK;
-			} else {
+			if (AM.bankArea.contains(getMyPlayer().getLocation())) {
 				return State.BANK;
+			} else {
+				return State.TOBANK;
 			}
 		}
 	}
 
 	public double getVersion() {
-		return 1.11;
+		return 1.13;
 	}
 
 	private String Location() {
@@ -1220,27 +1496,24 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			status = "Attacking roaches...";
 			clicked = false;
 			if (idle > 8) {
-				if (loot()) {
-					return 10;
-				}
 				attacked = false;
 				idle = 0;
 			}
-			if (getMyPlayer().getInteracting() == null) {
-				if (wLoot && loot() == false) {
-					sleep(1800, 2500);
-					wLoot = false;
-				} else if (loot() != false) {
-					return 10;
-				}
+			if (wLoot && !skip) {
+				wLoot = false;
+				return random(1800, 2500);
+			}
+			if (!getMyPlayer().isInCombat()
+					&& getMyPlayer().getInteracting() == null) {
 				if (roach() != null && !loot()) {
 					if (roach().isOnScreen()) {
 						idle++;
 						if (!attacked) {
-							clickNPC(roach());
+							clickNPC(roach(), "Attack");
 							rCount++;
 							attacked = true;
 							wLoot = true;
+							skip = false;
 							idle = 0;
 							return random(500, 1000);
 						}
@@ -1257,7 +1530,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 				}
 			} else {
 				idle = 0;
-				if (random(0, 20) == random(0, 20)) {
+				if (antiBanTime <= System.currentTimeMillis()) {
 					doAntiBan();
 				}
 				return 10;
@@ -1280,82 +1553,52 @@ public class AaimistersRoaches extends Script implements PaintListener,
 				}
 				notChosen = false;
 			}
-			if (useBooth) {
-				final RSObject booth = objects.getNearest(boo);
-				if (AM.bankArea.contains(getMyPlayer().getLocation())
-						&& booth.isOnScreen()) {
-					if (!bank.isOpen()) {
-						idle++;
-						if (!opened) {
+			final RSObject booth = objects.getNearest(boo);
+			final RSNPC bankP = banker();
+			if (AM.bankArea.contains(getMyPlayer().getLocation())
+					&& booth.isOnScreen()) {
+				if (!bank.isOpen()) {
+					idle++;
+					if (!opened) {
+						if (useBooth) {
 							booth.doAction("Use-quickly");
-							opened = true;
-							return random(200, 500);
+						} else {
+							bankP.doAction("Bank Banker");
 						}
-					} else {
-						opened = false;
-						idle++;
-						if (!bankedOpen) {
-							bank.depositAll();
-							sleep(350, 500);
-							if (bank.getItem(food) != null) {
-								bank.withdraw(food, X);
-								idle = 0;
-								sleep(350, 500);
-							} else {
-								log.severe("Out of Food!");
-								game.logout(false);
-								sleep(200, 500);
-								stopScript();
-							}
-							bankedOpen = true;
-							return random(100, 150);
-						}
+						opened = true;
+						return random(200, 500);
 					}
 				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(walking.getClosestTileOnMap(booth.getLocation().randomize(1, 1)));
-						return random(1200, 1500);
+					opened = false;
+					idle++;
+					if (!bankedOpen && bank.isOpen()) {
+						if (inventory.getCount() != 0) {
+							bank.depositAll();
+							sleep(350, 500);
+						}
+						if (bank.getItem(food) != null) {
+							bank.withdraw(food, X);
+							idle = 0;
+							sleep(350, 500);
+						} else {
+							log.severe("Out of Food!");
+							game.logout(false);
+							sleep(200, 500);
+							stopScript();
+						}
+						bankedOpen = true;
+						return random(100, 150);
 					}
 				}
-			}
-			if (useBanker) {
-				final RSNPC bankP = banker();
-				if (AM.bankArea.contains(getMyPlayer().getLocation())
-						&& calc.tileOnScreen(banker().getLocation())) {
-					if (!bank.isOpen()) {
-						idle++;
-						if (!opened) {
-							bankP.doAction("Bank Banker");
-							opened = true;
-							return random(200, 500);
-						}
+			} else {
+				if (!getMyPlayer().isMoving()
+						|| calc.distanceTo(walking.getDestination()) < 4) {
+					if (useBooth) {
+						walking.walkTileMM(walking.getClosestTileOnMap(booth.getLocation().randomize(1, 1)));
 					} else {
-						opened = false;
-						idle++;
-						if (!bankedOpen) {
-							bank.depositAll();
-							sleep(350, 500);
-							if (bank.getItem(food) != null) {
-								bank.withdraw(food, X);
-								idle = 0;
-								sleep(350, 500);
-							} else {
-								log.severe("Out of Food!");
-								game.logout(false);
-								sleep(200, 500);
-								stopScript();
-							}
-							bankedOpen = true;
-							return random(100, 150);
-						}
-					}
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
 						walking.walkTileMM(walking.getClosestTileOnMap(banker().getLocation().randomize(1, 1)));
-						return random(150, 300);
 					}
+					return random(1200, 1500);
 				}
 			}
 
@@ -1363,6 +1606,7 @@ public class AaimistersRoaches extends Script implements PaintListener,
 		case LOOT:
 			attacked = false;
 			status = "Picking up loot...";
+			skip = true;
 			if (idle > 3) {
 				clicked = false;
 				idle = 0;
@@ -1372,178 +1616,72 @@ public class AaimistersRoaches extends Script implements PaintListener,
 				foo.doAction("Eat");
 				return random(1000, 1300);
 			}
-			final RSGroundItem a = groundItems.getNearest(Aitems);
-			final RSGroundItem o = groundItems.getNearest(Oitems);
-			final RSGroundItem s = groundItems.getNearest(Sitems);
-			final RSGroundItem c = groundItems.getNearest(Citems);
-			final RSGroundItem g = groundItems.getNearest(Gitems);
-			final RSGroundItem r = groundItems.getNearest(Ritems);
-			final RSGroundItem w = groundItems.getNearest(Witems);
-			if (rgxpGained != 0) {
-				if (a != null && rArea.contains(a.getLocation())) {
-					if (a.isOnScreen()) {
-						idle++;
-						if (!clicked) {
-							if (!getMyPlayer().isMoving()) {
-								lootItem(a);
-							} else {
-								return 50;
+			final RSGroundItem[] all = groundItems.getAll(50);
+			if (all != null) {
+				if (getMyPlayer().getInteracting() == null) {
+					for (final RSGroundItem element : all) {
+						if (rArea.contains(element.getLocation())) {
+							if (doLoot.contains(Integer.toString(element.getItem().getID()))) {
+								if (element.isOnScreen()) {
+									idle++;
+									if (!clicked) {
+										if (!getMyPlayer().isMoving()) {
+											lootItem(element);
+										} else {
+											return 50;
+										}
+										clicked = true;
+										idle = 0;
+										for (final int aitem : Aitems) {
+											if (element.getItem().getID() == aitem) {
+												equip = true;
+											}
+										}
+										for (final int checkItem : checkItems) {
+											if (element.getItem().getID() == checkItem) {
+												v = element.getItem().getID();
+												z = inventory.getCount(true, v);
+												checkIn = true;
+												clicked = true;
+												idle = 0;
+												totalItems++;
+												return calc.distanceTo(element.getLocation()) * 1000;
+											}
+										}
+										for (final int citem : Citems) {
+											if (element.getItem().getID() == citem) {
+												if (!getMyPlayer().isMoving()) {
+													lootItem(element);
+												} else {
+													return 50;
+												}
+												clicked = true;
+												idle = 0;
+												totalItems++;
+												totalCharms++;
+												return calc.distanceTo(element.getLocation()) * 1000;
+											}
+										}
+										if (!getMyPlayer().isMoving()) {
+											lootItem(element);
+										} else {
+											return 50;
+										}
+										totalPrice += getGuidePrice(element.getItem().getID());
+										clicked = true;
+										idle = 0;
+										totalItems++;
+										return calc.distanceTo(element.getLocation()) * 1000;
+									}
+								} else {
+									if (!getMyPlayer().isMoving()
+											|| calc.distanceTo(walking.getDestination()) < 4) {
+										walking.walkTileMM(element.getLocation().randomize(1, 1));
+										return random(150, 300);
+									}
+								}
 							}
-							clicked = true;
-							idle = 0;
-							equip = true;
-							return calc.distanceTo(a.getLocation()) * 1000;
 						}
-					} else {
-						if (!getMyPlayer().isMoving()
-								|| calc.distanceTo(walking.getDestination()) < 4) {
-							walking.walkTileMM(a.getLocation().randomize(1, 1));
-							return random(150, 300);
-						}
-					}
-				}
-			}
-			if (o != null && rArea.contains(o.getLocation())) {
-				if (o.isOnScreen()) {
-					idle++;
-					if (!clicked) {
-						if (!getMyPlayer().isMoving()) {
-							lootItem(o);
-						} else {
-							return 50;
-						}
-						if (o.getItem().getID() == 995) {
-							v = 995;
-							z = inventory.getCount(true, v);
-							checkIn = true;
-							clicked = true;
-							idle = 0;
-							totalItems++;
-							return calc.distanceTo(o.getLocation()) * 1000;
-						}
-						totalPrice += getGuidePrice(o.getItem().getID());
-						clicked = true;
-						idle = 0;
-						totalItems++;
-						return random(1750, 2200);
-					}
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(o.getLocation().randomize(1, 1));
-						return random(150, 300);
-					}
-				}
-			} else if (s != null && rArea.contains(s.getLocation())) {
-				if (s.isOnScreen()) {
-					idle++;
-					if (!clicked) {
-						if (!getMyPlayer().isMoving()) {
-							lootItem(s);
-						} else {
-							return 50;
-						}
-						totalPrice += getGuidePrice(s.getItem().getID());
-						clicked = true;
-						idle = 0;
-						totalItems++;
-						return calc.distanceTo(s.getLocation()) * 1000;
-					}
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(s.getLocation().randomize(1, 1));
-						return random(150, 300);
-					}
-				}
-			} else if (c != null && rArea.contains(c.getLocation())) {
-				if (c.isOnScreen()) {
-					idle++;
-					if (!clicked) {
-						if (!getMyPlayer().isMoving()) {
-							lootItem(c);
-						} else {
-							return 50;
-						}
-						clicked = true;
-						idle = 0;
-						totalItems++;
-						totalCharms++;
-						return calc.distanceTo(c.getLocation()) * 1000;
-					}
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(c.getLocation().randomize(1, 1));
-						return random(150, 300);
-					}
-				}
-			} else if (g != null && rArea.contains(g.getLocation())) {
-				if (g.isOnScreen()) {
-					idle++;
-					if (!clicked) {
-						if (!getMyPlayer().isMoving()) {
-							lootItem(g);
-						} else {
-							return 50;
-						}
-						totalPrice += getGuidePrice(g.getItem().getID());
-						clicked = true;
-						idle = 0;
-						totalItems++;
-						return calc.distanceTo(g.getLocation()) * 1000;
-					}
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(g.getLocation().randomize(1, 1));
-						return random(150, 300);
-					}
-				}
-			} else if (r != null && rArea.contains(r.getLocation())) {
-				if (r.isOnScreen()) {
-					idle++;
-					if (!clicked) {
-						if (!getMyPlayer().isMoving()) {
-							lootItem(r);
-						} else {
-							return 50;
-						}
-						v = r.getItem().getID();
-						z = inventory.getCount(true, v);
-						checkIn = true;
-						clicked = true;
-						idle = 0;
-						totalItems++;
-						return calc.distanceTo(r.getLocation()) * 1000;
-					}
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(r.getLocation().randomize(1, 1));
-						return random(150, 300);
-					}
-				}
-			} else if (w != null && rArea.contains(w.getLocation())) {
-				if (w.isOnScreen()) {
-					idle++;
-					if (!clicked) {
-						if (!getMyPlayer().isMoving()) {
-							lootItem(w);
-						} else {
-							return 50;
-						}
-						totalPrice += getGuidePrice(w.getItem().getID());
-						clicked = true;
-						idle = 0;
-						totalItems++;
-						return calc.distanceTo(w.getLocation()) * 1000;
-					}
-				} else {
-					if (!getMyPlayer().isMoving()
-							|| calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(w.getLocation().randomize(1, 1));
-						return random(150, 300);
 					}
 				}
 			}
@@ -1557,18 +1695,19 @@ public class AaimistersRoaches extends Script implements PaintListener,
 	}
 
 	private boolean loot() {
-		final RSGroundItem a = groundItems.getNearest(Aitems);
-		final RSGroundItem z = groundItems.getNearest(Zitems);
-		if (z != null && rArea.contains(z.getLocation())
-				&& getMyPlayer().getInteracting() == null) {
-			return true;
-		} else if (rgxpGained != 0 && a != null
-				&& rArea.contains(a.getLocation())
-				&& getMyPlayer().getInteracting() == null) {
-			return true;
-		} else {
-			return false;
+		final RSGroundItem[] all = groundItems.getAll(50);
+		if (all != null) {
+			if (getMyPlayer().getInteracting() == null) {
+				for (final RSGroundItem element : all) {
+					if (rArea.contains(element.getLocation())) {
+						if (doLoot.contains(Integer.toString(element.getItem().getID()))) {
+							return true;
+						}
+					}
+				}
+			}
 		}
+		return false;
 	}
 
 	private void lootItem(final RSGroundItem x) {
@@ -1743,6 +1882,15 @@ public class AaimistersRoaches extends Script implements PaintListener,
 	}
 
 	public void mouseReleased(final MouseEvent e) {
+	}
+
+	private RSPlayer myPlayer() {
+		final String myName = players.getMyPlayer().getName();
+		return players.getNearest(new Filter<RSPlayer>() {
+			public boolean accept(final RSPlayer p) {
+				return p.getName() == myName;
+			}
+		});
 	}
 
 	public void onRepaint(final Graphics g) {
@@ -2003,7 +2151,6 @@ public class AaimistersRoaches extends Script implements PaintListener,
 
 		URLConnection url = null;
 		BufferedReader in = null;
-		BufferedWriter out = null;
 
 		// Check right away...
 		try {
@@ -2013,46 +2160,18 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			in = new BufferedReader(new InputStreamReader(url.getInputStream()));
 			// Check if the current version is outdated
 			if (Double.parseDouble(in.readLine()) > getVersion()) {
-				if (JOptionPane.showConfirmDialog(null, "Update found. Do you want to update?") == 0) {
-					// If so, allow the user to choose the file to be updated.
-					JOptionPane.showMessageDialog(null, "Please choose 'AaimistersRoaches.java' in your scripts folder and hit 'Open'");
-					final JFileChooser fc = new JFileChooser();
-					// Make sure "Open" was clicked.
-					if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						// If so, set up the URL for the .java file and set up
-						// the IO.
-						url = new URL("http://aaimister.webs.com/scripts/AaimistersRoaches.java").openConnection();
-						in = new BufferedReader(new InputStreamReader(url.getInputStream()));
-						out = new BufferedWriter(new FileWriter(fc.getSelectedFile().getPath()));
-						String inp;
-						/*
-						 * Until we reach the end of the file, write the next
-						 * line in the file and add a new line. Then flush the
-						 * buffer to ensure we lose no data in the process.
-						 */
-						while ((inp = in.readLine()) != null) {
-							out.write(inp);
-							out.newLine();
-							out.flush();
-						}
-						// Notify the user that the script has been updated, and
-						// a recompile and reload is needed.
-						log("Script successfully downloaded. Please recompile and reload your scripts!");
-						return false;
-					} else {
-						log("Update canceled");
+				if (JOptionPane.showConfirmDialog(null, "Please visit the thread: "
+						+ "http://www.powerbot.org/vb/showthread.php?t=769805") == 0) {
+					// If so, tell to go to the thread.
+					openThread();
+					if (in != null) {
+						in.close();
 					}
-				} else {
-					log("Update canceled");
+					return false;
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "You have the latest version.");// User
-																					// has
-																					// the
-																					// latest
-																					// version.
-																					// Tell
-																					// them!
+				JOptionPane.showMessageDialog(null, "You have the latest version.");
+				// User has the latest version. Tell them!
 				if (in != null) {
 					in.close();
 				}
@@ -2064,6 +2183,9 @@ public class AaimistersRoaches extends Script implements PaintListener,
 
 		try {
 			settingsFile.createNewFile();
+			glootFile.createNewFile();
+			blootFile.createNewFile();
+			flootFile.createNewFile();
 		} catch (final IOException ignored) {
 
 		}
@@ -2084,12 +2206,30 @@ public class AaimistersRoaches extends Script implements PaintListener,
 		cocurrentXP = skills.getExpToNextLevel(3);
 		rgstartEXP = skills.getCurrentExp(4);
 		rgcurrentXP = skills.getExpToNextLevel(4);
-
 		if (doBreak) {
 			breakingNew();
 		}
 
 		return true;
+	}
+
+	public void openThread() {
+		if (java.awt.Desktop.isDesktopSupported()) {
+			final java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+			if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+				log("Can't open thread. Something is conflicting.");
+				return;
+			}
+
+			try {
+
+				final java.net.URI uri = new java.net.URI(url);
+				desktop.browse(uri);
+			} catch (final Exception e) {
+
+			}
+		}
 	}
 
 	// Credits Aion
@@ -2110,6 +2250,37 @@ public class AaimistersRoaches extends Script implements PaintListener,
 			return Double.parseDouble(str.substring(0, str.length() - 1)) * k;
 		}
 		return -1D;
+	}
+
+	private RSPlayer playerNear() {
+		final RSPlayer me = myPlayer();
+		return me != null ? me : players.getNearest(new Filter<RSPlayer>() {
+			public boolean accept(final RSPlayer p) {
+				return !p.isMoving() && p.isOnScreen();
+			}
+		});
+	}
+
+	private boolean readLoot(final String url, final DefaultListModel mod) {
+		try {
+			final BufferedReader in = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
+			String line = null;
+			String[] opts = {};
+			while ((line = in.readLine()) != null) {
+				if (line.contains(";")) {
+					opts = line.split(";");
+				}
+			}
+			in.close();
+			lootString = opts;
+			for (final String element : lootString) {
+				doLoot.add(element.toString());
+				mod.addElement(element);
+			}
+		} catch (final IOException e) {
+			log("Problem getting loot.");
+		}
+		return true;
 	}
 
 	private RSNPC roach() {

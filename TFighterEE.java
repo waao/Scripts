@@ -515,6 +515,7 @@ public class TFighterEE extends Script implements PaintListener, MouseListener {
 		private final Map<String, Integer> lootTaken = new HashMap<String, Integer>();
 
 		private final Filter<RSGroundItem> lootFilter = new Filter<RSGroundItem>() {
+			@Override
 			public boolean accept(final RSGroundItem t) {
 				// Skip if we can't hold it
 				RSItem i;

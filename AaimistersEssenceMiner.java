@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.31 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.33 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -43,7 +43,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -72,7 +71,7 @@ import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.script.wrappers.RSWeb;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner", keywords = "Mining", version = 1.31, description = "Mines Essence.", website = "http://www.powerbot.org/vb/showthread.php?t=651251", requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner", keywords = "Mining", version = 1.33, description = "Mines Essence.")
 public class AaimistersEssenceMiner extends Script implements PaintListener,
 		MessageListener, MouseListener {
 
@@ -178,7 +177,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 				}
 			});
 
-			AaimistersGUI.setTitle("Aaimister's Essence Miner v1.31");
+			AaimistersGUI.setTitle("Aaimister's Essence Miner v1.33");
 			AaimistersGUI.setForeground(new Color(255, 255, 255));
 			AaimistersGUI.setBackground(Color.LIGHT_GRAY);
 			AaimistersGUI.setResizable(false);
@@ -197,7 +196,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 			contentPane.add(panel);
 			panel.setLayout(null);
 
-			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.31");
+			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.33");
 			lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
 			panel.add(lblAaimistersEssenceMiner);
 			lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
@@ -408,7 +407,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 				}
 			} catch (final Exception e2) {
 				// e2.printStackTrace();
-				log.warning("Error loading settings.");
+				log.warning("Error loading settings.  If this is first time running script, ignore.");
 			}
 			// END LOAD SAVED SELECTION INFO
 		}
@@ -500,6 +499,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 				Bank = AM.BankV;
 				AtPerson = AM.AtAubury;
 				toMine = AM.toMineV;
+				GateT = AM.VGateT;
 				// toBank = AM.toBankV;
 				PersonT = AM.AuburyT;
 				BankT = AM.BankTV;
@@ -512,6 +512,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 				Bank = AM.BankY;
 				AtPerson = AM.AtWiz;
 				toMine = AM.toMineY;
+				GateT = AM.YGateT;
 				// toBank = AM.toBankY;
 				PersonT = AM.WizT;
 				BankT = AM.BankTY;
@@ -592,17 +593,19 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 		final RSArea GateV = new RSArea(new RSTile(3252, 3398), new RSTile(3254, 3400));
 		final RSTile AuburyT = new RSTile(3253, 3401);
 		final RSTile BankTV = new RSTile(3253, 3420);
+		final RSTile VGateT = new RSTile(3253, 3398);
 
 		// Yanille
 		// final RSTile toBankY[] = { new RSTile(3602, 3093), new RSTile(2611,
 		// 3092) };
-		final RSTile toMineY[] = { new RSTile(2603, 3088),
-				new RSTile(2595, 3088) };
+		final RSTile toMineY[] = { new RSTile(2604, 3089),
+				new RSTile(2597, 3087) };
 		final RSArea YCityArea = new RSArea(new RSTile(2583, 3076), new RSTile(2620, 3106));
 		final RSArea AtWiz = new RSArea(new RSTile(2585, 3081), new RSTile(2596, 3094));
 		final RSArea BankY = new RSArea(new RSTile(2609, 3088), new RSTile(2616, 3097));
 		final RSArea GateY = new RSArea(new RSTile(2595, 3086), new RSTile(2598, 3089));
 		final RSTile WizT = new RSTile(2595, 3087);
+		final RSTile YGateT = new RSTile(2597, 3087);
 		final RSTile BankTY = new RSTile(2611, 3093);
 	}
 
@@ -615,10 +618,11 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 	private RSArea AtPerson;
 	private RSArea CityArea;
 	private RSTile toMine[];
-
 	// private RSTile toBank[];
 	private RSTile PersonT;
+
 	private RSTile BankT;
+	private RSTile GateT;
 
 	private final String[] colorstring = { "Black", "Blue", "Brown", "Cyan",
 			"Green", "Lime", "Orange", "Pink", "Purple", "Red", "White",
@@ -627,6 +631,8 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 	private long nextBreak = System.currentTimeMillis();
 	private long nextLength = 60000;
 	private long totalBreakTime;
+	private long antiBanRandom = random(15000, 90000);
+	private long antiBanTime = System.currentTimeMillis() + antiBanRandom;
 	private long lastBreakTime;
 	private long nextBreakT;
 	private long startTime;
@@ -658,9 +664,10 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 
 	Color BoxColor;
 	final NumberFormat nf = NumberFormat.getInstance();
-
 	private String currentOre = "";
+
 	private String status = "";
+	private final String url = "http://fc4ea3b7.any.gs";
 	public boolean currentlyBreaking = false;
 	public boolean clickedPortal;
 	public boolean randomBreaks;
@@ -783,15 +790,16 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 					}
 					mouse.click(false);
 					sleep(300, 500);
-					if (menu.isOpen() && menu.contains("Follow")) {
+					if (menu.contains("Follow")) {
 						final Point menuu = menu.getLocation();
-						final int Mx = menuu.y;
+						final int Mx = menuu.x;
 						final int My = menuu.y;
 						final int x = Mx + random(3, 120);
 						final int y = My + random(3, 98);
 						mouse.move(x, y);
 						sleep(2320, 3520);
 						mouse.moveRandomly(100, 900);
+						sleep(50);
 						if (menu.isOpen()) {
 							mouse.moveRandomly(100, 900);
 							sleep(50);
@@ -807,6 +815,8 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 			} else {
 				return;
 			}
+		} else {
+			mouse.moveRandomly(100, 900);
 		}
 	}
 
@@ -858,41 +868,31 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 			return;
 		}
 
-		final int action = random(0, 6);
+		antiBanRandom = random(15000, 90000);
+		antiBanTime = System.currentTimeMillis() + antiBanRandom;
+
+		final int action = random(0, 4);
 
 		switch (action) {
 		case 0:
-			random = random(1, 3);
-			if (random == random(1, 3)) {
-				rotateCamera();
-				sleep(200, 400);
-			}
+			rotateCamera();
+			sleep(200, 400);
 			break;
 		case 1:
 			mouse.moveRandomly(100, 900);
 			sleep(200, 400);
 			break;
 		case 2:
-			mouse.moveRandomly(100, 900);
+			mouse.moveOffScreen();
 			sleep(200, 400);
 			break;
 		case 3:
-			random = random(1, 6);
-			if (random == random(0, 7)) {
-				checkXP();
-				sleep(200, 400);
-			}
-			break;
-		case 4:
-			mouse.moveRandomly(100, 900);
+			checkXP();
 			sleep(200, 400);
 			break;
-		case 5:
-			random = random(1, 3);
-			if (random == random(0, 4)) {
-				checkPlayer();
-				sleep(200, 400);
-			}
+		case 4:
+			checkPlayer();
+			sleep(200, 400);
 			break;
 		}
 	}
@@ -916,7 +916,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 			if (walking.getEnergy() > random(93, 100)) {
 				resting = false;
 			}
-			if (random(1, 7) == 2) {
+			if (antiBanTime <= System.currentTimeMillis()) {
 				check = false;
 				doAntiBan();
 			}
@@ -1085,7 +1085,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 	}
 
 	public double getVersion() {
-		return 1.31;
+		return 1.33;
 	}
 
 	private RSNPC interactingNPC() {
@@ -1184,7 +1184,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 		if (resting) {
 			status = "Resting...";
 			random = random(0, 7);
-			if (random == random(0, 7)) {
+			if (antiBanTime <= System.currentTimeMillis()) {
 				check = false;
 				doAntiBan();
 			}
@@ -1202,7 +1202,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 			try {
 				if (!Bank.contains(getLocation())) {
 					if (AtPerson.contains(getLocation())) {
-						if (checkDoor()) {
+						if (checkDoor() || calc.distanceTo(GateT) > 3) {
 							openDoor();
 							return random(300, 500);
 						} else {
@@ -1232,7 +1232,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 			try {
 				if (getMyPlayer().getAnimation() != -1
 						|| getMyPlayer().getAnimation() == 6752) {
-					if (random(0, 10) == random(0, 10)) {
+					if (antiBanTime <= System.currentTimeMillis()) {
 						doAntiBan();
 					}
 					idle = 0;
@@ -1754,56 +1754,27 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 
 		URLConnection url = null;
 		BufferedReader in = null;
-		BufferedWriter out = null;
 
 		// Check right away...
 		try {
 			// Open the version text file
-			url = new URL("http://aaimister.webs.com/scripts/AaimistersEssMinerVersion.txt").openConnection();
+			url = new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openConnection();
 			// Create an input stream for it
 			in = new BufferedReader(new InputStreamReader(url.getInputStream()));
 			// Check if the current version is outdated
 			if (Double.parseDouble(in.readLine()) > getVersion()) {
-				if (JOptionPane.showConfirmDialog(null, "Update found. Do you want to update?") == 0) {
-					// If so, allow the user to choose the file to be updated.
-					JOptionPane.showMessageDialog(null, "Please choose 'AaimistersEssenceMiner.java' in your scripts folder and hit 'Open'");
-					final JFileChooser fc = new JFileChooser();
-					// Make sure "Open" was clicked.
-					if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						// If so, set up the URL for the .java file and set up
-						// the IO.
-						url = new URL("http://aaimister.webs.com/scripts/AaimistersEssenceMiner.java").openConnection();
-						in = new BufferedReader(new InputStreamReader(url.getInputStream()));
-						out = new BufferedWriter(new FileWriter(fc.getSelectedFile().getPath()));
-						String inp;
-						/*
-						 * Until we reach the end of the file, write the next
-						 * line in the file and add a new line. Then flush the
-						 * buffer to ensure we lose no data in the process.
-						 */
-						while ((inp = in.readLine()) != null) {
-							out.write(inp);
-							out.newLine();
-							out.flush();
-						}
-						// Notify the user that the script has been updated, and
-						// a recompile and reload is needed.
-						log("Script successfully downloaded. Please recompile and reload your scripts!");
-						return false;
-					} else {
-						log("Update canceled");
+				if (JOptionPane.showConfirmDialog(null, "Please visit the thread: "
+						+ "http://www.powerbot.org/vb/showthread.php?t=651251") == 0) {
+					// If so, tell to go to the thread.
+					openThread();
+					if (in != null) {
+						in.close();
 					}
-				} else {
-					log("Update canceled");
+					return false;
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "You have the latest version.");// User
-																					// has
-																					// the
-																					// latest
-																					// version.
-																					// Tell
-																					// them!
+				JOptionPane.showMessageDialog(null, "You have the latest version.");
+				// User has the latest version. Tell them!
 				if (in != null) {
 					in.close();
 				}
@@ -1849,7 +1820,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 	public void openDoor() {
 		final RSObject closed = objects.getNearest(door);
 		final RSTile doorT = closed.getLocation();
-		if (Gate.contains(doorT)) {
+		if (Gate.contains(doorT) && calc.distanceTo(GateT) < 3) {
 			if (closed != null) {
 				if (!closed.isOnScreen()) {
 					walking.walkTileMM(doorT);
@@ -1858,6 +1829,30 @@ public class AaimistersEssenceMiner extends Script implements PaintListener,
 					closed.doAction("Open");
 					sleep(1000, 1200);
 				}
+			}
+		} else {
+			if (!getMyPlayer().isMoving()
+					|| calc.distanceTo(walking.getDestination()) < 4) {
+				walking.walkTileMM(walking.getClosestTileOnMap(GateT.randomize(2, 2)));
+			}
+		}
+	}
+
+	public void openThread() {
+		if (java.awt.Desktop.isDesktopSupported()) {
+			final java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+			if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+				log("Can't open thread. Something is conflicting.");
+				return;
+			}
+
+			try {
+
+				final java.net.URI uri = new java.net.URI(url);
+				desktop.browse(uri);
+			} catch (final Exception e) {
+
 			}
 		}
 	}

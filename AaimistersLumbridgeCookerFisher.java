@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.07 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.09 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -43,7 +43,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -71,7 +70,7 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher", keywords = "Cooking & Fishing", version = 1.07, description = "Fishes and cooks crayfish behind Lumbridge Castle.", website = "http://www.powerbot.org/vb/showthread.php?t=684846", requiresVersion = 244)
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher", keywords = "Cooking & Fishing", version = 1.09, description = "Fishes and cooks crayfish behind Lumbridge Castle.")
 public class AaimistersLumbridgeCookerFisher extends Script implements
 		PaintListener, MessageListener, MouseListener {
 
@@ -174,7 +173,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 				}
 			});
 
-			AaimistersGUI.setTitle("Aaimister's Lum. Cooker & Fisher v1.07");
+			AaimistersGUI.setTitle("Aaimister's Lum. Cooker & Fisher v1.09");
 			AaimistersGUI.setForeground(new Color(255, 255, 255));
 			AaimistersGUI.setBackground(Color.LIGHT_GRAY);
 			AaimistersGUI.setResizable(false);
@@ -192,7 +191,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 			contentPane.add(panel);
 			panel.setLayout(null);
 
-			lblAaimistersEssenceMiner.setText("Aaimister's Lum. Cooker & Fisher v1.07");
+			lblAaimistersEssenceMiner.setText("Aaimister's Lum. Cooker & Fisher v1.09");
 			lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
 			panel.add(lblAaimistersEssenceMiner);
 			lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
@@ -404,7 +403,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 				}
 			} catch (final Exception e2) {
 				// e2.printStackTrace();
-				log.warning("Error loading settings.");
+				log.warning("Error loading settings.  If this is first time running script, ignore.");
 			}
 			// END LOAD SAVED SELECTION INFO
 		}
@@ -567,12 +566,15 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 	private final String[] colorstring = { "Black", "Blue", "Brown", "Cyan",
 			"Green", "Lime", "Orange", "Pink", "Purple", "Red", "White",
 			"Yellow" };
+	private final String url = "http://e216829d.any.gs";
 
 	AaimistersGUI g = new AaimistersGUI();
 	public final File settingsFile = new File(getCacheDirectory(), "AaimistersLCookFishSettings.txt");
 	private long nextBreak = System.currentTimeMillis();
 	private long nextLength = 60000;
 	private long totalBreakTime;
+	private long antiBanRandom = random(15000, 90000);
+	private long antiBanTime = System.currentTimeMillis() + antiBanRandom;
 	private long lastBreakTime;
 	private long nextBreakT;
 	private long startTime;
@@ -606,27 +608,27 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 	private String currentStat;
 
 	private String status = "";
-	public boolean currentlyBreaking = false;
-	public boolean randomBreaks = false;
-	public boolean buttonStats = false;
-	public boolean buttonMain = false;
-	public boolean buttonInfo = false;
-	public boolean antiBanOn = false;
-	public boolean buttonAll = false;
-	public boolean cookPaint = false;
-	public boolean clickNext = false;
-	public boolean powerFish = false;
-	public boolean fishPaint = true;
-	public boolean painting = false;
-	public boolean resting = false;
-	public boolean doBreak = false;
-	public boolean cooking = false;
-	public boolean checked = false;
-	public boolean fishing = false;
-	public boolean updated = false;
-	public boolean check = true;
-	public boolean rest = false;
-	public boolean logTime;
+	boolean currentlyBreaking;
+	boolean randomBreaks;
+	boolean buttonStats;
+	boolean buttonMain;
+	boolean buttonInfo;
+	boolean antiBanOn;
+	boolean buttonAll;
+	boolean cookPaint;
+	boolean clickNext;
+	boolean powerFish;
+	boolean fishPaint = true;
+	boolean painting;
+	boolean resting;
+	boolean doBreak;
+	boolean cooking;
+	boolean checked;
+	boolean fishing;
+	boolean updated;
+	boolean check = true;
+	boolean rest;
+	boolean logTime;
 	// Paint Buttons
 	boolean xButton;
 	boolean StatCO;
@@ -719,13 +721,14 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 					sleep(300, 500);
 					if (menu.contains("Follow")) {
 						final Point menuu = menu.getLocation();
-						final int Mx = menuu.y;
+						final int Mx = menuu.x;
 						final int My = menuu.y;
 						final int x = Mx + random(3, 120);
 						final int y = My + random(3, 98);
 						mouse.move(x, y);
 						sleep(2320, 3520);
 						mouse.moveRandomly(100, 900);
+						sleep(50);
 						if (menu.isOpen()) {
 							mouse.moveRandomly(100, 900);
 							sleep(50);
@@ -741,6 +744,8 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 			} else {
 				return;
 			}
+		} else {
+			mouse.moveRandomly(100, 900);
 		}
 	}
 
@@ -799,44 +804,32 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 			return;
 		}
 
-		final int action = random(0, 6);
+		antiBanRandom = random(15000, 90000);
+		antiBanTime = System.currentTimeMillis() + antiBanRandom;
+
+		final int action = random(0, 4);
 
 		switch (action) {
 		case 0:
-			if (random(1, 3) == random(1, 3)) {
-				rotateCamera();
-				sleep(200, 400);
-			} else {
-				return;
-			}
+			rotateCamera();
+			sleep(200, 400);
 			break;
 		case 1:
 			mouse.moveRandomly(100, 900);
 			sleep(200, 400);
 			break;
 		case 2:
-			mouse.moveRandomly(100, 900);
+			mouse.moveOffScreen();
 			sleep(200, 400);
 			break;
 		case 3:
-			if (random(0, 7) == random(0, 7)) {
-				checkXP();
-				sleep(200, 400);
-			} else {
-				return;
-			}
-			break;
-		case 4:
-			mouse.moveRandomly(100, 900);
+			checkXP();
 			sleep(200, 400);
 			break;
-		case 5:
-			if (random(0, 4) == random(0, 4)) {
-				checkPlayer();
-				sleep(200, 400);
-			} else {
-				return;
-			}
+		case 4:
+			checkPlayer();
+			sleep(200, 400);
+			break;
 		}
 	}
 
@@ -857,7 +850,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 			if (walking.getEnergy() > random(93, 100)) {
 				resting = false;
 			}
-			if (random(1, 7) == random(1, 7)) {
+			if (antiBanTime <= System.currentTimeMillis()) {
 				check = false;
 				doAntiBan();
 			}
@@ -946,7 +939,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 	private void drop() {
 		try {
 			status = "Dropping..";
-			mouse.setSpeed(random(8, 13));
+			mouse.setSpeed(random(4, 8));
 			inventory.dropAllExcept(true, cage);
 			sleep(100, 300);
 		} catch (final Exception e) {
@@ -1038,7 +1031,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 	}
 
 	public double getVersion() {
-		return 1.07;
+		return 1.09;
 	}
 
 	private RSObject goodFire() {
@@ -1116,12 +1109,12 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 			logTime = false;
 		}
 
-		mouse.setSpeed(random(5, 12));
+		mouse.setSpeed(random(4, 8));
 		setCamera();
 		setRun();
 
 		if (resting) {
-			if (random(0, 7) == random(0, 7)) {
+			if (antiBanTime <= System.currentTimeMillis()) {
 				check = false;
 				doAntiBan();
 			}
@@ -1155,7 +1148,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 						if (getMyPlayer().getAnimation() == -1) {
 							idle++;
 						}
-						if (random(0, 6) == random(0, 6)) {
+						if (antiBanTime <= System.currentTimeMillis()) {
 							check = true;
 							doAntiBan();
 						}
@@ -1216,7 +1209,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 						return random(1000, 1200);
 					}
 					if (cooking) {
-						if (random(0, 6) == random(0, 6)) {
+						if (antiBanTime <= System.currentTimeMillis()) {
 							check = true;
 							doAntiBan();
 						}
@@ -1237,7 +1230,9 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 			drop();
 			break;
 		case ERROR:
-
+			if (antiBanTime <= System.currentTimeMillis()) {
+				drop();
+			}
 			break;
 		}
 		return random(300, 600);
@@ -1327,8 +1322,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 		final String myName = players.getMyPlayer().getName();
 		return players.getNearest(new Filter<RSPlayer>() {
 			public boolean accept(final RSPlayer p) {
-				return p.getName() != myName
-						&& (AM.AtFish.contains(p.getLocation()) || AM.AtFire.contains(p.getLocation()));
+				return p.getName() == myName;
 			}
 		});
 	}
@@ -1524,56 +1518,27 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 
 		URLConnection url = null;
 		BufferedReader in = null;
-		BufferedWriter out = null;
 
 		// Check right away...
 		try {
 			// Open the version text file
-			url = new URL("http://aaimister.webs.com/scripts/AaimistersLumbridgeCookerFisherVersion.txt").openConnection();
+			url = new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openConnection();
 			// Create an input stream for it
 			in = new BufferedReader(new InputStreamReader(url.getInputStream()));
 			// Check if the current version is outdated
 			if (Double.parseDouble(in.readLine()) > getVersion()) {
-				if (JOptionPane.showConfirmDialog(null, "Update found. Do you want to update?") == 0) {
-					// If so, allow the user to choose the file to be updated.
-					JOptionPane.showMessageDialog(null, "Please choose 'AaimistersLumbridgeCookerFisher.java' in your scripts folder and hit 'Open'");
-					final JFileChooser fc = new JFileChooser();
-					// Make sure "Open" was clicked.
-					if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						// If so, set up the URL for the .java file and set up
-						// the IO.
-						url = new URL("http://aaimister.webs.com/scripts/AaimistersLumbridgeCookerFisher.java").openConnection();
-						in = new BufferedReader(new InputStreamReader(url.getInputStream()));
-						out = new BufferedWriter(new FileWriter(fc.getSelectedFile().getPath()));
-						String inp;
-						/*
-						 * Until we reach the end of the file, write the next
-						 * line in the file and add a new line. Then flush the
-						 * buffer to ensure we lose no data in the process.
-						 */
-						while ((inp = in.readLine()) != null) {
-							out.write(inp);
-							out.newLine();
-							out.flush();
-						}
-						// Notify the user that the script has been updated, and
-						// a recompile and reload is needed.
-						log("Script successfully downloaded. Please recompile and reload your scripts!");
-						return false;
-					} else {
-						log("Update canceled");
+				if (JOptionPane.showConfirmDialog(null, "Please visit the thread: "
+						+ "http://www.powerbot.org/vb/showthread.php?t=684846") == 0) {
+					// If so, tell to go to the thread.
+					openThread();
+					if (in != null) {
+						in.close();
 					}
-				} else {
-					log("Update canceled");
+					return false;
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "You have the latest version.");// User
-																					// has
-																					// the
-																					// latest
-																					// version.
-																					// Tell
-																					// them!
+				JOptionPane.showMessageDialog(null, "You have the latest version.");
+				// User has the latest version. Tell them!
 				if (in != null) {
 					in.close();
 				}
@@ -1605,12 +1570,30 @@ public class AaimistersLumbridgeCookerFisher extends Script implements
 		return true;
 	}
 
+	public void openThread() {
+		if (java.awt.Desktop.isDesktopSupported()) {
+			final java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+			if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+				log("Can't open thread. Something is conflicting.");
+				return;
+			}
+
+			try {
+
+				final java.net.URI uri = new java.net.URI(url);
+				desktop.browse(uri);
+			} catch (final Exception e) {
+
+			}
+		}
+	}
+
 	private RSPlayer playerNear() {
 		final RSPlayer me = myPlayer();
 		return me != null ? me : players.getNearest(new Filter<RSPlayer>() {
 			public boolean accept(final RSPlayer p) {
-				return (AM.AtFish.contains(p.getLocation()) || AM.AtFire.contains(p.getLocation()))
-						&& !p.isMoving() && p.isOnScreen();
+				return !p.isMoving() && p.isOnScreen();
 			}
 		});
 	}
