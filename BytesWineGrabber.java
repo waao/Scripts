@@ -75,23 +75,14 @@ public class BytesWineGrabber extends Script implements PaintListener,
 
 	public class GUI extends JFrame {
 		private JPanel mainPanel;
-
 		private JLabel titleText;
-
 		private JLabel titleSubText;
-
 		private JButton runButton;
-
 		private JButton cancelButton;
-
 		private JCheckBox guiWorldHop;
-
 		private JCheckBox guiCheckForUpdates;
-
 		private JCheckBox guiRestForTheWicked;
-
 		private JSlider guiLawsToWaste;
-
 		private JSlider guiPlayerCountToHop;
 		private JSlider HPPercentToEat;
 
@@ -103,7 +94,6 @@ public class BytesWineGrabber extends Script implements PaintListener,
 			guiExit = true;
 			gui.dispose();
 			return;
-
 		}
 
 		private void guiLawsToWasteStateChanged(final ChangeEvent e) {
@@ -340,81 +330,6 @@ public class BytesWineGrabber extends Script implements PaintListener,
 		}
 	}
 
-	/*
-	 * ChangeLog:
-	 * 
-	 * v .99 First Public Release
-	 * 
-	 * v 1.00 Added run check/set
-	 * 
-	 * v 1.01 Added < 90 check to when to rest.
-	 * 
-	 * v 1.02 Added world hopping. Changed spell selection method to
-	 * if(!spellSelected) to while(!spellSelected) Wrapped extra-loop grab in
-	 * try/catch removed unneeded GTFO case, as it's better to use one case to
-	 * Teleport.
-	 * 
-	 * v 1.03 Clean up some bugs in banking, and walking to temple afterward.
-	 * Increased sleep delay after clicking rest. Removed compile from update,
-	 * it doesn't work... updated worldHop from jtryba's post. It's still a
-	 * little buggy, but working Well Enough™ for us.
-	 * 
-	 * v 1.04 Updated worldHop method form jtryba's post. Added a null check for
-	 * the output of "ping" command in pingHost.
-	 * 
-	 * v 1.05 Added a timer in worldHop to bounce it out of a while loop. It got
-	 * stuck on me once, not sure if this is the fix for it, but I'll throw it
-	 * out and see.
-	 * 
-	 * v 1.10 Updated worldHop from jtryba's blog. Added a GUI
-	 * 
-	 * v 1.11 Re-added timer to kick out of possibly buggy worldHop loop.
-	 * Changed GUI to allow control of #players in temple before hopping. Pings
-	 * server before updating so script doesn't hang forever waiting on server
-	 * if it's down.
-	 * 
-	 * v 1.12 Increased post-teleport delay to avoid 2x tele's. Increased delay
-	 * after eating. Changed eat/get food routines.
-	 * 
-	 * v 1.13 Eliminated use of changing strings in paint, probable cause of
-	 * memory issues in Windoze. Changed wait spot.
-	 * 
-	 * v 1.14 Changed from looking to see if we are in the restArea (near
-	 * minstrel) to look to see if next destination is in restArea, ie: where
-	 * the red flag in the minimap is. It's a smoother way to walk to the
-	 * minstrel to rest. Imported mWine's wine-grab routine, with some mods to
-	 * adapt to BWG. Releasing for testing to see if it'll do better grabbing.
-	 * 
-	 * v 1.15 Restored spell check in grab loop. Fixed problem with walking to
-	 * bank with no law runes, ie: getting stuck at tele-landing spot. Updated
-	 * method to determine if player is a member from account.isMemeber() to
-	 * AccountManager.isMember(playerName)
-	 * 
-	 * v 1.16 Changed moving to the waitSpot to
-	 * walking.walkTileOnScreen(waitSpot); Ensured that waitSpot will change 33%
-	 * of the time after a miss. Found a problem when encountering a random. The
-	 * grab loop will finish then switch (maybe?) to the random handler. added a
-	 * check to see if we're standing on the waitSpot, this will hopefully cure
-	 * the the random issue.
-	 * 
-	 * v 1.17 Fix for laws being withdrawn issue Updated worldHop. Changes to
-	 * adapt to new RSBot security.
-	 * 
-	 * v 1.18 Change GlobalConfiguration to Configuration Added waitPlayerMoving
-	 * to waitspot routine. Wrapped some bug in a try/catch..
-	 * 
-	 * v 1.19 Added landingArea to try to make bot walk to temple with wine in
-	 * inventory is < max and starting script. FINALLY got log info from
-	 * mageguy190. Added laws in bank != null check when checking to see if we
-	 * got the laws, assumed that if it *IS* null, we got some laws, since it
-	 * can't get there without having laws in the bank in the first place. The
-	 * count will be updated first run thru the loop anyhow, so the inaccuracy
-	 * isn't important. Randomized waitSpot at Startup. Added Kill button to
-	 * paint. Fixed moving paint button when running resizable.
-	 * 
-	 * v 1.20 Stomped numberous bugs.
-	 */
-
 	private enum STATE {
 		SNATCH, TELEPORT, WALK_TO_BANK, BANK, WALK_TO_TEMPLE, WALK_TO_TILE, SLEEP
 	};
@@ -460,6 +375,7 @@ public class BytesWineGrabber extends Script implements PaintListener,
 			new RSTile(2961, 3381), new RSTile(2955, 3381),
 			new RSTile(2950, 3377), new RSTile(2947, 3376),
 			new RSTile(2946, 3368) };
+
 	RSTilePath pathToTemple, pathToBank;
 	RSTile me, waitSpot = waitSpots[random(0, 2)];
 
@@ -639,22 +555,6 @@ public class BytesWineGrabber extends Script implements PaintListener,
 		return;
 	}
 
-	/*
-	 * private RSItem findFoodInInv() { RSItem[] is = inventory.getItems(); for
-	 * (RSItem i : is) { if (i.getComponent().getActions() == null ||
-	 * i.getComponent().getActions()[0] == null) { continue; } if
-	 * (i.getComponent().getActions()[0].contains("Eat")) { return i; } } return
-	 * null; }
-	 */
-
-	/*
-	 * private void eatFood() { RSItem food = findFoodInInv(); if (food != null)
-	 * { food.doAction("Eat "); sleep(1500, 2000); return; } else {
-	 * log("No More Food."); return; }
-	 * 
-	 * }
-	 */
-
 	private String format(final long time, final boolean seconds) {
 		if (time <= 0) {
 			return "--:--:--";
@@ -718,11 +618,6 @@ public class BytesWineGrabber extends Script implements PaintListener,
 		}
 		return false;
 	}
-
-	/*
-	 * Download method from RSBot UpdateUtil by TheShadow Copied to here because
-	 * it wouldn't let me call it from here...some static thing (shrug)
-	 */
 
 	@Override
 	public int loop() {
@@ -992,7 +887,6 @@ public class BytesWineGrabber extends Script implements PaintListener,
 
 	}
 
-	// All that for what we REALLY wanted...
 	public void mouseClicked(final MouseEvent e) {
 		final Point q = e.getPoint();
 		if (paintToggle.contains(q)) {
@@ -1014,30 +908,6 @@ public class BytesWineGrabber extends Script implements PaintListener,
 
 	public void mouseExited(final MouseEvent e) {
 	}
-
-	/*
-	 * private int pingHost(String host) { int z = -1, i; String c$ = "-c"; if
-	 * (os.contains("windows")) c$ = "-n";
-	 * 
-	 * try { Runtime r = Runtime.getRuntime(); Process p = r.exec("ping " + c$ +
-	 * " 1 " + host);
-	 * 
-	 * BufferedReader in = new BufferedReader(new
-	 * InputStreamReader(p.getInputStream())); String inputLine = ""; String[]
-	 * parse = {}; String z$ = ""; while ((inputLine = in.readLine()) != null) {
-	 * if (inputLine.contains("ms")) break; } in.close();
-	 * 
-	 * if (inputLine == null) return z;
-	 * 
-	 * if (inputLine.contains("100% packet loss") ||
-	 * inputLine.contains("could not find")) { log("Ping FAIL"); return z; //
-	 * exit with -1. } log(inputLine); parse = inputLine.split(" "); for (i = 0;
-	 * i < parse.length; i++) { if (parse[i].contains("time")) break; } parse =
-	 * parse[i].split("="); log(host + "'s ping delay is: " + parse[1]); z$ =
-	 * parse[1].replaceAll("ms", ""); // blindly strip "ms" for // Windows
-	 * compat. z = (int) Double.parseDouble(z$); }// try catch (IOException e) {
-	 * log(e); } return z; }
-	 */
 
 	public void mousePressed(final MouseEvent e) {
 	}
@@ -1300,6 +1170,11 @@ public class BytesWineGrabber extends Script implements PaintListener,
 
 		return true;
 	}
+
+	/**
+	 * Download method from RSBot UpdateUtil by TheShadow Copied to here because
+	 * it wouldn't let me call it from here...some static thing (shrug)
+	 **/
 
 	public boolean updater() {
 		final Pattern UPDATER_VERSION_PATTERN = Pattern.compile("version\\s*=\\s*([0-9.]+)");
@@ -1885,4 +1760,80 @@ public class BytesWineGrabber extends Script implements PaintListener,
 		}
 		return true;
 	}
+	
+	/*
+	 * ChangeLog:
+	 * 
+	 * v .99 First Public Release
+	 * 
+	 * v 1.00 Added run check/set
+	 * 
+	 * v 1.01 Added < 90 check to when to rest.
+	 * 
+	 * v 1.02 Added world hopping. Changed spell selection method to
+	 * if(!spellSelected) to while(!spellSelected) Wrapped extra-loop grab in
+	 * try/catch removed unneeded GTFO case, as it's better to use one case to
+	 * Teleport.
+	 * 
+	 * v 1.03 Clean up some bugs in banking, and walking to temple afterward.
+	 * Increased sleep delay after clicking rest. Removed compile from update,
+	 * it doesn't work... updated worldHop from jtryba's post. It's still a
+	 * little buggy, but working Well Enough™ for us.
+	 * 
+	 * v 1.04 Updated worldHop method form jtryba's post. Added a null check for
+	 * the output of "ping" command in pingHost.
+	 * 
+	 * v 1.05 Added a timer in worldHop to bounce it out of a while loop. It got
+	 * stuck on me once, not sure if this is the fix for it, but I'll throw it
+	 * out and see.
+	 * 
+	 * v 1.10 Updated worldHop from jtryba's blog. Added a GUI
+	 * 
+	 * v 1.11 Re-added timer to kick out of possibly buggy worldHop loop.
+	 * Changed GUI to allow control of #players in temple before hopping. Pings
+	 * server before updating so script doesn't hang forever waiting on server
+	 * if it's down.
+	 * 
+	 * v 1.12 Increased post-teleport delay to avoid 2x tele's. Increased delay
+	 * after eating. Changed eat/get food routines.
+	 * 
+	 * v 1.13 Eliminated use of changing strings in paint, probable cause of
+	 * memory issues in Windoze. Changed wait spot.
+	 * 
+	 * v 1.14 Changed from looking to see if we are in the restArea (near
+	 * minstrel) to look to see if next destination is in restArea, ie: where
+	 * the red flag in the minimap is. It's a smoother way to walk to the
+	 * minstrel to rest. Imported mWine's wine-grab routine, with some mods to
+	 * adapt to BWG. Releasing for testing to see if it'll do better grabbing.
+	 * 
+	 * v 1.15 Restored spell check in grab loop. Fixed problem with walking to
+	 * bank with no law runes, ie: getting stuck at tele-landing spot. Updated
+	 * method to determine if player is a member from account.isMemeber() to
+	 * AccountManager.isMember(playerName)
+	 * 
+	 * v 1.16 Changed moving to the waitSpot to
+	 * walking.walkTileOnScreen(waitSpot); Ensured that waitSpot will change 33%
+	 * of the time after a miss. Found a problem when encountering a random. The
+	 * grab loop will finish then switch (maybe?) to the random handler. added a
+	 * check to see if we're standing on the waitSpot, this will hopefully cure
+	 * the the random issue.
+	 * 
+	 * v 1.17 Fix for laws being withdrawn issue Updated worldHop. Changes to
+	 * adapt to new RSBot security.
+	 * 
+	 * v 1.18 Change GlobalConfiguration to Configuration Added waitPlayerMoving
+	 * to waitspot routine. Wrapped some bug in a try/catch..
+	 * 
+	 * v 1.19 Added landingArea to try to make bot walk to temple with wine in
+	 * inventory is < max and starting script. FINALLY got log info from
+	 * mageguy190. Added laws in bank != null check when checking to see if we
+	 * got the laws, assumed that if it *IS* null, we got some laws, since it
+	 * can't get there without having laws in the bank in the first place. The
+	 * count will be updated first run thru the loop anyhow, so the inaccuracy
+	 * isn't important. Randomized waitSpot at Startup. Added Kill button to
+	 * paint. Fixed moving paint button when running resizable.
+	 * 
+	 * v 1.20 Stomped numberous bugs.
+	 */
+
 }

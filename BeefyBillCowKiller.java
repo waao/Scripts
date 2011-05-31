@@ -68,8 +68,6 @@ import org.rsbot.script.wrappers.RSObject;
 import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSTile;
 
-/* BE SURE to save this script as BeefyBillCowKiller.java or it WILL NOT WORK!! */
-
 @ScriptManifest(authors = { "Mr. Byte" }, name = "Beefy Bill Cow Killer", keywords = { "Combat" }, description = "Kills Cows, Loots Hides,"
 		+ " Buries Bones, Chops Trees,"
 		+ " Makes Fire, Cooks Looted Meat "
@@ -83,27 +81,17 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 
 	public class BeefyGUI extends JFrame {
 		private JPanel dialogPane;
-
 		private JPanel contentPanel;
-
 		private JCheckBox guiBuryBones;
-
 		private JCheckBox guiEatFood;
-
 		private JCheckBox guiPickStaff;
-
 		private JSlider HPPercentToEat;
-
 		private JCheckBox restWhenTired;
-
 		private JCheckBox guiBankMeat;
-
 		private JCheckBox guiBankHides;
-
 		private JComboBox hideBankCount;
 		private JLabel howManyLabel;
 		private JCheckBox guiGetFood;
-		// private JLabel getFoodWarning;
 		private JCheckBox guiCheckForUpdates;
 		private JLabel jLabel1;
 		private JCheckBox beVerbose;
@@ -168,7 +156,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 			hideBankCount = new JComboBox();
 			howManyLabel = new JLabel();
 			guiGetFood = new JCheckBox();
-			// getFoodWarning = new JLabel();
 			runButton = new JButton();
 			cancelButton = new JButton();
 
@@ -267,18 +254,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 						guiGetFood.setFont(new Font("Arial", Font.PLAIN, 12));
 						guiGetFood.setBounds(217, 120, 250, 19);
 					}
-					/*
-					 * { getFoodWarning = new JLabel();
-					 * contentPanel.add(getFoodWarning); getFoodWarning
-					 * .setText(
-					 * "<html><center>* You need a hatchet and tinderbox to enable this function</center></html>"
-					 * ); getFoodWarning.setFont(new Font("Arial", Font.ITALIC,
-					 * 10)); getFoodWarning.setEnabled(true); getFoodWarning
-					 * .setHorizontalAlignment(SwingConstants.CENTER);
-					 * getFoodWarning.setBounds(0, 135, 495, 30); }
-					 */
 					{
-
 						guiGetFood.setEnabled((guiEatFood.isSelected()
 								&& inventory.contains(tinderbox) && inventory.containsOneOf(hatchets)));
 
@@ -1264,8 +1240,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 					final int item = element.getItem().getID();
 					for (final int loot2 : loots) {
 						if (item == loot2 && !inventory.isFull()) {
-							// tiles.doAction(lootpile[x].getLocation(), "Take "
-							// + lootpile[x].getItem().getName());
 							takeItem(element);
 							waitPlayerMoving();
 							sleep(650, 800);
@@ -1403,14 +1377,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 						&& !monster.isInCombat() && monster.isOnScreen();
 			}
 		});
-
-		/*
-		 * RSNPC[] monsters = npcs.getAll(new Filter<RSNPC>() { public boolean
-		 * accept(RSNPC monster) { for (int i : cows) { if(monster.getID() != i
-		 * || monster.getHPPercent() == 0 || monster.isInCombat() ||
-		 * !monster.isOnScreen()) { continue; } return true; } return false; }
-		 * });
-		 */
 		if (monsters == null) {
 			return true;
 		}
@@ -1478,35 +1444,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 		}
 	}
 
-	/*
-	 * Changelog:
-	 * 
-	 * v3.25 Changelog started. Changed GE price storage method to use item ID's
-	 * rather than names Eliminated the skills[i] array, as it was not really
-	 * needed. Cleaned up sleep(random(x,x)) sleep(x,x) Changed update checker
-	 * to now look on server at script file and extract the posted version from
-	 * it instead of reading a version file.
-	 * 
-	 * v3.26 Added safety-checks to the ID field in the price file, due to
-	 * errors if reading old price file with latest code.
-	 * 
-	 * v3.27 Improved some visuals on the updater GUI, changed the restart
-	 * message for jar's to reflect the fact that you need to restart the bot
-	 * for the new .jar to appear. Removed compile code, as it's not working
-	 * locally...
-	 * 
-	 * v3.28 Fixed issue in randomWalk() causing script to hang and bot to idle
-	 * and timeout. Improved portability of update method.
-	 * 
-	 * v3.29 Added "Get Air Staffs" option.
-	 * 
-	 * v3.30 Moved price file location to comply with new security stuff.
-	 * 
-	 * v3.31 Changed "GlobalConfiguration" to "Configuration" to match bot
-	 * change. Added jar detection logic.
-	 */
-
-	// All that for what we REALLY wanted...
 	public void mouseClicked(final MouseEvent e) {
 		final Point q = e.getPoint();
 		if (paintToggle.contains(q)) {
@@ -1521,20 +1458,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 
 	public void mouseEntered(final MouseEvent e) {
 	}
-
-	/*
-	 * public void turnTo(int degrees, RSNPC n) { char left = 37; char right =
-	 * 39; char whichDir = left; int start = camera.getAngle(); if(start < 180)
-	 * { start += 360; } if(degrees < 180) { degrees += 360; } if(degrees >
-	 * start) { if(degrees - 180 < start) { whichDir = right; } } else if(start
-	 * > degrees) { if(start - 180 >= degrees) { whichDir = right; } } degrees
-	 * %= 360; keyboard.pressKey(whichDir); int timeWaited = 0;
-	 * while(!n.isOnScreen() && camera.getAngle() > degrees + 10 ||
-	 * !n.isOnScreen() && camera.getAngle() < degrees - 10) { sleep(10);
-	 * timeWaited += 10; if(timeWaited > 500) { int time = timeWaited - 500;
-	 * if(time == 0) { keyboard.pressKey(whichDir); } else if(time % 40 == 0) {
-	 * keyboard.pressKey(whichDir); } } } keyboard.releaseKey(whichDir); }
-	 */
 
 	public void mouseExited(final MouseEvent e) {
 	}
@@ -1555,15 +1478,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 						&& !monster.isInCombat();
 			}
 		});
-
-		/*
-		 * RSNPC[] monsters = npcs.getAll(new Filter<RSNPC>() { public boolean
-		 * accept(RSNPC monster) { for (int i : cows) { if(monster.getID() != i
-		 * || monster.getHPPercent() == 0 || monster.isInCombat() ||
-		 * (keepOut.contains(monster.getLocation()) && !keepOut
-		 * .contains(players.getMyPlayer() .getLocation()))) { continue; }
-		 * return true; } return false; } });
-		 */
 
 		if (monsters == null) {
 			return null;
@@ -1824,8 +1738,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 		log("Getting prices, please wait...");
 
 		if (!readPrices()) {
-			// hidePrice = getGuidePrice(cowhideID);
-			// meatPrice = getGuidePrice(rawMeat);
 			hidePrice = grandExchange.lookup(cowhideID).getGuidePrice();
 			meatPrice = grandExchange.lookup(rawMeat).getGuidePrice();
 			writePrices();
@@ -2173,4 +2085,33 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 		}
 		return true;
 	}
+	
+	/*
+	 * Changelog:
+	 * 
+	 * v3.25 Changelog started. Changed GE price storage method to use item ID's
+	 * rather than names Eliminated the skills[i] array, as it was not really
+	 * needed. Cleaned up sleep(random(x,x)) sleep(x,x) Changed update checker
+	 * to now look on server at script file and extract the posted version from
+	 * it instead of reading a version file.
+	 * 
+	 * v3.26 Added safety-checks to the ID field in the price file, due to
+	 * errors if reading old price file with latest code.
+	 * 
+	 * v3.27 Improved some visuals on the updater GUI, changed the restart
+	 * message for jar's to reflect the fact that you need to restart the bot
+	 * for the new .jar to appear. Removed compile code, as it's not working
+	 * locally...
+	 * 
+	 * v3.28 Fixed issue in randomWalk() causing script to hang and bot to idle
+	 * and timeout. Improved portability of update method.
+	 * 
+	 * v3.29 Added "Get Air Staffs" option.
+	 * 
+	 * v3.30 Moved price file location to comply with new security stuff.
+	 * 
+	 * v3.31 Changed "GlobalConfiguration" to "Configuration" to match bot
+	 * change. Added jar detection logic.
+	 */
+	
 }
