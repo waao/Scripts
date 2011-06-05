@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.14 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.15 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -77,7 +77,7 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.14", keywords = "Combat", version = 1.14, description = ("Kills roaches in Edgville."))
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.15", keywords = "Combat", version = 1.15, description = ("Kills roaches in Edgville."))
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
@@ -194,6 +194,9 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 						   1333, 830, 1249, 1247, 829, 1201, 1149, 20667, 890, 882, 11212, 19157, 884, 
 						   888, 2866, 892, 19152, 886, 19162 };
 	
+	int notedItems[] = { 562, 1216, 533, 1392, 574, 570, 2999, 258, 3001, 270, 454, 452, 2362, 7937, 
+						 372, 384, 1443, 1441, 1516, 448, 450 };
+	
 	int incave = 29728;
 	//"Enter"
 	int outcave = 29729;
@@ -283,6 +286,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	boolean free;
 	boolean equip;
 	boolean room2;
+	boolean noted;
 	boolean notChosen = true;
 	boolean doBreak;
 	boolean bankedOpen;
@@ -296,7 +300,6 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	boolean opened;
 	boolean closed;
 	boolean wLoot;
-	boolean skip;
 	//Paint Buttons
 	boolean xButton;
 	boolean StatAT;;
@@ -349,7 +352,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	public double getVersion() { 
-		return 1.14;
+		return 1.15;
 	}
 	
 	public boolean onStart() {
@@ -499,12 +502,12 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	private boolean loot() {
-		RSGroundItem[] all = groundItems.getAll(50);
+		RSGroundItem[] all = groundItems.getAll(20);
 		if (all != null) {
 			if (getMyPlayer().getInteracting() == null) {
 				for (int i = 0; i < all.length; i++) {
 					if (rArea.contains(all[i].getLocation())) {
-						if (doLoot.contains(Integer.toString(all[i].getItem().getID()))) {
+						if (doLoot.contains(Integer.toString(all[i].getItem().getID())) || all[i].getItem().getName().contains("scroll")) {
 							return true;
 						}
 					}
@@ -520,19 +523,12 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 				totalPrice += (inventory.getCount(true, x) - y);
 				y = inventory.getCount(true, x);
 			}
+		} else if (noted) {
+			totalPrice += ((inventory.getCount(true, x) - y) * getGuidePrice(x - 1));
+			y = inventory.getCount(true, x);
 		} else {
-			if (inventory.getCount(true, x) > y) {
-				if (x == 448) {
-					totalPrice += ((inventory.getCount(true, x) - y) * getGuidePrice(447));
-					y = inventory.getCount(true, x);
-				} else  if (x == 450) {
-					totalPrice += ((inventory.getCount(true, x) - y) * getGuidePrice(449));
-					y = inventory.getCount(true, x);
-				} else {
-					totalPrice += ((inventory.getCount(true, x) - y) * getGuidePrice(x));
-					y = inventory.getCount(true, x);
-				}
-			}
+			totalPrice += ((inventory.getCount(true, x) - y) * getGuidePrice(x));
+			y = inventory.getCount(true, x);
 		}
 	}
 	
@@ -568,9 +564,8 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	
 	private void clickNPC(RSNPC x, String y) {
 		try {
-			Point c = calc.tileToScreen(x.getLocation());
-			if (c != null && !x.doAction(y)) {
-				mouse.move(c);
+			if (x.getModel().getPointOnScreen() != null) {
+				x.getModel().hover();
 				sleep(150, 300);
 				x.doAction(y);
 			}
@@ -581,9 +576,8 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	
 	private void clickObj(RSObject x, String y) {
 		try {
-			Point c = calc.tileToScreen(x.getLocation());
-			if (c != null && !x.doAction(y)) {
-				mouse.move(c);
+			if (x.getModel().getPointOnScreen() != null) {
+				x.getModel().hover();
 				sleep(150, 300);
 				x.doAction(y);
 			}
@@ -593,13 +587,12 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	
-	private void lootItem(RSGroundItem x, String s) {
+	private void lootItem(RSGroundItem x, String y) {
 		try {
-			Point c = calc.tileToScreen(x.getLocation());
-			if (c != null && mouse.getLocation() != c) {
-				mouse.move(c);
-				sleep(150, 300);
-				x.doAction("Take " + s);
+			if (x.isOnScreen()) {
+				mouse.move(calc.tileToScreen(x.getLocation()));
+				sleep(60);
+				x.doAction("Take " + y);
 			}
 		} catch (Exception e) {
 			
@@ -696,6 +689,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
  			if (inventory.getCount(true, v) > z) {
  				checkPrice(v, z);
  	 			checkIn = false;
+ 	 			noted = false;
  			} else {
  				checkIn = true;
  			}
@@ -833,7 +827,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 				attacked = false;
 				idle = 0;
 			}
-			if (wLoot && !skip) {
+			if (wLoot) {
 				wLoot = false;
 				return random(1800, 2500);
 			}
@@ -846,7 +840,6 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 							rCount++;
 							attacked = true;
 							wLoot = true;
-							skip = false;
 							idle = 0;
 							return random(500, 1000);
 						}
@@ -878,6 +871,12 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 				bankedOpen = false;
 				idle = 0;
 			}
+			if (!inventory.contains(food) && noFood >= 2) {
+				log.severe("Out of Food!");
+				game.logout(false);
+				sleep(200, 500);
+				stopScript();
+			}
 			if (notChosen) {
 				if (random(0, 5) == 0 || random(0, 5) == 2) {
 					useBanker = true;
@@ -904,7 +903,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 					opened = false;
 					idle++;
 					if (!bankedOpen && bank.isOpen()) {
-						if (inventory.getCount() != 0) {
+						if (inventory.getCount() > 0) {
 							bank.depositAll();
 							sleep(350, 500);
 						}
@@ -929,18 +928,12 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 					return random(1200, 1500);
 				}
 			}
-			if (!inventory.contains(food) && noFood >= 2) {
-				log.severe("Out of Food!");
-				game.logout(false);
-				sleep(200, 500);
-				stopScript();
-			}
 			
 			break;
 		case LOOT:
 			attacked = false;
 			status = "Picking up loot...";
-			skip = true;
+			wLoot = false;
 			if (idle > 3) {
 				clicked = false;
 				idle = 0;
@@ -978,12 +971,25 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 												equip = true;
 											}
 										}
+										for (int c = 0; c < Citems.length; c++) {
+											if (all[i].getItem().getID() == Citems[c]) {
+												totalCharms++;
+											}
+										}
 										for (int o = 0; o < noCheckItems.length; o++) {
 											if (all[i].getItem().getID() == noCheckItems[o]) {
-												totalPrice += getGuidePrice(all[i].getItem().getID());
-												idle = 0;
-												totalItems++;
+												int p = getGuidePrice(all[i].getItem().getID());
+												if (p > 1) {
+													totalPrice += p;
+													idle = 0;
+													totalItems++;
+												}
 												return (calc.distanceTo(all[i].getLocation()) * 1000);
+											}
+										}
+										for (int n = 0; n < notedItems.length; n++) {
+											if (all[i].getItem().getID() == notedItems[n]) {
+												noted = true;
 											}
 										}
 										v = all[i].getItem().getID();
@@ -1141,33 +1147,35 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
     		game.openTab(2);
     		sleep(500, 900);
     	}
-		x = random(1, 4);
-		if (atxpGained == 0) {
-			if (x == 2) {
-				x = random(3, 4);
-			}
-		} else if (stxpGained == 0) {
-			if (x == 3) {
-				x = random(1, 2);
-			}
-		} else if (dfxpGained == 0) {
-			if (x == 4) {
-				x = random(1, 3);
-			}
+		
+		int action = random(0, 3);
+		
+		if (action == 1 && atxpGained == 0) {
+			action = 0;
+		} else if (action == 2 && stxpGained == 0) {
+			action = 0;
+		} else if (action == 3 && dfxpGained == 0) {
+			action = 0;
 		}
-		if (x == 1) {
-			//Cons.
+	    
+	    switch (action) {
+	    case 0:
+	    	//Cons.
 			mouse.move(random(617, 667), random(214, 232));
-		} else if (x == 2) {
-			//Att.
+	    	break;
+	    case 1:
+	    	//Att.
 			mouse.move(random(555, 605), random(213, 232));
-		} else if (x == 3) {
-			//Str.
+	    	break;
+	    case 2:
+	    	//Str.
 			mouse.move(random(555, 604), random(241, 260));
-		} else if (x == 4) {
-			//Def.
+	    	break;
+	    case 3:
+	    	//Def.
 			mouse.move(random(555, 606), random(271, 288));
-		}
+	    	break;
+	    }
 		sleep(2800, 5500);
 		game.openTab(4);
 		sleep(50, 100);
