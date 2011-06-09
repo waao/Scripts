@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.33 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.34 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -56,7 +56,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.33", keywords = "Mining", version = 1.33, description = ("Mines Essence."))
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.34", keywords = "Mining", version = 1.34, description = ("Mines Essence."))
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -165,7 +165,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	
 	int pickaxes[] = { 1265, 1267, 1269, 1273, 1271, 1275, 15259 };
 	int markerPlant = 9157;
-	int teleport[] = { 13630, 13629, 13628 };
+	int teleport[] = { 13630, 13631, 13629, 13628 };
 	int essence = 2491;
 	int Aubury = 5913;
 	int Wizard = 462;
@@ -239,7 +239,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	}
 	
 	public double getVersion() { 
-		return 1.33;
+		return 1.34;
 	}
 	
 	public boolean onStart() {
@@ -446,7 +446,17 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			sleep(1000, 1600);
 		}
 	}
-
+	
+	private int portalID() {
+		RSNPC p[] = npcs.getAll();
+		for (int i = 0; i < p.length; i++) {
+			if (p[i].getName().contains("Portal")) {
+				return p[i].getID();
+			}
+		}
+		return 0;
+	}
+	
 	private void waitToGO(boolean yes) {
 		if (yes) {
 			while (!AtPerson.contains(getLocation())) {
@@ -1086,7 +1096,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	private RSNPC portal() {
 		return npcs.getNearest(new Filter<RSNPC>() {
 			public boolean accept(RSNPC npc) {
-				return npc.getID() == 13628 || npc.getID() == 13629 || npc.getID() == 13630;
+				return npc.getID() == portalID();
 			}
 		});
 	}
@@ -1702,7 +1712,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	            }
 	        });
 	        
-    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.33");
+    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.34");
     		AaimistersGUI.setForeground(new Color(255, 255, 255));
     		AaimistersGUI.setBackground(Color.LIGHT_GRAY);
     		AaimistersGUI.setResizable(false);
@@ -1721,7 +1731,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
     		contentPane.add(panel);
     		panel.setLayout(null);
     		
-    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.33");
+    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.34");
     		lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
     		panel.add(lblAaimistersEssenceMiner);
     		lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
