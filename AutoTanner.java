@@ -19,6 +19,7 @@ import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.script.wrappers.RSTilePath;
 
 @ScriptManifest(authors = { "LastCoder" }, keywords = { "Crafting" }, name = "ArbiTannerLite", version = 2.0, description = "Start, all options are in GUI.", requiresVersion = 244)
+@SuppressWarnings("deprecation")
 public class AutoTanner extends Script implements MessageListener,
 		PaintListener {
 

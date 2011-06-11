@@ -20,10 +20,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Scanner;
@@ -37,7 +35,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
@@ -57,6 +54,7 @@ import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
 @ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher v1.11", keywords = "Cooking & Fishing", version = 1.11, description = ("Fishes and cooks crayfish behind Lumbridge Castle."))
+@SuppressWarnings("deprecation")
 public class AaimistersLumbridgeCookerFisher extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -1240,8 +1238,6 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			}
 		}
 	   
-	private Image Mouse = getImage("http://i88.photobucket.com/albums/k170/aaimister/mousee.png");
-	private Image cMouse = getImage("http://i88.photobucket.com/albums/k170/aaimister/cmouse.png");	
 	private Image logo = getImage("http://i88.photobucket.com/albums/k170/aaimister/AaimistersLumCookerFisher.png");
 	private Image atom = getImage("http://i88.photobucket.com/albums/k170/aaimister/Atomm.png");
 		

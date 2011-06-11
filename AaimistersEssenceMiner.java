@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Scanner;
@@ -37,7 +36,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -57,6 +55,7 @@ import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
 @ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.34", keywords = "Mining", version = 1.34, description = ("Mines Essence."))
+@SuppressWarnings("deprecation")
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -349,17 +348,6 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	private boolean breakingCheck(){
 		if (nextBreak <= System.currentTimeMillis()){
 			return true;
-		}
-		return false;
-	}
-	
-	private boolean walkPath(RSTile[] tiles) {
-		try {
-			if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
-				return walking.newTilePath(tiles).randomize(2, 2).traverse();
-			}
-		} catch (Exception e) {
-			
 		}
 		return false;
 	}

@@ -73,6 +73,7 @@ import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
 @ScriptManifest(authors = { "WhiteBear" }, keywords = "Burner Firemaker Logs Global Universal", name = "White Bear AIO Firemaker", version = 1.13, description = "Fast and Flawless All-in-One Firemaker", website = "http://whitebearrs.orgfree.com")
+@SuppressWarnings("deprecation")
 public class WhiteBearAIOFiremaker extends Script implements PaintListener,
 		MessageListener, MouseListener, MouseMotionListener {
 

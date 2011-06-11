@@ -28,6 +28,7 @@ import org.rsbot.script.wrappers.RSTile;
 
 //end
 @ScriptManifest(authors = { "Ryan", "Truemenskeet" }, name = "GoofyScriptsMultiCooker", version = 1.0, description = "Cooks food in Al Kharid and Rogues Den", website = "http://www.powerbot.org/vb/showthread.php?t=768104", requiresVersion = 244)
+@SuppressWarnings("deprecation")
 public class GoofyScriptsMultiCooker extends Script implements PaintListener,
 		MessageListener, MouseListener {
 

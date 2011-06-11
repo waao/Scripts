@@ -29,6 +29,8 @@ import org.rsbot.Configuration;
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Equipment;
+import org.rsbot.script.methods.Magic;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
@@ -52,7 +54,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 
 	private boolean isJar = false;
 		
-	private static final int[] cows = { 12362, 12363, 12364, 12365 };
 	private static final RSArea billPen 		= new RSArea(new RSTile[] {
 												  new RSTile(3154,3348), new RSTile(3153,3345),
 										          new RSTile(3152,3325), new RSTile(3152,3323),
@@ -90,7 +91,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 													  new RSTile(3217, 3219), new RSTile(3214, 3214),
 													  new RSTile(3212, 3211), new RSTile(3206, 3209)};
 	
-	private static final RSArea safespot = new RSArea(3176, 3356, 3177, 3357);
 	// safespot is just north of the pen.
 	private static final DecimalFormat k = new DecimalFormat("#.#");
 	private static final DecimalFormat whole = new DecimalFormat("####");
@@ -106,11 +106,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 												  Color.ORANGE.brighter(),
 												  Color.GREEN.brighter(),
 												  Color.RED.brighter() };
-	private static final Color[] skillColors = {
-			new Color(145, 25, 25).brighter(), new Color(95, 115, 185),
-			Color.GREEN.darker(), Color.WHITE.darker(),
-			new Color(70, 95, 20).brighter(), new Color(95, 115, 230),
-			new Color(128, 128, 255) };
 	private static final int bones = 526; //, 532, 530, 528, 3183, 2859 };
 	private static final int[] hatchets = { 1349, 1351, 1353, 1355, 1357, 1359,
 			1361, 6739 };
@@ -153,7 +148,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 	private static final int beefyBillID = 246;
 	private static final int cowhideID = 1739;
 	private static final int beefyBillInterface = 236;
-	private RSComponent cookingIface, amountDisplay, amountIncreaseButton, amountDecreaseButton;
+	private RSComponent cookingIface, amountIncreaseButton, amountDecreaseButton;
 	private static final int[] liveTree = { 1278, 1276 };
 	private static final int[] logs = { 1511, 1521 };
 	private static final int tinderbox = 590;
@@ -291,10 +286,10 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 		}
 
 		for (int i : bows) {
-			if (i == equipment.getItem(equipment.WEAPON).getID()) {
+			if (i == equipment.getItem(Equipment.WEAPON).getID()) {
 				ranging = true;
 				for (int y : arrows) {
-					if (y == equipment.getItem(equipment.AMMO).getID()) {
+					if (y == equipment.getItem(Equipment.AMMO).getID()) {
 						arrowID = y;
 						loots[3] = y;
 						if (verbose)
@@ -466,7 +461,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 			outOfPen = false;
 
 		if(inventory.getCount(airStaff) > 2 && System.currentTimeMillis() - lastTele > 1800000 ) {
-			magic.castSpell(magic.SPELL_HOME_TELEPORT);
+			magic.castSpell(Magic.SPELL_HOME_TELEPORT);
 			sleep(15000,16500);
 			if(teleLanding.contains(players.getMyPlayer().getLocation())) {
 				log("Teleport Cast");
@@ -797,18 +792,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
     	return true;
     }
     
-	private void runLikeHell() {
-		long quitTime = System.currentTimeMillis();
-		walking.setRun(true);
-		while (System.currentTimeMillis() - quitTime < 10000) {
-			walking.walkTileMM(walking.getClosestTileOnMap(safespot
-					.getCentralTile()));
-		}
-
-		game.logout(false);
-		}
-    
-	
 	private void returnToPen() {
 		status = 10;
 		tile = gateArea.getCentralTile();
@@ -868,67 +851,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 			}
 		}
 		return closest;
-	}
-
-	private boolean clickNPC(final RSNPC npc, final String action) {
-		if(npc == null) {
-			return false;
-		}
-		final RSTile tile = npc.getLocation();
-		if(tile.getX() < 0 || tile.getY() <0) {
-			return false;
-		}
-
-		try {
-			Point screenLoc = npc.getScreenLocation();
-			if(calc.distanceTo(tile) > 6 || !calc.pointOnScreen(screenLoc))
-				camera.turnTo(tile);
-			if(!calc.pointOnScreen(screenLoc)) {
-				walking.walkTileMM(tile);
-				return false;
-			}
-			for (int i = 0; i < 20; i++) {
-				screenLoc = npc.getScreenLocation();
-				if(!npc.isValid() || !calc.pointOnScreen(screenLoc)) {
-					return false;
-				}
-				mouse.move(randomPoint(screenLoc));
-				if(menu.getItems()[0].toLowerCase().contains(
-						npc.getName().toLowerCase())) {
-					break;
-				}
-			}
-			return clickMenu(npc.getName(), action);
-		} catch (final Exception e) {
-			log.log(Level.SEVERE, "clickNPC(RSNPC, String) model error: ", e);
-			return false;
-		}
-	}
-
-	private Point randomPoint(Point click) {
-		int dif = 2;
-		return new Point(click.x + random(-dif, dif), click.y
-				+ random(-dif, dif));
-	}
-
-	private boolean clickMenu(String name, String action) {
-		String[] menuItems = menu.getItems();
-		if(menuItems.length == 0) {
-			return false;
-		}
-		for (String menuItem : menuItems)
-			if(menuItem.toLowerCase().contains(name.toLowerCase()))
-				if(menuItems[0].toLowerCase().contains(action.toLowerCase())) {
-					mouse.click(true);
-					sleep(1000);
-					return true;
-				} else {
-					mouse.click(false);
-					menu.doAction(action);
-					sleep(1000);
-					return true;
-				}
-		return false;
 	}
 
 	private boolean lootCheck() {
@@ -1002,20 +924,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 			log.log(Level.SEVERE, "pickup() model error: ", e);
 			return null;
 		}
-	}
-	
-	private void takeItem(RSGroundItem item) {
-		String name = item.getItem().getName();
-		if (getMyPlayer().isMoving()) {
-			for (int i = 0, len = random(2, 5); i < len; ++i) {
-				mouse.move(item.getModel().getPoint());
-				sleep(20, 100);
-			}
-			menu.doAction("Take " + name);
-		} else {
-			tiles.interact(item.getLocation(), "Take " + name);
-		}
-		return;
 	}
 	
 	private RSItem iHazCheezburgers() {
@@ -1222,7 +1130,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 	}
 	
 	private boolean adjustCookLevel(int toCook) {
-		amountDisplay = interfaces.getComponent(916, 17);
+		interfaces.getComponent(916, 17);
 		amountDecreaseButton = interfaces.getComponent(916, 20);
 		amountIncreaseButton = interfaces.getComponent(916, 19);
 		amountDecreaseButton.doClick(true);
@@ -1562,6 +1470,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 	}
 
 	public class BeefyGUI extends JFrame {
+		private static final long serialVersionUID = 6128169331997333595L;
 		public BeefyGUI() {
 			initComponents();
 		}

@@ -63,6 +63,8 @@ import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.gui.AccountManager;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Equipment;
+import org.rsbot.script.methods.Magic;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.RSArea;
 import org.rsbot.script.wrappers.RSNPC;
@@ -80,6 +82,7 @@ import org.rsbot.script.wrappers.RSTilePath;
 		description = "Snags the Wine of Zamorak",
 		website = "http://LetTheSmokeOut.com")
 		
+@SuppressWarnings("deprecation")
 public class BytesWineGrabber extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private boolean isJar = false;
@@ -242,8 +245,8 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 		log("WaitSpot# " + x);
 
 		if (!inventory.contains(waterID)
-				|| (equipment.getItem(equipment.WEAPON).getID() != airStaff && equipment
-						.getItem(equipment.WEAPON).getID() != caitlinsStaff)) {
+				|| (equipment.getItem(Equipment.WEAPON).getID() != airStaff && equipment
+						.getItem(Equipment.WEAPON).getID() != caitlinsStaff)) {
 			log("You need Water runes, and an equipped Air/Caitlin's Staff to use the script.");
 			log("It helps to have laws in inventory as well, but they can be in the bank.");
 			return false;
@@ -370,7 +373,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 				sleep(900, 1000);
 			}
 			while (!magic.isSpellSelected()) {
-				magic.castSpell(magic.SPELL_TELEKINETIC_GRAB);
+				magic.castSpell(Magic.SPELL_TELEKINETIC_GRAB);
 				sleep(250);
 			}
 
@@ -390,7 +393,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 						players.getMyPlayer().getHPPercent() < 50 || killScript)
 					break; // break out if a random occurs...or need food...or need to bail.
 				while (!magic.isSpellSelected()) {
-					magic.castSpell(magic.SPELL_TELEKINETIC_GRAB);
+					magic.castSpell(Magic.SPELL_TELEKINETIC_GRAB);
 					sleep(250);
 				}
 				sleep(25, 26);
@@ -433,7 +436,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			return 50;
 
 		case TELEPORT:
-			if (magic.castSpell(magic.SPELL_FALADOR_TELEPORT)) {
+			if (magic.castSpell(Magic.SPELL_FALADOR_TELEPORT)) {
 				sleep(5500, 6000);
 				return random(3000, 3500);
 			}
@@ -1485,7 +1488,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 
 	@Override
 	public void messageReceived(MessageEvent e) {
-		String message = e.getMessage().toLowerCase();
+		e.getMessage().toLowerCase();
 
 		if (e.getID() == MessageEvent.MESSAGE_SERVER) {
 
@@ -1523,6 +1526,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	}
 
 	public class GUI extends JFrame {
+		private static final long serialVersionUID = -7034900691101708768L;
 		public GUI() {
 			initComponents();
 		}

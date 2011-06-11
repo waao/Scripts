@@ -9,6 +9,7 @@ import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.methods.Magic;
+import org.rsbot.script.methods.Methods;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.Timer;
 
@@ -23,6 +24,7 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
 @ScriptManifest(authors={"MrSneaky"}, keywords={"Farming", "mrsneaky", "herb", "farmer"}, name="SneakyFarmer", description="Farms herbs at 3 patches", version=1.61, website = "http://www.powerbot.org/vb/showthread.php?t=523925", requiresVersion = 244)
+@SuppressWarnings("deprecation")
 public class SneakyFarmer extends Script implements MessageListener, PaintListener, MouseListener {
 
     private static String scriptVersion = "1.61";
@@ -728,24 +730,24 @@ public class SneakyFarmer extends Script implements MessageListener, PaintListen
                         int rand = randomGenerator.nextInt(30);
                         switch(rand) {
                             case 1: 
-                                parent.camera.setAngle(parent.random(0,360));
+                                parent.camera.setAngle(Methods.random(0,360));
                                 break;
                             case 2:
-                                parent.camera.setPitch(parent.random(40,100));
+                                parent.camera.setPitch(Methods.random(40,100));
                                 break;
                             case 3:
-                                parent.mouse.setSpeed(parent.random(5,9));
+                                parent.mouse.setSpeed(Methods.random(5,9));
                                 break;
                             case 5:
-                                parent.camera.setPitch(parent.random(40,100));
-                                parent.camera.setAngle(parent.random(0,360));
+                                parent.camera.setPitch(Methods.random(40,100));
+                                parent.camera.setAngle(Methods.random(0,360));
                                 break;
                             default:
                                 break;
                         }
                     }
                     
-                    sleep(parent.random(2000, 5000));
+                    sleep(Methods.random(2000, 5000));
                 }
             }
             catch(InterruptedException e) { 
@@ -906,7 +908,7 @@ public class SneakyFarmer extends Script implements MessageListener, PaintListen
         return path;
     }
 
-    private final Color POLY_BORDER = new Color(150, 0, 150), POLY_FILL = new Color(150, 0, 150, 80);
+    private final Color POLY_FILL = new Color(150, 0, 150, 80);
 
     private class Line {
         private int x, y, xdist, ydist, x2, y2, centerX, centerY;
@@ -933,11 +935,6 @@ public class SneakyFarmer extends Script implements MessageListener, PaintListen
 
         public int getCenterY() {
             return centerY;
-        }
-
-        public RSTile getRandomRSTile() {
-            double rand = Math.random();
-            return new RSTile(x + (int)(xdist*rand), y + (int)(ydist*rand));
         }
 
         public RSTile getTile1() { return t1; }
@@ -989,14 +986,6 @@ public class SneakyFarmer extends Script implements MessageListener, PaintListen
 
         public int getY2() {
             return y2;
-        }
-
-        public int getXDistance() {
-            return xdist;
-        }
-
-        public int getYDistance() {
-            return ydist;
         }
 
         public double getDistance() {

@@ -29,6 +29,7 @@ import org.rsbot.script.wrappers.RSTile;
 @ScriptManifest(authors = { "Wei Su" }, name = "Ultimate Cannon ball smelter", version = 0.1, description = "Balls deep", keywords = {
 		"cannon", "balls", "money" }, website = "http://www.powerbot.org/vb/showthread.php?t=783447", requiresVersion = 244)
 /* Save as script.java - who could get that wrong! :) */
+@SuppressWarnings("deprecation")
 public class UltimateAmmo extends Script implements PaintListener,
 		MessageListener, ActionListener, MouseMotionListener, MouseListener {
 

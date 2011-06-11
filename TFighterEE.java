@@ -64,6 +64,7 @@ import org.rsbot.script.wrappers.RSTile;
  * add mouse speed settings! v0.9: Initial release
  */
 @ScriptManifest(name = "TFighterEE", authors = { "!@!@!", "Zalgo2462" }, version = 1.61, description = "TFighter by !@!@! with additions by Zalgo2462", website = "http://www.powerbot.org/vb/showthread.php?t=477661", requiresVersion = 244)
+@SuppressWarnings("deprecation")
 public class TFighterEE extends Script implements PaintListener, MouseListener {
 
 	private class AttackLoop implements LoopAction {

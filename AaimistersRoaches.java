@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -46,7 +45,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -78,6 +76,7 @@ import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
 @ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.16", keywords = "Combat", version = 1.16, description = ("Kills roaches in Edgville."))
+@SuppressWarnings("deprecation")
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
@@ -434,7 +433,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			long varTime = random(3660000, 10800000);
 			nextBreak = System.currentTimeMillis() + varTime;
 			nextBreakT = varTime;
-			long varLength = random(900000, 3600000);
+			random(900000, 3600000);
 			nextLength = nextBreakT;
 		} else {
 			int diff = random(0, 5) * 1000 * 60;
