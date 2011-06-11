@@ -357,38 +357,6 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	
 	public boolean onStart() {
 		status = "Starting up...";
-		
-		URLConnection url = null;
-        BufferedReader in = null;
-        
-        //Check right away...
-        try {
-            //Open the version text file
-            url = new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openConnection();
-            //Create an input stream for it
-            in = new BufferedReader(new InputStreamReader(url.getInputStream()));
-            //Check if the current version is outdated
-            if (Double.parseDouble(in.readLine()) > getVersion()) {
-                if (JOptionPane.showConfirmDialog(null, "Please visit the thread: " +
-                		"http://www.powerbot.org/vb/showthread.php?t=769805") == 0) {
-                	//If so, tell to go to the thread.
-                	openThread();
-                	if (in != null) {
-                   	 in.close();
-                    }
-                	return false;
-                }
-            } else {
-            	JOptionPane.showMessageDialog(null, "You have the latest version.");
-            	//User has the latest version. Tell them!
-                 if (in != null) {
-                	 in.close();
-                 }
-            }
-        } catch (IOException e){
-            log("Problem getting version. Please visit the forums.");
-            return false; //Return false if there was a problem
-        }
 				
 		try {
 			settingsFile.createNewFile();
