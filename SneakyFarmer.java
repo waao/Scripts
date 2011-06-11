@@ -22,10 +22,10 @@ import java.util.Random;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
-@ScriptManifest(authors={"MrSneaky"}, keywords={"Farming", "mrsneaky", "herb", "farmer"}, name="SneakyFarmer", description="Farms herbs at 3 patches", version=1.60)
+@ScriptManifest(authors={"MrSneaky"}, keywords={"Farming", "mrsneaky", "herb", "farmer"}, name="SneakyFarmer", description="Farms herbs at 3 patches", version=1.61, website = "http://www.powerbot.org/vb/showthread.php?t=523925", requiresVersion = 244)
 public class SneakyFarmer extends Script implements MessageListener, PaintListener, MouseListener {
 
-    private static String scriptVersion = "1.60";
+    private static String scriptVersion = "1.61";
     private static int herbPlot[] = {8150,8151,8152};
     private int seedID;
     private int grimyID;
@@ -498,7 +498,7 @@ public class SneakyFarmer extends Script implements MessageListener, PaintListen
 
     private final Font font1 = new Font("Arial", 1, 12);
 
-    private final Image img1 = getImage("http://dl.dropbox.com/u/4287505/RSBot/sneakyFarmer/sneakyFarmerPaint.png");
+    private final Image img1 = getImage("http://scripts.johnkeech.com/image/sneakyFarmerPaint.png");
 
     public void onRepaint(Graphics g1) {
         Graphics2D g = (Graphics2D)g1;
