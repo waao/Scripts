@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.10 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.11 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -29,9 +29,9 @@ import java.text.NumberFormat;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -39,13 +39,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -55,19 +56,32 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher v1.10", keywords = "Cooking & Fishing", version = 1.10, description = ("Fishes and cooks crayfish behind Lumbridge Castle."))
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher v1.11", keywords = "Cooking & Fishing", version = 1.11, description = ("Fishes and cooks crayfish behind Lumbridge Castle."))
 public class AaimistersLumbridgeCookerFisher extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
+	//	final RSTile FishP[] = { new RSTile(3203, 3212), new RSTile(3195, 3218), new RSTile(3189, 3222),
+	//							 new RSTile(3186, 3229), new RSTile(3184, 3236), new RSTile(3182, 3242),
+	//							 new RSTile(3179, 3249), new RSTile(3174, 3255), new RSTile(3173, 3263) };
+		final RSArea AtCastle = new RSArea(new RSTile(3205, 3209), new RSTile(3216, 3227));
+	//	final RSArea AtStair = new RSArea(new RSTile(3204, 3208), new RSTile(3207, 3211));
+		final RSArea AtStore = new RSArea(new RSTile(3211, 3239), new RSTile(3218, 3243));
+	//	final RSArea AtBank = new RSArea(new RSTile(3207, 3217, 2), new RSTile(3210, 3220, 2));
 		final RSArea AtFire = new RSArea(new RSTile(3180, 3250), new RSTile(3185, 3256));
 		final RSArea AtFish = new RSArea(new RSTile(3163, 3261), new RSTile(3180, 3277));
 	//	final RSTile toFire1 = new RSTile(3177, 3263);
 	//	final RSTile toFire2 = new RSTile(3182, 3253);
+		final RSTile StairT = new RSTile(3207, 3209);
+		final RSTile StoreT = new RSTile(3213, 3240);
+		final RSTile BankT = new RSTile(3208, 3219);
 		final RSTile FishT = new RSTile(3172, 3266);
 		final RSTile FireT = new RSTile(3183, 3254);
 	}
 	
+	RSWeb walkWeb;
+	
 	private final String[] colorstring = { "Black", "Blue", "Brown", "Cyan", "Green", "Lime", "Orange", "Pink", "Purple", "Red", "White", "Yellow" };
+	private final String[] methodstring = { "Power Fish", "Normal Drop", "Bank Cooked", "Bank Raw", "Sell Cooked", "Sell Raw" };
 	private String url = "http://e216829d.any.gs";
 	
 	AaimistersGUI g = new AaimistersGUI();
@@ -125,20 +139,29 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 	boolean buttonStats;
 	boolean buttonMain;
 	boolean buttonInfo;
+	boolean bankedOpen;
+	boolean useBanker;
 	boolean antiBanOn;
 	boolean buttonAll;
 	boolean cookPaint;
 	boolean clickNext;
+	boolean dropcoins;
 	boolean powerFish;
 	boolean fishPaint = true;
+	boolean notChosen = true;
 	boolean painting;
+	boolean rbanking;
 	boolean resting;
 	boolean doBreak;
 	boolean cooking;
 	boolean checked;
+	boolean banking;
 	boolean fishing;
 	boolean updated;
+	boolean opened;
+	boolean rsell;
 	boolean check = true;
+	boolean sell;
 	boolean rest;
 	boolean logTime;
 	//Paint Buttons
@@ -185,7 +208,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 	int xpHour;
 	
 	
-	private enum State { FISH, TOFISH, TOFIRE, COOK, DROP, ERROR };
+	private enum State { FISH, TOFISH, TOFIRE, TOBANK, TOSTORE, COOK, DROP, BANK, SELL, ERROR };
 
 	private State getState() {
 		if (!powerFish) {
@@ -197,15 +220,56 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 					return State.TOFISH;
 				}
 			} else if (inventory.containsOneOf(rawShrimp) && inventory.isFull()) {
-				if (AM.AtFire.contains(getMyPlayer().getLocation())) {
-					return State.COOK;
+				if (rsell) {
+					if (AM.AtStore.contains(getMyPlayer().getLocation())) {
+						status = "Selling...";
+						return State.SELL;
+					} else {
+						status = "Walking to Store...";
+						return State.TOSTORE;
+					}
+				} else if (rbanking) {
+					if (game.getPlane() == 2 && calc.distanceTo(AM.BankT) <= 3) {
+						status = "Banking...";
+						return State.BANK;
+					} else {
+						status = "Walking to Bank...";
+						return State.TOBANK;
+					}
 				} else {
-					status = "Walking to Fire..";
-					return State.TOFIRE;
+					if (AM.AtFire.contains(getMyPlayer().getLocation())) {
+						return State.COOK;
+					} else {
+						status = "Walking to Fire..";
+						return State.TOFIRE;
+					}
 				}
 			} else if (inventory.containsOneOf(cookedShrimp, burnShrimp) && !inventory.contains(rawShrimp)) {
-				status = "Dropping..";
-				return State.DROP;
+				if (inventory.isFull()) {
+					if (sell) {
+						if (AM.AtStore.contains(getMyPlayer().getLocation())) {
+							status = "Selling...";
+							return State.SELL;
+						} else {
+							status = "Walking to Store...";
+							return State.TOSTORE;
+						}
+					} else if (banking) {
+						if (calc.distanceTo(AM.BankT) <= 3) {
+							status = "Banking...";
+							return State.BANK;
+						} else {
+							status = "Walking to Bank...";
+							return State.TOBANK;
+						}
+					} else {
+						status = "Dropping..";
+						return State.DROP;
+					}
+				} else {
+					status = "Dropping..";
+					return State.DROP;
+				}
 			} else if (inventory.containsOneOf(cookedShrimp, burnShrimp) && inventory.contains(rawShrimp)) {
 				if (AM.AtFire.contains(getMyPlayer().getLocation())) {
 					return State.COOK;
@@ -230,7 +294,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 	}
 	
 	public double getVersion() { 
-		return 1.10;
+		return 1.11;
 	}
 	
 	public boolean onStart() {
@@ -363,8 +427,10 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		//Next Button
 		if (e.getX() >= 478 && e.getX() < 478 + 16 && e.getY() >= 413 && e.getY() < 413 + 14) {
 			if (Main) {
-				Main = false;
-				StatCO = true;
+				if (!powerFish && !rsell && !rbanking) {
+					Main = false;
+					StatCO = true;
+				}
 			} else if (StatCO) {
 				StatCO = false;
 				Main = true;
@@ -373,8 +439,10 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		//Prev Button
 		if (e.getX() >= 25 && e.getX() < 25 + 16 && e.getY() >= 413 && e.getY() < 413 + 14) {
 			if (Main) {
-				Main = false;
-				StatCO = true;
+				if (!powerFish && !rsell && !rbanking) {
+					Main = false;
+					StatCO = true;
+				}
 			} else if (StatCO) {
 				StatCO = false;
 				Main = true;
@@ -430,6 +498,10 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			return "Fire Area";
 		} else if (AM.AtFish.contains(locationP)) {
 			return "Fishing Area";
+		} else if (AM.AtStore.contains(locationP)) {
+			return "Shop";
+		} else if (calc.distanceTo(AM.BankT) <= 3) {
+			return "Bank";
 		} else if (calc.distanceTo(AM.FireT) > 100) {
 			if (!game.isLoggedIn()) {
 				return "Login Screen";
@@ -446,6 +518,47 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			return true;
 		}
 		return false;
+	}
+	
+	private void clickObj(RSObject x, String y) {
+		try {
+			if (x.getModel().getPointOnScreen() != null) {
+				x.getModel().hover();
+				sleep(150, 300);
+				x.doAction(y);
+			}
+		} catch (Exception e) {
+
+		}
+	}
+	
+	private boolean stepTo(RSTile tile) {
+		RSPath walkPath = walking.getPath(tile.randomize(1, 1));
+		try {
+			if (walkPath != null) {
+	        	if ((!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) && !AM.AtCastle.contains(getMyPlayer().getLocation())) {
+	        		return walkPath.traverse();
+	            }
+	        }
+		} catch (Exception e) {
+			
+		}
+        return false;
+	}
+	
+	private void walkW(RSTile dest) {
+		walkWeb = web.getWeb(getMyPlayer().getLocation(), dest);
+		try {
+			if (walkWeb != null) {
+				if (calc.distanceTo(dest) > 4) {
+					if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
+						walkWeb.step();
+					}
+				}
+	        }
+		} catch (Exception e) {
+			
+		}
 	}
 	
 	private void setCamera() {
@@ -557,6 +670,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		
 		switch (getState()) {
 		case FISH:
+			notChosen = true;
 			try {
 				RSNPC pool = fishPool();
 				if (idle > 2) {
@@ -590,20 +704,6 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			} catch (Exception e) {
 				
 			}
-			break;
-		case TOFISH:
-			idle = 0;
-			cooking = false;
-			fishing = false;
-			stepTo(AM.FishT);
-			sleep(50);
-			break;
-		case TOFIRE:
-			idle = 0;
-			fishing = false;
-			cooking = false;
-			stepTo(AM.FireT);
-			sleep(50);
 			break;
 		case COOK:
 			try {
@@ -652,9 +752,184 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 				
 			}
 			break;
+		case TOFISH:
+			idle = 0;
+			cooking = false;
+			fishing = false;
+			if (dropcoins && !interfaces.getComponent(620, 0).isValid()) {
+				if (inventory.contains(995)) {
+					drop();
+				}
+			}
+			if (game.getPlane() != 0) {
+				if (calc.distanceTo(AM.StairT) <= 3) {
+					if (game.getPlane() == 2) {
+						RSObject st = objects.getNearest(36775);
+						if (st != null) {
+							if (st.isOnScreen()) {
+								clickObj(st, "Climb-down");
+								return random(1500, 2000);
+							} else {
+								if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
+									walking.walkTileMM(st.getLocation());
+								}
+								return random(1000, 1200);
+							}
+						}
+					} else if (game.getPlane() == 1) {
+						RSObject st2 = objects.getNearest(36774);
+						if (st2 != null) {
+							if (st2.isOnScreen()) {
+								clickObj(st2, "Climb-down");
+								return random(1500, 2000);
+							} else {
+								if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
+									walking.walkTileMM(st2.getLocation());
+								}
+								return random(1000, 1200);
+							}
+						}
+					}
+				} else {
+					stepTo(AM.StairT);
+					sleep(50);
+				}
+			} else {
+				if (AM.AtCastle.contains(getMyPlayer().getLocation())) {
+					if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
+						walking.walkTileMM(walking.getClosestTileOnMap(AM.FishT));
+						return 50;
+					}
+				}
+				walkW(AM.FishT);
+				sleep(50);
+			}
+			break;
+		case TOFIRE:
+			idle = 0;
+			fishing = false;
+			cooking = false;
+			stepTo(AM.FireT);
+			sleep(50);
+			break;
+		case TOSTORE:
+			idle = 0;
+			fishing = false;
+			cooking = false;
+			stepTo(AM.StoreT);
+			sleep(50);
+			break;
+		case TOBANK:
+			if (game.getPlane() != 2) {
+				if (calc.distanceTo(AM.StairT) <= 3) {
+					if (game.getPlane() == 0) {
+						RSObject st = objects.getNearest(36773);
+						if (st != null) {
+							if (st.isOnScreen()) {
+								clickObj(st, "Climb-up");
+								return random(1500, 2000);
+							} else {
+								walkW(AM.StairT);
+								return 50;
+							}
+						}
+					} else if (game.getPlane() == 1) {
+						RSObject st2 = objects.getNearest(36774);
+						if (st2 != null) {
+							if (st2.isOnScreen()) {
+								clickObj(st2, "Climb-up");
+								return random(1500, 2000);
+							} else {
+								if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
+									walking.walkTileMM(st2.getLocation());
+								}
+								return random(1000, 1200);
+							}
+						}
+					}
+				} else {
+					if (game.getPlane() == 0 && AM.AtCastle.contains(getMyPlayer().getLocation())) {
+						if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
+							walking.walkTileMM(walking.getClosestTileOnMap(AM.StairT).randomize(1, 1));
+							return 50;
+						}
+					}
+					stepTo(AM.StairT);
+					sleep(50);
+				}
+			} else {
+				stepTo(AM.BankT);
+				sleep(50);
+			}
+			break;
 		case DROP:
 			idle = 0;
 			drop();
+			break;
+		case SELL:
+			if (shop() != null) {
+				RSComponent se = interfaces.getComponent(620, 0);
+				if (se.isValid()) {
+					if (inventory.contains(rawShrimp)) {
+						inventory.getItem(rawShrimp).doAction("Sell 50");
+						sleep(1000, 1300);
+					} 
+					if (inventory.contains(cookedShrimp)) {
+						inventory.getItem(cookedShrimp).doAction("Sell 50");
+						sleep(1000, 1300);
+					} 
+					if (inventory.contains(burnShrimp)) {
+						inventory.getItem(burnShrimp).doAction("Sell 50");
+						sleep(1000, 1300);
+					}
+				} else {
+					shop().doAction("Trade");
+					return (calc.distanceTo(shop().getLocation()) * 1000);
+				}
+			}
+			break;
+		case BANK:
+			if (idle > 3) {
+				opened = false;
+				bankedOpen = false;
+				idle = 0;
+			}
+			if (notChosen) {
+				if (random(0, 5) == 0 || random(0, 5) == 2) {
+					useBanker = true;
+				} else {
+					useBanker = false;
+				}
+				notChosen = false;
+			}
+			RSObject booth = objects.getNearest(36786);
+			RSNPC bankP = banker();
+			if (game.getPlane() == 2 && calc.distanceTo(AM.BankT) <= 3 && booth.isOnScreen()) {
+				if (!bank.isOpen()) {
+					idle++;
+					if (!opened) {
+						if (useBanker) {
+							bankP.doAction("Bank Banker");
+						} else {
+							booth.doAction("Use-quickly");
+						}
+						opened = true;
+						return random(200, 500);
+					}
+				} else {
+					opened = false;
+					idle++;
+					if (!bankedOpen && bank.isOpen()) {
+						bank.depositAllExcept(cage);
+						sleep(350, 500);
+						bankedOpen = true;
+						return random(100, 150);
+					}
+				}
+			} else {
+				stepTo(AM.BankT);
+				sleep(50);
+			}
 			break;
 		case ERROR:
 			if (antiBanTime <= System.currentTimeMillis()) {
@@ -670,18 +945,12 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		return random(300, 600);
 	}
 	
-	private boolean stepTo(RSTile tile) {
-		RSPath walkPath = walking.getPath(tile.randomize(1, 1));
-		try {
-			if (walkPath != null) {
-	        	if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
-	        		return walkPath.traverse();
-	            }
-	        }
-		} catch (Exception e) {
-			
-		}
-        return false;
+	private RSNPC banker() {
+		return npcs.getNearest(new Filter<RSNPC>() {
+			public boolean accept(RSNPC n) {
+				return n.getID() == 494;
+			}
+		});
 	}
 	
 	private RSNPC fishPool() {
@@ -700,11 +969,23 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		});
 	}
 	
+	private RSNPC shop() {
+		return npcs.getNearest(new Filter<RSNPC>() {
+			public boolean accept(RSNPC g) {
+				return g.getID() == random(520, 521);
+			}
+		});
+	}
+	
 	private void drop() {
 		try {
 			status = "Dropping..";
 			mouse.setSpeed(random(4, 8));
-			inventory.dropAllExcept(true, cage);
+			if (dropcoins) {
+				inventory.dropAllExcept(true, cage);
+			} else {
+				inventory.dropAllExcept(true, cage, 995);
+			}
 			sleep(100, 300);
 		} catch (Exception e) {
 			
@@ -1211,11 +1492,23 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
          		BoxColor = MainColor;
          		LineColor = new Color(0, 0, 0);
          	}
+         	String med = (String) methBox.getSelectedItem();
+         	if (med.contains("Power Fish")) {
+         		powerFish = true;
+         	} else if (med.contains("Bank Cooked")) {
+         		banking = true;
+         	} else if (med.contains("Bank Raw")) {
+         		rbanking = true;
+         	} else if (med.contains("Sell Cooked")) {
+         		sell = true;
+         	} else if (med.contains("Sell Raw")) {
+         		rsell = true;
+         	}
+         	if (coinBox.isSelected()) {
+         		dropcoins = true;
+         	}
          	if (restBox.isSelected()) {
          		rest = true;
-         	}
-         	if (powerBox.isSelected()) {
-         		powerFish = true;
          	}
              if (paintBox.isSelected()) {
              	painting = true;
@@ -1228,32 +1521,16 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
              	if (randomBox.isSelected()) {
              		randomBreaks = true;
              	}
-             	maxBetween = Integer.parseInt(maxTimeBeBox.getText());
-             	minBetween = Integer.parseInt(minTimeBeBox.getText());
-             	maxLength = Integer.parseInt(maxBreakBox.getText());
-             	minLength = Integer.parseInt(minBreakBox.getText());
-             	if (minBetween < 1) {
-             		minBetween = 1;
-             	}
-             	if (minLength < 1) {
-             		minLength = 1;
-             	}
-             	if (maxBetween > 5000) {
-             		maxBetween = 5000;
-             	} else if (maxBetween < 6) {
-             		maxBetween = 6;
-             	}
-             	if (maxLength > 5000) {
-             		maxLength = 5000;
-             	} else if (maxLength < 5) {
-             		maxLength = 5;
-             	}
+             	maxBetween = Integer.parseInt(maxTimeBeBox.getValue().toString());
+            	minBetween = Integer.parseInt(minTimeBeBox.getValue().toString());
+            	maxLength = Integer.parseInt(maxBreakBox.getValue().toString());
+            	minLength = Integer.parseInt(minBreakBox.getValue().toString());
              }
              
           // Write settings
  			try {
  				final BufferedWriter out = new BufferedWriter(new FileWriter(settingsFile));
- 				out.write((powerBox.isSelected() ? true : false)
+ 				out.write((coinBox.isSelected() ? true : false)
  						+ ":" // 0
  						+ (restBox.isSelected() ? true : false)
  						+ ":" // 1
@@ -1267,13 +1544,17 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
  						+ ":" // 5
  						+ (randomBox.isSelected() ? true : false)
  						+ ":" // 6
- 						+ (maxTimeBeBox.getText())
+ 						+ (maxTimeBeBox.getValue().toString())
  						+ ":" // 7
- 						+ (minTimeBeBox.getText())
+ 						+ (minTimeBeBox.getValue().toString())
  						+ ":" // 8
- 						+ (maxBreakBox.getText())
+ 						+ (maxBreakBox.getValue().toString())
  						+ ":" // 9
- 						+ (minBreakBox.getText()));// 10
+ 						+ (minBreakBox.getValue().toString())
+ 						+ ":" // 10
+ 						+ (methBox.getSelectedIndex())
+ 						// 11
+ 				);
  				out.close();
  			} catch (final Exception e1) {
  				log.warning("Error saving setting.");
@@ -1283,45 +1564,6 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
              AaimistersGUI.dispose();
          }
     	 
-    	 private void breakBoxActionPerformed(ActionEvent e) {
-  			doBreak = breakBox.isSelected();
-  			randomBreaks = randomBox.isSelected();
-  			if (!doBreak) {
-  				randomBox.setEnabled(false);
-  				randomBox.setSelected(false);
-  				maxTimeBeBox.setEnabled(false);
-  				minTimeBeBox.setEnabled(false);
-  				maxBreakBox.setEnabled(false);
-  				minBreakBox.setEnabled(false);
-  			} else {
-  				randomBox.setEnabled(true);
-  				if (!randomBreaks) {
-  					maxTimeBeBox.setEnabled(true);
-  	 				minTimeBeBox.setEnabled(true);
-  	 				maxBreakBox.setEnabled(true);
-  	 				minBreakBox.setEnabled(true);
-  				}
-  			}
-  		}
-  		
-  		private void randomBoxActionPerformed(ActionEvent e) {
-  			doBreak = breakBox.isSelected();
-  			randomBreaks = randomBox.isSelected();
-  			if (randomBreaks == true) {
-  				maxTimeBeBox.setEnabled(false);
-  				minTimeBeBox.setEnabled(false);
-  				maxBreakBox.setEnabled(false);
-  				minBreakBox.setEnabled(false);
-  			} else {
-  				if (doBreak) {
-  					maxTimeBeBox.setEnabled(true);
-  	 				minTimeBeBox.setEnabled(true);
-  	 				maxBreakBox.setEnabled(true);
-  	 				minBreakBox.setEnabled(true);
-  				}
-  			}
-  		}
-    	 
     	 private AaimistersGUI() {
  			initComponents();
  		}
@@ -1329,32 +1571,18 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		private void initComponents() {
 			AaimistersGUI = new JFrame();
 			contentPane = new JPanel();
-			powerBox = new JCheckBox();
+			coinBox = new JCheckBox();
 			colorBox = new JComboBox();
+			methBox = new JComboBox();
 			antibanBox = new JCheckBox();
 			restBox = new JCheckBox();
 			paintBox = new JCheckBox();
 			breakBox = new JCheckBox();
 			randomBox = new JCheckBox();
-			maxTimeBeBox = new JTextArea();
-			minTimeBeBox = new JTextArea();
-			maxBreakBox = new JTextArea();
-			minBreakBox = new JTextArea();
-			panel = new JPanel();
-			panel_1 = new JPanel();
-			panel_2 = new JPanel();
-			panel_4 = new JPanel();
-			lblAaimistersEssenceMiner = new JLabel();
-			lblPaintColor = new JLabel();
-			lblTimeBetweenBreaks = new JLabel();
-			lblBreakLengths = new JLabel();
-			lblTo = new JLabel();
-			lblMins = new JLabel();
-			label_3 = new JLabel();
-			label_6 = new JLabel();
-			label_4 = new JLabel();
-			label_5 = new JLabel();
-			tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			maxTimeBeBox = new JSpinner();
+			minTimeBeBox = new JSpinner();
+			maxBreakBox = new JSpinner();
+			minBreakBox = new JSpinner();
 			submit = new JButton();
 			
 			// Listeners
@@ -1364,294 +1592,265 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 	            }
 	        });
 			
-			AaimistersGUI.setTitle("Aaimister's Lum. Cooker & Fisher v1.10");
-			AaimistersGUI.setForeground(new Color(255, 255, 255));
-			AaimistersGUI.setBackground(Color.LIGHT_GRAY);
-			AaimistersGUI.setResizable(false);
-			AaimistersGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			AaimistersGUI.setBounds(100, 100, 300, 305);
-			contentPane.setBackground(SystemColor.menu);
-			contentPane.setForeground(Color.LIGHT_GRAY);
-			contentPane.setFont(new Font("Cambria Math", Font.PLAIN, 17));
-			contentPane.setBorder(new EmptyBorder(5, 8, 8, 8));
+	        AaimistersGUI.setTitle("Aaimister's Lum. Cooker & Fisher");
+	        AaimistersGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        AaimistersGUI.setBounds(100, 100, 450, 352);
+			contentPane = new JPanel();
+			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 			AaimistersGUI.setContentPane(contentPane);
-			contentPane.setLayout(null);
 			
-			panel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) new Color(0, 0, 0)));
-			panel.setBounds(4, 0, 296, 40);
-			contentPane.add(panel);
-			panel.setLayout(null);
+			JLabel lblAaimistersLumCooker = new JLabel("Aaimister's Lum. Cooker & Fisher");
+			lblAaimistersLumCooker.setHorizontalAlignment(SwingConstants.CENTER);
+			lblAaimistersLumCooker.setFont(new Font("Smudger LET", Font.PLAIN, 36));
 			
-			lblAaimistersEssenceMiner.setText("Aaimister's Lum. Cooker & Fisher v1.10");
-			lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
-			panel.add(lblAaimistersEssenceMiner);
-			lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
-			lblAaimistersEssenceMiner.setForeground(SystemColor.infoText);
-			lblAaimistersEssenceMiner.setFont(new Font("Calibri", Font.BOLD, 17));
-			
-			tabbedPane.setBounds(4, 51, 286, 183);
-			contentPane.add(tabbedPane);
-			
-			tabbedPane.addTab("General", null, panel_1, null);
-			
-			powerBox.setText("Power Fish");
-			powerBox.setForeground(Color.BLACK);
-			powerBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-			
-			restBox.setText("Use Rest");
-			restBox.setForeground(Color.BLACK);
-			restBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-			restBox.setSelected(true);
-			
-			paintBox.setText("Enable Anti-Aliasing");
-			paintBox.setForeground(Color.BLACK);
-			paintBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-			paintBox.setSelected(true);
-			
-			lblPaintColor.setText("Paint Color:");
-			lblPaintColor.setForeground(Color.BLACK);
-			lblPaintColor.setFont(new Font("Cambria Math", Font.PLAIN, 15));
-			
-			colorBox.setModel(new DefaultComboBoxModel(colorstring));
-			
-			antibanBox.setText("Use Anti-Ban");
-			antibanBox.setSelected(true);
-			antibanBox.setForeground(Color.BLACK);
-			antibanBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-			GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-			gl_panel_1.setHorizontalGroup(
-				gl_panel_1.createParallelGroup(Alignment.LEADING)
-					.addGroup(gl_panel_1.createSequentialGroup()
-						.addGap(28)
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-							.addComponent(restBox, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
-							.addComponent(powerBox)
-							.addComponent(lblPaintColor, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-							.addComponent(antibanBox, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
-							.addComponent(paintBox, GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-							.addComponent(colorBox, GroupLayout.PREFERRED_SIZE, 102, GroupLayout.PREFERRED_SIZE))
-						.addContainerGap())
-			);
-			gl_panel_1.setVerticalGroup(
-				gl_panel_1.createParallelGroup(Alignment.LEADING)
-					.addGroup(gl_panel_1.createSequentialGroup()
-						.addGap(17)
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-							.addComponent(powerBox)
-							.addComponent(antibanBox))
-						.addGap(18)
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-							.addComponent(restBox)
-							.addComponent(paintBox))
-						.addGap(26)
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-							.addComponent(colorBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(lblPaintColor))
-						.addGap(127))
-			);
-			panel_1.setLayout(gl_panel_1);
-			
-			tabbedPane.addTab("Breaks", null, panel_2, null);
-			
-			breakBox.setText("Use Custom Breaks");
-			breakBox.setForeground(Color.BLACK);
-			breakBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-			breakBox.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					breakBoxActionPerformed(e);
-				}
-			});
-			
-			lblTimeBetweenBreaks.setText("Time Between Breaks:");
-			lblTimeBetweenBreaks.setForeground(Color.BLACK);
-			lblTimeBetweenBreaks.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			
-			lblBreakLengths.setText("Break Lengths:");
-			lblBreakLengths.setForeground(Color.BLACK);
-			lblBreakLengths.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			
-			randomBox.setText("Random Breaks");
-			randomBox.setForeground(Color.BLACK);
-			randomBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-			if (!doBreak) {
-				randomBox.setEnabled(false);
-			} else {
-				randomBox.setEnabled(true);
-			}
-    		randomBox.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					randomBoxActionPerformed(e);
-				}
-			});
-			
-    		minTimeBeBox.setForeground(Color.BLACK);
-    		minTimeBeBox.setText("60");
-    		minTimeBeBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				minTimeBeBox.setEnabled(false);
-			}
-			
-			lblTo.setText("to");
-			lblTo.setForeground(Color.GRAY);
-			lblTo.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			
-			maxTimeBeBox.setText("90");
-    		maxTimeBeBox.setForeground(Color.BLACK);
-    		maxTimeBeBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				maxTimeBeBox.setEnabled(false);
-			}
-			
-			lblMins.setText("mins");
-			lblMins.setForeground(Color.GRAY);
-			lblMins.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			
-			label_3.setText("mins");
-			label_3.setForeground(Color.GRAY);
-			label_3.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			
-			minBreakBox.setText("15");
-    		minBreakBox.setForeground(Color.BLACK);
-    		minBreakBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				minBreakBox.setEnabled(false);
-			}
-			
-			label_4.setText("mins");
-			label_4.setForeground(Color.GRAY);
-			label_4.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			
-			label_5.setText("to");
-			label_5.setForeground(Color.GRAY);
-			label_5.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			
-			maxBreakBox.setText("60");
-    		maxBreakBox.setForeground(Color.BLACK);
-    		maxBreakBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				maxBreakBox.setEnabled(false);
-			}
-			
-			label_6.setText("mins");
-			label_6.setForeground(Color.GRAY);
-			label_6.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-			GroupLayout gl_panel_4 = new GroupLayout(panel_4);
-			gl_panel_4.setHorizontalGroup(
-				gl_panel_4.createParallelGroup(Alignment.LEADING)
-					.addGroup(gl_panel_4.createSequentialGroup()
-						.addGap(10)
-						.addComponent(breakBox)
-						.addGap(18)
-						.addComponent(randomBox, GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-						.addContainerGap())
-					.addGroup(gl_panel_4.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
-							.addComponent(lblTimeBetweenBreaks, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-							.addGroup(gl_panel_4.createSequentialGroup()
-								.addGap(10)
-								.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING, false)
-									.addGroup(gl_panel_4.createSequentialGroup()
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(label_5))
-									.addGroup(gl_panel_4.createSequentialGroup()
-										.addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(lblMins, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-										.addGap(27)
-										.addComponent(lblTo)))))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_panel_4.createSequentialGroup()
-								.addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-							.addGroup(gl_panel_4.createSequentialGroup()
-								.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
-						.addGap(47))
-					.addGroup(gl_panel_4.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(lblBreakLengths, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-						.addGap(167))
-			);
-			gl_panel_4.setVerticalGroup(
-				gl_panel_4.createParallelGroup(Alignment.LEADING)
-					.addGroup(gl_panel_4.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-							.addComponent(breakBox)
-							.addComponent(randomBox))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(lblTimeBetweenBreaks)
-						.addGap(14)
-						.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblTo)
-								.addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-								.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-							.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-								.addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblMins, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)))
-						.addGap(36)
-						.addGroup(gl_panel_4.createParallelGroup(Alignment.TRAILING)
-							.addGroup(gl_panel_4.createSequentialGroup()
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-									.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
-									.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-								.addContainerGap())
-							.addGroup(gl_panel_4.createSequentialGroup()
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-									.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-									.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-								.addContainerGap())
-							.addGroup(gl_panel_4.createSequentialGroup()
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-								.addContainerGap())))
-					.addGroup(gl_panel_4.createSequentialGroup()
-						.addGap(98)
-						.addComponent(lblBreakLengths)
-						.addContainerGap(40, Short.MAX_VALUE))
-			);
-			gl_panel_4.linkSize(SwingConstants.VERTICAL, new Component[] {lblTo, label_5});
-			panel_4.setLayout(gl_panel_4);
-			GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-			gl_panel_2.setHorizontalGroup(
-				gl_panel_2.createParallelGroup(Alignment.LEADING)
-					.addGroup(gl_panel_2.createSequentialGroup()
-						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-			);
-			gl_panel_2.setVerticalGroup(
-				gl_panel_2.createParallelGroup(Alignment.LEADING)
-					.addGroup(gl_panel_2.createSequentialGroup()
-						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(64, Short.MAX_VALUE))
-			);
-			panel_2.setLayout(gl_panel_2);
+			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 			
 			submit.setText("Start");
-			submit.setFont(new Font("Cambria Math", Font.BOLD, 12));
-			submit.setBounds(100, 245, 89, 23);
-			contentPane.add(submit);
+			submit.setFont(new Font("Smudger LET", Font.PLAIN, 20));
 			submit.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					submitActionPerformed(e);
 				}
 			});
+			GroupLayout gl_contentPane = new GroupLayout(contentPane);
+			gl_contentPane.setHorizontalGroup(
+				gl_contentPane.createParallelGroup(Alignment.LEADING)
+					.addComponent(lblAaimistersLumCooker, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+					.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+					.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+						.addGap(91)
+						.addComponent(submit, GroupLayout.PREFERRED_SIZE, 244, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(89, Short.MAX_VALUE))
+			);
+			gl_contentPane.setVerticalGroup(
+				gl_contentPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(lblAaimistersLumCooker, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(submit, GroupLayout.PREFERRED_SIZE, 27, Short.MAX_VALUE))
+			);
+			
+			JPanel panel = new JPanel();
+			tabbedPane.addTab("General", null, panel, null);
+			
+			restBox.setText("Use Rest");
+			restBox.setSelected(true);
+			restBox.setFont(new Font("Traditional Arabic", Font.PLAIN, 13));
+			
+			antibanBox.setText("Use Anti-Ban");
+			antibanBox.setSelected(true);
+			antibanBox.setFont(new Font("Traditional Arabic", Font.PLAIN, 13));
+			
+			paintBox.setText("Enable Anti-Aliasing");
+			paintBox.setSelected(true);
+			paintBox.setFont(new Font("Traditional Arabic", Font.PLAIN, 13));
+			
+			JLabel lblPaintColor = new JLabel("Paint Color:");
+			lblPaintColor.setFont(new Font("Traditional Arabic", Font.PLAIN, 20));
+			
+			JLabel lblMethod = new JLabel("Method:");
+			lblMethod.setFont(new Font("Traditional Arabic", Font.PLAIN, 20));
+			
+			methBox.setModel(new DefaultComboBoxModel(methodstring));
+			
+			colorBox.setModel(new DefaultComboBoxModel(colorstring));
+			
+			coinBox.setText("Drop Coins");
+			coinBox.setFont(new Font("Traditional Arabic", Font.PLAIN, 13));
+			GroupLayout gl_panel = new GroupLayout(panel);
+			gl_panel.setHorizontalGroup(
+				gl_panel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel.createSequentialGroup()
+						.addGap(20)
+						.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblPaintColor)
+								.addComponent(lblMethod))
+							.addComponent(coinBox))
+						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_panel.createSequentialGroup()
+								.addGap(48)
+								.addComponent(restBox)
+								.addPreferredGap(ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+								.addComponent(antibanBox)
+								.addGap(20))
+							.addGroup(gl_panel.createSequentialGroup()
+								.addGap(47)
+								.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING, false)
+									.addComponent(methBox, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(colorBox, Alignment.LEADING, 0, 126, Short.MAX_VALUE))
+								.addContainerGap(128, Short.MAX_VALUE))))
+					.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+						.addContainerGap(149, Short.MAX_VALUE)
+						.addComponent(paintBox)
+						.addGap(145))
+			);
+			gl_panel.setVerticalGroup(
+				gl_panel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel.createSequentialGroup()
+						.addGap(7)
+						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+							.addComponent(restBox)
+							.addComponent(antibanBox)
+							.addComponent(coinBox))
+						.addGap(18)
+						.addComponent(paintBox)
+						.addGap(17)
+						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+							.addComponent(lblMethod)
+							.addComponent(methBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(18)
+						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+							.addComponent(lblPaintColor)
+							.addComponent(colorBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(7))
+			);
+			panel.setLayout(gl_panel);
+			
+			JPanel panel_1 = new JPanel();
+			tabbedPane.addTab("Breaks", null, panel_1, null);
+			
+			breakBox.setText("Custom Breaks");
+			breakBox.setFont(new Font("Traditional Arabic", Font.PLAIN, 13));
+			
+			randomBox.setText("Random Breaks");
+			randomBox.setFont(new Font("Traditional Arabic", Font.PLAIN, 13));
+			
+			JLabel lblTimeBetweenBreaks = new JLabel("Time Between Breaks:");
+			lblTimeBetweenBreaks.setFont(new Font("Traditional Arabic", Font.PLAIN, 16));
+			
+			JLabel lblBreakLengths = new JLabel("Break Lengths:");
+			lblBreakLengths.setFont(new Font("Traditional Arabic", Font.PLAIN, 16));
+			
+			minTimeBeBox.setModel(new SpinnerNumberModel(new Integer(111), null, null, new Integer(1)));
+			
+			JLabel lblMins = new JLabel("mins");
+			lblMins.setFont(new Font("Traditional Arabic", Font.PLAIN, 12));
+			
+			JLabel lblTo = new JLabel("to");
+			lblTo.setFont(new Font("Traditional Arabic", Font.PLAIN, 12));
+			
+			maxTimeBeBox.setModel(new SpinnerNumberModel(new Integer(222), null, null, new Integer(1)));
+			
+			JLabel label = new JLabel("mins");
+			label.setFont(new Font("Traditional Arabic", Font.PLAIN, 12));
+			
+			JSeparator separator = new JSeparator();
+			separator.setOrientation(SwingConstants.VERTICAL);
+			separator.setForeground(Color.BLACK);
+			
+			minBreakBox.setModel(new SpinnerNumberModel(new Integer(15), null, null, new Integer(1)));
+			
+			JLabel label_1 = new JLabel("mins");
+			label_1.setFont(new Font("Traditional Arabic", Font.PLAIN, 12));
+			
+			JLabel label_2 = new JLabel("to");
+			label_2.setFont(new Font("Traditional Arabic", Font.PLAIN, 12));
+			
+			maxBreakBox.setModel(new SpinnerNumberModel(new Integer(60), null, null, new Integer(1)));
+			
+			JLabel label_3 = new JLabel("mins");
+			label_3.setFont(new Font("Traditional Arabic", Font.PLAIN, 12));
+			GroupLayout gl_panel_1 = new GroupLayout(panel_1);
+			gl_panel_1.setHorizontalGroup(
+				gl_panel_1.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel_1.createSequentialGroup()
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addGap(16)
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+										.addComponent(breakBox)
+										.addComponent(lblTimeBetweenBreaks))
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addGap(10)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING, false)
+											.addComponent(maxTimeBeBox)
+											.addComponent(minTimeBeBox, GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+											.addComponent(lblMins)
+											.addComponent(label, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))))
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addGap(53)
+								.addComponent(lblTo)))
+						.addPreferredGap(ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+							.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+								.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addGap(25)
+										.addComponent(lblBreakLengths)
+										.addGap(84))
+									.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+										.addPreferredGap(ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+												.addGap(5)
+												.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addGap(27)
+												.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE))
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+												.addGap(5)
+												.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))
+										.addGap(56))))
+							.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+								.addComponent(randomBox)
+								.addGap(23))))
+			);
+			gl_panel_1.setVerticalGroup(
+				gl_panel_1.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel_1.createSequentialGroup()
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(separator, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
+							.addGroup(Alignment.LEADING, gl_panel_1.createSequentialGroup()
+								.addGap(16)
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+									.addComponent(breakBox)
+									.addComponent(randomBox))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addComponent(lblTimeBetweenBreaks)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+											.addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(lblMins))
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(lblTo)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+											.addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)))
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addComponent(lblBreakLengths)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+											.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addGap(2)
+												.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)))
+										.addGap(13)
+										.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
+										.addGap(13)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+											.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addGap(2)
+												.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)))))))
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+			);
+			panel_1.setLayout(gl_panel_1);
+			contentPane.setLayout(gl_contentPane);
 			// LOAD SAVED SELECTION INFO
 			try {
 				String filename = getCacheDirectory() + "\\AaimistersLCookFishSettings.txt";
@@ -1667,17 +1866,17 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		        in.close();
 		        if (opts.length > 1) {
 		        	if (opts[0].equals("true")) {
-			        	powerBox.setSelected(true);
-			        } else {
-			        	powerBox.setSelected(false);
-			        }
+		        		coinBox.setSelected(true);
+		        	} else {
+		        		coinBox.setSelected(false);
+		        	}
 		        	 if (opts[5].equals("true")) {
 		        		 randomBox.setEnabled(true);
 		        		 if (opts[6].equals("false")) {
-		        			 maxTimeBeBox.setText(opts[7]);
-					         minTimeBeBox.setText(opts[8]);
-					         maxBreakBox.setText(opts[9]);
-					         minBreakBox.setText(opts[10]);
+		        			 maxTimeBeBox.setValue(Integer.parseInt(opts[7]));
+					         minTimeBeBox.setValue(Integer.parseInt(opts[8]));
+					         maxBreakBox.setValue(Integer.parseInt(opts[9]));
+					         minBreakBox.setValue(Integer.parseInt(opts[10]));
 					         maxTimeBeBox.setEnabled(true);
 					         minTimeBeBox.setEnabled(true);
 					         maxBreakBox.setEnabled(true);
@@ -1690,6 +1889,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			        		restBox.setSelected(false);
 			        }
 		        	colorBox.setSelectedIndex(Integer.parseInt(opts[2]));
+		        	methBox.setSelectedIndex(Integer.parseInt(opts[11]));
 			        if (opts[3].equals("true")) {
 			            antibanBox.setSelected(true);
 			        } else {
@@ -1704,13 +1904,11 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			            breakBox.setSelected(true);
 			        } else {
 			            breakBox.setSelected(false);
-			            randomBox.setEnabled(false);
 			        }
 			        if (opts[6].equals("true")) {
 			            randomBox.setSelected(true);
-			            randomBox.setEnabled(true);
 			        } else {
-			            randomBox.setSelected(false);
+			        	randomBox.setSelected(false);
 			        }
 		        }
 			} catch (final Exception e2) {
@@ -1722,31 +1920,17 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		private JFrame AaimistersGUI;
 		private JPanel contentPane;
 		private JComboBox colorBox;
+		private JComboBox methBox;
 		private JCheckBox antibanBox;
 		private JCheckBox paintBox;
 		private JCheckBox restBox;
-		private JCheckBox powerBox;
+		private JCheckBox coinBox;
 		private JCheckBox breakBox;
 		private JCheckBox randomBox;
-		private JTextArea maxTimeBeBox;
-		private JTextArea minTimeBeBox;
-		private JTextArea maxBreakBox;
-		private JTextArea minBreakBox;
-		private JPanel panel;
-		private JPanel panel_1;
-		private JPanel panel_2;
-		private JPanel panel_4;
-		private JLabel lblAaimistersEssenceMiner;
-		private JLabel lblPaintColor;
-		private JLabel lblTimeBetweenBreaks;
-		private JLabel lblBreakLengths;
-		private JLabel lblTo;
-		private JLabel lblMins;
-		private JLabel label_3;
-		private JLabel label_6;
-		private JLabel label_4;
-		private JLabel label_5;
-		private JTabbedPane tabbedPane;
+		private JSpinner maxTimeBeBox;
+		private JSpinner minTimeBeBox;
+		private JSpinner maxBreakBox;
+		private JSpinner minBreakBox;
 		private JButton submit;
 	}
 }
