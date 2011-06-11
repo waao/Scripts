@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.15 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.16 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -77,7 +77,7 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.15", keywords = "Combat", version = 1.15, description = ("Kills roaches in Edgville."))
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.16", keywords = "Combat", version = 1.16, description = ("Kills roaches in Edgville."))
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
@@ -352,7 +352,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	public double getVersion() { 
-		return 1.15;
+		return 1.16;
 	}
 	
 	public boolean onStart() {
@@ -507,7 +507,15 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			if (getMyPlayer().getInteracting() == null) {
 				for (int i = 0; i < all.length; i++) {
 					if (rArea.contains(all[i].getLocation())) {
-						if (doLoot.contains(Integer.toString(all[i].getItem().getID())) || all[i].getItem().getName().contains("scroll")) {
+						try {
+							if (all[i].getItem().getName().contains("scroll")) {
+								log.warning("Scroll Found!");
+								doLoot.add(Integer.toString(all[i].getItem().getID()));
+							}
+						} catch (Exception e) {
+							
+						}
+						if (doLoot.contains(Integer.toString(all[i].getItem().getID()))) {
 							return true;
 						}
 					}
@@ -591,7 +599,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 		try {
 			if (x.isOnScreen()) {
 				mouse.move(calc.tileToScreen(x.getLocation()));
-				sleep(60);
+				sleep(150, 300);
 				x.doAction("Take " + y);
 			}
 		} catch (Exception e) {
@@ -1862,22 +1870,6 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 		            	minBetween = Integer.parseInt(minTimeBeBox.getValue().toString());
 		            	maxLength = Integer.parseInt(maxBreakBox.getValue().toString());
 		            	minLength = Integer.parseInt(minBreakBox.getValue().toString());
-		            	if (minBetween < 1) {
-		            		minBetween = 1;
-		            	}
-		            	if (minLength < 1) {
-		            		minLength = 1;
-		            	}
-		            	if (maxBetween > 5000) {
-		            		maxBetween = 5000;
-		            	} else if (maxBetween < 6) {
-		            		maxBetween = 6;
-		            	}
-		            	if (maxLength > 5000) {
-		            		maxLength = 5000;
-		            	} else if (maxLength < 5) {
-		            		maxLength = 5;
-		            	}
 	            	}
 	            }
 	            if (lootTable.getSize() > 1) {
