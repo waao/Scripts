@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.16 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.17 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -75,8 +77,7 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.16", keywords = "Combat", version = 1.16, description = ("Kills roaches in Edgville."))
-@SuppressWarnings("deprecation")
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.17", keywords = "Combat", version = 1.17, description = ("Kills roaches in Edgville."))
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
@@ -209,7 +210,6 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	int rCount;
 	int rHour;
 	int boo = 26972;
-	int banker = 2759;
 	int idle;
 	int food = 379;
 	int minHealth = 200;
@@ -351,11 +351,43 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	public double getVersion() { 
-		return 1.16;
+		return 1.17;
 	}
 	
 	public boolean onStart() {
 		status = "Starting up...";
+		
+		URLConnection url = null;
+        BufferedReader in = null;
+        
+        //Check right away...
+        try {
+            //Open the version text file
+            url = new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openConnection();
+            //Create an input stream for it
+            in = new BufferedReader(new InputStreamReader(url.getInputStream()));
+            //Check if the current version is outdated
+            if (Double.parseDouble(in.readLine()) > getVersion()) {
+                if (JOptionPane.showConfirmDialog(null, "Please visit the thread: " +
+                		"http://www.powerbot.org/vb/showthread.php?t=769805") == 0) {
+                	//If so, tell to go to the thread.
+                	openThread();
+                	if (in != null) {
+                   	 in.close();
+                    }
+                	return false;
+                }
+            } else {
+            	JOptionPane.showMessageDialog(null, "You have the latest version.");
+            	//User has the latest version. Tell them!
+                 if (in != null) {
+                	 in.close();
+                 }
+            }
+        } catch (IOException e){
+            log("Problem getting version. Please visit the forums.");
+            return false; //Return false if there was a problem
+        }
 				
 		try {
 			settingsFile.createNewFile();
@@ -433,7 +465,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			long varTime = random(3660000, 10800000);
 			nextBreak = System.currentTimeMillis() + varTime;
 			nextBreakT = varTime;
-			random(900000, 3600000);
+			long varLength = random(900000, 3600000);
 			nextLength = nextBreakT;
 		} else {
 			int diff = random(0, 5) * 1000 * 60;
@@ -505,6 +537,16 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			totalPrice += ((inventory.getCount(true, x) - y) * getGuidePrice(x));
 			y = inventory.getCount(true, x);
 		}
+	}
+	
+	private int bankerID() {
+		RSNPC b[] = npcs.getAll();
+		for (int i = 0; i < b.length; i++) {
+			if (b[i].getName().contains("Banker")) {
+				return b[i].getID();
+			}
+		}
+		return 0;
 	}
 	
 	private void setRun() {
@@ -1018,7 +1060,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	private RSNPC banker() {
 		return npcs.getNearest(new Filter<RSNPC>() {
 			public boolean accept(RSNPC n) {
-				return n.getID() == banker;
+				return n.getID() == bankerID();
 			}
 		});
 	}
