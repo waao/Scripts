@@ -68,7 +68,9 @@ import org.rsbot.script.methods.Skills;
 import org.rsbot.script.wrappers.RSInterface;
 import org.rsbot.script.wrappers.RSItem;
 
-@ScriptManifest(authors = { "Fletch To 99" }, keywords = { "fletching", "a", "afletch", "fletch", "99", "aprofletcher" }, name = "UFletch", website = "http://www.universalscripts.org/ufletch", version = 2.30, description = "The best fletcher!", requiresVersion = 248)
+@ScriptManifest(authors = { "Fletch To 99" }, keywords = { "fletching", "a",
+		"afletch", "fletch", "99", "aprofletcher", "ufletch, fletchto99",
+		"fletcher" }, name = "UFletch", website = "http://www.universalscripts.org/ufletch", version = 2.301, description = "The best fletcher!", requiresVersion = 248)
 /**
  * All-in-One Fletching script for RSBot 2.XX
  * @author Fletch To 99
@@ -1872,7 +1874,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		pauseScript();
 		if (!gui.button5.isSelected()) {
 			ab.antiBan();
-		} 
+		}
 	}
 
 	private void pauseScript() {
@@ -1928,8 +1930,9 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			}
 			gui.label1 = new JLabel(new ImageIcon(siggy));
 		}
-		while (wait) {
-			if (!wait) {
+		while (wait || gui.isVisible()) {
+			sleep(500);
+			if (!wait || !gui.isVisible()) {
 				break;
 			}
 		}
