@@ -70,7 +70,7 @@ import org.rsbot.script.wrappers.RSItem;
 
 @ScriptManifest(authors = { "Fletch To 99" }, keywords = { "fletching", "a",
 		"afletch", "fletch", "99", "aprofletcher", "ufletch, fletchto99",
-		"fletcher" }, name = "UFletch", website = "http://www.universalscripts.org/ufletch", version = 2.301, description = "The best fletcher!", requiresVersion = 248)
+		"fletcher" }, name = "UFletch", website = "http://universalscripts.org/", version = 2.31, description = "The best fletcher!", requiresVersion = 248)
 /**
  * All-in-One Fletching script for RSBot 2.XX
  * @author Fletch To 99
@@ -1925,7 +1925,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		if (name != "All") {
 			if (connection) {
 				siggy = getImage("", false,
-						"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
+						"http://universalscripts.org/ufletch/siggy/UFletch_generate.php?user="
 								+ name);
 			}
 			gui.label1 = new JLabel(new ImageIcon(siggy));
@@ -1957,7 +1957,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		log(Color.GREEN.darker(),
 				"Please wait while we check the connection to universalscipts.org");
 		try {
-			connection = InetAddress.getByName("96.44.189.229").isReachable(
+			connection = InetAddress.getByName("universalscripts.org").isReachable(
 					3000);// universalscripts.org
 		} catch (UnknownHostException e) {
 			connection = false;
@@ -1966,27 +1966,27 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 		}
 		if (connection) {
 			icon = getImage("fav.png", true,
-					"http://www.universalscripts.org/ufletch/Images/fav.png");
+					"http://universalscripts.org/ufletch/images/fav.png");
 			fletchIcon = getImage("fletchIcon.png", true,
-					"http://www.universalscripts.org/ufletch/Images/fletchIcon.png");
+					"http://universalscripts.org/ufletch/images/fletchIcon.png");
 
 			settings = getImage("settings.png", true,
-					"http://www.universalscripts.org/ufletch/Images/settings.png");
+					"http://universalscripts.org/ufletch/images/settings.png");
 			bow = getImage("bow.png", true,
-					"http://www.universalscripts.org/ufletch/Images/bow.png");
+					"http://universalscripts.org/ufletch/images/bow.png");
 			logsImage = getImage("logs.png", true,
-					"http://www.universalscripts.org/ufletch/Images/logs.png");
+					"http://universalscripts.org/ufletch/images/logs.png");
 			axe = getImage("axe.png", true,
-					"http://www.universalscripts.org/ufletch/Images/axe.png");
+					"http://universalscripts.org/ufletch/images/axe.png");
 			knife = getImage("knife.png", true,
-					"http://www.universalscripts.org/ufletch/Images/knife.png");
+					"http://universalscripts.org/ufletch/images/knife.png");
 			brush = getImage("paint.png", true,
-					"http://www.universalscripts.org/ufletch/Images/paint.png");
+					"http://universalscripts.org/ufletch/images/paint.png");
 			siggy = getImage("", false,
-					"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
+					"http://universalscripts.org/ufletch/siggy/UFletch_generate.php?user="
 							+ name);
 			pic = getImage("camera.png", true,
-					"http://www.universalscripts.org/ufletch/Images/camera.png");
+					"http://universalscripts.org/ufletch/images/camera.png");
 		} else {
 			log.severe("Error Connecting to universalscripts.org");
 			log.severe("Using backup or cached images!");
@@ -2004,12 +2004,12 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	}
 
 	private void createSignature() {
-		if (!connection) {
+		if (connection) {
 			try {
 				URL url;
 				URLConnection urlConn;
 				url = new URL(
-						"http://www.universalscripts.org/ufletch/UFletch_submit.php");
+						"http://universalscripts.org/ufletch/siggy/UFletch_submit.php");
 				urlConn = url.openConnection();
 				urlConn.setRequestProperty("User-Agent", "UFletchAgent");
 				urlConn.setDoInput(true);
@@ -2058,7 +2058,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 				URL url;
 				URLConnection urlConn;
 				url = new URL(
-						"http://www.universalscripts.org/ufletch/UFletch_submit.php");
+						"http://universalscripts.org/ufletch/siggy/UFletch_submit.php");
 				urlConn = url.openConnection();
 				urlConn.setRequestProperty("User-Agent", "UFletchAgent");
 				urlConn.setDoInput(true);
@@ -2880,7 +2880,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			if (connection) {
 				try {
 					url = new URL(
-							"http://www.universalscripts.org/ufletch/Images/message.txt")
+							"http://universalscripts.org/ufletch/message.txt")
 							.openConnection();
 					in = new BufferedReader(new InputStreamReader(
 							url.getInputStream()));
@@ -2896,7 +2896,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			try {
 				Desktop.getDesktop()
 						.browse(new URL(
-								"http://www.universalscripts.org/ufletch/index2.php")
+								"http://universalscripts.org/")
 								.toURI());
 			} catch (MalformedURLException e1) {
 			} catch (IOException e1) {
@@ -2908,7 +2908,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			try {
 				Desktop.getDesktop().browse(
 						new URL(
-								"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
+								"http://universalscripts.org/ufletch/siggy/UFletch_generate.php?user="
 										+ gui.textField2.getText()).toURI());
 			} catch (MalformedURLException e1) {
 			} catch (IOException e1) {
@@ -2920,7 +2920,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			createSignature();
 			name = textField2.getText();
 			siggy = getImage("", false,
-					"http://www.universalscripts.org/ufletch/UFletch_generate.php?user="
+					"http://universalscripts.org/ufletch/siggy/UFletch_generate.php?user="
 							+ name);
 			label1 = new JLabel(new ImageIcon(siggy));
 		}
@@ -2929,7 +2929,7 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 			try {
 				Desktop.getDesktop()
 						.browse(new URL(
-								"http://www.universalscripts.org/ufletch/highscores.php")
+								"http://universalscripts.org/ufletch/highscores/")
 								.toURI());
 			} catch (MalformedURLException e1) {
 			} catch (IOException e1) {
