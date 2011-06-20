@@ -32,6 +32,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -51,6 +52,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -236,8 +238,23 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			if (foodID != 0)
 				log("Eating " + food$);
 
-			gui = new GUI();
-			gui.setVisible(true);
+
+			if (SwingUtilities.isEventDispatchThread()) {
+				gui = new GUI();
+				gui.setVisible(true);
+			} else {
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() {
+						@Override
+						public void run() {
+							gui = new GUI();
+							gui.setVisible(true);
+						}
+					});
+				} catch (final InvocationTargetException ite) {
+				} catch (final InterruptedException ie) {
+				}
+			}
 			while (gui.isVisible()) {
 				sleep(50);
 			}

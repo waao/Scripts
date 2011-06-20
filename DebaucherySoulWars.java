@@ -13,12 +13,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -2106,8 +2108,22 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 	@Override
 	public boolean onStart() {
 		if (game.isLoggedIn()) {
-			gui = new SWGUI();
-			gui.setVisible(true);
+			if (SwingUtilities.isEventDispatchThread()) {
+				gui = new SWGUI();
+				gui.setVisible(true);
+			} else {
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() {
+						@Override
+						public void run() {
+							gui = new SWGUI();
+							gui.setVisible(true);
+						}
+					});
+				} catch (final InvocationTargetException ite) {
+				} catch (final InterruptedException ie) {
+				}
+			}
 			while (!startScript) {
 				Methods.sleep(10);
 			}

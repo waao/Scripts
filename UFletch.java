@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -55,6 +56,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -1909,7 +1911,16 @@ public class UFletch extends Script implements PaintListener, MouseListener,
 	}
 
 	private void createGui() {
-		gui = new gui();
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					gui = new gui();
+				}
+			});
+		} catch (InterruptedException ignored) {
+		} catch (InvocationTargetException ignored) {
+		}
 		loadSettings();
 		gui.progressBar1.setValue(skills
 				.getPercentToNextLevel(Skills.FLETCHING));

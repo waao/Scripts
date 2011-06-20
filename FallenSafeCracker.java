@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.rsbot.event.events.MessageEvent;
@@ -2073,9 +2075,25 @@ public class FallenSafeCracker extends Script implements PaintListener,
 			e.printStackTrace();
 		}
 		OPTION_FILE = new Properties();
-		SafeCrackerGUI = new GUI(this);
-		SafeCrackerGUI.setLocationRelativeTo(null);
-		SafeCrackerGUI.setVisible(true);
+		final FallenSafeCracker instance = this;
+		if (SwingUtilities.isEventDispatchThread()) {
+			SafeCrackerGUI = new GUI(instance);
+			SafeCrackerGUI.setLocationRelativeTo(null);
+			SafeCrackerGUI.setVisible(true);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						SafeCrackerGUI = new GUI(instance);
+						SafeCrackerGUI.setLocationRelativeTo(null);
+						SafeCrackerGUI.setVisible(true);
+					}
+				});
+			} catch (final InvocationTargetException ite) {
+			} catch (final InterruptedException ie) {
+			}
+		}
 
 		while (WaitForStart) {
 			Methods.sleep(20);

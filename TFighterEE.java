@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import org.rsbot.Configuration;
 import org.rsbot.event.listeners.PaintListener;
@@ -1540,6 +1542,8 @@ public class TFighterEE extends Script implements PaintListener, MouseListener {
 		drawMouse(g);
 	}
 
+	private FighterGUI gui;
+
 	public boolean onStart() {
 		if (!game.isLoggedIn()) {
 			log("Start logged in.");
@@ -1547,7 +1551,16 @@ public class TFighterEE extends Script implements PaintListener, MouseListener {
 		}
 		showPaint = true;
 		startScript = false;
-		final FighterGUI gui = new FighterGUI();
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					gui = new FighterGUI();
+				}
+			});
+		} catch (InterruptedException ignored) {
+		} catch (InvocationTargetException ignored) {
+		}
 		while (!startScript) {
 			if (!gui.isVisible()) {
 				return false;

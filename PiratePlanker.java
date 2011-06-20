@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import org.rsbot.event.events.MessageEvent;
@@ -634,8 +636,17 @@ public class PiratePlanker extends Script implements PaintListener,
 			log("Unable to open cursor image.");
 		}
 		log("Images loaded sucessfully!");
-		data.gui = new PlankerGUI();
-		data.gui.setVisible(true);
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					data.gui = new PlankerGUI();
+					data.gui.setVisible(true);
+				}
+			});
+		} catch (InterruptedException ignored) {
+		} catch (InvocationTargetException ignored) {
+		}
 		while (data.guiWait) {
 			sleep(100);
 		}

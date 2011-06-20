@@ -3,7 +3,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+
+import javax.swing.SwingUtilities;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -297,7 +300,16 @@ public class AutoTanner extends Script implements MessageListener,
 
 	@Override
 	public boolean onStart() {
-		new Gui().setVisible(true);
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					new Gui().setVisible(true);
+				}
+			});
+		} catch (InterruptedException ignored) {
+		} catch (InvocationTargetException ignored) {
+		}
 		while (gui_on) {
 			Methods.sleep(20);
 		}

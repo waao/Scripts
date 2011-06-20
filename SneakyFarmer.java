@@ -18,6 +18,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Random;
 import java.awt.geom.GeneralPath;
@@ -85,6 +86,7 @@ public class SneakyFarmer extends Script implements MessageListener, PaintListen
     private enum State {CHECK_CROPS, PICK, RAKE, COMPOST, PLANT, CLEAR, CURE, WALKING, TELEPORT, BREAK}
     private Location currentLocation;
     private State currentState;
+    private HerbFarmerGUI GUI;
 
     public boolean onStart() {
         log("Welcome to Sneaky's Herb farmer");
@@ -106,8 +108,17 @@ public class SneakyFarmer extends Script implements MessageListener, PaintListen
         }      
         
         // Start GUI to select which Herb to farm
-        HerbFarmerGUI GUI = new HerbFarmerGUI();
-        GUI.setVisible(true);
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+			        GUI = new HerbFarmerGUI();
+			        GUI.setVisible(true);
+				}
+			});
+		} catch (InterruptedException ignored) {
+		} catch (InvocationTargetException ignored) {
+		}
         while(GUI.isVisible()){
             sleep(50);
         }

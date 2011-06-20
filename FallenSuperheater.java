@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -35,6 +36,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.rsbot.event.events.MessageEvent;
@@ -2371,9 +2373,25 @@ public class FallenSuperheater extends Script implements PaintListener,
 		}
 		OPTION_FILE = new Properties();
 
-		SuperheaterGUI = new GUI(this);
-		SuperheaterGUI.setLocationRelativeTo(null);
-		SuperheaterGUI.setVisible(true);
+		final FallenSuperheater instance = this;
+		if (SwingUtilities.isEventDispatchThread()) {
+			SuperheaterGUI = new GUI(instance);
+			SuperheaterGUI.setLocationRelativeTo(null);
+			SuperheaterGUI.setVisible(true);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						SuperheaterGUI = new GUI(instance);
+						SuperheaterGUI.setLocationRelativeTo(null);
+						SuperheaterGUI.setVisible(true);
+					}
+				});
+			} catch (final InvocationTargetException ite) {
+			} catch (final InterruptedException ie) {
+			}
+		}
 
 		while (WaitForStart) {
 			Methods.sleep(20);
