@@ -77,7 +77,7 @@ import org.rsbot.script.methods.Magic;
 @ScriptManifest(
 		authors = "Mr. Byte", 
 		name = "Byte's Wine Grabber", 
-		version = 1.21, 
+		version = 1.22, 
 		description = "Snags the Wine of Zamorak",
 		website = "http://LetTheSmokeOut.com")
 		
@@ -299,7 +299,6 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 
 	@Override
 	public int loop() {
-		log("loop");
 		if(killScript) return -1;
 		
 		mouse.setSpeed(random(4, 8));
@@ -1485,7 +1484,19 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 		int defaultPort = 80;
 		Socket theSock = new Socket();
 		
+		String address = "http://"+host; //This is to get the RSM a hostname.
+		URLConnection conn;
+		InputStream in = null;  // Never read, but needed.
+
 		try {
+			final URL url = new URL(address);  // Set up the address
+			conn = url.openConnection();       // This opens an "approved" connection...stupidity at it finest.
+			in = conn.getInputStream();        // This actually makes all that restricted security 
+											   // whitelist the ip, so we can ping it.
+			if(in == null) {
+				// do nothing.
+			}
+
 			SocketAddress sockaddr = new InetSocketAddress(host, defaultPort);
 			start = System.currentTimeMillis();
 			theSock.connect(sockaddr, timeout);

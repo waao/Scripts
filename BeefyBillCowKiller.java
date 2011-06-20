@@ -47,7 +47,7 @@ import org.rsbot.script.methods.Magic;
 						      " Buries Bones, Chops Trees," +
 						      " Makes Fire, Cooks Looted Meat " +
 						      "(phew!).", 
-				version = 3.32)
+				version = 3.33)
 				
 public class BeefyBillCowKiller extends Script implements PaintListener,
 		MouseListener, MessageListener	{
