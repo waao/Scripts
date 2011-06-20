@@ -1,3 +1,12 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.methods.Game;
@@ -7,12 +16,8 @@ import org.rsbot.script.wrappers.RSItem;
 import org.rsbot.event.events.*;
 import org.rsbot.event.listeners.*;
 
-@ScriptManifest(authors = { "BlackWood" }, name = "BW Herblore", version = 1.8, description = "Herblore Done Right!", website = "http://www.powerbot.org/vb/showthread.php?t=660521", requiresVersion = 244)
-@SuppressWarnings("deprecation")
-public class BWHerblore extends Script implements PaintListener,
-		MessageListener, MouseListener {
-
 @ScriptManifest(authors = "BlackWood", name = "BW Herblore", version = 2.1, description = "Herblore Done Right!", website = "http://www.powerbot.org/vb/showthread.php?t=660521")
+@SuppressWarnings("deprecation")
 public class BWHerblore extends Script implements PaintListener, MessageListener {
 	
 	long curTime = System.currentTimeMillis();
@@ -314,7 +319,6 @@ public class BWHerblore extends Script implements PaintListener, MessageListener
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void XPcheck() {
 		if (random(0, 248) == 137) {
 			game.openTab(Game.TAB_STATS);

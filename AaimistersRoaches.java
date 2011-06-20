@@ -78,6 +78,7 @@ import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
 @ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.17", keywords = "Combat", version = 1.17, description = ("Kills roaches in Edgville."))
+@SuppressWarnings("deprecation")
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
@@ -465,7 +466,6 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			long varTime = random(3660000, 10800000);
 			nextBreak = System.currentTimeMillis() + varTime;
 			nextBreakT = varTime;
-			long varLength = random(900000, 3600000);
 			nextLength = nextBreakT;
 		} else {
 			int diff = random(0, 5) * 1000 * 60;

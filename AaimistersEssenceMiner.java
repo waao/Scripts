@@ -57,6 +57,7 @@ import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
 @ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.35", keywords = "Mining", version = 1.35, description = ("Mines Essence."))
+@SuppressWarnings("deprecation")
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {

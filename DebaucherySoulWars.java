@@ -1775,7 +1775,7 @@ public class DebaucherySoulWars extends Script implements MouseListener,
 									pouch.doAction("Summon");
 								}
 							} else if (withdrawPouches) {
-								final RSObject chest = objects.getNearest(Bank.OBJECT_BANKS);
+								final RSObject chest = objects.getNearest(Bank.BANK_BOOTHS);
 								if (chest != null && !chest.isOnScreen()) {
 									for (int i = 0; i > 5; i++) {
 										walking.walkTileMM(chest.getLocation());

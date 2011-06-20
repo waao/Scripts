@@ -1485,16 +1485,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 		int defaultPort = 80;
 		Socket theSock = new Socket();
 		
-		String address = "http://"+host; //This is to get the RSM a hostname.
-		URLConnection conn;
-		InputStream in = null;  // Never read, but needed.
-
 		try {
-			final URL url = new URL(address);  // Set up the address
-			conn = url.openConnection();       // This opens an "approved" connection...stupidity at it finest.
-			in = conn.getInputStream();        // This actually makes all that restricted security 
-											   // bullshit whitelist the ip, so we can ping it.
-
 			SocketAddress sockaddr = new InetSocketAddress(host, defaultPort);
 			start = System.currentTimeMillis();
 			theSock.connect(sockaddr, timeout);

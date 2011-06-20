@@ -3924,12 +3924,12 @@ public class WhiteBearAIOFiremaker extends Script implements PaintListener,
 
 			if (!thePainter.savedStats) {
 				RSTile loc = null;
-				if (npcs.getNearest(Bank.NPC_BANKERS) != null) {
-					loc = npcs.getNearest(Bank.NPC_BANKERS).getLocation();
+				if (npcs.getNearest(Bank.BANKERS) != null) {
+					loc = npcs.getNearest(Bank.BANKERS).getLocation();
 				}
 				if (loc == null || calc.distanceTo(loc) > 3) {
-					if (objects.getNearest(Bank.OBJECT_BANKS) != null) {
-						loc = objects.getNearest(Bank.OBJECT_BANKS).getLocation();
+					if (objects.getNearest(Bank.BANK_BOOTHS) != null) {
+						loc = objects.getNearest(Bank.BANK_BOOTHS).getLocation();
 					}
 				}
 				if (loc == null) {
