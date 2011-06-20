@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -579,6 +581,20 @@ public class InterfaceExplorer extends Script implements PaintListener {
 
 	@Override
 	public boolean onStart() {
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					createGui();
+				}
+			});
+		} catch (InterruptedException ignored) {
+		} catch (InvocationTargetException ignored) {
+		}
+		return true;
+	}
+
+	private void createGui() {
 		window = new JFrame("Interface Explorer");
 		treeModel = new InterfaceTreeModel();
 		treeModel.update("");
@@ -755,7 +771,6 @@ public class InterfaceExplorer extends Script implements PaintListener {
 		window.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		window.pack();
 		window.setVisible(true);
-		return true;
 	}
 
 	public void setHighlightArea(final Rectangle r) {
