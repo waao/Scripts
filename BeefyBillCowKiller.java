@@ -29,13 +29,13 @@ import org.rsbot.Configuration;
 import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
-import org.rsbot.script.methods.Equipment;
-import org.rsbot.script.methods.Magic;
 import org.rsbot.script.methods.Skills;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.events.MessageEvent;
+import org.rsbot.script.methods.Equipment;
+import org.rsbot.script.methods.Magic;
 
 
 /* BE SURE to save this script as BeefyBillCowKiller.java or it WILL NOT WORK!! */
@@ -91,6 +91,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 													  new RSTile(3217, 3219), new RSTile(3214, 3214),
 													  new RSTile(3212, 3211), new RSTile(3206, 3209)};
 	
+//	private static final RSArea safespot = new RSArea(3176, 3356, 3177, 3357);
 	// safespot is just north of the pen.
 	private static final DecimalFormat k = new DecimalFormat("#.#");
 	private static final DecimalFormat whole = new DecimalFormat("####");
@@ -1130,7 +1131,6 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 	}
 	
 	private boolean adjustCookLevel(int toCook) {
-		interfaces.getComponent(916, 17);
 		amountDecreaseButton = interfaces.getComponent(916, 20);
 		amountIncreaseButton = interfaces.getComponent(916, 19);
 		amountDecreaseButton.doClick(true);
@@ -1935,6 +1935,9 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
  * v3.32
  *    Changed use of deprecated methods to new ones. (from doAction() to interact())
  *    removed option to pickup air staffs, until walking/climbing is fixed again.	
+ *    
+ * v3.33
+ *    Incorporate upstream changes, mostly getting rid of Eclipse warnings.
  *    
  */
 }
