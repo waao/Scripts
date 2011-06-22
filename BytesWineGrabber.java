@@ -1000,6 +1000,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 		worldHop(members, maxping, MAXpop);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void worldHop(boolean members, int maxping, int maxpop) {
 
 		final int LOBBY_PARENT = 906;
