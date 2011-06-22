@@ -14,8 +14,8 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.net.URL;
 
-@ScriptManifest(authors = "BlackWood", name = "BW Herblore", version = 2.1, description = "Herblore Done Right!", website = "http://www.powerbot.org/vb/showthread.php?t=660521")
-public class BWHerblore extends Script implements PaintListener, MessageListener {
+@ScriptManifest(authors = "BlackWood", name = "Ultra Herblore", version = 2.1, description = "Herblore Done Right!")
+public class UltraHerblore extends Script implements PaintListener, MessageListener {
 	
 	long curTime = System.currentTimeMillis();
 
