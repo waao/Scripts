@@ -54,7 +54,7 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 	
 	boolean Taring = false;
 	
-	BWHerbloreGUI gui;
+	UltraHerbloreGUI gui;
 	
 	PotionStats Chosen;
 	ExtremeStats EChosen;
@@ -144,7 +144,7 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
     	try {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					gui = new BWHerbloreGUI();
+					gui = new UltraHerbloreGUI();
 					gui.setVisible(true);
 				}
 			});
@@ -939,11 +939,11 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 		}
 	}
 	
-	public class BWHerbloreGUI extends JFrame {
+	public class UltraHerbloreGUI extends JFrame {
 		
 		private static final long serialVersionUID = 1L;
 		
-		public BWHerbloreGUI() {
+		public UltraHerbloreGUI() {
 			initComponents();
 		}
 		
