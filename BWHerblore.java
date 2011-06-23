@@ -139,6 +139,7 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 		}
 	}
 	
+	@Override
 	public boolean onStart() {
     	try {
 			SwingUtilities.invokeLater(new Runnable() {
@@ -153,6 +154,11 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 		}
         return true;
     }
+	
+	@Override
+	public void onFinish() {
+		env.takeScreenshot(true);
+	}
 	
 	boolean clickInterface(int Parent, int Child) {
 		return (interfaces.get(Parent).getComponent(Child).isValid() && interfaces.get(Parent).getComponent(Child).doClick(true));
@@ -348,6 +354,7 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 		return false;
 	}
 
+	@Override
 	public int loop() {
 		try {
 			new AntiBanThread().Start();
