@@ -27,6 +27,7 @@ public class xPestControl extends Script implements PaintListener, MouseListener
     String state = "Loading up...";
     public static final String version = Double.toString(xPestControl.class.getAnnotation(ScriptManifest.class).version());
     public String URL = "http://www.powerbot.org/community/topic/529507-xpestcontrol-simple-flawless-built-with-new-api/";
+    private final RenderingHints antialiasing = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     RSTile joinTile;
     RSTile boatTile;
     public int gangplankID;
@@ -487,6 +488,7 @@ public class xPestControl extends Script implements PaintListener, MouseListener
         xpPerHour = (int) ((3600000.0 / (double) runTime) * gainedXP);
         pointsPerHour = (int) ((3600000.0 / (double) runTime) * pointsGained);
         Graphics2D g = (Graphics2D) g1;
+        g.setRenderingHints(antialiasing);
         if (showPaint) {
             g.setColor(color1);
             g.fillRoundRect(555, 212, 174, 245, 16, 16);
