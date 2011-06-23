@@ -16,13 +16,7 @@ import org.rsbot.script.wrappers.RSItem;
 import org.rsbot.event.events.*;
 import org.rsbot.event.listeners.*;
 
-import java.awt.*;
 import java.awt.event.*;
-
-import javax.swing.*;
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.net.URL;
 
 @ScriptManifest(authors = "BlackWood", name = "Ultra Herblore", version = 2.2, description = "Herblore Done Right!")
 public class UltraHerblore extends Script implements PaintListener, MessageListener, MouseListener {
