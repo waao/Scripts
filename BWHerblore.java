@@ -9,18 +9,22 @@ import org.rsbot.event.listeners.*;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.net.URL;
 
-@ScriptManifest(authors = "BlackWood", name = "Ultra Herblore", version = 2.1, description = "Herblore Done Right!")
-public class UltraHerblore extends Script implements PaintListener, MessageListener {
+@ScriptManifest(authors = "BlackWood", name = "Ultra Herblore", version = 2.2, description = "Herblore Done Right!")
+public class UltraHerblore extends Script implements PaintListener, MessageListener, MouseListener {
 	
 	long curTime = System.currentTimeMillis();
 
+	boolean isPaintShowing = true;
 	boolean StartedScript = false;
 	boolean HasItemIDs = false;
+	boolean canLoop = true;
+	
 	int VialID = 227;
 	int CleanID;
 	int UnfID;
@@ -273,95 +277,80 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 		return bank.open();
 	}
 	
-	public void superAntiMoveMouse() {
-        switch (random(0, 10)) {
-            case 0:
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-            break;
-            case 1:
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-            break;
-            case 2:
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-                mouse.moveSlightly();
-            break;
-        }
-    }
-	
-	private void AntiBanCamera() {
-		int randomNum = random(1, 50);
-		if (randomNum == 1 || randomNum == 2 || randomNum == 3) {
-			camera.moveRandomly(random(2000, 5500));
+	public class AntiBanThread extends Thread {
+
+		@SuppressWarnings("deprecation")
+		public void Start() {
+			try {
+				if (game.isLoggedIn()) {
+					switch (random(1, 10)) {
+					case 3: // Turn Screen
+						if (getMyPlayer().getAnimation() != -1) {
+							camera.setAngle(random(100, 359));
+							sleep(500, 1500);
+						}
+						break;
+					case 6:
+						if (bank.isOpen()) {
+							mouse.moveRandomly(450);
+							sleep(500, 1500);
+						}
+						break;
+					default:
+						sleep(10);
+						break;
+					}
+					switch (random(1, 10000)) {
+					case 2961:
+						log("Checking EXP And Taking A Small Break (Anti-Ban)");
+						canLoop = false;
+						if (game.openTab(Game.TAB_STATS, true)) {
+							skills.doHover(Skills.INTERFACE_HERBLORE);
+							sleep(6000, 7500);
+						}
+						canLoop = true;
+						log("Finished Checking EXP And Taking A Small Break");
+						break;
+					case 6487:
+						log("Taking A Break (Anti-Ban)");
+						canLoop = false;
+						if (random(1, 2) == 2) {
+							mouse.moveOffScreen();
+						}
+						sleep(17500, 37500);
+						canLoop = true;
+						log("Break Finished");
+						break;
+					default:
+						sleep(10);
+						break;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		if (randomNum == 4 || randomNum == 5) {
-		    camera.setAngle(random(10, 40));
-		}
-		if (randomNum == 6) {
-		    camera.setPitch(random(40, 68));
-		}
-	    if (randomNum == 7) {
-		    camera.setPitch(random(20, 45));
-		}
-		if (randomNum == 8) {
-			camera.setPitch(random(68, 90));
-		} else {
-		    sleep(50, 70);
-		}
+
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void XPcheck() {
-		if (random(0, 248) == 137) {
-			game.openTab(Game.TAB_STATS);
-			skills.doHover(Skills.INTERFACE_HERBLORE);
-			sleep(random(1500, 2250));
-			game.openTab(Game.TAB_INVENTORY);
-		}
-    }
-	
-	 public int AntiBans() {
-        switch (random(0, 17)) {
-            case 8:
-                superAntiMoveMouse();
-                AntiBanCamera();
-            break;
-            case 9:
-				if (Unfs == false) {
-					XPcheck();
-				}
-            break;
-            case 10:
-                AntiBanCamera();
-            break;
-            case 13:
-                superAntiMoveMouse();
-                AntiBanCamera();
-            break;
-            case 14:
-				if (Unfs == false) {
-					XPcheck();
-				}
-                AntiBanCamera();
-            break;
-            default:
-                break;
-        }
-        return 500;
-    }
+	public long timeFromMark(long fromMark) {
+		return System.currentTimeMillis() - fromMark;
+	}
 
+	public boolean waitFor(boolean bool, int timeout) {
+		long t = System.currentTimeMillis();
+		while (timeFromMark(t) < timeout) {
+			if (bool == true) {
+				return true;
+			}
+			sleep(10);
+		}
+		return false;
+	}
 
 	public int loop() {
 		try {
-			if (StartedScript == true && !bank.isOpen()) {
-				AntiBans();
-			}
+			new AntiBanThread().Start();
 			if (interfaces.canContinue()) {
 				interfaces.clickContinue();
 			}
@@ -426,16 +415,18 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 					stopScript();
 				}
 			}
-			if (HasItemIDs == true) {
+			if (HasItemIDs == true && canLoop == true) {
 				if (Cleaning == true) {
 					while (bank.isOpen()) {
 						if (inventory.contains(CleanID)) {
-							bank.depositAll();
-							sleep(800, 1000);
+							if (bank.depositAll()) {
+								waitFor(!inventory.contains(CleanID), 1000);
+							}
 						}
 						if (!inventory.contains(CleanID) && bank.getItem(GrimyID) != null && withdraw(GrimyID, 0)) {
-							bank.close();
-							sleep(random(100, 200));
+							if (bank.close()) {
+								waitFor(!bank.isOpen(), 5000);
+							}
 						} else {
 							if (bank.getItem(GrimyID) == null) {
 								log("Out of supplies...");
@@ -444,8 +435,9 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventory.contains(GrimyID) && !inventory.contains(CleanID)) {
-							bank.close();
-							sleep(random(100, 200));
+							if (bank.close()) {
+								waitFor(!bank.isOpen(), 5000);
+							}
 						}
 						break;
 					} 
@@ -456,11 +448,15 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 				}
 				if (Unfs == true) {
 					while (bank.isOpen()) {
-						if (inventory.contains(UnfID) && bank.depositAll()) {
-							sleep(800, 1000);
+						if (inventory.contains(UnfID)) {
+							if (bank.depositAll()) {
+								waitFor(!inventory.contains(UnfID), 1000);
+							}
 						}
 						if (inventory.getCount() == 0 && bank.getItem(VialID) != null) {
-							bank.withdraw(VialID, 14);
+							if (bank.withdraw(VialID, 14)) {
+								waitFor(inventory.contains(VialID), 5000);
+							}
 						} else {
 							if (bank.getItem(VialID) == null) {
 								log("Out of supplies...");
@@ -469,11 +465,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventory.contains(VialID) && inventory.getCount(VialID) < 15 && !inventory.contains(CleanID) && bank.getItem(CleanID) != null) {
-							bank.withdraw(CleanID, 0);
+							if (bank.withdraw(CleanID, 0)) {
+								waitFor(inventory.contains(CleanID), 5000);
+							}
 						} else {
 							if (inventory.getCount(VialID) > 14) {
-								bank.depositAll();
-								sleep(800, 1000);
+								if (bank.depositAll()) {
+									waitFor(!inventory.contains(VialID), 5000);
+								}
 							}
 							if (bank.getItem(CleanID) == null) {
 								log("Out of supplies...");
@@ -482,8 +481,9 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventoryContainsBoth(VialID, CleanID)) {
-							bank.close();
-							sleep(random(100, 200));
+							if (bank.close()) {
+								waitFor(!bank.isOpen(), 5000);
+							}
 						}
 						break;
 					}
@@ -491,11 +491,15 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 						if (getMyPlayer().getAnimation() != -1) {
 							this.curTime = System.currentTimeMillis();
 						}
-						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(VialID, CleanID) && MakeUnfs()) {
-							sleep(1000, 1250);
+						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(VialID, CleanID)) {
+							if (MakeUnfs()) {
+								waitFor(interfaces.get(905).getComponent(14).isValid(), 1200);
+							}
 						}
-						if (interfaces.get(905).getComponent(14).isValid() && clickInterface(905, 14)) {
-							sleep(1500, 1750);
+						if (interfaces.get(905).getComponent(14).isValid()) {
+							if (clickInterface(905, 14)) {
+								waitFor(inventory.contains(UnfID), 5000);
+							}
 						}
 						if (!inventoryContainsBoth(VialID, CleanID) && inventory.contains(UnfID) && bank.open()) {
 							bank.depositAll();
@@ -506,10 +510,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 				if (Completes == true) {
 					while (bank.isOpen()) {
 						if (inventory.contains(CompleteID) && bank.depositAll()) {
-							sleep(800, 1000);
+							if (bank.depositAll()) {
+								waitFor(!inventory.contains(CompleteID), 1000);
+							}
 						}
 						if (inventory.getCount() == 0 && bank.getItem(UnfID) != null) {
-							bank.withdraw(UnfID, 14);
+							if (bank.withdraw(UnfID, 14)) {
+								waitFor(inventory.contains(UnfID), 5000);
+							}
 						} else {
 							if (bank.getItem(UnfID) == null) {
 								log("Out of supplies...");
@@ -518,11 +526,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventory.contains(UnfID) && inventory.getCount(UnfID) < 15 && !inventory.contains(IngredientID) && bank.getItem(IngredientID) != null) {
-							bank.withdraw(IngredientID, 0);
+							if (bank.withdraw(IngredientID, 0)) {
+								waitFor(inventory.contains(IngredientID), 5000);
+							}
 						} else {
 							if (inventory.getCount(UnfID) > 14) {
-								bank.depositAll();
-								sleep(800, 1000);
+								if (bank.depositAll()) {
+									waitFor(inventory.contains(UnfID), 5000);
+								}
 							}
 							if (bank.getItem(IngredientID) == null) {
 								log("Out of supplies...");
@@ -531,8 +542,9 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventoryContainsBoth(UnfID, IngredientID)) {
-							bank.close();
-							sleep(random(100, 200));
+							if (bank.close()) {
+								waitFor(!bank.isOpen(), 5000);
+							}
 						}
 						break;
 					}
@@ -540,11 +552,15 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 						if (getMyPlayer().getAnimation() != -1) {
 							this.curTime = System.currentTimeMillis();
 						}
-						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(UnfID, IngredientID) && MakeCompletes()) {
-							sleep(1000, 1250);
+						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(UnfID, IngredientID)) {
+							if (MakeCompletes()) {
+								waitFor(interfaces.get(905).getComponent(14).isValid(), 1200);
+							}
 						}
-						if (interfaces.get(905).getComponent(14).isValid() && clickInterface(905, 14)) {
-							sleep(1500, 1750);
+						if (interfaces.get(905).getComponent(14).isValid()) {
+							if (clickInterface(905, 14)) {
+								waitFor(inventory.contains(CompleteID), 5000);
+							}
 						}
 						if (!inventoryContainsBoth(UnfID, IngredientID) && inventory.contains(CompleteID) && bank.open()) {
 							bank.depositAll();
@@ -555,11 +571,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 				if (FullCompletes == true) {
 					while (bank.isOpen()) {
 						if (inventory.contains(CompleteID)) {
-							bank.depositAll();
-							sleep(800, 1000);
+							if (bank.depositAll()) {
+								waitFor(inventory.getCount() == 0, 5000);
+							}
 						}
 						if (inventory.getCount() == 0 && bank.getItem(VialID) != null) {
-							bank.withdraw(VialID, 14);
+							if (bank.withdraw(VialID, 14)) {
+								waitFor(inventory.contains(VialID), 5000);
+							}
 						} else {
 							if (bank.getItem(VialID) == null) {
 								log("Out of supplies...");
@@ -568,11 +587,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventory.contains(VialID) && inventory.getCount(VialID) < 15 && !inventory.contains(CleanID) && bank.getItem(CleanID) != null) {
-							bank.withdraw(CleanID, 0);
+							if (bank.withdraw(CleanID, 0)) {
+								waitFor(inventory.contains(CleanID), 5000);
+							}
 						} else {
 							if (inventory.getCount(VialID) > 14) {
-								bank.depositAll();
-								sleep(800, 1000);
+								if (bank.depositAll()) {
+									waitFor(!inventory.contains(VialID), 1200);
+								}
 							}
 							if (bank.getItem(CleanID) == null) {
 								log("Out of supplies...");
@@ -581,10 +603,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventoryContainsBoth(VialID, CleanID) || inventoryContainsBoth (UnfID, IngredientID)) {
-							bank.close();
+							if (bank.close()) {
+								waitFor(!bank.isOpen(), 5000);
+							}
 						}
 						if (inventory.contains(UnfID) && !inventory.contains(IngredientID) && bank.getItem(IngredientID) != null) {
-							bank.withdraw(IngredientID, 0);
+							if (bank.withdraw(IngredientID, 0)) {
+								waitFor(inventory.contains(IngredientID), 5000);
+							}
 						} else {
 							if (bank.getItem(IngredientID) == null) {
 								log("Out of supplies...");
@@ -598,14 +624,20 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 						if (getMyPlayer().getAnimation() != -1) {
 							this.curTime = System.currentTimeMillis();
 						}
-						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(VialID, CleanID) && MakeUnfs()) {
-							sleep(1000, 1250);
+						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(VialID, CleanID)) {
+							if (MakeUnfs()) {
+								waitFor(interfaces.get(905).getComponent(14).isValid(), 1200);
+							}
 						}
-						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(UnfID, IngredientID) && MakeCompletes()) {
-							sleep(1000, 1250);
+						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(UnfID, IngredientID)) {
+							if (MakeCompletes()) {
+								waitFor(interfaces.get(905).getComponent(14).isValid(), 1200);
+							}
 						}
 						if (interfaces.get(905).getComponent(14).isValid() && clickInterface(905, 14)) {
-							sleep(1500, 1750);
+							if (clickInterface(905,14)) {
+								waitFor(inventory.contains(UnfID) || inventory.contains(CompleteID), 5000);
+							}
 						}
 						if ((!inventoryContainsBoth(VialID, CleanID) && inventory.contains(UnfID) && !inventory.contains(IngredientID) || !inventoryContainsBoth(UnfID, IngredientID) && inventory.contains(CompleteID)) && bank.open()) {
 							if (inventory.contains(CompleteID)) {
@@ -618,11 +650,15 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 				if (Extremes == true) {
 					if (EChosen != ExtremeStats.RANGING) {
 						while (bank.isOpen()) {
-							if (inventory.contains(OutcomeID) && bank.depositAll()) {
-								sleep(800, 1000);
+							if (inventory.contains(OutcomeID)) {
+								if (bank.depositAll()) {
+									waitFor(!inventory.contains(OutcomeID), 1000);
+								}
 							}
 							if (inventory.getCount() == 0 && bank.getItem(CompleteID) != null) {
-								bank.withdraw(CompleteID, 14);
+								if (bank.withdraw(CompleteID, 14)) {
+									waitFor(inventory.contains(CompleteID), 5000);
+								}
 							} else {
 								if (bank.getItem(CompleteID) == null) {
 									log("Out of supplies...");
@@ -631,11 +667,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 								}
 							}
 							if (inventory.contains(CompleteID) && inventory.getCount(CompleteID) < 15 && !inventory.contains(IngredientID) && bank.getItem(IngredientID) != null) {
-								bank.withdraw(IngredientID, 0);
+								if (bank.withdraw(IngredientID, 0)) {
+									waitFor(inventory.contains(IngredientID), 5000);
+								}
 							} else {
 								if (inventory.getCount(CompleteID) > 14) {
-									bank.depositAll();
-									sleep(800, 1000);
+									if (bank.depositAll()) {
+										waitFor(!inventory.contains(CompleteID), 1000);
+									}
 								}
 								if (bank.getItem(IngredientID) == null) {
 									log("Out of supplies...");
@@ -644,8 +683,9 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 								}
 							}
 							if (inventoryContainsBoth(CompleteID, IngredientID)) {
-								bank.close();
-								sleep(random(100, 200));
+								if (bank.close()) {
+									waitFor(!bank.isOpen(), 5000);
+								}
 							}
 							break;
 						}
@@ -653,11 +693,15 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							if (getMyPlayer().getAnimation() != -1) {
 								this.curTime = System.currentTimeMillis();
 							}
-							if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(CompleteID, IngredientID) && MakeExtremes()) {
-								sleep(1000, 1250);
+							if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(CompleteID, IngredientID)) {
+								if (MakeExtremes()) {
+									waitFor(interfaces.get(905).getComponent(14).isValid(), 1200);
+								}
 							}
-							if (interfaces.get(905).getComponent(14).isValid() && clickInterface(905, 14)) {
-								sleep(1500, 1750);
+							if (interfaces.get(905).getComponent(14).isValid()) {
+								if (clickInterface(905, 14)) {
+									waitFor(inventory.contains(OutcomeID), 5000);
+								}
 							}
 							if (!inventoryContainsBoth(CompleteID, IngredientID) && inventory.contains(OutcomeID) && bank.open()) {
 								bank.depositAll();
@@ -668,11 +712,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 					if (EChosen == ExtremeStats.RANGING) {
 						while (bank.isOpen()) {
 							if (inventory.contains(OutcomeID)) {
-								bank.depositAllExcept(IngredientID);
-								sleep(random(350, 425));
+								if (bank.depositAllExcept(IngredientID)) {
+									waitFor(!inventory.contains(OutcomeID), 1000);
+								}
 							}
 							if (!inventory.contains(OutcomeID) && inventory.contains(IngredientID) && !inventory.contains(CompleteID) && bank.getItem(CompleteID) != null) {
-								bank.withdraw(CompleteID, 0);
+								if (bank.withdraw(CompleteID, 0)) {
+									waitFor(inventory.contains(CompleteID), 5000);
+								}
 							} else {
 								if (bank.getItem(CompleteID) == null) {
 									log("Out of supplies...");
@@ -681,7 +728,9 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 								}
 							}
 							if (inventoryContainsBoth(CompleteID, IngredientID)) {
-								bank.close();
+								if (bank.close()) {
+									waitFor(!bank.isOpen(), 5000);
+								}
 							}
 							break;
 						}
@@ -689,11 +738,15 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							if (getMyPlayer().getAnimation() != -1) {
 								this.curTime = System.currentTimeMillis();
 							}
-							if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(CompleteID, IngredientID) && MakeExtremes()) {
-								sleep(1000, 1250);
+							if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(CompleteID, IngredientID)) {
+								if (MakeExtremes()) {
+									waitFor(interfaces.get(905).getComponent(14).isValid(), 1200);
+								}
 							}
-							if (interfaces.get(905).getComponent(14).isValid() && clickInterface(905, 14)) {
-								sleep(1500, 1750);
+							if (interfaces.get(905).getComponent(14).isValid()) {
+								if (clickInterface(905, 14)) {
+									waitFor(inventory.contains(OutcomeID), 5000);
+								}
 							}
 							if (!inventoryContainsBoth(CompleteID, IngredientID) && inventory.contains(OutcomeID) && bank.open()) {
 								bank.depositAll();
@@ -705,11 +758,14 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 				if (Taring == true) {
 					while (bank.isOpen()) {
 						if (inventory.contains(OutcomeID)) {
-							bank.depositAllExcept(Mortar, SwampTarID, CleanID);
-							sleep(random(350, 425));
+							if (bank.depositAllExcept(Mortar, SwampTarID, CleanID)) {
+								waitFor(!inventory.contains(OutcomeID), 1000);
+							}
 						}
 						if (inventoryContainsBoth(Mortar, SwampTarID) && !inventory.contains(CleanID) && bank.getItem(CleanID) != null) {
-							bank.withdraw(CleanID, 0);
+							if (bank.withdraw(CleanID, 0)) {
+								waitFor(inventory.contains(CleanID), 5000);
+							}
 						} else {
 							if (bank.getItem(CleanID) == null) {
 								log("Out of supplies...");
@@ -718,7 +774,9 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 							}
 						}
 						if (inventoryContainsBoth(Mortar, SwampTarID) && inventory.contains(CleanID)) {
-							bank.close();
+							if (bank.close()) {
+								waitFor(!bank.isOpen(), 5000);
+							}
 						}
 						break;
 					}
@@ -726,15 +784,20 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 						if (getMyPlayer().getAnimation() != -1) {
 							this.curTime = System.currentTimeMillis();
 						}
-						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(SwampTarID, CleanID) && MakeTars()) {
-							sleep(1000, 1250);
+						if (!interfaces.get(905).getComponent(14).isValid() && inventoryContainsBoth(SwampTarID, CleanID)) {
+							if (MakeTars()) {
+								waitFor(interfaces.get(905).getComponent(14).isValid(), 1200);
+							}
 						}
-						if (interfaces.get(905).getComponent(14).isValid() && clickInterface(905, 14)) {
-							sleep(1500, 1750);
+						if (interfaces.get(905).getComponent(14).isValid()) {
+							if (clickInterface(905, 14)) {
+								waitFor(inventory.contains(OutcomeID), 5000);
+							}
 						}
 						if (!inventoryContainsBoth(SwampTarID, CleanID) && inventory.contains(OutcomeID) && bank.open()) {
-							bank.depositAllExcept(Mortar, SwampTarID, CleanID);
-							sleep(random(350, 425));
+							if (bank.depositAllExcept(Mortar, SwampTarID, CleanID)) {
+								waitFor(inventory.getCountExcept(Mortar, SwampTarID, CleanID) == 0, 5000);
+							}
 						}
 						break;
 					}
@@ -746,75 +809,109 @@ public class UltraHerblore extends Script implements PaintListener, MessageListe
 		return 0;
 	}
 	
-    Image getImage(String url) {
-        try {
-            return ImageIO.read(new URL(url));
-        } catch(IOException e) {
-            return null;
-        }
-    }
-	
 	String convertDurationToString(long t) {
 		t /= 1000;
 		StringBuilder s = new StringBuilder();
 		s.append(':');
 		if (t % 60 < 10)
 			s.append('0');
-			s.append(t % 60);
-			t /= 60;
-			s.insert(0, t % 60).insert(0, ':');
+		s.append(t % 60);
+		t /= 60;
+		s.insert(0, t % 60).insert(0, ':');
 		if (t % 60 < 10)
 			s.insert(1, '0');
-			t /= 60;
-			s.insert(0, t % 24);
+		t /= 60;
+		s.insert(0, t % 24);
 		if (t % 24 < 10)
 			s.insert(0, '0');
 		return new String(s);
 	}
-	
-	final Color color1 = new Color(0, 0, 0, 175);
 
-    final BasicStroke stroke1 = new BasicStroke(2);
-
-    final Font font1 = new Font("Arial", 1, 9);
-
-    public void onRepaint(Graphics g1) {
-        if (StartedScript == true) {
-			Graphics2D g = (Graphics2D) g1;
-			if (StartEXP == 0) {
-				StartEXP = skills.getCurrentExp(Skills.getIndex("Herblore"));
-			}
-			EXPGained = skills.getCurrentExp(Skills.getIndex("Herblore")) - StartEXP;
-			g.setColor(color1);
-			g.fillRect(7, 228, 111, 107);
-			g.setColor(Color.WHITE);
-			g.setStroke(stroke1);
-			g.drawRect(7, 228, 111, 107);
-			g.setFont(font1);
-			g.drawString("Interactions: " + Made, 9, 241);
-			g.drawString("Interactions/H:  " + (int) ((Made) * 3600000D / (System.currentTimeMillis() - Duration)), 9, 254);
-			g.drawString("EXP Gained: " + EXPGained, 9, 273);
-			g.drawString("EXP/H: " + (int) ((EXPGained) * 3600000D / (System.currentTimeMillis() - Duration)), 9, 285);
-			// Progress Bar Start
-			g.setColor(Color.GRAY);
-			g.fillRect(12, 318, 100, 12);
-			g.setColor(Color.WHITE);
-			g.drawRect(12, 318, 100, 12);
-			g.setColor(Color.GREEN);
-			g.fillRect(12, 319, skills.getPercentToNextLevel(Skills.getIndex("Herblore")), 10);
-			g.setColor(Color.BLACK);
-			g.drawString(skills.getPercentToNextLevel(Skills.getIndex("Herblore")) + "%", 54, 328);
-			// Progress Bar End
-			g.setColor(color1);
-			g.fillRect(7, 204, 111, 23);
-			g.setColor(Color.WHITE);
-			g.drawRect(7, 204, 111, 23);
-			g.drawString("Role: " + Role, 9, 302);
-			g.drawString("Duration: " + convertDurationToString(System.currentTimeMillis() - Duration), 9, 313);
-			g.drawString("BW Herblore", 10, 213);
-			g.drawString("By: BlackWood", 42, 224);
+	private String formatNumber(String str) {
+		if (str.length() < 4) {
+			return str;
 		}
-    }
+		return formatNumber(str.substring(0, str.length() - 3)) + ","
+				+ str.substring(str.length() - 3, str.length());
+	}
+
+	private Image getImage(String url) {
+		try {
+			return ImageIO.read(new URL(url));
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	private final Color color1 = new Color(184, 155, 127);
+	private final Color color2 = new Color(64, 34, 5);
+	private final Color color3 = new Color(149, 109, 69);
+
+	private final BasicStroke stroke1 = new BasicStroke(1);
+
+	private final Font font1 = new Font("Arial", 1, 15);
+
+	private final Image img1 = getImage("http://i842.photobucket.com/albums/zz348/monkey123502/ExitButton.png");
+	private final Image img2 = getImage("http://dl.dropbox.com/u/22127840/Pictures/Open%20Button.png");
+
+	public void onRepaint(Graphics g1) {
+		Graphics2D g = (Graphics2D) g1;
+		if (StartedScript == true) {
+			if (isPaintShowing == true) {
+				if (StartEXP == 0) {
+					StartEXP = skills.getCurrentExp(Skills.getIndex("Herblore"));
+				}
+				EXPGained = skills.getCurrentExp(Skills.getIndex("Herblore")) - StartEXP;
+				g.setColor(color1);
+				g.fillRect(7, 345, 506, 128);
+				g.setColor(color2);
+				g.setStroke(stroke1);
+				g.drawRect(18, 351, 481, 33);
+				g.setColor(color3);
+				g.fillRect(21, 354, ((int) (skills.getPercentToNextLevel(Skills.getIndex("Herblore")) * 4.75)), 28);
+				g.setFont(font1);
+				g.setColor(color2);
+				g.drawString("Interactions: " + formatNumber(Made + "") + " | Interactions/H: " + formatNumber((int) ((Made) * 3600000D / (System.currentTimeMillis() - Duration)) + ""), 20, 407);
+				g.drawString("EXP Gained: " + formatNumber(EXPGained + "") + " | EXP/H: " + formatNumber((int) ((EXPGained) * 3600000D / (System.currentTimeMillis() - Duration)) + ""), 20, 427);
+				g.drawString("Role: " + Role, 20, 445);
+				g.drawString("Duration: " + convertDurationToString(System.currentTimeMillis() - Duration), 20, 462);
+				g.drawString(skills.getPercentToNextLevel(Skills.getIndex("Herblore")) + "% " + "(" + formatNumber(skills.getExpToNextLevel(Skills.getIndex("Herblore")) + "") + ") " + "To " + (skills.getCurrentLevel(Skills.getIndex("Herblore")) + 1), 200, 375);
+				g.drawImage(img1, 488, 452, null);
+			}
+			if (isPaintShowing == false) {
+				g.drawImage(img2, 488, 452, null);
+			}
+		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		if (x >= 488 && x < 488 + 16 && y >= 452 && y < 452 + 15) {
+			isPaintShowing = !isPaintShowing;
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+	}
 	
 	public void messageReceived(MessageEvent arg0) {
 		String message = arg0.getMessage().toLowerCase();
