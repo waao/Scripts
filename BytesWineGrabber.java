@@ -33,6 +33,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import java.lang.reflect.InvocationTargetException;
+
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -43,7 +45,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -52,10 +53,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.SwingUtilities;
 
 import org.rsbot.Configuration;
 import org.rsbot.event.events.MessageEvent;
@@ -75,21 +76,22 @@ import org.rsbot.script.wrappers.RSTile;
 import org.rsbot.script.wrappers.RSTilePath;
 import org.rsbot.script.methods.Equipment;
 import org.rsbot.script.methods.Magic;
+import org.rsbot.script.methods.Game;
 
 @ScriptManifest(
 		authors = "Mr. Byte", 
 		name = "Byte's Wine Grabber", 
-		version = 1.22, 
+		version = 1.23, 
 		description = "Snags the Wine of Zamorak",
 		website = "http://LetTheSmokeOut.com")
 		
 public class BytesWineGrabber extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private boolean isJar = false;
+	private boolean testHopping = false;  // change to true to do nothing but hop worlds...for testing purposes only!
 
-	private enum STATE {
-		SNATCH, TELEPORT, WALK_TO_BANK, BANK, WALK_TO_TEMPLE, WALK_TO_TILE, SLEEP
-	};
+
+	private enum STATE {SNATCH, TELEPORT, WALK_TO_BANK, BANK, WALK_TO_TEMPLE, WALK_TO_TILE, SLEEP};
 
 	public File PRICE_FILE = new File(new File(Configuration.Paths
 			.getScriptCacheDirectory()), "WGGEPrices.txt");
@@ -151,7 +153,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	private String version$ = version.toString(), food$ = "",
 			status$ = "Starting Up...", buttonText$ = "Hide Paint", killButton$ = "Stop Script!";
 
-	private int winePrice = 0, wineTaken = 0, wineInInv = 0, lawPrice = 0,
+	private int winePrice = 0, wineTaken = 0, maxWine = 0, wineInInv = 0, lawPrice = 0,
 			lawsUsed = 0, lawsInInv = 0, lawsWasted = 0, lawsToGet = 0,
 			misses = 0, bankTrips = 0, minstrelID = 5442,
 			foodID = 0, foodToGet = 0, canHazCheezBurger = 0,
@@ -164,14 +166,12 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	private int pastWorld[] = new int[maxPastWorlds];
 
 	private boolean showPaint = true, goToBank = false, lostDuel = false,
-			hopping = false, killScript = false;
+			hopping = false, killScript = false, missed = false;
 
 	/* Warm GUI shit */
 	GUI gui;
 	private boolean runButtonPressed = false, worldHopping = false,
 			checkForUpdates = false, restForTheWicked = false, guiExit = false;
-
-	private boolean testHopping = false;  // change to true to do nothing but hop worlds...for testing purposes only!
 
 	private int lawsToWaste = 0, maxPlayers = 0;
 	
@@ -225,7 +225,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	}
 
 	public boolean onStart() {
-			
+		if (game.isLoggedIn()) {
 			String className = this.getClass().getName().replace('.', '/');
 			String classJar = this.getClass()
 					.getResource("/" + className + ".class").toString();
@@ -237,7 +237,6 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			findFoodID();
 			if (foodID != 0)
 				log("Eating " + food$);
-
 
 			if (SwingUtilities.isEventDispatchThread()) {
 				gui = new GUI();
@@ -276,13 +275,10 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 
 			playerName = account.getName();
 			isMember = AccountManager.isMember(playerName);
-
-			wineInInv = inventory.getCount(wineID);
-			goToBank = (inventory.isFull() || inventory.contains(wineID));
 			me = players.getMyPlayer().getLocation();
-
-			if (inventory.getItem(lawID) != null)
-				lawsInInv = inventory.getItem(lawID).getStackSize();
+			goToBank = inventory.isFull();
+			
+			lookInInv();
 
 			if (!readPrices()) {
 				winePrice = grandExchange.lookup(wineID).getGuidePrice();
@@ -311,46 +307,34 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			if (checkForUpdates) {
 				return updater(); // checks for, downloads and compiles updates.
 			}
+		}
 		return true;
 	}
 
 	@Override
 	public int loop() {
+		
 		if(killScript) return -1;
 		
 		mouse.setSpeed(random(4, 8));
 		ttlGold = wineTaken * winePrice - (lawsUsed * lawPrice);
-		runTime = System.currentTimeMillis() - startTime;
 		lawsWasted = (lawsUsed - wineTaken - bankTrips);
-		wph = wineTaken * 3600000D
-		/ (System.currentTimeMillis() - startTime);
+		if(lawsWasted < 0) lawsWasted =0;
+		wph = wineTaken * 3600000D/(System.currentTimeMillis() - startTime);
 		
 		int ttlWine = wineTaken * winePrice;
-
 		gph = (ttlWine - (lawPrice * lawsUsed)) * 3600000D
 				/ (System.currentTimeMillis() - startTime);
-
 
 		me = players.getMyPlayer().getLocation();
 		RSTile dest = walking.getDestination();
 		if (dest == null)
 			dest = me;
 
-		if (!bank.isOpen()) {
-			wineInInv = inventory.getCount(wineID);
-			if (inventory.contains(lawID)) {
-				lawsInInv = inventory.getItem(lawID).getStackSize();
-			} else
-				lawsInInv = 0;
-			
-			goToBank = (inventory.isFull() 
-					|| lawsInInv <= 1 
-					|| !zammyTempleArea.contains(me) && wineInInv > 0);
+		if (!goToBank)
+			goToBank = (lawsInInv <= 1 || !zammyTempleArea.contains(me)
+				&& wineInInv > 0 || wineInInv >= maxWine);
 		
-			if(inventory.contains(526))
-				dropJunk(526);
-		}
-
 		if (restForTheWicked && restArea.contains(dest)
 				&& walking.getEnergy() < 90) {
 			RSNPC minstrel = npcs.getNearest(minstrelID);
@@ -378,17 +362,18 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			}
 			return 500;
 		}
-
 		switch (doWhat()) {
 
 		case SNATCH:
+			missed = false;
+			hopping = false;
 			if (testHopping ||(worldHopping && misses >= lawsToWaste)) {
 				misses = 0;
 				worldHop(isMember, MAXping, MAXpop);
+				if(killScript) return -1;
 				while(!zammyTempleArea.contains(players.getMyPlayer().getLocation()))
 					sleep(2500);
-				hopping = false;
-				return 100;
+				return 10;
 			}
 
 			if (camera.getPitch() != 100) {
@@ -405,10 +390,14 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			for (int i = 0; i < 1000; i++) {
 				RSGroundItem wine = groundItems.getNearest(wineID);
 				if (wine != null && wine.isOnScreen()) {
-					mouse.click(calc.tileToScreen(wine.getLocation(), -500),
-							true);
+					mouse.click(calc.tileToScreen(wine.getLocation(), -500), true);
+					lawsUsed++;
+					lawsInInv--;
 					sleep(1000, 1200);
-					antiBan();
+					mouse.setSpeed(random(4,10));
+					if(random(1,50) <= 15) {  // 30% chance of peeking...
+						lookInInv();
+					}
 					break;
 				}
 				if (!waitSpot.equals(players.getMyPlayer().getLocation()) || 
@@ -421,7 +410,6 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 				}
 				sleep(25, 26);
 			}
-			antiBan();
 			if (foodID > 0 && players.getMyPlayer().getHPPercent() < canHazCheezBurger) {
 				log("Eating?");
 				if (inventory.contains(foodID)) {
@@ -434,26 +422,21 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 
 			sleep(1000, 1200);
 
-			if (wineInInv < inventory.getCount(wineID)) {
+			if (!missed) {
 				wineTaken++;
 				if (misses > 0)
 					misses--;
+				wineInInv++;
+			} else {
+				misses++;
 				if (worldHopping && playerCount() > maxPlayers) {
 					if (lostDuel) {
 						lostDuel = false;
 						worldHop(isMember, MAXping, MAXpop);
+						return 50;
 					}
 					lostDuel = true;
 				}
-				wineInInv = inventory.getCount(wineID);
-			} else {
-				misses++;
-			}
-			try {
-				if (lawsInInv > inventory.getItem(lawID).getStackSize()) {
-					lawsUsed++;
-				}
-			} catch (NullPointerException e) {
 			}
 
 			return 50;
@@ -471,6 +454,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 
 		case BANK:
 			if (!bank.isOpen()) {
+				lookInInv();
 				if (foodID > 0) {
 					log("We are Eating...");
 					if (!inventory.contains(foodID)) {
@@ -483,6 +467,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 						log("Need " + foodToGet + " food.");
 					}
 				}
+				
 				bank.open();
 				return 500;
 			}
@@ -531,7 +516,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			if (!bank.close())
 				bank.close();
 			sleep(1000, 1200);
-			antiBan();
+			lookInInv();
 
 			if (inventory.getCount(lawID) == 0
 					|| inventory.getCount(waterID) == 0 || foodToGet > 0) {
@@ -550,10 +535,8 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			/* first check for too many ppl in Temple */
 			if (playerCount() > maxPlayers && worldHopping)
 				worldHop(isMember);
-//			tiles.doAction(calc.getTileOnScreen(waitSpot), "here");
 // 			walking.walkTileOnScreen(waitSpot);
 			tiles.interact(calc.getTileOnScreen(waitSpot), "here");
-
 
 			if (walking.getDestination() != null
 					&& !zammyTempleArea.contains(walking.getDestination()))
@@ -594,7 +577,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 					(int) m.getX() + 3, (int) m.getY() + 3);
 			g.setFont(new Font("Arial", Font.PLAIN, fntSize));
 			g.setColor(new Color(255, 0, 0, 220));
-
+			runTime = System.currentTimeMillis() - startTime;
 			if (wph < 0)
 				wph = 0;
 
@@ -656,6 +639,17 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	/*
 	 * Subroutines
 	 */
+	
+	private void lookInInv() {
+		wineInInv = inventory.getCount(wineID);
+		if (inventory.contains(lawID))
+			lawsInInv = inventory.getItem(lawID).getStackSize();
+		if (inventory.contains(526)) // Bones? Dump 'em!
+			dropJunk(526);
+		maxWine = 28 - inventory.getCount() + wineInInv;
+		goToBank = (inventory.isFull());
+		return;
+	}
 
 	private void waitPlayerMoving() {
 		while (players.getMyPlayer().isMoving()
@@ -700,35 +694,29 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	}
 
 	private void antiBan() {
-		switch (random(1, 7)) {
+		int what = random(1,6);
+		switch (what) {
 		case 1:
-			camera.moveRandomly(random(500, 1000));
+			camera.moveRandomly(random(500,1000));
 			sleep(650, 800);
 			break;
 		case 2:
-			camera.moveRandomly(random(500, 1000));
-			sleep(750, 1000);
 			break;
 		case 3:
 			mouse.moveOffScreen();
 			sleep(1000, 1500);
 			break;
 		case 4:
-			mouse.moveOffScreen();
-			sleep(600, 700);
-			break;
-		case 5:
 			mouse.moveRandomly(20, 100);
 			sleep(400, 800);
 			break;
-		case 6:
+		case 5:
 			mouse.moveSlightly();
 			sleep(500, 750);
 			break;
-		case 7:
-			camera.setNorth();
-			camera.setPitch(true);
-			sleep(1000, 1500);
+		case 6:
+			camera.moveRandomly(random(1500, 2000));
+			sleep(750, 1000);
 			break;
 		}
 	}
@@ -744,7 +732,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 		String scriptName = BytesWineGrabber.class.getAnnotation(
 				ScriptManifest.class).name();
 
-		String scriptHost = "http://somehost.com/script.php?.runescape.com/RSBot/";
+		String scriptHost = "http://letthesmokeout.com/RSBot/";
 
 		String className = this.getClass().getName();
 
@@ -982,9 +970,8 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	 */
 
 	/**
-	 * Hops to the first visible filtered world on the list by jtryba avoids the
-	 * last x worlds you've been to since starting the script credits to MrByte
-	 * for his help
+	 * Hops to the first visible filtered world on the list.
+	 * Heavily modified from jtryba.
 	 * 
 	 * @param members
 	 *            <tt>true</tt> if player should hop to a members world.
@@ -1000,490 +987,190 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 		worldHop(members, maxping, MAXpop);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void worldHop(boolean members, int maxping, int maxpop) {
 
 		final int LOBBY_PARENT = 906;
 		final int WORLD_SELECT_TAB_PARENT = 910;
-		final int WORLD_SELECT_COM = 64;
 		final int WORLD_NUMBER_COM = 69;
 		final int WORLD_POPULATION_COM = 71;
 		final int WORLD_ACTIVITY = 72;
 		final int WORLD_TYPE_COM = 74;
-		final int WORLD_SELECT_BUTTON_COM = 189;
-		final int WORLD_SELECT_BUTTON_BG_COM = 12;
+		final int WORLD_SELECT_BUTTON_COM = 200;
+		final int WORLD_SELECT_BUTTON_BG_COM = 22;
 		final int WORLD_SELECT_TAB_ACTIVE = 4671;
-		final int WORLD_FULL_BACK_BUTTON_COM = 233;
-		final int CURRENT_WORLD_COM = 11;
 		final int SORT_POPULATION_BUTTON_PARENT = 30;
 		final int SORT_PING_BUTTON_PARENT = 45;
 		final int SORT_LOOTSHARE_BUTTON_PARENT = 47;
 		final int SORT_TYPE_BUTTON_PARENT = 49;
 		final int SORT_ACTIVITY_BUTTON_PARENT = 52;
 		final int SORT_WORLD_BUTTON_PARENT = 55;
-		final int SCROLL_BAR_PARENT = 86;
-		final int HIGH_RISK_WARN_PARENT = 93;
-		final int PLAY_BUTTON_COM = 171;
-		final int RETURN_TEXT_COM = 224;
-		final int SUBSCRIBE_BACK_BUTTON_COM = 233;
-		final int CONNECT_ERROR_BACK_BUTTON_COM = 42;
-		final int BACK_BUTTON = 231;
 		final int SAFETY_TIMEOUT = 35 * 1000;
 		long safety = 0;
 		int ping = 0, adjping = 2000, adjpop = 2000;
 
-		boolean popadj = false, pingadj = false, verbose = false;
+		boolean popadj = false, pingadj = false;
 
 		log("Hopping worlds");
-		status$ = "Hopping worlds";
+		status$ = "Hopping worlds...";
 		hopping = true;
-
-		// logout
-			safety = System.currentTimeMillis() + SAFETY_TIMEOUT;
-			while (game.isLoggedIn() && System.currentTimeMillis() < safety) {
-				if (game.logout(true)) {
-					while (game.getClientState() != 7) {
-						sleep(random(500, 750));
-					}
-				}
-			}
-
-			status$ = "Selecting new world";
-
-			if (verbose)
-				log("click world select tab (if needed)");
-			safety = System.currentTimeMillis() + SAFETY_TIMEOUT;
-			RSComponent worldSelectTab = interfaces.getComponent(LOBBY_PARENT,
-					WORLD_SELECT_BUTTON_BG_COM);
-			while (worldSelectTab.getBackgroundColor() != WORLD_SELECT_TAB_ACTIVE
-					&& System.currentTimeMillis() < safety) {
-				if (interfaces.getComponent(LOBBY_PARENT,
-						WORLD_SELECT_BUTTON_COM).doClick()) {
-					sleep(random(1500, 2000));
-				}
-			}
-
-			if (verbose)
-				log("get current world");
-			String cW = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
-					CURRENT_WORLD_COM).getText();
-			String[] cWS = cW.split(" ");
-			try {
-				currentWorld = Integer.parseInt(cWS[1]);
-			} catch (NullPointerException e) {
-				if (verbose)
-					log("Error getting current world, returning...");
-				return;
-			}
-			newWorld = currentWorld;
-
-			if (verbose)
-				log("randomly sort worlds");
-			if (random(0, 10) < 3) {
-				RSComponent com = null;
-				switch (random(0, 4)) {
-				case 0:
-					if (verbose)
-						log("population");
-					com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
-							SORT_POPULATION_BUTTON_PARENT).getComponent(
-							random(0, 2));
-					break;
-				case 1:
-					if (verbose)
-						log(" ping");
-					com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
-							SORT_PING_BUTTON_PARENT).getComponent(random(0, 2));
-					break;
-				case 2:
-					if (verbose)
-						log("loot share");
-					com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
-							SORT_LOOTSHARE_BUTTON_PARENT).getComponent(
-							random(0, 2));
-					break;
-				case 3:
-					if (verbose)
-						log("activity");
-					com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
-							SORT_ACTIVITY_BUTTON_PARENT).getComponent(
-							random(0, 2));
-					break;
-				case 4:
-					if (verbose)
-						log("world");
-					com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
-							SORT_WORLD_BUTTON_PARENT)
-							.getComponent(random(0, 2));
+		currentWorld = 0;
+		if (random(0, 100) < 33)
+			currentWorld = game.getCurrentWorld(); // Sometimes while logged in,
+													// sometimes from the
+													// lobby...
+		
+		while (game.getClientState() != Game.INDEX_LOBBY_SCREEN) {
+			game.logout(true);
+			for (int i = 0; i < 50; i++) {
+				sleep(100);
+				if (interfaces.get(LOBBY_PARENT).isValid()
+						&& game.getClientState() == Game.INDEX_LOBBY_SCREEN) {
 					break;
 				}
-				if (com != null) {
-					if (com.doClick())
-						sleep(random(1250, 1500));
-				}
-			}
-
-			if (verbose)
-				log("sort by ptp/ftp");
-			status$ = "Sorting by type";
-			if (interfaces
-					.getComponent(WORLD_SELECT_TAB_PARENT,
-							SORT_TYPE_BUTTON_PARENT)
-					.getComponent(members ? 0 : 1).doClick()) {
-				sleep(random(1000, 1500));
-			}
-
-			/*-PICK-NEXT-WORLD-*/
-			safety = System.currentTimeMillis() + SAFETY_TIMEOUT;
-			while (currentWorld == newWorld && game.getClientState() != 10
-					&& System.currentTimeMillis() < safety) {
-				status$ = "Selecting next world";
-				RSComponent worldToHop = null;
-				RSComponent[] comWorldNumber = interfaces.getComponent(
-						WORLD_SELECT_TAB_PARENT, WORLD_NUMBER_COM)
-						.getComponents();
-				RSComponent[] comWorldSelect = interfaces.getComponent(
-						WORLD_SELECT_TAB_PARENT, WORLD_SELECT_COM)
-						.getComponents();
-				int world = 0;
-				int pop = 2000;
-				boolean member = false;
-				while (worldToHop == null
-						&& System.currentTimeMillis() < safety + 2000) {
-					for (int i = 0; i < comWorldNumber.length - 1; i++) {
-						comWorldSelect = interfaces.getComponent(
-								WORLD_SELECT_TAB_PARENT, WORLD_SELECT_COM)
-								.getComponents();
-						RSComponent[] comWorldPopulation = interfaces
-								.getComponent(WORLD_SELECT_TAB_PARENT,
-										WORLD_POPULATION_COM).getComponents();
-						RSComponent[] comWorldType = interfaces.getComponent(
-								WORLD_SELECT_TAB_PARENT, WORLD_TYPE_COM)
-								.getComponents();
-						comWorldNumber = interfaces.getComponent(
-								WORLD_SELECT_TAB_PARENT, WORLD_NUMBER_COM)
-								.getComponents();
-						RSComponent[] comWorldActivity = interfaces
-								.getComponent(WORLD_SELECT_TAB_PARENT,
-										WORLD_ACTIVITY).getComponents();
-						try {
-							world = Integer.parseInt(comWorldNumber[i]
-									.getText());
-						} catch (NumberFormatException nfe) {
-							world = 0;
-						} catch (ArrayIndexOutOfBoundsException aie) {
-							world = 0;
-						}
-						try {
-							pop = Integer.parseInt(comWorldPopulation[i]
-									.getText());
-						} catch (NumberFormatException nfe) {
-							pop = 2000;
-						} catch (ArrayIndexOutOfBoundsException aie) {
-							pop = 2000;
-						}
-						try {
-							if (comWorldType[i].getText().contains("Members")) {
-								member = true;
-							}
-						} catch (ArrayIndexOutOfBoundsException aie) {
-						}
-						String act = "";
-						try {
-							act = comWorldActivity[i].getText();
-						} catch (Exception e) {
-						}
-						if (act.toLowerCase().contains("skill")) {
-							if (act.contains("1000")) {
-								if (skillTotal < 1000) {
-									world = 0;
-								}
-							}
-							if (act.contains("1500")) {
-								if (skillTotal < 1500) {
-									world = 0;
-								}
-							}
-						}
-
-						if (world != 0 && !isPastWorld(world)
-								&& world != currentWorld && member == members) {
-							ping = pingHost("world" + world + ".runescape.com",
-									500);
-						} else {
-							ping = -1;
-						}
-
-						if (world > 0) {
-							if (ping > 0 && ping > maxping && ping < adjping) {
-								if (verbose)
-									log("world: " + world + "   adjping now: "
-											+ (adjping + 50));
-								adjping = ping + 50;
-								pingadj = true;
-							}
-
-							if (pop > maxpop && pop < adjpop) {
-								if (verbose)
-									log("world: " + world + "   adjpop now: "
-											+ adjpop);
-								adjpop = pop;
-								popadj = true;
-							}
-						}
-
-						if (world > 0 && !isPastWorld(world)
-								&& world != currentWorld && pop < maxpop
-								&& pop > 0 && ping < maxping && ping > 0
-								&& member == members) {
-							if (verbose)
-								log("World: " + world + " selected.");
-							worldToHop = comWorldSelect[i];
-						}
-						if (worldToHop != null) {
-							break;
-						}
-					}
-					sleep(random(50, 150));
-				}
-
-				if (worldToHop != null) {
-					int w = -1;
-					String[] split = interfaces.getComponent(910, 8).getText()
-							.split(" ");
-					try {
-						w = Integer.parseInt(split[split.length - 1]);
-					} catch (Exception e) {
-						w = -1;
-					}
-					if (verbose)
-						log("click new world");
-					while (w != world && worldToHop != null) {
-						worldToHop = getWorldComponent(world, comWorldNumber,
-								comWorldSelect);
-						if (worldToHop != null) {
-							if (worldToHop.getLocation().y <= 280
-									&& worldToHop.getLocation().y >= 0) {
-								status$ = "Clicking new world";
-								worldToHop.doHover();
-								if (menu.contains("Select")) {
-									worldToHop.doClick();
-								} else {
-									mouse.move(
-											mouse.getLocation().x
-													+ random(25, 55),
-											mouse.getLocation().y);
-									if (menu.contains("Select")) {
-										mouse.click(true);
-									}
-								}
-							} else {
-								RSComponent scrollBar = interfaces
-										.getComponent(WORLD_SELECT_TAB_PARENT,
-												SCROLL_BAR_PARENT);
-								status$ = "Scrolling to new world";
-								if (interfaces.scrollTo(worldToHop, scrollBar)) {
-									status$ = "Clicking new world";
-									worldToHop.doHover();
-									if (menu.contains("Select")) {
-										worldToHop.doClick();
-									} else {
-										mouse.move(mouse.getLocation().x
-												+ random(25, 55),
-												mouse.getLocation().y);
-										if (menu.contains("Select")) {
-											mouse.click(true);
-										}
-									}
-								}
-							}
-							split = interfaces.getComponent(910, 8).getText()
-									.split(" ");
-							try {
-								w = Integer.parseInt(split[split.length - 1]);
-							} catch (Exception e) {
-								w = -1;
-							}
-						}
-					}
-					if (verbose)
-						log("get new world");
-					sleep(random(1000, 1500));
-					String cW2 = interfaces.getComponent(
-							WORLD_SELECT_TAB_PARENT, CURRENT_WORLD_COM)
-							.getText();
-					String[] cWS2 = cW2.split(" ");
-					newWorld = Integer.parseInt(cWS2[1]);
-				} else {
-					if (verbose)
-						log("Called with " + maxping + " " + maxpop);
-					if (verbose)
-						log("ping or pop too low. MAXping now: " + adjping
-								+ " MAXpop:" + adjpop);
-					if (pingadj)
-						MAXping = adjping;
-					if (popadj)
-						MAXpop = adjpop;
-					worldHop(isMember, MAXping, MAXpop);
-					return;
-				}
-			}
-			/*-END-PICK-NEXT-WORLD-*/
-
-			if (verbose)
-				log("set last & current world/s");
-			if (currentWorld != newWorld) {
-				for (int i = 0; i < pastWorld.length; i++) {
-					if (i < pastWorld.length - 1) {
-						pastWorld[i] = pastWorld[i + 1];
-					} else {
-						pastWorld[i] = currentWorld;
-					}
-					if (verbose)
-						log("i: " + i + " pastWorld[i]: " + pastWorld[i]
-								+ "currentWorld: " + currentWorld);
-				}
-				currentWorld = newWorld;
-			}
-
-			safety = System.currentTimeMillis() + SAFETY_TIMEOUT;
-			while (game.getClientState() != 10
-					&& System.currentTimeMillis() < safety) {
-				status$ = "Logging in...";
-				if (verbose)
-					log("click play button");
-				if (interfaces.getComponent(LOBBY_PARENT, PLAY_BUTTON_COM)
-						.doClick()) {
-					hopped++;
-				}
-
-				if (verbose)
-					log("check for high risk world warning during login");
-				safety = System.currentTimeMillis() + SAFETY_TIMEOUT;
-				while (game.getClientState() != 10
-						&& System.currentTimeMillis() < safety) {
-					RSComponent hrParent = interfaces.getComponent(
-							LOBBY_PARENT, HIGH_RISK_WARN_PARENT);
-					if (hrParent.isValid()) {
-						RSComponent LogIn = hrParent.getComponent(random(0,
-								hrParent.getComponents().length));
-						if (LogIn != null && LogIn.isValid()) {
-							if (mouse.getLocation().getX() < 386
-									|| mouse.getLocation().getX() > 504
-									|| mouse.getLocation().getY() < 357
-									|| mouse.getLocation().getY() > 386) {
-								if (LogIn.doHover()) {
-									sleep(random(250, 500));
-									if (menu.contains("Log In")) {
-										if (verbose)
-											log("accept warning / click login");
-										mouse.click(true);
-										log.warning("This is a high risk wilderness world.");
-										sleep(random(250, 500));
-									}
-								}
-							}
-						}
-					}
-					sleep(100);
-				}
-				sleep(10000);
-				if (verbose)
-					log("check for login errors");
-				String returnText = interfaces
-						.getComponent(LOBBY_PARENT, RETURN_TEXT_COM).getText()
-						.toLowerCase();
-				if (!game.isLoggedIn()) {
-					if (returnText.contains("update")) {
-						status$ = "Stopping script";
-						if (verbose)
-							log("Runescape has been updated, please reload RSBot.");
-						stopScript(true);
-					}
-					if (returnText.contains("disable")) {
-						status$ = "Stopping script";
-						if (verbose)
-							log("Your account is banned/disabled.");
-						stopScript(true);
-					}
-					if (returnText.contains("error connecting")) {
-						status$ = "Stopping script";
-						if (verbose)
-							log("Error connecting to runescape.");
-						interfaces.getComponent(LOBBY_PARENT,
-								CONNECT_ERROR_BACK_BUTTON_COM).doClick();
-						stopScript(true);
-					}
-					if (returnText.contains("full")) {
-						if (verbose)
-							log("World Is Full.");
-						interfaces.getComponent(LOBBY_PARENT,
-								WORLD_FULL_BACK_BUTTON_COM).doClick();
-						sleep(random(1000, 1500));
-						worldHop(members, maxping, maxpop); // try again
-					}
-					if (returnText.contains("subscribe")) {
-						interfaces.getComponent(LOBBY_PARENT,
-								SUBSCRIBE_BACK_BUTTON_COM).doClick();
-						if (members) {
-							status$ = "stopping script.";
-							if (verbose)
-								log("You are not a member.");
-							stopScript(true);
-						} else {
-							sleep(random(500, 1000));
-							worldHop(members, maxping, maxpop); // try again
-						}
-					}
-					if (returnText.contains("must have a total")) {
-						interfaces.getComponent(LOBBY_PARENT, BACK_BUTTON)
-								.doClick();
-						sleep(random(500, 1000));
-						worldHop(members, maxping, maxpop); // try again
-					}
-					if (returnText.contains("has not logged out")) {
-						interfaces.getComponent(LOBBY_PARENT, BACK_BUTTON)
-								.doClick();
-						sleep(random(10000, 15000));
-						worldHop(members, maxping, maxpop); // try again
-					}
-					if (returnText.contains("standing in a members-only")) {
-						interfaces.getComponent(LOBBY_PARENT, BACK_BUTTON)
-								.doClick();
-						sleep(random(10000, 15000));
-						if (members) {
-							status$ = "stopping script.";
-							if (verbose)
-								log("You are not a member.");
-							stopScript(true);
-						} else {
-							worldHop(members, maxping, maxpop); // try again
-						}
-					}
-					if (returnText.contains("login limit exceeded")) {
-						interfaces.getComponent(LOBBY_PARENT, BACK_BUTTON)
-								.doClick();
-						sleep(random(1000, 1500));
-						worldHop(members, maxping, maxpop); // try again
-					}
-				}
-			}
-	}
-
-	private RSComponent getWorldComponent(int world,
-			RSComponent[] WorldNumberComponents, RSComponent[] WorldComponents) {
-		for (int i = 0; i < WorldNumberComponents.length; i++) {
-			int w = -1;
-			try {
-				w = Integer.parseInt(WorldNumberComponents[i].getText());
-			} catch (Exception e) {
-				w = -1;
-			}
-			if (w != -1 && w == world) {
-				return WorldComponents[i];
 			}
 		}
-		return null;
+		safety = System.currentTimeMillis() + SAFETY_TIMEOUT;
+		RSComponent worldSelectTab = interfaces.getComponent(LOBBY_PARENT,
+				WORLD_SELECT_BUTTON_BG_COM);
+		while (worldSelectTab.getBackgroundColor() != WORLD_SELECT_TAB_ACTIVE
+				&& System.currentTimeMillis() < safety) {
+			if (interfaces.getComponent(LOBBY_PARENT, WORLD_SELECT_BUTTON_COM)
+					.doClick()) {
+				sleep(random(1500, 2000));
+				break;
+			}
+		}
+		if(currentWorld <= 0)
+			currentWorld = game.getCurrentWorld();
+		status$ = status$ + "Current World: " + currentWorld;
+
+		newWorld = currentWorld;
+
+		if (random(0, 10) < 3) {
+			RSComponent com = null;
+			switch (random(0, 4)) {
+			case 0:
+				com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
+						SORT_POPULATION_BUTTON_PARENT).getComponent(
+						random(0, 2));
+				break;
+			case 1:
+				com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
+						SORT_PING_BUTTON_PARENT).getComponent(random(0, 2));
+				break;
+			case 2:
+				com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
+						SORT_LOOTSHARE_BUTTON_PARENT)
+						.getComponent(random(0, 2));
+				break;
+			case 3:
+				com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
+						SORT_ACTIVITY_BUTTON_PARENT).getComponent(random(0, 2));
+				break;
+			case 4:
+				com = interfaces.getComponent(WORLD_SELECT_TAB_PARENT,
+						SORT_WORLD_BUTTON_PARENT).getComponent(random(0, 2));
+				break;
+			}
+			if (com != null) {
+				if (com.doClick())
+					sleep(random(1250, 1500));
+			}
+		}
+		if (interfaces
+				.getComponent(WORLD_SELECT_TAB_PARENT, SORT_TYPE_BUTTON_PARENT)
+				.getComponent(members ? 0 : 1).doClick()) {
+			sleep(random(1000, 1500));
+		}
+
+		/*-PICK-NEXT-WORLD-*/
+		safety = System.currentTimeMillis() + SAFETY_TIMEOUT;
+		status$ = "Selecting next world";
+		RSComponent[] comWorldNumber = interfaces.getComponent(
+				WORLD_SELECT_TAB_PARENT, WORLD_NUMBER_COM).getComponents();
+		int world = 0;
+		int pop = 2000;
+		boolean member = false;
+		while (status$.contains("next") && System.currentTimeMillis() < safety) {
+			for (int i = 0; i < comWorldNumber.length - 1; i++) {
+				RSComponent[] comWorldPopulation = interfaces.getComponent(
+						WORLD_SELECT_TAB_PARENT, WORLD_POPULATION_COM)
+						.getComponents();
+				RSComponent[] comWorldType = interfaces.getComponent(
+						WORLD_SELECT_TAB_PARENT, WORLD_TYPE_COM)
+						.getComponents();
+				comWorldNumber = interfaces.getComponent(
+						WORLD_SELECT_TAB_PARENT, WORLD_NUMBER_COM)
+						.getComponents();
+				RSComponent[] comWorldActivity = interfaces.getComponent(
+						WORLD_SELECT_TAB_PARENT, WORLD_ACTIVITY)
+						.getComponents();
+				String act = "";
+				ping = -1;
+				try {
+					world = Integer.parseInt(comWorldNumber[i].getText());
+					pop = Integer.parseInt(comWorldPopulation[i].getText());
+					act = comWorldActivity[i].getText().toLowerCase();
+					if (comWorldType[i].getText().contains("Members"))
+						member = true;
+					if (act.contains("skill")) {
+						if ((act.contains("1000") && skillTotal < 1000)
+								|| (act.contains("1500") && skillTotal < 1500)) {
+							world = 0;
+						}
+					}
+					if(act.contains("risk")) {
+						world = 0;
+					}
+				} catch (Exception e) {
+					world = 0;
+					pop = 2000;
+				}
+				if (world != 0 && !isPastWorld(world) && world != currentWorld
+						&& member == members) {
+					ping = pingHost("world" + world + ".runescape.com", 500);
+				}
+				if (world > 0) {
+					if (ping > 0 && ping > maxping && ping < adjping + 50) {
+						adjping = ping + 50;
+						pingadj = true;
+					}
+					if (pop > maxpop && pop < adjpop) {
+						adjpop = pop;
+						popadj = true;
+					}
+				}
+
+				if (world > 0 && !isPastWorld(world) && world != currentWorld
+						&& pop < maxpop && pop > 0 && ping < maxping
+						&& ping > 0 && member == members) {
+					status$ = "World " + world + " selected.";
+					newWorld = world;
+					break;
+				}
+			}
+		}
+
+		if (currentWorld != newWorld) {
+			for (int i = 0; i < pastWorld.length; i++) {
+				if (i < pastWorld.length - 1) {
+					pastWorld[i] = pastWorld[i + 1];
+				} else {
+					pastWorld[i] = currentWorld;
+				}
+			}
+			currentWorld = newWorld;
+			status$ = "Logging In...";
+			game.switchWorld(world);
+			hopped++;
+		} else {
+			if (pingadj)
+				MAXping = adjping;
+			if (popadj)
+				MAXpop = adjpop;
+			worldHop(isMember, MAXping, MAXpop);
+		}
+		return;
 	}
 
 	private boolean isPastWorld(int world) {
@@ -1502,7 +1189,8 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 		int defaultPort = 80;
 		Socket theSock = new Socket();
 		
-		String address = "http://"+host; //This is to get the RSM a hostname.
+		String address = "http://"+host; //This is to get the RSM a hostname. 
+				
 		URLConnection conn;
 		InputStream in = null;  // Never read, but needed.
 
@@ -1514,8 +1202,7 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 			if(in == null) {
 				// do nothing.
 			}
-
-			SocketAddress sockaddr = new InetSocketAddress(host, defaultPort);
+			SocketAddress sockaddr = new InetSocketAddress(InetAddress.getByName(host), defaultPort);
 			start = System.currentTimeMillis();
 			theSock.connect(sockaddr, timeout);
 			end = System.currentTimeMillis();
@@ -1550,10 +1237,11 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 
 	@Override
 	public void messageReceived(MessageEvent e) {
-		 e.getMessage().toLowerCase();
-
+		String message = e.getMessage().toLowerCase();
 		if (e.getID() == MessageEvent.MESSAGE_SERVER) {
-
+			if(message.contains("too late")) {
+				missed = true;
+			}
 		}
 
 	}
@@ -1932,14 +1620,17 @@ public class BytesWineGrabber extends Script implements PaintListener, MessageLi
 	 * v 1.20  Stomped numerous bugs.
 	 * 
 	 * v 1.21 Fixed a problem with being stuck outside of falador with wines.
-	 *   Moved location of paint calcs, now they are in the loop instead of the paint.  Hopefully this 
-	 *   will speed things up a bit and waste less RAM.
-	 *   Added a "Money Made" line to paint.  Not that i really think it's an accurate number, given that wines sell for 
-	 *   less usually, but hey, it's there.
-	 *   Disabled update checks for SDN provided script.  Since I don't provide a jar, and the SDN is a jar, this should "break"
-	 *   the update box in the GUI.  Just in case that doesn't work, the update method will bounce on isJar = true.
+	 * Moved location of paint calcs, now they are in the loop instead of the paint.  Hopefully this 
+	 * will speed things up a bit and waste less RAM.
+	 * Added a "Money Made" line to paint.  Not that i really think it's an accurate number, given that wines sell for 
+	 * less usually, but hey, it's there.
+	 * Disabled update checks for SDN provided script.  Since I don't provide a jar, and the SDN is a jar, this should "break"
+	 * the update box in the GUI.  Just in case that doesn't work, the update method will bounce on isJar = true.
 	 *   
 	 * v 1.22 FINALLY figured out how to live with Paris's blocking IP addresses.
 	 * 
+	 * v 1.23 re-write worldWop to utilize built-in methods of the bot instead of roll-your-own.
+	 * Randomize when to look in Inventory, so we're not always flipping to inventory each time thru the loop.  This
+	 * may develop some inaccuracies in counting, but so far I've not noticed anything.
 	 */
 }

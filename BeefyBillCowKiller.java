@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.regex.Matcher;
@@ -47,7 +48,7 @@ import org.rsbot.script.methods.Magic;
 						      " Buries Bones, Chops Trees," +
 						      " Makes Fire, Cooks Looted Meat " +
 						      "(phew!).", 
-				version = 3.33)
+				version = 3.34)
 				
 public class BeefyBillCowKiller extends Script implements PaintListener,
 		MouseListener, MessageListener	{
@@ -276,8 +277,22 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 			log("Go to Bill's Pen, then restart.");
 			return false;
 		}
-		gui = new BeefyGUI();
-		gui.setVisible(true);
+		if (SwingUtilities.isEventDispatchThread()) {
+			gui = new BeefyGUI();
+			gui.setVisible(true);
+		} else {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						gui = new BeefyGUI();
+						gui.setVisible(true);
+					}
+				});
+			} catch (final InvocationTargetException ite) {
+			} catch (final InterruptedException ie) {
+			}
+		}
 		while(gui.isVisible()) {
 			sleep(50);
 		}
@@ -1939,5 +1954,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
  * v3.33
  *    Incorporate upstream changes, mostly getting rid of Eclipse warnings.
  *    
+ * v3.34 
+ *    Incorporate new GUI starting method.    
  */
 }
