@@ -1497,7 +1497,7 @@ public class BeefyBillCowKiller extends Script implements PaintListener,
 			gettingBones = guiBuryBones.isSelected();
 			bankingMeats = guiBankMeat.isSelected();
 			bankingStaffs = guiPickStaff.isSelected();
-			update = guiCheckForUpdates.isSelected();
+			if(!isJar) update = guiCheckForUpdates.isSelected();
 			verbose = beVerbose.isSelected();
 
 			if(iCanHazCheezBurger) {
