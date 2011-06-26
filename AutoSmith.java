@@ -26,7 +26,7 @@ import org.rsbot.script.wrappers.RSTile;
 import java.io.IOException;
 import java.net.URL;
 
-@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.3, description = "Smithing Done Right!")
+@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.6, description = "Smithing Done Right!")
 public class UltraSmithing extends Script implements PaintListener, MessageListener, MouseListener {
 	
 	Script Script = this;
@@ -147,7 +147,7 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 		RSInterface Parent = interfaces.get(300);
 		for (RSComponent c : Parent.getComponents()) {
 			String Compare = c.getText().replaceAll("<col=ffffff>", "");
-			String Bars = Parent.getComponent(c.getIndex() + 1).getText().replaceAll("<col=00ff00>", "").replaceAll("Bar", "").replaceAll(" ", "");
+			String Bars = Parent.getComponent(c.getIndex() + 1).getText().replaceAll("<col=00ff00>", "").replaceAll("Bar", "").replaceAll("s", "").replaceAll(" ", "");
 			if (Compare.toLowerCase().equals(new String(BuildString).toLowerCase()) && c != null && Parent != null) {
 				BarsNeeded = Integer.parseInt(Bars);
 				c.doClick(false);
@@ -511,12 +511,10 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 				interfaces.clickContinue();
 			}
 			if (hasChecked == false && startedScript == true) {
-				if (Method != Methods.CBALLS) {
+				if (Method == Methods.BUILD) {
 					if (equipment.containsOneOf(GoldenHammer)) {
 						usingGoldenHammer = true;
-						if (Method != Methods.CBALLS) {
-							hasChecked = true;
-						}
+						hasChecked = true;
 					} else {
 						if (inventory.contains(Hammer)) {
 							hasChecked = true;
@@ -525,15 +523,17 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 							stopScript();
 						}
 					}
-				} else {
-					if (Method == Methods.CBALLS) {
-						if (inventory.contains(CBMould)) {
-							hasChecked = true;
-						} else {
-							log.severe("You must start with a Cannon Ball Mould in your inventory.");
-							stopScript();
-						}
+				}
+				if (Method == Methods.CBALLS) {
+					if (inventory.contains(CBMould)) {
+						hasChecked = true;
+					} else {
+						log.severe("You must start with a Cannon Ball Mould in your inventory.");
+						stopScript();
 					}
+				}
+				if (Method == Methods.SMELT) {
+					hasChecked = true;
 				}
 			}
 			if (game.isLoggedIn() && Script.isActive() && startedScript == true) {
@@ -568,7 +568,7 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 								EXPMake = EXPGained;
 							}
 						}
-						if (inventory.contains(Bar) && calc.distanceTo(WalkTile) > 3) {
+						if (inventory.contains(Bar) && inventory.getCount(Bar) >= BarsNeeded && calc.distanceTo(WalkTile) > 3) {
 							walkTo(WalkTile);
 						}
 						if (inventory.contains(Bar) && inventory.getCount(Bar) >= BarsNeeded && calc.distanceTo(WalkTile) < 4 && !interfaces.get(SmithWidget).isValid()) {
@@ -593,12 +593,12 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 								waitFor(inventory.getCountExcept(Bar, Hammer) < 1, 2500);
 							}
 						}
-						if (inventory.getCountExcept(Bar, Hammer) < 1 && !inventory.contains(Bar)) {
+						if (inventory.getCountExcept(Bar, Hammer) < 1 && (!inventory.contains(Bar) || inventory.getCount(Bar) < BarsNeeded)) {
 							if (withdraw(Bar, 0)) {
 								waitFor(inventory.getItem(Bar) != null, 2000);
 							}
 						}
-						if (inventory.getCountExcept(Bar, Hammer) < 1 && inventory.contains(Bar)) {
+						if (inventory.getCountExcept(Bar, Hammer) < 1 && inventory.contains(Bar) && inventory.getCount(Bar) >= BarsNeeded) {
 							if (random(1, 2) == 1) {
 								if (bank.close()) {
 									waitFor(!bank.isOpen(), 2000);
