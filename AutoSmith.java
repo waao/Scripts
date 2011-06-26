@@ -26,7 +26,7 @@ import org.rsbot.script.wrappers.RSTile;
 import java.io.IOException;
 import java.net.URL;
 
-@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.3, description = "Smithing Done Right!")
+@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.4, description = "Smithing Done Right!")
 public class UltraSmithing extends Script implements PaintListener, MessageListener, MouseListener {
 	
 	Script Script = this;
@@ -511,7 +511,7 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 				interfaces.clickContinue();
 			}
 			if (hasChecked == false && startedScript == true) {
-				if (Method != Methods.CBALLS) {
+				if (Method == Methods.BUILD) {
 					if (equipment.containsOneOf(GoldenHammer)) {
 						usingGoldenHammer = true;
 						if (Method != Methods.CBALLS) {
@@ -525,15 +525,17 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 							stopScript();
 						}
 					}
-				} else {
-					if (Method == Methods.CBALLS) {
-						if (inventory.contains(CBMould)) {
-							hasChecked = true;
-						} else {
-							log.severe("You must start with a Cannon Ball Mould in your inventory.");
-							stopScript();
-						}
+				}
+				if (Method == Methods.CBALLS) {
+					if (inventory.contains(CBMould)) {
+						hasChecked = true;
+					} else {
+						log.severe("You must start with a Cannon Ball Mould in your inventory.");
+						stopScript();
 					}
+				}
+				if (Method == Methods.SMELT) {
+					hasChecked = true;
 				}
 			}
 			if (game.isLoggedIn() && Script.isActive() && startedScript == true) {
