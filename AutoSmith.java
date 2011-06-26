@@ -514,9 +514,7 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 				if (Method == Methods.BUILD) {
 					if (equipment.containsOneOf(GoldenHammer)) {
 						usingGoldenHammer = true;
-						if (Method != Methods.CBALLS) {
-							hasChecked = true;
-						}
+						hasChecked = true;
 					} else {
 						if (inventory.contains(Hammer)) {
 							hasChecked = true;
