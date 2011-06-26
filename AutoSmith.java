@@ -26,7 +26,7 @@ import org.rsbot.script.wrappers.RSTile;
 import java.io.IOException;
 import java.net.URL;
 
-@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.4, description = "Smithing Done Right!")
+@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.5, description = "Smithing Done Right!")
 public class UltraSmithing extends Script implements PaintListener, MessageListener, MouseListener {
 	
 	Script Script = this;
@@ -147,7 +147,7 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 		RSInterface Parent = interfaces.get(300);
 		for (RSComponent c : Parent.getComponents()) {
 			String Compare = c.getText().replaceAll("<col=ffffff>", "");
-			String Bars = Parent.getComponent(c.getIndex() + 1).getText().replaceAll("<col=00ff00>", "").replaceAll("Bar", "").replaceAll(" ", "");
+			String Bars = Parent.getComponent(c.getIndex() + 1).getText().replaceAll("<col=00ff00>", "").replaceAll("Bar", "").replaceAll("s", "").replaceAll(" ", "");
 			if (Compare.toLowerCase().equals(new String(BuildString).toLowerCase()) && c != null && Parent != null) {
 				BarsNeeded = Integer.parseInt(Bars);
 				c.doClick(false);
