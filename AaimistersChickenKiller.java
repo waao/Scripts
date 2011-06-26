@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.26 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.27 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -25,6 +25,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -52,6 +54,7 @@ import javax.swing.border.MatteBorder;
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.gui.AccountManager;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
@@ -62,8 +65,7 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer v1.26", keywords = "Combat", version = 1.26, description = ("Kills chickens."))
-@SuppressWarnings("deprecation")
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer v1.27", keywords = "Combat", version = 1.27, description = ("Kills chickens."))
 public class AaimistersChickenKiller extends Script implements MessageListener, PaintListener, MouseListener {
 
 	private RSTile InPen;
@@ -216,12 +218,44 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	}
 
 	public double getVersion() { 
-		return 1.26;
+		return 1.27;
 	}
 	
 	@Override
 	public boolean onStart() {
 		status = "Starting up...";
+        
+		URLConnection url = null;
+        BufferedReader in = null;
+        
+        //Check right away...
+        try {
+            //Open the version text file
+            url = new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openConnection();
+            //Create an input stream for it
+            in = new BufferedReader(new InputStreamReader(url.getInputStream()));
+            //Check if the current version is outdated
+            if (Double.parseDouble(in.readLine()) > getVersion()) {
+                if (JOptionPane.showConfirmDialog(null, "Please visit the thread: " +
+                		"http://www.powerbot.org/vb/showthread.php?t=644016") == 0) {
+                	//If so, tell to go to the thread.
+                	openThread();
+                	if (in != null) {
+                   	 in.close();
+                    }
+                	return false;
+                }
+            } else {
+            	JOptionPane.showMessageDialog(null, "You have the latest version.");
+            	//User has the latest version. Tell them!
+                 if (in != null) {
+                	 in.close();
+                 }
+            }
+        } catch (IOException e){
+            log("Problem getting version. Please visit the forums.");
+            return false; //Return false if there was a problem
+        }
 		
         try {
 			settingsFile.createNewFile();
@@ -234,8 +268,14 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
         	return false;
         }
 		
-        if (doBreak) {
-			breakingNew();
+		if (doBreak) {
+			if (AccountManager.isTakingBreaks(account.getName())) {
+					log.severe("Turn Off Bot Breaks!");
+					log.severe("Turning off custom breaker...");
+					doBreak = false;
+			} else {
+				breakingNew();
+			}
 		}
         
 		return true;
@@ -627,7 +667,12 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 						} else if (inventory.isFull()) {
 							while (inventory.contains(bones)) {
 								status = "Burying bones...";
-								bury(true, bones);
+								if (loot.contains(bones)) {
+									bury(true, bones);
+								} else {
+									inventory.getItem(bones).doAction("Drop");
+									return random(350, 600);
+								}
 								sleep(600, 1350);
 							}
 						} else {
@@ -1616,7 +1661,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	            }
 	        });
 			
-	        AaimistersGUI.setTitle("Aaimister's Chciken Killer v1.26");
+	        AaimistersGUI.setTitle("Aaimister's Chciken Killer v1.27");
 	        AaimistersGUI.setForeground(new Color(255, 255, 255));
 	        AaimistersGUI.setBackground(Color.LIGHT_GRAY);
 	        AaimistersGUI.setResizable(false);
@@ -1635,7 +1680,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 			contentPane.add(panel);
 			panel.setLayout(null);
 			
-			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.26");
+			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.27");
 			lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
 			panel.add(lblAaimistersEssenceMiner);
 			lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
