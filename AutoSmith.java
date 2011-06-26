@@ -26,7 +26,7 @@ import org.rsbot.script.wrappers.RSTile;
 import java.io.IOException;
 import java.net.URL;
 
-@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.5, description = "Smithing Done Right!")
+@ScriptManifest(authors = "BlackWood", name = "Ultra Smithing", version = 1.6, description = "Smithing Done Right!")
 public class UltraSmithing extends Script implements PaintListener, MessageListener, MouseListener {
 	
 	Script Script = this;
@@ -568,7 +568,7 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 								EXPMake = EXPGained;
 							}
 						}
-						if (inventory.contains(Bar) && calc.distanceTo(WalkTile) > 3) {
+						if (inventory.contains(Bar) && inventory.getCount(Bar) >= BarsNeeded && calc.distanceTo(WalkTile) > 3) {
 							walkTo(WalkTile);
 						}
 						if (inventory.contains(Bar) && inventory.getCount(Bar) >= BarsNeeded && calc.distanceTo(WalkTile) < 4 && !interfaces.get(SmithWidget).isValid()) {
@@ -593,12 +593,12 @@ public class UltraSmithing extends Script implements PaintListener, MessageListe
 								waitFor(inventory.getCountExcept(Bar, Hammer) < 1, 2500);
 							}
 						}
-						if (inventory.getCountExcept(Bar, Hammer) < 1 && !inventory.contains(Bar)) {
+						if (inventory.getCountExcept(Bar, Hammer) < 1 && (!inventory.contains(Bar) || inventory.getCount(Bar) < BarsNeeded)) {
 							if (withdraw(Bar, 0)) {
 								waitFor(inventory.getItem(Bar) != null, 2000);
 							}
 						}
-						if (inventory.getCountExcept(Bar, Hammer) < 1 && inventory.contains(Bar)) {
+						if (inventory.getCountExcept(Bar, Hammer) < 1 && inventory.contains(Bar) && inventory.getCount(Bar) >= BarsNeeded) {
 							if (random(1, 2) == 1) {
 								if (bank.close()) {
 									waitFor(!bank.isOpen(), 2000);
