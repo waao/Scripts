@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.35 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.36 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -56,8 +56,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.35", keywords = "Mining", version = 1.35, description = ("Mines Essence."))
-@SuppressWarnings("deprecation")
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.36", keywords = "Mining", version = 1.36, description = ("Mines Essence."))
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -173,8 +172,8 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	int Wizard = 462;
 	int priceEssence;
 	int aubCount = 0;
-	int rail = 493;
-	int rock = 512;
+	int obs[] = { 493, 512, 494, 469, 497, 467, 455, 443, 44497, 2491 };
+	int dotCount;
 	int errorCount;
 	int xpEss = 5;
 	int currentXP;
@@ -209,7 +208,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			mining = false;
 			if (Bank.contains(getLocation())) {
 				return State.BANK;
-			} else if (ra() != null) {
+			} else if (objects.getNearest(obs) != null) {
 				return State.PORTAL;
 			} else if (CityArea.contains(getLocation()) && !Bank.contains(getLocation())) {
 				return State.TOBANK;
@@ -219,7 +218,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		} else if (!inventory.isFull()) {
 			if (AtPerson.contains(getLocation())) {
 				return State.TELE;
-			} else if (ra() != null) {
+			} else if (objects.getNearest(obs) != null) {
 				try {
 					RSObject ess = objects.getNearest(essenceID());
 					RSTile loc = ess.getArea().getNearestTile(getLocation());
@@ -242,11 +241,11 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	}
 	
 	public double getVersion() { 
-		return 1.35;
+		return 1.36;
 	}
 	
 	public boolean onStart() {
-		status = "Starting up...";
+		status = "Starting up";
 				
 		URLConnection url = null;
         BufferedReader in = null;
@@ -406,6 +405,61 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
         return false;
 	}
 	
+	private void waitForArea(RSArea area) {
+		long start = System.currentTimeMillis();
+		idle = 0;
+		while (!area.contains(getLocation())) {
+			if (idle > 60) {
+				idle = 0;
+				break;
+			}
+			if (System.currentTimeMillis() >= start + 18000) {
+				break;
+			}
+			if (objects.getNearest(obs) != null) {
+				idle++;
+			}
+			sleep(50);
+		}
+	}
+	
+	private void waitForObj() {
+		long start = System.currentTimeMillis();
+		idle = 0;
+		while (objects.getNearest(obs) == null) {
+			if (idle > 60) {
+				idle = 0;
+				break;
+			}
+			if (System.currentTimeMillis() >= start + 18000) {
+				break;
+			}
+			if (AtPerson.contains(getLocation())) {
+				idle++;
+			}
+			sleep(50);
+		}
+	}
+	
+	private String getDots() {
+		if (dotCount <= 15) {
+			dotCount++;
+			return ".";
+		} else if (dotCount >= 15 && dotCount <= 25) {
+			dotCount++;
+			return "..";
+		} else if (dotCount >= 25 && dotCount <= 35) {
+			dotCount++;
+			return "...";
+		} else if (dotCount >= 35 && dotCount <= 45) {
+			dotCount++;
+			return "";
+		} else {
+			dotCount = 0;
+			return ".";
+		}
+	}
+	
 	private String Location() {
 		if (AtPerson.contains(getLocation())) {
 			if (varrock) {
@@ -415,9 +469,9 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			}
 		} else if (Bank.contains(getLocation())) {
 			return "Bank";
-		} else if (ra() != null) {
+		} else if (objects.getNearest(obs) != null) {
 			return "Mine";
-		} else if (calc.distanceTo(BankT) > 100 && ra() == null) {
+		} else if (calc.distanceTo(BankT) > 100 && objects.getNearest(obs) == null) {
 			if (!game.isLoggedIn()) {
 				return "Login Screen";
 			} else {
@@ -473,31 +527,11 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		return 0;
 	}
 	
-	private void waitToGO(boolean yes) {
-		if (yes) {
-			while (!AtPerson.contains(getLocation())) {
-				if (idle > 45) {
-					break;
-				}
-				sleep(200);
-				idle++;
-			}
-		} else {
-			while(AtPerson.contains(getLocation())) {
-				if (idle > 45) {
-					break;
-				}
-				sleep(200);
-				idle++;
-			}
-		}
-	}
-	
 	private void doRest() {
-		if (walking.getEnergy() < random(10, 30) && (calc.distanceTo(PersonT) >= 7) && ra() == null) {
+		if (walking.getEnergy() < random(10, 30) && (calc.distanceTo(PersonT) >= 7) && objects.getNearest(obs) == null) {
 			if (!resting && !mining) {
-				status = "Resting...";
-				interfaces.getComponent(750, 6).doAction("Rest");
+				status = "Resting";
+				interfaces.getComponent(750, 6).interact("Rest");
 				mouse.moveSlightly();
 				resting = true;
 				sleep(1500, 2000);
@@ -526,7 +560,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			}
 		} else {
 			if (rest) {
-				if ((calc.distanceTo(PersonT) >= 7) || ra() == null) {
+				if ((calc.distanceTo(PersonT) >= 7) || objects.getNearest(obs) == null) {
 					doRest();
 				}
 			}
@@ -536,7 +570,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	@Override
 	public int loop() {
 		if (breakingCheck() && doBreak) {
-			status = "Breaking...";
+			status = "Breaking";
 			long endTime = System.currentTimeMillis() + nextLength;
 			totalBreakTime += (nextLength + 5000);
     		lastBreakTime = (totalBreakTime - (nextLength + 5000));
@@ -563,7 +597,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		}
 		
 		if (!game.isLoggedIn()) {
-			status = "Breaking...";
+			status = "Breaking";
 			return 3000;
 		}
 		
@@ -585,7 +619,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		setRun();
 		
 		if (resting) {
-			status = "Resting...";
+			status = "Resting";
 			random = random(0, 7);
 			if (antiBanTime <= System.currentTimeMillis()) {
 				check = false;
@@ -601,7 +635,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		switch (getState()) {
 		case TOBANK:
 			clickedPortal = false;
-			status = "Walking to bank...";
+			status = "Walking to bank";
 			try {
 				if (!Bank.contains(getLocation())) {
 					if (AtPerson.contains(getLocation())) {
@@ -637,14 +671,14 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 					}
 					idle = 0;
 				}
-				if (ra() != null) {
+				if (objects.getNearest(obs) != null) {
 					RSObject ess = objects.getNearest(essenceID());
 					if (ess != null) {
 						RSTile loc = ess.getArea().getNearestTile(getLocation());
 						if (!ess.isOnScreen()) {
 							idle++;
 							if (calc.distanceTo(loc) > 3 && !mining) {
-								status = "Walking to essence...";
+								status = "Walking to essence";
 								if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
 									walking.walkTileMM(walking.getClosestTileOnMap(loc.randomize(2, 2)));
 									return random(150, 300);
@@ -661,8 +695,8 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 									return random(150, 300);
 								}
 							} else if (!mining) {
-								status = "Mining...";
-								ess.doAction("Mine");
+								status = "Mining";
+								ess.interact("Mine");
 								mining = true;
 								idle = 0;
 								return random(2000, 2700);
@@ -681,9 +715,9 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			notChosen = true;
 			opened = false;
 			if (varrock) {
-				status = "Walking to Aubury...";
+				status = "Walking to Aubury";
 			} else {
-				status = "Walking to Wizard...";
+				status = "Walking to Wizard";
 			}
 			try {
 				if (!AtPerson.contains(getLocation())) {
@@ -718,17 +752,17 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		case TELE:
 			try {
 				if (idle > 15) {
-					if (ra() == null) {
+					if (objects.getNearest(obs) == null) {
 						RSNPC per = perNPC();
 						if (interfaces.getComponent(620, 18).isValid()) {
 							close();
 						}
 						if (per != null) {
-							per.doAction("Teleport");
+							per.interact("Teleport");
 							sleep(2000, 3000);
 						} else {
 							RSNPC plant = plantNPC();
-							plant.doAction("Teleport");
+							plant.interact("Teleport");
 							sleep(2000, 3000);
 						}
 					} else {
@@ -747,26 +781,24 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 					if (per != null) {
 						idle++;
 						if (!clickedPer) {
-							per.doAction("Teleport");
+							per.interact("Teleport");
 							clickedPer = true;
-							waitToGO(true);
 						} else {
-							return random(200, 800);
+							waitForObj();
 						}
 					} else {
 						RSNPC plant = plantNPC();
 						idle++;
 						if (!clickedPer) {
-							plant.doAction("Teleport");
+							plant.interact("Teleport");
 							clickedPer = true;
-							waitToGO(true);
 						} else {
-							return random(200, 800);
+							waitForObj();
 						}
 					}
 				} else {
 					idle++;
-					return random(300, 500);
+					waitForObj();
 				}
 			} catch (Exception e) {
 				idle++;
@@ -774,7 +806,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			
 			break;
 		case PORTAL:
-			status = "Walking to bank...";
+			status = "Walking to bank";
 			if (idle > 7) {
 				clickedPortal = false;
 				idle = 0;
@@ -796,10 +828,9 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 										return random(150, 300);
 									}
 								} else if (!clickedPortal) {
-									portal().doAction("Enter");
+									portal().interact("Enter");
 									clickedPortal = true;
 									idle = 0;
-									waitToGO(false);
 									return random(200, 500);
 								}
 							}
@@ -812,17 +843,16 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 								}
 							}
 							if (!clickedPortal) {
-								portal().doAction("Enter");
+								portal().interact("Enter");
 								clickedPortal = true;
 								idle = 0;
-								waitToGO(true);
-								return random(200, 500);
+								waitForArea(AtPerson);
 							}
 						}
 					}
 				} else {
 					idle++;
-					return random(500, 800);
+					waitForArea(AtPerson);
 				}
 			} catch (Exception e) {
 				idle++;
@@ -830,7 +860,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			
 			break;
 		case BANK:
-			status = "Banking...";
+			status = "Banking";
 			if (idle > 7) {
 				opened = false;
 				notChosen = true;
@@ -862,9 +892,9 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 						idle++;
 						if (!opened) {
 							if (useBooth) {
-								booth.doAction("Use-quickly");
+								booth.interact("Use-quickly");
 							} else {
-								bankP.doAction("Bank Banker");
+								bankP.interact("Bank Banker");
 							}
 							opened = true;
 							idle = 0;
@@ -874,10 +904,9 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 				} else {
 					opened = false;
 					if (inventory.containsOneOf(pickaxes)) {
-						RSItem rune = inventory.getItem(iness);
 						idle++;
 						if (!bankedOpen) {
-							rune.doAction("Deposit-All");
+							bank.depositAllExcept(pickaxes);
 							bankedOpen = true;
 							return random(100, 150);
 						}
@@ -904,7 +933,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	
 	private void close() {
 		RSComponent close = interfaces.getComponent(620, 18);
-		close.doAction("Close");
+		close.interact("Close");
 		sleep(100, 300);
 	}
 	
@@ -917,7 +946,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 					walking.walkTileMM(doorT);
 					sleep(1200, 1500);
 				} else {
-					closed.doAction("Open");
+					closed.interact("Open");
 					sleep(1000, 1200);
 				}
 			}
@@ -1097,14 +1126,6 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			 });
 		}
 	 
-	 private RSObject ra() {
-			return objects.getNearest(new Filter<RSObject>() {
-				public boolean accept(RSObject ra) {
-					return ra.getID() == rail || ra.getID() == rock;
-				}
-			});
-	 }
-	 
 	private RSNPC perNPC() {
 		RSNPC interacting = interactingNPC();
 		return interacting != null ? interacting : npcs.getNearest(new Filter<RSNPC>() {
@@ -1236,7 +1257,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		}
     	
     	// Portal
-    	if (ra() != null) {
+    	if (objects.getNearest(obs) != null) {
         	final RSTile t = portal().getLocation();
         	final RSTile tx = new RSTile (t.getX() + 1, t.getY());
         	final RSTile ty = new RSTile (t.getX(), t.getY() + 1);
@@ -1431,7 +1452,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
     				g.setColor(LineColor);
     				g.drawString("Time running: " + formattedTime, 63, 390);
     				g.drawString("Location: " + Location(), 63, 404);
-    				g.drawString("Status: " + status, 63, 418);
+    				g.drawString("Status: " + status + getDots(), 63, 418);
     				g.drawString("Current Ore: " + currentOre, 63, 433);
     				g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
     				g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1448,7 +1469,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
     				g.setColor(LineColor);
     				g.drawString("Time running: " + formattedTime, 63, 390);
     				g.drawString("Location: " + Location(), 63, 404);
-    				g.drawString("Status: " + status, 63, 418);
+    				g.drawString("Status: " + status + getDots(), 63, 418);
     				g.drawString("Current Ore: " + currentOre, 63, 433);
     				g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
     				g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1745,7 +1766,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	            }
 	        });
 	        
-    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.35");
+    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.36");
     		AaimistersGUI.setForeground(new Color(255, 255, 255));
     		AaimistersGUI.setBackground(Color.LIGHT_GRAY);
     		AaimistersGUI.setResizable(false);
@@ -1764,7 +1785,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
     		contentPane.add(panel);
     		panel.setLayout(null);
     		
-    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.35");
+    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.36");
     		lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
     		panel.add(lblAaimistersEssenceMiner);
     		lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
