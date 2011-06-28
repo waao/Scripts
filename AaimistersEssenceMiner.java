@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.36 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.37 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -56,7 +56,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.36", keywords = "Mining", version = 1.36, description = ("Mines Essence."))
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.37", keywords = "Mining", version = 1.37, description = ("Mines Essence."))
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -241,7 +241,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	}
 	
 	public double getVersion() { 
-		return 1.36;
+		return 1.37;
 	}
 	
 	public boolean onStart() {
@@ -421,6 +421,8 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			}
 			sleep(50);
 		}
+		clickedPortal = false;
+		idle = 0;
 	}
 	
 	private void waitForObj() {
@@ -439,6 +441,8 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			}
 			sleep(50);
 		}
+		clickedPer = false;
+		idle = 0;
 	}
 	
 	private String getDots() {
@@ -846,13 +850,13 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 								portal().interact("Enter");
 								clickedPortal = true;
 								idle = 0;
-								waitForArea(AtPerson);
+								waitForArea(CityArea);
 							}
 						}
 					}
 				} else {
 					idle++;
-					waitForArea(AtPerson);
+					waitForArea(CityArea);
 				}
 			} catch (Exception e) {
 				idle++;
@@ -1766,7 +1770,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	            }
 	        });
 	        
-    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.36");
+    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.37");
     		AaimistersGUI.setForeground(new Color(255, 255, 255));
     		AaimistersGUI.setBackground(Color.LIGHT_GRAY);
     		AaimistersGUI.setResizable(false);
@@ -1785,7 +1789,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
     		contentPane.add(panel);
     		panel.setLayout(null);
     		
-    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.36");
+    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.37");
     		lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
     		panel.add(lblAaimistersEssenceMiner);
     		lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
