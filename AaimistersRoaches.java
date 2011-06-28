@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.17 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.18 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -77,8 +77,7 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.17", keywords = "Combat", version = 1.17, description = ("Kills roaches in Edgville."))
-@SuppressWarnings("deprecation")
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimister's Roach Killer v1.18", keywords = "Combat", version = 1.18, description = ("Kills roaches in Edgville."))
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
@@ -216,6 +215,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	int minHealth = 200;
 	int noFood;
 	int X = 20;
+	int dotCount;
 	int v,z,x;
 	int id;
 	int maxBetween;
@@ -352,11 +352,11 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	public double getVersion() { 
-		return 1.17;
+		return 1.18;
 	}
 	
 	public boolean onStart() {
-		status = "Starting up...";
+		status = "Starting up";
 		
 		URLConnection url = null;
         BufferedReader in = null;
@@ -370,7 +370,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
             //Check if the current version is outdated
             if (Double.parseDouble(in.readLine()) > getVersion()) {
                 if (JOptionPane.showConfirmDialog(null, "Please visit the thread: " +
-                		"http://www.powerbot.org/vb/showthread.php?t=769805") == 0) {
+                		"http://www.powerbot.org/community/topic/490725-aaimisters-flawless-roach-killer/") == 0) {
                 	//If so, tell to go to the thread.
                 	openThread();
                 	if (in != null) {
@@ -466,6 +466,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			long varTime = random(3660000, 10800000);
 			nextBreak = System.currentTimeMillis() + varTime;
 			nextBreakT = varTime;
+			long varLength = random(900000, 3600000);
 			nextLength = nextBreakT;
 		} else {
 			int diff = random(0, 5) * 1000 * 60;
@@ -484,6 +485,25 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			return true;
 		}
 		return false;
+	}
+	
+	private String getDots() {
+		if (dotCount <= 15) {
+			dotCount++;
+			return ".";
+		} else if (dotCount >= 15 && dotCount <= 25) {
+			dotCount++;
+			return "..";
+		} else if (dotCount >= 25 && dotCount <= 35) {
+			dotCount++;
+			return "...";
+		} else if (dotCount >= 35 && dotCount <= 45) {
+			dotCount++;
+			return "";
+		} else {
+			dotCount = 0;
+			return ".";
+		}
 	}
 	
 	private String Location() {
@@ -579,12 +599,24 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 		return false;
 	}
 	
-	private void clickNPC(RSNPC x, String y) {
+	private boolean valid() {
+		//return calc.distanceTo(bankT) < 100 && game.isLoggedIn() && getMyPlayer().isOnScreen();
+		return calc.distanceTo(AM.bankTile) < 1000 && game.isLoggedIn();
+	}
+	
+	private void clickNPC() {
 		try {
-			if (x.getModel().getPointOnScreen() != null) {
-				x.getModel().hover();
-				sleep(150, 300);
-				x.doAction(y);
+			while (roach().getModel().getPointOnScreen() != null && getMyPlayer().getInteracting() == null && valid()) {
+				if (roach().getModel() != null) {
+					if (!getMyPlayer().isMoving()) {
+						roach().getModel().hover();
+						sleep(150, 300);
+						roach().interact("Attack " + roach().getName());
+						sleep(500, 1000);
+					}
+				} else {
+					break;
+				}
 			}
 		} catch (Exception e) {
 
@@ -596,20 +628,39 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			if (x.getModel().getPointOnScreen() != null) {
 				x.getModel().hover();
 				sleep(150, 300);
-				x.doAction(y);
+				x.interact(y);
 			}
 		} catch (Exception e) {
 
 		}
 	}
 	
+	private boolean itemThere(RSTile tile, int id) {
+		for (int i = 0; i < groundItems.getAllAt(tile).length; i++) {
+			if (groundItems.getAllAt(tile)[i].getItem().getID() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	private void lootItem(RSGroundItem x, String y) {
 		try {
-			if (x.isOnScreen()) {
-				mouse.move(calc.tileToScreen(x.getLocation()));
-				sleep(150, 300);
-				x.doAction("Take " + y);
+			RSTile lt = x.getLocation();
+			while (x.isOnScreen() && x != null && valid()) {
+				if (!getMyPlayer().isMoving()) {
+					mouse.move(calc.tileToScreen(x.getLocation()));
+					sleep(100, 200);
+					x.interact("Take " + y);
+					sleep(600, 1000);
+				}
+				try {
+					if (!itemThere(lt, x.getItem().getID())) {
+						break;
+					}
+				} catch (Exception e) {
+					
+				}
 			}
 		} catch (Exception e) {
 			
@@ -618,7 +669,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	
 	public int loop() {
 		if (breakingCheck() && doBreak) {
- 			status = "Breaking...";
+ 			status = "Breaking";
  			long endTime = System.currentTimeMillis() + nextLength;
  			totalBreakTime += (nextLength + 5000);
      		lastBreakTime = (totalBreakTime - (nextLength + 5000));
@@ -643,9 +694,9 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
  			}
  			return 10;
  		}
- 		
+		
         if (!game.isLoggedIn()) {
- 			status = "Breaking...";
+ 			status = "Breaking";
  			return 3000;
  		}
          
@@ -691,7 +742,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
  		if (equip) {
  			if (inventory.containsOneOf(Aitems)) {
  				RSItem i = inventory.getItem(Aitems);
- 				i.doAction("Wield");
+ 				i.interact("Wield");
  				equip = false;
  				return random(500, 1000);
  			} else {
@@ -716,13 +767,13 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 		case EAT:
 			if (inventory.contains(food)) {
 				RSItem foo = inventory.getItem(food);
-				foo.doAction("Eat");
+				foo.interact("Eat");
 				return random(1200, 2000);
 			}
 			
 			break;
 		case TOROACH:
-			status = "Walking to roaches...";
+			status = "Walking to roaches";
 			if (idle > 5) {
 				clicked = false;
 				idle = 0;
@@ -784,7 +835,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 				clicked = false;
 				idle = 0;
 			}
-			status = "Walking to bank...";
+			status = "Walking to bank";
 			try {
 				if (game.getPlane() == 3) {
 					RSObject rope = objects.getNearest(outcave);
@@ -838,9 +889,9 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			
 			break;
 		case ATTACK:
-			status = "Attacking roaches...";
+			status = "Attacking roaches";
 			clicked = false;
-			if (idle > 8) {
+			if (idle > 5) {
 				attacked = false;
 				idle = 0;
 			}
@@ -853,17 +904,16 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 					if (roach().isOnScreen()) {
 						idle++;
 						if (!attacked) {
-							clickNPC(roach(), "Attack");
+							clickNPC();
 							rCount++;
 							attacked = true;
-							wLoot = true;
 							idle = 0;
-							return random(500, 1000);
+							return random(300, 600);
 						}
 					} else {
 						if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
 							walking.walkTileMM(walking.getClosestTileOnMap(roach().getLocation().randomize(1, 1)));
-							return random(1000, 1300);
+							return random(300, 600);
 						}
 					}
 				} else {
@@ -872,6 +922,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 				}
 			} else {
 				idle = 0;
+				wLoot = true;
 				if (antiBanTime <= System.currentTimeMillis()) {
 					doAntiBan();
 				}
@@ -881,7 +932,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			
 			break;
 		case BANK:
-			status = "Banking...";
+			status = "Banking";
 			clicked = false;
 			if (idle > 3) {
 				opened = false;
@@ -909,9 +960,9 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 					idle++;
 					if (!opened) {
 						if (useBooth) {
-							booth.doAction("Use-quickly");
+							booth.interact("Use-quickly");
 						} else {
-							bankP.doAction("Bank Banker");
+							bankP.interact("Bank Banker");
 						}
 						opened = true;
 						return random(200, 500);
@@ -949,7 +1000,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			break;
 		case LOOT:
 			attacked = false;
-			status = "Picking up loot...";
+			status = "Picking up loot";
 			wLoot = false;
 			if (idle > 3) {
 				clicked = false;
@@ -957,7 +1008,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			}
 			if (inventory.isFull()) {
 				RSItem foo = inventory.getItem(food);
-				foo.doAction("Eat");
+				foo.interact("Eat");
 				return random(1000, 1300);
 			}
 			try {
@@ -1294,7 +1345,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	   g.setColor(LineColor);
 	   g.drawString("Time running: " + formattedTime, 63, 390);
 	   g.drawString("Location: " + Location(), 63, 404);
-	   g.drawString("Status: " + status, 63, 418);
+	   g.drawString("Status: " + status + getDots(), 63, 418);
 	   g.drawString("Current NPC: " + currentNPC, 63, 433);
 	   g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
 	   g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1623,8 +1674,8 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 						g.drawString("Total Charm(s): " + formatter.format((long)totalCharms), 264, 447);
 						g.drawString("Charm(s) / Hour: " + formatter.format((long)charmsHour), 264, 463);
 					} else {
-						g.drawString("Roaches Attacked: " + formatter.format((long)rCount), 264, 447);
-						g.drawString("Roaches / Hour: " + formatter.format((long)rHour), 264, 463);
+						g.drawString("Roache(s) Attacked: " + formatter.format((long)rCount), 264, 447);
+						g.drawString("Roache(s) / Hour: " + formatter.format((long)rHour), 264, 463);
 					}
 				}
 				if (StatAT) {
