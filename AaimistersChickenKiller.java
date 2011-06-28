@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.27 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.28 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -65,7 +65,7 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer v1.27", keywords = "Combat", version = 1.27, description = ("Kills chickens."))
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Chicken Killer v1.28", keywords = "Combat", version = 1.28, description = ("Kills chickens."))
 public class AaimistersChickenKiller extends Script implements MessageListener, PaintListener, MouseListener {
 
 	private RSTile InPen;
@@ -171,6 +171,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	int errorCount;
 	int checkFea;
 	int i;
+	int dotCount;
 	int chicToLvl;
 	int chicHour;
 	int xpGained;
@@ -218,12 +219,12 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	}
 
 	public double getVersion() { 
-		return 1.27;
+		return 1.28;
 	}
 	
 	@Override
 	public boolean onStart() {
-		status = "Starting up...";
+		status = "Starting up";
         
 		URLConnection url = null;
         BufferedReader in = null;
@@ -330,6 +331,25 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 			log("In " + formattedTime + " You killed " + formatter.format(totalChic) + " chickens, gained " + formatter.format(sgainedLvl) + " Level(s), and buried " + formatter.format(buriedBones) + " bones!");
 		} else {
 			log("In " + formattedTime + " You killed " + formatter.format(totalChic) + " chickens, and gained " + formatter.format(sgainedLvl) + " Level(s)!");
+		}
+	}
+	
+	private String getDots() {
+		if (dotCount <= 15) {
+			dotCount++;
+			return ".";
+		} else if (dotCount >= 15 && dotCount <= 25) {
+			dotCount++;
+			return "..";
+		} else if (dotCount >= 25 && dotCount <= 35) {
+			dotCount++;
+			return "...";
+		} else if (dotCount >= 35 && dotCount <= 45) {
+			dotCount++;
+			return "";
+		} else {
+			dotCount = 0;
+			return ".";
 		}
 	}
 	
@@ -544,7 +564,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	@Override
 	public int loop() {
 		if (breakingCheck() && doBreak) {
-			status = "Breaking...";
+			status = "Breaking";
 			long endTime = System.currentTimeMillis() + nextLength;
 			totalBreakTime += (nextLength + 5000);
     		lastBreakTime = (totalBreakTime - (nextLength + 5000));
@@ -571,7 +591,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 		}
 		
 		if (!game.isLoggedIn()) {
-			status = "Breaking...";
+			status = "Breaking";
 			return 3000;
 		}
 		
@@ -619,7 +639,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 						game.openTab(4);
 					} else {
 						if (inventory.contains(arrow)) {
-							wield.doAction("Wield");
+							wield.interact("Wield");
 							return random(800, 1000);
 						} else {
 							outofAmmo = true;
@@ -642,12 +662,12 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 				try {
 					RSNPC chic = newNPC();
 					if (chic != null && !wait) {
-						status = "Killing chickens...";
+						status = "Killing chickens";
 						if (players.getMyPlayer().isMoving()) {
 							return random(400, 600);
 						}
 						if (chic.isOnScreen()) {
-							chic.doAction("Attack " + chic.getName());
+							chic.interact("Attack " + chic.getName());
 							return random(1000, 1600);
 						} else if (!chic.isOnScreen()) {
 							RSTile chicT = walking.getClosestTileOnMap(chic.getLocation()).randomize(-1, 1);
@@ -660,18 +680,18 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 						}
 					} else {
 						if (inventory.containsOneOf(drop)) {
-							status = "Dropping junk...";
+							status = "Dropping junk";
 							RSItem d = inventory.getItem(drop);
-							d.doAction("Drop");
+							d.interact("Drop");
 							return random(350, 600);
 						} else if (inventory.isFull()) {
 							while (inventory.contains(bones)) {
-								status = "Burying bones...";
 								if (loot.contains(bones)) {
+									status = "Burying bones";
 									bury(true, bones);
 								} else {
-									inventory.getItem(bones).doAction("Drop");
-									return random(350, 600);
+									status = "Dropping bones";
+									inventory.getItem(bones).interact("Drop");
 								}
 								sleep(600, 1350);
 							}
@@ -679,9 +699,9 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 							if (Pen.contains(getMyPlayer().getLocation()) && !loot.isEmpty()) {
 								skip = true;
 								while (feather() != null && loot.contains(feathers) && checkLog()) {
-									status = "Looting feathers...";
+									status = "Looting feathers";
 									if (feather().isOnScreen()) {
-										feather().doAction("Take " + feather().getItem().getName());
+										feather().interact("Take " + feather().getItem().getName());
 										sleep(800, 1200);
 										totalFeather = inventory.getCount(true, 314) - checkFea;
 										return 1;
@@ -691,9 +711,9 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 									}
 								} 
 								while (arrow() != null && loot.contains(arrow) && checkLog()) {
-									status = "Picking up arrows...";
+									status = "Picking up arrows";
 									if (arrow().isOnScreen()) {
-										arrow().doAction("Take " + arrow().getItem().getName());
+										arrow().interact("Take " + arrow().getItem().getName());
 										return random(800, 1200);
 									} else {
 										walking.walkTileMM(arrow().getLocation().randomize(1, 1));
@@ -701,9 +721,9 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 									}
 								} 
 								while (bones() != null && loot.contains(bones) && checkLog()) {
-									status = "Looting bones...";
+									status = "Looting bones";
 									if (bones().isOnScreen()) {
-										bones().doAction("Take " + bones().getItem().getName());
+										bones().interact("Take " + bones().getItem().getName());
 										if (newNPC() != null) {
 											wait = false;
 										}
@@ -729,7 +749,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 			}
 			break;
 		case BACKTOCHICK:
-			status = "Finding pen...";
+			status = "Finding pen";
 			if (!atPen()) {
 				if (!idle() || getMyPlayer().isInCombat()) {
 					return random(1000, 1500);
@@ -1250,7 +1270,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 				g.setColor(LineColor);
 				g.drawString("Time running: " + formattedTime, 63, 390);
 				g.drawString("Location: " + getLocation(), 63, 404);
-				g.drawString("Status: " + status, 63, 418);
+				g.drawString("Status: " + status + getDots(), 63, 418);
 				g.drawString("Training: " + currentStat, 63, 433);
 				g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
 				g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1269,7 +1289,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 				g.setColor(LineColor);
 				g.drawString("Time running: " + formattedTime, 63, 390);
 				g.drawString("Location: " + getLocation(), 63, 404);
-				g.drawString("Status: " + status, 63, 418);
+				g.drawString("Status: " + status + getDots(), 63, 418);
 				g.drawString("Training: " + currentStat, 63, 433);
 				g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
 				g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1288,7 +1308,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 				g.setColor(LineColor);
 				g.drawString("Time running: " + formattedTime, 63, 390);
 				g.drawString("Location: " + getLocation(), 63, 404);
-				g.drawString("Status: " + status, 63, 418);
+				g.drawString("Status: " + status + getDots(), 63, 418);
 				g.drawString("Training: " + currentStat, 63, 433);
 				g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
 				g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1307,7 +1327,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 				g.setColor(LineColor);
 				g.drawString("Time running: " + formattedTime, 63, 390);
 				g.drawString("Location: " + getLocation(), 63, 404);
-				g.drawString("Status: " + status, 63, 418);
+				g.drawString("Status: " + status + getDots(), 63, 418);
 				g.drawString("Training: " + currentStat, 63, 433);
 				g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
 				g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1326,7 +1346,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 				g.setColor(LineColor);
 				g.drawString("Time running: " + formattedTime, 63, 390);
 				g.drawString("Location: " + getLocation(), 63, 404);
-				g.drawString("Status: " + status, 63, 418);
+				g.drawString("Status: " + status + getDots(), 63, 418);
 				g.drawString("Training: " + currentStat, 63, 433);
 				g.drawString("Total XP: " + formatter.format((long)xpGained), 63, 447);
 				g.drawString("Total XP/h: " + formatter.format((long)xpHour), 63, 463);
@@ -1661,7 +1681,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	            }
 	        });
 			
-	        AaimistersGUI.setTitle("Aaimister's Chciken Killer v1.27");
+	        AaimistersGUI.setTitle("Aaimister's Chciken Killer v1.28");
 	        AaimistersGUI.setForeground(new Color(255, 255, 255));
 	        AaimistersGUI.setBackground(Color.LIGHT_GRAY);
 	        AaimistersGUI.setResizable(false);
@@ -1680,7 +1700,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 			contentPane.add(panel);
 			panel.setLayout(null);
 			
-			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.27");
+			lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.28");
 			lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
 			panel.add(lblAaimistersEssenceMiner);
 			lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
