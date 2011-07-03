@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.11 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.12 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -48,13 +48,13 @@ import javax.swing.border.EmptyBorder;
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
 import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.gui.AccountManager;
 import org.rsbot.script.Script;
 import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Lumbridge Cooker & Fisher v1.11", keywords = "Cooking & Fishing", version = 1.11, description = ("Fishes and cooks crayfish behind Lumbridge Castle."))
-@SuppressWarnings("deprecation")
+@ScriptManifest(authors = { "Aaimister" }, website = "http://e216829d.any.gs", name = "Aaimisters Lumbridge Cooker & Fisher v1.12", keywords = "Cooking & Fishing", version = 1.12, description = ("Fishes and cooks crayfish behind Lumbridge Castle."))
 public class AaimistersLumbridgeCookerFisher extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -134,14 +134,9 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 	
 	boolean currentlyBreaking;
 	boolean randomBreaks;
-	boolean buttonStats;
-	boolean buttonMain;
-	boolean buttonInfo;
 	boolean bankedOpen;
 	boolean useBanker;
 	boolean antiBanOn;
-	boolean buttonAll;
-	boolean cookPaint;
 	boolean clickNext;
 	boolean dropcoins;
 	boolean powerFish;
@@ -292,7 +287,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 	}
 	
 	public double getVersion() { 
-		return 1.11;
+		return 1.12;
 	}
 	
 	public boolean onStart() {
@@ -314,7 +309,13 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		startCookXP = skills.getCurrentExp(7);
 		currentCookXP = skills.getExpToNextLevel(7);
 		if (doBreak) {
-			breakingNew();
+			if (AccountManager.isTakingBreaks(account.getName())) {
+					log.severe("Turn Off Bot Breaks!");
+					log.severe("Turning off custom breaker...");
+					doBreak = false;
+			} else {
+				breakingNew();
+			}
 		}
 		
 		return true;
@@ -365,7 +366,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 		long totalTime = System.currentTimeMillis() - startTime;
     	final String formattedTime = formatTime((int) totalTime);
 		log("Thanks for using Aaimister's Lumbridge Cooker & Fisher!");
-		if (!powerFish) {
+		if (!powerFish && !rsell && !rbanking) {
 			log("In " + formattedTime + " You cooked " + formatter.format(shrimpCookCount) + " unburnt Crayfish & Caught " + formatter.format(shrimpCount) + " Crayfish!");
 			log("You Gained: " + cookLevel + " level(s) in Cooking & " + fishLevel + " level(s) in Fishing!");
 		} else {
@@ -763,7 +764,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			} else {
 				if (AM.AtCastle.contains(getMyPlayer().getLocation())) {
 					if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
-						walking.walkTileMM(walking.getClosestTileOnMap(AM.FishT));
+						walking.walkTileMM(walking.getClosestTileOnMap(new RSTile(3202, 3216)));
 						return 50;
 					}
 				}
@@ -1238,6 +1239,8 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
 			}
 		}
 	   
+	private Image Mouse = getImage("http://i88.photobucket.com/albums/k170/aaimister/mousee.png");
+	private Image cMouse = getImage("http://i88.photobucket.com/albums/k170/aaimister/cmouse.png");	
 	private Image logo = getImage("http://i88.photobucket.com/albums/k170/aaimister/AaimistersLumCookerFisher.png");
 	private Image atom = getImage("http://i88.photobucket.com/albums/k170/aaimister/Atomm.png");
 		
@@ -1530,7 +1533,7 @@ public class AaimistersLumbridgeCookerFisher extends Script implements PaintList
     	 
     	 private AaimistersGUI() {
  			initComponents();
- 		}
+ 		 }
 		
 		private void initComponents() {
 			AaimistersGUI = new JFrame();
