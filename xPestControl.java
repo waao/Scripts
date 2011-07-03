@@ -1,4 +1,5 @@
 
+import javax.swing.SwingUtilities;
 import javax.swing.event.*;
 import org.rsbot.script.methods.Game;
 import org.rsbot.script.util.Timer;
@@ -21,12 +22,12 @@ import org.rsbot.event.listeners.PaintListener;
 import org.rsbot.script.wrappers.RSArea;
 import org.rsbot.script.wrappers.RSComponent;
 
-@ScriptManifest(authors = "Chad [Xeroday]", name = "xPestControl", version = 1.58, website = "http://www.powerbot.org/community/topic/529507-xpestcontrol-simple-flawless-built-with-new-api/", description = "Flawless pest control. Start near the gangplank.")
+@ScriptManifest(authors = "Chad [Xeroday]", name = "xPestControl", version = 1.59, website = "http://www.powerbot.org/community/topic/529507-xpestcontrol-v159-new-gui-update-flawless/", description = "Flawless pest control. Start near the gangplank.")
 public class xPestControl extends Script implements PaintListener, MouseListener, MessageListener {
 
     String state = "Loading up...";
     public static final String version = Double.toString(xPestControl.class.getAnnotation(ScriptManifest.class).version());
-    public String URL = "http://www.powerbot.org/community/topic/529507-xpestcontrol-simple-flawless-built-with-new-api/";
+    public String URL = "http://www.powerbot.org/community/topic/529507-xpestcontrol-v159-new-gui-update-flawless/";
     private final RenderingHints antialiasing = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     RSTile joinTile;
     RSTile boatTile;
@@ -98,12 +99,22 @@ public class xPestControl extends Script implements PaintListener, MouseListener
 
     @Override
     public boolean onStart() {
-        Project gui = new Project();
-        gui.setVisible(true);
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    Project gui = new Project();
+                    gui.setVisible(true);
+                    
+                }
+            });
+        } catch (Throwable ignore) {
+        }
         while (speed < 0) {
             sleep(200);
         }
-        gui.setVisible(false);
         if (useAntiban > 0) {
             AB.setVisible(true);
             while (AB.isVisible()) {
@@ -597,6 +608,8 @@ public class xPestControl extends Script implements PaintListener, MouseListener
             }
 
             speed = Integer.parseInt(textField1.getText());
+            
+            this.setVisible(false);
         }
 
         private void initComponents() {
