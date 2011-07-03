@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.19 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.20 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -46,7 +45,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -77,21 +75,21 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, website = "http://3ff8d067.any.gs", name = "Aaimister's Roach Killer v1.19", keywords = "Combat", version = 1.19, description = ("Kills roaches in Edgville."))
+@ScriptManifest(authors = { "Aaimister" }, website = "http://3ff8d067.any.gs", name = "Aaimister's Roach Killer v1.20", keywords = "Combat", version = 1.20, description = ("Kills roaches in Edgville."))
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
 		
 		//Paths
-		final RSTile toBank[] = { new RSTile(3080, 3471), new RSTile(3080, 3480), new RSTile(3086, 3486),
-								  new RSTile(3093, 3490) };
+		final RSTile toBank[] = { new RSTile(3080, 3470), new RSTile(3081, 3479), new RSTile(3088, 3483),
+								  new RSTile(3093, 3489) };
 		final RSTile toCave[] = { new RSTile(3093, 3490), new RSTile(3084, 3484), new RSTile(3080, 3479), 
 								  new RSTile(3080, 3473), new RSTile(3078, 3464) };
 		
 		//Areas
 		final RSArea bankArea = new RSArea(new RSTile(3090, 3488), new RSTile(3098, 3499));
 		//final RSArea dropArea = new RSArea(new RSTile(3074, 3461), new RSTile(3080, 3466));
-		final RSArea rArea1 = new RSArea(new RSTile(3146, 4274), new RSTile(3160, 4281));
+		final RSArea rArea1 = new RSArea(new RSTile(3144, 4265), new RSTile(3173, 4281));
 		final RSArea rArea2 = new RSArea(new RSTile(3170, 4229), new RSTile(3196, 4273));
 		
 		//Tiles
@@ -352,7 +350,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	public double getVersion() { 
-		return 1.19;
+		return 1.20;
 	}
 	
 	public boolean onStart() {
@@ -817,7 +815,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 							return random(150, 300);
 						}
 					} else {
-						if (rope.isOnScreen()) {
+						if (rope.isOnScreen() && !getMyPlayer().isMoving()) {
 							idle++;
 							if (!clicked) {
 								clickObj(rope, "Climb");
@@ -827,7 +825,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 							}
 						} else {
 							camera.turnTo(rope);
-							return random(200, 400);
+							return random(800, 1200);
 						}
 					}
 				} else if (game.getPlane() == 2) {
