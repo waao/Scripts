@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.37 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.38 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -56,7 +56,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.37", keywords = "Mining", version = 1.37, description = ("Mines Essence."))
+@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.38", keywords = "Mining", version = 1.38, description = ("Mines Essence."))
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -241,44 +241,14 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	}
 	
 	public double getVersion() { 
-		return 1.37;
+		return 1.38;
 	}
 	
 	public boolean onStart() {
 		status = "Starting up";
-				
-		URLConnection url = null;
-        BufferedReader in = null;
         
-        //Check right away...
-        try {
-            //Open the version text file
-            url = new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openConnection();
-            //Create an input stream for it
-            in = new BufferedReader(new InputStreamReader(url.getInputStream()));
-            //Check if the current version is outdated
-            if (Double.parseDouble(in.readLine()) > getVersion()) {
-                if (JOptionPane.showConfirmDialog(null, "Please visit the thread: " +
-                		"http://www.powerbot.org/vb/showthread.php?t=651251") == 0) {
-                	//If so, tell to go to the thread.
-                	openThread();
-                	if (in != null) {
-                   	 in.close();
-                    }
-                	return false;
-                }
-            } else {
-            	JOptionPane.showMessageDialog(null, "You have the latest version.");
-            	//User has the latest version. Tell them!
-                 if (in != null) {
-                	 in.close();
-                 }
-            }
-        } catch (IOException e){
-            log("Problem getting version. Please visit the forums.");
-            return false; //Return false if there was a problem
-        }
-        
+		log("Dwarfeh showing Aaimister some love <3");
+		
         try {
 			settingsFile.createNewFile();
 		} catch (final IOException ignored) {
@@ -1770,7 +1740,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	            }
 	        });
 	        
-    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.37");
+    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.38");
     		AaimistersGUI.setForeground(new Color(255, 255, 255));
     		AaimistersGUI.setBackground(Color.LIGHT_GRAY);
     		AaimistersGUI.setResizable(false);
@@ -1789,7 +1759,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
     		contentPane.add(panel);
     		panel.setLayout(null);
     		
-    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.37");
+    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.38");
     		lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
     		panel.add(lblAaimistersEssenceMiner);
     		lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
