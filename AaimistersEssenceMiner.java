@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.38 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.39 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Scanner;
@@ -37,15 +36,15 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 
 import org.rsbot.event.events.MessageEvent;
 import org.rsbot.event.listeners.MessageListener;
@@ -56,7 +55,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, name = "Aaimisters Essence Miner v1.38", keywords = "Mining", version = 1.38, description = ("Mines Essence."))
+@ScriptManifest(authors = { "Aaimister" }, website = "http://fc4ea3b7.any.gs", name = "Aaimisters Essence Miner v1.39", keywords = "Mining", version = 1.39, description = ("Mines Essence."))
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -108,6 +107,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	private long runTime;
 	private long now;
 	
+	Updater u = new Updater();
 	AaimistersGUI g = new AaimistersGUI();
 	public final File settingsFile = new File(getCacheDirectory(), "AaimistersEMinerSettings.txt");
 	
@@ -156,6 +156,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	boolean rest;
 	boolean logTime;
 	boolean noClick;
+	boolean stop;
 	//Paint Buttons
 	boolean xButton = false;
 	boolean Stat = false;
@@ -204,50 +205,63 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	private enum State { TOBANK, MINE, TOMINE, PORTAL, TELE, BANK, ERROR };
 
 	private State getState() {
-		if (inventory.isFull()) {
-			mining = false;
-			if (Bank.contains(getLocation())) {
-				return State.BANK;
-			} else if (objects.getNearest(obs) != null) {
-				return State.PORTAL;
-			} else if (CityArea.contains(getLocation()) && !Bank.contains(getLocation())) {
-				return State.TOBANK;
-			} else {
-				return State.ERROR;
-			}
-		} else if (!inventory.isFull()) {
-			if (AtPerson.contains(getLocation())) {
-				return State.TELE;
-			} else if (objects.getNearest(obs) != null) {
-				try {
-					RSObject ess = objects.getNearest(essenceID());
-					RSTile loc = ess.getArea().getNearestTile(getLocation());
-					if (!calc.canReach(loc, true) && calc.tileOnMap(ess.getLocation())) {
-						return State.PORTAL;
-					} else {
-						return State.MINE;
-					}
-				} catch (Exception e) {
-					RSObject ess = objects.getNearest(essenceID());
-					walking.walkTileMM(walking.getClosestTileOnMap(ess.getArea().getNearestTile(getLocation())));
+		try {
+			if (inventory.isFull()) {
+				mining = false;
+				if (Bank.contains(getLocation())) {
+					return State.BANK;
+				} else if (objects.getNearest(obs) != null) {
+					return State.PORTAL;
+				} else if (CityArea.contains(getLocation()) && !Bank.contains(getLocation())) {
+					return State.TOBANK;
+				} else {
+					return State.ERROR;
 				}
-			} else if (CityArea.contains(getLocation()) && !AtPerson.contains(getLocation())) {
-				return State.TOMINE;
-			} else {
-				return State.ERROR;
+			} else if (!inventory.isFull()) {
+				if (AtPerson.contains(getLocation())) {
+					return State.TELE;
+				} else if (objects.getNearest(obs) != null) {
+					try {
+						RSObject ess = objects.getNearest(essenceID());
+						RSTile loc = ess.getArea().getNearestTile(getLocation());
+						if (!calc.canReach(loc, true) && calc.tileOnMap(ess.getLocation())) {
+							return State.PORTAL;
+						} else {
+							return State.MINE;
+						}
+					} catch (Exception e) {
+						RSObject ess = objects.getNearest(essenceID());
+						walking.walkTileMM(walking.getClosestTileOnMap(ess.getArea().getNearestTile(getLocation())));
+					}
+				} else if (CityArea.contains(getLocation()) && !AtPerson.contains(getLocation())) {
+					return State.TOMINE;
+				} else {
+					return State.ERROR;
+				}
 			}
+		} catch (Exception e) {
+			
 		}
 		return State.ERROR;
 	}
 	
 	public double getVersion() { 
-		return 1.38;
+		return 1.39;
 	}
 	
 	public boolean onStart() {
 		status = "Starting up";
         
 		log("Dwarfeh showing Aaimister some love <3");
+		
+		//CheckfoUpdate
+		if (getUpdate() > getVersion()) {
+			update();
+			if (closed || stop) {
+	        	log.severe("The GUI window was closed!");
+	        	return false;
+	        }
+		}
 		
         try {
 			settingsFile.createNewFile();
@@ -285,6 +299,26 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		
 		return true;
 	}
+	
+	private void update() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            u.Updater.setVisible(true);
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                    	u.Updater.setVisible(true);
+                    }
+                });
+            } catch (InvocationTargetException ite) {
+            } catch (InterruptedException ie) {
+            }
+        }
+        sleep(100);
+        while (u.Updater.isVisible()) {
+            sleep(100);
+        }
+    }
 
 	private void createAndWaitforGUI() {
         if (SwingUtilities.isEventDispatchThread()) {
@@ -306,6 +340,18 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
             sleep(100);
         }
     }
+	
+	public double getUpdate() {
+	    try {
+	        BufferedReader r = new BufferedReader(new InputStreamReader(new URL("http://aaimister.webs.com/scripts/AaimistersEssMinerVersion.txt").openStream()));
+	        double d = Double.parseDouble(r.readLine());
+	        r.close();
+	       return d;
+	    } catch(Exception e) {
+	        log("Could not check for update, sorry. =/");
+	    }
+	    return getVersion();
+	}
 	
 	public void openThread(){
 		if (java.awt.Desktop.isDesktopSupported()) {
@@ -899,6 +945,13 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			
 			break;
 		case ERROR:
+			idle++;
+			if (idle > 50) {
+				log("Huston, we have a problem.");
+				game.logout(false);
+				sleep(1000, 1500);
+				stopScript();
+			}
 			
 			break;
 		}
@@ -1258,7 +1311,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
     public void drawMouse(final Graphics g) {
 		final Point loc = mouse.getLocation();
 		final long mpt = System.currentTimeMillis() - mouse.getPressTime();
-		if (mouse.getPressTime() == -1 || mpt >= 1000) {
+		if (mouse.getPressTime() == -1 || mpt >= 500) {
 			g.setColor(ThinColor);
 			g.drawLine(0, loc.y, 766, loc.y);
 			g.drawLine(loc.x, 0, loc.x, 505);
@@ -1268,7 +1321,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			g.drawLine(loc.x + 1, 0, loc.x + 1, 505);
 			g.drawLine(loc.x - 1, 0, loc.x - 1, 505);
 		}
-		if (mpt < 1000) {
+		if (mpt < 500) {
 			g.setColor(ClickC);
 			g.drawLine(0, loc.y, 766, loc.y);
 			g.drawLine(loc.x, 0, loc.x, 505);
@@ -1499,6 +1552,44 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	}
     
     public class AaimistersGUI {
+    	private void breakBoxActionPerformed(ActionEvent e) {
+ 			doBreak = breakBox.isSelected();
+ 			randomBreaks = randomBox.isSelected();
+ 			if (!doBreak) {
+ 				randomBox.setEnabled(false);
+ 				randomBox.setSelected(false);
+ 				maxTimeBeBox.setEnabled(false);
+ 				minTimeBeBox.setEnabled(false);
+ 				maxBreakBox.setEnabled(false);
+ 				minBreakBox.setEnabled(false);
+ 			} else {
+ 				randomBox.setEnabled(true);
+ 				if (!randomBreaks) {
+ 					maxTimeBeBox.setEnabled(true);
+ 	 				minTimeBeBox.setEnabled(true);
+ 	 				maxBreakBox.setEnabled(true);
+ 	 				minBreakBox.setEnabled(true);
+ 				}
+ 			}
+ 		}
+ 		
+ 		private void randomBoxActionPerformed(ActionEvent e) {
+ 			doBreak = breakBox.isSelected();
+ 			randomBreaks = randomBox.isSelected();
+ 			if (randomBreaks == true) {
+ 				maxTimeBeBox.setEnabled(false);
+ 				minTimeBeBox.setEnabled(false);
+ 				maxBreakBox.setEnabled(false);
+ 				minBreakBox.setEnabled(false);
+ 			} else {
+ 				if (doBreak) {
+ 					maxTimeBeBox.setEnabled(true);
+ 	 				minTimeBeBox.setEnabled(true);
+ 	 				maxBreakBox.setEnabled(true);
+ 	 				minBreakBox.setEnabled(true);
+ 				}
+ 			}
+ 		}
     	
     	 public void submitActionPerformed(ActionEvent e) {
     		String color = (String) colorBox.getSelectedItem();
@@ -1603,10 +1694,10 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
              	if (randomBox.isSelected()) {
              		randomBreaks = true;
              	}
-             	maxBetween = Integer.parseInt(maxTimeBeBox.getText());
-             	minBetween = Integer.parseInt(minTimeBeBox.getText());
-             	maxLength = Integer.parseInt(maxBreakBox.getText());
-             	minLength = Integer.parseInt(minBreakBox.getText());
+             	maxBetween = Integer.parseInt(maxTimeBeBox.getValue().toString());
+            	minBetween = Integer.parseInt(minTimeBeBox.getValue().toString());
+            	maxLength = Integer.parseInt(maxBreakBox.getValue().toString());
+            	minLength = Integer.parseInt(minBreakBox.getValue().toString());
              	if (minBetween < 1) {
              		minBetween = 1;
              	}
@@ -1642,13 +1733,13 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
  						+ ":" // 5
  						+ (randomBox.isSelected() ? true : false)
  						+ ":" // 6
- 						+ (maxTimeBeBox.getText())
+ 						+ (maxTimeBeBox.getValue().toString())
  						+ ":" // 7
- 						+ (minTimeBeBox.getText())
+ 						+ (minTimeBeBox.getValue().toString())
  						+ ":" // 8
- 						+ (maxBreakBox.getText())
+ 						+ (maxBreakBox.getValue().toString())
  						+ ":" // 9
- 						+ (minBreakBox.getText()));// 10
+ 						+ (minBreakBox.getValue().toString()));// 10
  				out.close();
  			} catch (final Exception e1) {
  				log.warning("Error saving setting.");
@@ -1657,45 +1748,6 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
              
              AaimistersGUI.dispose();
          }
-    	 
-    	 private void breakBoxActionPerformed(ActionEvent e) {
-  			doBreak = breakBox.isSelected();
-  			randomBreaks = randomBox.isSelected();
-  			if (!doBreak) {
-  				randomBox.setEnabled(false);
-  				randomBox.setSelected(false);
-  				maxTimeBeBox.setEnabled(false);
-  				minTimeBeBox.setEnabled(false);
-  				maxBreakBox.setEnabled(false);
-  				minBreakBox.setEnabled(false);
-  			} else {
-  				randomBox.setEnabled(true);
-  				if (!randomBreaks) {
-  					maxTimeBeBox.setEnabled(true);
-  	 				minTimeBeBox.setEnabled(true);
-  	 				maxBreakBox.setEnabled(true);
-  	 				minBreakBox.setEnabled(true);
-  				}
-  			}
-  		}
-  		
-  		private void randomBoxActionPerformed(ActionEvent e) {
-  			doBreak = breakBox.isSelected();
-  			randomBreaks = randomBox.isSelected();
-  			if (randomBreaks == true) {
-  				maxTimeBeBox.setEnabled(false);
-  				minTimeBeBox.setEnabled(false);
-  				maxBreakBox.setEnabled(false);
-  				minBreakBox.setEnabled(false);
-  			} else {
-  				if (doBreak) {
-  					maxTimeBeBox.setEnabled(true);
-  	 				minTimeBeBox.setEnabled(true);
-  	 				maxBreakBox.setEnabled(true);
-  	 				minBreakBox.setEnabled(true);
-  				}
-  			}
-  		}
     	 
     	 private AaimistersGUI() {
  			initComponents();
@@ -1711,26 +1763,10 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			paintBox = new JCheckBox();
 			breakBox = new JCheckBox();
 			randomBox = new JCheckBox();
-			maxTimeBeBox = new JTextArea();
-			minTimeBeBox = new JTextArea();
-			maxBreakBox = new JTextArea();
-			minBreakBox = new JTextArea();
-			panel = new JPanel();
-			panel_1 = new JPanel();
-			panel_2 = new JPanel();
-			panel_4 = new JPanel();
-			lblAaimistersEssenceMiner = new JLabel();
-			lblPaintColor = new JLabel();
-			lblLocation = new JLabel();
-			lblTimeBetweenBreaks = new JLabel();
-			lblBreakLengths = new JLabel();
-			lblTo = new JLabel();
-			lblMins = new JLabel();
-			label_3 = new JLabel();
-			label_4 = new JLabel();
-			label_5 = new JLabel();
-			label_6 = new JLabel();
-			tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			maxTimeBeBox = new JSpinner();
+			minTimeBeBox = new JSpinner();
+			maxBreakBox = new JSpinner();
+			minBreakBox = new JSpinner();
 			submit = new JButton();
     		
 			// Listeners
@@ -1740,296 +1776,273 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 	            }
 	        });
 	        
-    		AaimistersGUI.setTitle("Aaimister's Essence Miner v1.38");
-    		AaimistersGUI.setForeground(new Color(255, 255, 255));
-    		AaimistersGUI.setBackground(Color.LIGHT_GRAY);
-    		AaimistersGUI.setResizable(false);
-    		AaimistersGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    		AaimistersGUI.setBounds(100, 100, 300, 350);
-    		contentPane = new JPanel();
-    		contentPane.setBackground(SystemColor.menu);
-    		contentPane.setForeground(Color.LIGHT_GRAY);
-    		contentPane.setFont(new Font("Cambria Math", Font.PLAIN, 17));
-    		contentPane.setBorder(new EmptyBorder(5, 8, 8, 8));
-    		AaimistersGUI.setContentPane(contentPane);
-    		contentPane.setLayout(null);
-    		
-    		panel.setBorder(new MatteBorder(0, 0, 1, 0, (Color) new Color(0, 0, 0)));
-    		panel.setBounds(4, 0, 296, 40);
-    		contentPane.add(panel);
-    		panel.setLayout(null);
-    		
-    		lblAaimistersEssenceMiner.setText("Aaimister's Essence Miner v1.38");
-    		lblAaimistersEssenceMiner.setBounds(0, 0, 286, 40);
-    		panel.add(lblAaimistersEssenceMiner);
-    		lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
-    		lblAaimistersEssenceMiner.setForeground(SystemColor.infoText);
-    		lblAaimistersEssenceMiner.setFont(new Font("Calibri", Font.BOLD, 20));
-    		
-    		tabbedPane.setBounds(4, 51, 286, 228);
-    		contentPane.add(tabbedPane);
-    		
-    		tabbedPane.addTab("General", null, panel_1, null);
-    		
-    		restBox.setText("Use Rest");
-    		restBox.setForeground(Color.BLACK);
-    		restBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-    		restBox.setSelected(true);
-    		
-    		paintBox.setText("Enable Anti-Aliasing");
-    		paintBox.setForeground(Color.BLACK);
-    		paintBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-    		paintBox.setSelected(true);
-    		
-    		lblPaintColor.setText("Paint Color:");
-    		lblPaintColor.setForeground(Color.BLACK);
-    		lblPaintColor.setFont(new Font("Cambria Math", Font.PLAIN, 15));
-    		
-    		colorBox.setModel(new DefaultComboBoxModel(colorstring));
-    		
-    		antibanBox.setText("Use Anti-Ban");
-    		antibanBox.setSelected(true);
-    		antibanBox.setForeground(Color.BLACK);
-    		antibanBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-    		
-    		lblLocation.setText("Location:");
-    		lblLocation.setForeground(Color.BLACK);
-    		lblLocation.setFont(new Font("Cambria Math", Font.PLAIN, 15));
-    		
-    		locationBox.setModel(new DefaultComboBoxModel(locationstring));
-    		
-    		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-    		gl_panel_1.setHorizontalGroup(
-    			gl_panel_1.createParallelGroup(Alignment.LEADING)
-    				.addGroup(gl_panel_1.createSequentialGroup()
-    					.addGap(28)
-    					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-    						.addGroup(gl_panel_1.createSequentialGroup()
-    							.addGap(37)
-    							.addComponent(paintBox, GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-    							.addGap(45))
-    						.addGroup(gl_panel_1.createSequentialGroup()
-    							.addComponent(restBox, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
-    							.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(antibanBox, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE))
-    						.addGroup(gl_panel_1.createSequentialGroup()
-    							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-    								.addComponent(lblPaintColor, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)
-    								.addComponent(lblLocation, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE))
-    							.addGap(30)
-    							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-    								.addComponent(colorBox, GroupLayout.PREFERRED_SIZE, 102, GroupLayout.PREFERRED_SIZE)
-    								.addComponent(locationBox, GroupLayout.PREFERRED_SIZE, 102, GroupLayout.PREFERRED_SIZE))))
-    					.addContainerGap())
-    		);
-    		gl_panel_1.setVerticalGroup(
-    			gl_panel_1.createParallelGroup(Alignment.LEADING)
-    				.addGroup(gl_panel_1.createSequentialGroup()
-    					.addGap(26)
-    					.addComponent(paintBox)
-    					.addGap(18)
-    					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-    						.addComponent(restBox)
-    						.addComponent(antibanBox))
-    					.addGap(28)
-    					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-    						.addComponent(lblLocation, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-    						.addComponent(locationBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-    					.addGap(18)
-    					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-    						.addComponent(lblPaintColor)
-    						.addComponent(colorBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-    					.addGap(79))
-    		);
-    		panel_1.setLayout(gl_panel_1);
-    		
-    		tabbedPane.addTab("Breaks", null, panel_2, null);
-    		
-    		breakBox.setText("Use Custom Breaks");
-    		breakBox.setForeground(Color.BLACK);
-    		breakBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-    		breakBox.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					breakBoxActionPerformed(e);
-				}
-			});
-    		
-    		lblTimeBetweenBreaks.setText("Time Between Breaks:");
-    		lblTimeBetweenBreaks.setForeground(Color.BLACK);
-    		lblTimeBetweenBreaks.setFont(new Font("Cambria Math", Font.PLAIN, 15));
-    		
-    		lblBreakLengths.setText("Break Lengths:");
-    		lblBreakLengths.setForeground(Color.BLACK);
-    		lblBreakLengths.setFont(new Font("Cambria Math", Font.PLAIN, 15));
-    		
-    		randomBox.setText("Random Breaks");
-    		randomBox.setForeground(Color.BLACK);
-    		randomBox.setFont(new Font("Cambria Math", Font.PLAIN, 12));
-    		if (!doBreak) {
-				randomBox.setEnabled(false);
-			} else {
-				randomBox.setEnabled(true);
-			}
-    		randomBox.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					randomBoxActionPerformed(e);
-				}
-			});
-    		
-    		minTimeBeBox.setForeground(Color.BLACK);
-    		minTimeBeBox.setText("60");
-    		minTimeBeBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				minTimeBeBox.setEnabled(false);
-			}
-    		
-    		lblTo.setText("to");
-    		lblTo.setForeground(Color.GRAY);
-    		lblTo.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		
-    		maxTimeBeBox.setText("90");
-    		maxTimeBeBox.setForeground(Color.BLACK);
-    		maxTimeBeBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				maxTimeBeBox.setEnabled(false);
-			}
-    		
-    		lblMins.setText("mins");
-    		lblMins.setForeground(Color.GRAY);
-    		lblMins.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		
-    		label_3.setText("mins");
-    		label_3.setForeground(Color.GRAY);
-    		label_3.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		
-    		minBreakBox.setText("15");
-    		minBreakBox.setForeground(Color.BLACK);
-    		minBreakBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				minBreakBox.setEnabled(false);
-			}
-    		
-    		label_4.setText("mins");
-    		label_4.setForeground(Color.GRAY);
-    		label_4.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		
-    		label_5.setText("to");
-    		label_5.setForeground(Color.GRAY);
-    		label_5.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		
-    		maxBreakBox.setText("90");
-    		maxBreakBox.setForeground(Color.BLACK);
-    		maxBreakBox.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		if (!doBreak || randomBreaks) {
-				maxBreakBox.setEnabled(false);
-			}
-    		
-    		label_6.setText("mins");
-    		label_6.setForeground(Color.GRAY);
-    		label_6.setFont(new Font("Cambria Math", Font.PLAIN, 13));
-    		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
-    		gl_panel_4.setHorizontalGroup(
-    			gl_panel_4.createParallelGroup(Alignment.TRAILING)
-    				.addGroup(gl_panel_4.createSequentialGroup()
-    					.addGap(10)
-    					.addComponent(breakBox)
-    					.addGap(18)
-    					.addComponent(randomBox, GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-    					.addContainerGap())
-    				.addGroup(gl_panel_4.createSequentialGroup()
-    					.addContainerGap()
-    					.addComponent(lblTimeBetweenBreaks, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-    					.addGap(121))
-    				.addGroup(Alignment.LEADING, gl_panel_4.createSequentialGroup()
-    					.addContainerGap()
-    					.addComponent(lblBreakLengths, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-    					.addGap(167))
-    				.addGroup(Alignment.LEADING, gl_panel_4.createSequentialGroup()
-    					.addGroup(gl_panel_4.createParallelGroup(Alignment.TRAILING, false)
-    						.addGroup(gl_panel_4.createSequentialGroup()
-    							.addGap(21)
-    							.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-    							.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-    							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-    							.addComponent(label_5))
-    						.addGroup(Alignment.LEADING, gl_panel_4.createSequentialGroup()
-    							.addGap(20)
-    							.addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-    							.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(lblMins, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-    							.addGap(27)
-    							.addComponent(lblTo)))
-    					.addPreferredGap(ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-    					.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
-    						.addGroup(Alignment.TRAILING, gl_panel_4.createSequentialGroup()
-    							.addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-    							.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
-    						.addGroup(Alignment.TRAILING, gl_panel_4.createSequentialGroup()
-    							.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-    							.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
-    					.addGap(47))
-    		);
-    		gl_panel_4.setVerticalGroup(
-    			gl_panel_4.createParallelGroup(Alignment.TRAILING)
-    				.addGroup(gl_panel_4.createSequentialGroup()
-    					.addGap(20)
-    					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-    						.addComponent(breakBox)
-    						.addComponent(randomBox))
-    					.addGap(18)
-    					.addComponent(lblTimeBetweenBreaks)
-    					.addPreferredGap(ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-    					.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
-    						.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-    							.addComponent(lblTo)
-    							.addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-    						.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-    							.addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(lblMins, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)))
-    					.addGap(18)
-    					.addComponent(lblBreakLengths)
-    					.addGap(17)
-    					.addGroup(gl_panel_4.createParallelGroup(Alignment.TRAILING)
-    						.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-    							.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(label_6, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-    						.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
-    							.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(label_5, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)))
-    					.addContainerGap())
-    		);
-    		gl_panel_4.linkSize(SwingConstants.VERTICAL, new Component[] {lblTo, label_5});
-    		panel_4.setLayout(gl_panel_4);
-    		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-    		gl_panel_2.setHorizontalGroup(
-    			gl_panel_2.createParallelGroup(Alignment.LEADING)
-    				.addGroup(gl_panel_2.createSequentialGroup()
-    					.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
-    					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-    		);
-    		gl_panel_2.setVerticalGroup(
-    			gl_panel_2.createParallelGroup(Alignment.LEADING)
-    				.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
-    		);
-    		panel_2.setLayout(gl_panel_2);
-    		
-    		submit.setText("Start");
-    		submit.setFont(new Font("Cambria Math", Font.BOLD, 12));
-    		submit.setBounds(98, 290, 89, 23);
-    		contentPane.add(submit);
-    		submit.addActionListener(new ActionListener() {
+	        AaimistersGUI.setTitle("Aaimister's Essence Miner");
+	        AaimistersGUI.setResizable(false);
+	        AaimistersGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        AaimistersGUI.setBounds(100, 100, 450, 345);
+			contentPane = new JPanel();
+			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+			AaimistersGUI.setContentPane(contentPane);
+			
+			JLabel lblAaimistersEssenceMiner = new JLabel("Aaimister's Essence Miner");
+			lblAaimistersEssenceMiner.setHorizontalAlignment(SwingConstants.CENTER);
+			lblAaimistersEssenceMiner.setFont(new Font("Aharoni", Font.PLAIN, 35));
+			
+			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			
+			submit.setText("Start");
+			submit.setFont(new Font("Aharoni", Font.PLAIN, 14));
+			submit.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					submitActionPerformed(e);
 				}
 			});
+			GroupLayout gl_contentPane = new GroupLayout(contentPane);
+			gl_contentPane.setHorizontalGroup(
+				gl_contentPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_contentPane.createSequentialGroup()
+						.addGap(1)
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+							.addComponent(tabbedPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+							.addComponent(lblAaimistersEssenceMiner, GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)))
+					.addGroup(gl_contentPane.createSequentialGroup()
+						.addGap(172)
+						.addComponent(submit, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(179, Short.MAX_VALUE))
+			);
+			gl_contentPane.setVerticalGroup(
+				gl_contentPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(lblAaimistersEssenceMiner)
+						.addGap(18)
+						.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(submit, GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+			);
+			
+			JPanel panel = new JPanel();
+			tabbedPane.addTab("General", null, panel, null);
+			
+			restBox.setText("Use Rest");
+			restBox.setSelected(true);
+			restBox.setFont(new Font("Aharoni", Font.PLAIN, 14));
+			
+			antibanBox.setText("Anti - Ban");
+			antibanBox.setSelected(true);
+			antibanBox.setFont(new Font("Aharoni", Font.PLAIN, 14));
+			
+			paintBox.setText("Anti - Aliasing");
+			paintBox.setSelected(true);
+			paintBox.setFont(new Font("Aharoni", Font.PLAIN, 14));
+			
+			JLabel lblLocation = new JLabel("Location:");
+			lblLocation.setFont(new Font("Aharoni", Font.PLAIN, 20));
+			
+			JLabel lblPaintColor = new JLabel("Paint Color:");
+			lblPaintColor.setFont(new Font("Aharoni", Font.PLAIN, 20));
+			
+			locationBox.setModel(new DefaultComboBoxModel(locationstring));
+			
+			colorBox.setModel(new DefaultComboBoxModel(colorstring));
+			GroupLayout gl_panel = new GroupLayout(panel);
+			gl_panel.setHorizontalGroup(
+				gl_panel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel.createSequentialGroup()
+						.addGap(13)
+						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+							.addComponent(paintBox)
+							.addGroup(gl_panel.createSequentialGroup()
+								.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel.createSequentialGroup()
+										.addComponent(antibanBox)
+										.addPreferredGap(ComponentPlacement.RELATED, 205, Short.MAX_VALUE))
+									.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+										.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+											.addComponent(lblPaintColor)
+											.addComponent(lblLocation))
+										.addGap(35)))
+								.addGap(2)
+								.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+									.addComponent(colorBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(locationBox, 0, 97, Short.MAX_VALUE)))
+							.addComponent(restBox))
+						.addContainerGap())
+			);
+			gl_panel.setVerticalGroup(
+				gl_panel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(restBox)
+						.addGap(11)
+						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+							.addComponent(lblLocation)
+							.addComponent(locationBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(15)
+						.addComponent(antibanBox)
+						.addGap(20)
+						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+							.addComponent(lblPaintColor)
+							.addComponent(colorBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(11)
+						.addComponent(paintBox)
+						.addContainerGap())
+			);
+			panel.setLayout(gl_panel);
+			
+			JPanel panel_1 = new JPanel();
+			tabbedPane.addTab("Breaks", null, panel_1, null);
+			
+			breakBox.setText("Custom Breaks");
+			breakBox.setFont(new Font("Aharoni", Font.PLAIN, 14));
+			breakBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					breakBoxActionPerformed(e);
+				}
+			});
+			
+			randomBox.setText("Random Breaks");
+			randomBox.setFont(new Font("Aharoni", Font.PLAIN, 14));
+			if (!doBreak) {
+				randomBox.setEnabled(false);
+			} else {
+				randomBox.setEnabled(true);
+			}
+			randomBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					randomBoxActionPerformed(e);
+				}
+			});
+			
+			JLabel lblNewLabel = new JLabel("Time Between Breaks");
+			lblNewLabel.setFont(new Font("Aharoni", Font.PLAIN, 15));
+			
+			JSeparator separator = new JSeparator();
+			separator.setOrientation(SwingConstants.VERTICAL);
+			
+			minTimeBeBox.setModel(new SpinnerNumberModel(new Integer(111), new Integer(0), null, new Integer(1)));
+			
+			JLabel lblMins = new JLabel("mins");
+			lblMins.setFont(new Font("Aharoni", Font.PLAIN, 11));
+			
+			JLabel lblTo = new JLabel("to");
+			lblTo.setFont(new Font("Aharoni", Font.PLAIN, 11));
+			
+			maxTimeBeBox.setModel(new SpinnerNumberModel(new Integer(222), new Integer(0), null, new Integer(1)));
+			
+			JLabel label = new JLabel("mins");
+			label.setFont(new Font("Aharoni", Font.PLAIN, 11));
+			
+			JLabel lblBreakLength = new JLabel("Break Lengths");
+			lblBreakLength.setFont(new Font("Aharoni", Font.PLAIN, 15));
+			
+			minBreakBox.setModel(new SpinnerNumberModel(new Integer(15), new Integer(0), null, new Integer(1)));
+			
+			JLabel label_1 = new JLabel("mins");
+			label_1.setFont(new Font("Aharoni", Font.PLAIN, 11));
+			
+			JLabel label_2 = new JLabel("to");
+			label_2.setFont(new Font("Aharoni", Font.PLAIN, 11));
+			
+			maxBreakBox.setModel(new SpinnerNumberModel(new Integer(65), new Integer(0), null, new Integer(1)));
+			
+			JLabel label_3 = new JLabel("mins");
+			label_3.setFont(new Font("Aharoni", Font.PLAIN, 11));
+			GroupLayout gl_panel_1 = new GroupLayout(panel_1);
+			gl_panel_1.setHorizontalGroup(
+				gl_panel_1.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel_1.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addComponent(breakBox)
+								.addPreferredGap(ComponentPlacement.RELATED, 154, Short.MAX_VALUE)
+								.addComponent(randomBox))
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addGap(43)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(lblMins))
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addGap(25)
+												.addComponent(lblTo))
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(label, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))))
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addGap(9)
+										.addComponent(lblNewLabel)))
+								.addGap(33)
+								.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addGap(47)
+										.addComponent(lblBreakLength))
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addGap(95)
+										.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 11, GroupLayout.PREFERRED_SIZE))
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addGap(70)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+											.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE)
+											.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+											.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))))))
+						.addContainerGap())
+			);
+			gl_panel_1.setVerticalGroup(
+				gl_panel_1.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel_1.createSequentialGroup()
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+									.addComponent(breakBox)
+									.addComponent(randomBox))
+								.addGap(28)
+								.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addComponent(lblNewLabel)
+										.addGap(18)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+											.addComponent(minTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(lblMins))
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addComponent(lblTo)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(maxTimeBeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+											.addComponent(label, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE)))
+									.addGroup(gl_panel_1.createSequentialGroup()
+										.addComponent(lblBreakLength)
+										.addGap(18)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+											.addComponent(minBreakBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+											.addGroup(gl_panel_1.createSequentialGroup()
+												.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(maxBreakBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+											.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 12, GroupLayout.PREFERRED_SIZE)))))
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addGap(48)
+								.addComponent(separator, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)))
+						.addContainerGap())
+			);
+			panel_1.setLayout(gl_panel_1);
+			contentPane.setLayout(gl_contentPane);
 			// LOAD SAVED SELECTION INFO
 			try {
 				String filename = getCacheDirectory() + "\\AaimistersEMinerSettings.txt";
@@ -2047,10 +2060,10 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		        	 if (opts[5].equals("true")) {
 		        		 randomBox.setEnabled(true);
 		        		 if (opts[6].equals("false")) {
-		        			 maxTimeBeBox.setText(opts[7]);
-					         minTimeBeBox.setText(opts[8]);
-					         maxBreakBox.setText(opts[9]);
-					         minBreakBox.setText(opts[10]);
+		        			 maxTimeBeBox.setValue(Integer.parseInt(opts[7]));
+					         minTimeBeBox.setValue(Integer.parseInt(opts[8]));
+					         maxBreakBox.setValue(Integer.parseInt(opts[9]));
+					         minBreakBox.setValue(Integer.parseInt(opts[10]));
 					         maxTimeBeBox.setEnabled(true);
 					         minTimeBeBox.setEnabled(true);
 					         maxBreakBox.setEnabled(true);
@@ -2103,26 +2116,105 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 		private JCheckBox restBox;
 		private JCheckBox breakBox;
 		private JCheckBox randomBox;
-		private JTextArea maxTimeBeBox;
-		private JTextArea minTimeBeBox;
-		private JTextArea maxBreakBox;
-		private JTextArea minBreakBox;
-		private JPanel panel;
-		private JPanel panel_1;
-		private JPanel panel_2;
-		private JPanel panel_4;
-		private JLabel lblAaimistersEssenceMiner;
-		private JLabel lblPaintColor;
-		private JLabel lblTimeBetweenBreaks;
-		private JLabel lblBreakLengths;
-		private JLabel lblTo;
-		private JLabel lblMins;
-		private JLabel lblLocation;
-		private JLabel label_3;
-		private JLabel label_5;
-		private JLabel label_4;
-		private JLabel label_6;
-		private JTabbedPane tabbedPane;
+		private JSpinner maxTimeBeBox;
+		private JSpinner minTimeBeBox;
+		private JSpinner maxBreakBox;
+		private JSpinner minBreakBox;
 		private JButton submit;
     }
+    public class Updater {
+		private Updater() {
+			initComponents();
+		}
+		
+		private void threadActionPerformed(ActionEvent e) {
+			openThread();
+			Updater.dispose();
+ 			stop = true;
+ 		}
+		
+		private void noActionPerformed(ActionEvent e) {
+			Updater.dispose();
+ 			stop = true;
+ 		}
+		
+		private void initComponents() {
+			Updater = new JFrame();
+			contentPane = new JPanel();
+			thread = new JButton();
+			no = new JButton();
+			
+			// Listeners
+	        Updater.addWindowListener(new WindowAdapter() {
+	            public void windowClosing(WindowEvent e) {
+	                closed = true;
+	            }
+	        });
+			
+	        Updater.setTitle("Aaimister's Updater");
+	        Updater.setResizable(false);
+	        Updater.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        Updater.setBounds(100, 100, 420, 123);
+			contentPane = new JPanel();
+			contentPane.setBackground(new Color(0, 0, 0));
+			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+			Updater.setContentPane(contentPane);
+			
+			thread.setText("Visit Thread");
+			thread.setFont(new Font("Rod", Font.PLAIN, 12));
+			thread.setForeground(new Color(255, 255, 0));
+			thread.setBackground(new Color(0, 0, 0));
+			thread.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					threadActionPerformed(e);
+				}
+			});
+			
+			JLabel lblUpdateAvail = new JLabel("Update Available!  Please Visit The Thread!");
+			lblUpdateAvail.setFont(new Font("Rod", Font.PLAIN, 15));
+			lblUpdateAvail.setHorizontalAlignment(SwingConstants.CENTER);
+			lblUpdateAvail.setForeground(Color.YELLOW);
+			
+			no.setText("No Thanks");
+			no.setForeground(Color.YELLOW);
+			no.setFont(new Font("Rod", Font.PLAIN, 12));
+			no.setBackground(Color.BLACK);
+			no.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					noActionPerformed(e);
+				}
+			});
+			GroupLayout gl_contentPane = new GroupLayout(contentPane);
+			gl_contentPane.setHorizontalGroup(
+				gl_contentPane.createParallelGroup(Alignment.TRAILING)
+					.addGroup(gl_contentPane.createSequentialGroup()
+						.addGap(22)
+						.addComponent(thread, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+						.addComponent(no, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+						.addGap(32))
+					.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+						.addGap(5)
+						.addComponent(lblUpdateAvail, GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE))
+			);
+			gl_contentPane.setVerticalGroup(
+				gl_contentPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(lblUpdateAvail)
+						.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+							.addComponent(thread, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+							.addComponent(no, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+						.addContainerGap())
+			);
+			contentPane.setLayout(gl_contentPane);
+		}
+		private JFrame Updater;
+		private JPanel contentPane;
+		private JButton thread;
+		private JButton no;
+	}
 }
