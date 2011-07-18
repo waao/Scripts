@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.30 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.31 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -62,7 +62,7 @@ import org.rsbot.script.wrappers.RSNPC;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, website = "http://922d1ef9.any.gs", name = "Aaimisters Chicken Killer v1.30", keywords = "Combat", version = 1.30, description = ("Kills chickens."))
+@ScriptManifest(authors = { "Aaimister" }, website = "http://922d1ef9.any.gs", name = "Aaimisters Chicken Killer v1.31", keywords = "Combat", version = 1.31, description = ("Kills chickens."))
 public class AaimistersChickenKiller extends Script implements MessageListener, PaintListener, MouseListener {
 
 	private RSTile InPen;
@@ -70,12 +70,46 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	private RSArea Pen;
 	private RSArea ChickenPenF = new RSArea(new RSTile(3014, 3282), new RSTile(
 			3020, 3297));
-	private RSArea ChickenPenLum = new RSArea(new RSTile(3225, 3295),
+	private RSArea ChickenPenELum = new RSArea(new RSTile(3225, 3295),
 			new RSTile(3236, 3301));
+	private RSArea ChickenPenNLum = new RSArea(new RSTile(3184, 3276), new RSTile(3192, 3279));
 	private RSArea ChickenPenFout = new RSArea(new RSTile(3026, 3282), new RSTile(3037, 3291));
 	private RSArea Champion = new RSArea(new RSTile(3195, 3351), new RSTile(3199, 3360));
 	
-	private final String[] locationstring = { "Falador Pen", "Falador Porch", "Lumbridge Pen", "Champion's Guild" };
+	//Falador Porch Bad Rooms / Doors
+	//Room1
+	private RSArea badRoom1 = new RSArea(new RSTile(3030, 3291), new RSTile(3040, 3296));
+	//Door for Room 1 (id = 8695)
+	private RSArea room1Door = new RSArea(new RSTile(3033, 3289), new RSTile(3035, 3292));
+	private RSTile room1DoorT = new RSTile(3034, 3291);
+	//Room2
+	private RSArea badRoom2 = new RSArea(new RSTile(3022, 3286), new RSTile(3025, 3290));
+	//Door for Room 2 (id = 8695)
+	private RSArea room2Door = new RSArea(new RSTile(3025, 3286), new RSTile(3027, 3288));
+	private RSTile room2DoorT = new RSTile(3025, 3287);
+	
+	//Chicken Pen East Lumbridge
+	private RSArea gateAreaE = new RSArea(new RSTile(3235, 3293), new RSTile(3239, 3298));
+	private RSTile gateT = new RSTile(3238, 3294);
+	//Gate ID = 45206
+	
+	//Chicken Pen North Lumbridge
+	private RSArea gateAreaN = new RSArea(new RSTile(3187, 3278), new RSTile(3191, 3281));
+	private RSTile gateTileN = new RSTile(3189, 3280);
+	//Gate ID = 45206
+	//Room 1
+	private RSArea lumroom1 = new RSArea(new RSTile(3188, 3271), new RSTile(3192, 3275));
+	private RSArea lumdoor1 = new RSArea(new RSTile(3188, 3274), new RSTile(3190, 3277));
+	private RSTile lumdoorT = new RSTile(3190, 3274);
+	//Door ID = 45476
+	
+	//Chicken Pen Falador Pen
+	private RSArea fBadRoom = new RSArea(new RSTile(3021, 3291), new RSTile(3025, 3296));
+	private RSArea fDoorArea = new RSArea(new RSTile(3019, 3291), new RSTile(3022, 3294));
+	private RSTile fDoorTile = new RSTile(3022, 3292);
+	//Door ID = 8695
+	
+	private final String[] locationstring = { "Falador Pen", "Falador Porch", "Lumbridge E. Pen", "Lumbridge N. Pen", "Champion's Guild" };
 	private final String[] statstring = { "Attack", "Strength", "Defence", "Range", "Magic" };
 	private final String[] colorstring = { "Black", "Blue", "Brown", "Cyan", "Green", "Lime", "Orange", "Pink", "Purple", "Red", "White", "Yellow" };
 	private String url = "http://922d1ef9.any.gs";
@@ -92,6 +126,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	private long now;
 	
 	private ArrayList<Integer> loot = new ArrayList<Integer>();
+	private ArrayList<Integer> drop = new ArrayList<Integer>();
 	
 	Updater u = new Updater();
 	AaimistersGUI g = new AaimistersGUI();
@@ -150,7 +185,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	private String status = "";
 	private String penType = "";
 	
-	int drop[] = { 1925, 1944, 2138 };
+	int dropp[] = { 1925, 1944, 2138 };
 	int Chickens[] = { 1017, 41 };
 	int runEnergy = (random(40, 75));
 	int all[] = { 882, 314, 526 };
@@ -218,7 +253,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	}
 
 	public double getVersion() { 
-		return 1.30;
+		return 1.31;
 	}
 	
 	@Override
@@ -414,9 +449,8 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 	public boolean checkLog() {
 		if (getMyPlayer().isOnScreen() && game.isLoggedIn() && calc.distanceTo(InPen) < 20) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	
 	public boolean dyingChic() {
@@ -493,6 +527,104 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 		sleep(25, 50);
 	}
 
+	private boolean checkDrop() {
+		RSItem all[] = inventory.getItems();
+		for (int i = 0; i < all.length; i++) {
+			for (int z = 0; z < drop.size(); z++) {
+				if (all[i].getID() == drop.get(z)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private void doDrop() {
+		RSItem all[] = inventory.getItems();
+		for (int i = 0; i < all.length; i++) {
+			for (int z = 0; z < drop.size(); z++) {
+				if (all[i].getID() == drop.get(z)) {
+					inventory.getItem(all[i].getID()).interact("Drop");
+					sleep(200, 500);
+				}
+			}
+		}
+	}
+	
+	private void openDoor(int id, RSTile tile) {
+		if (objects.getNearest(id).isOnScreen()) {
+			objects.getNearest(id).interact("Open");
+			sleep(500, 1250);
+		} else if (!getMyPlayer().isMoving() || calc.distanceTo(walking.getDestination()) < 4) {
+			walking.walkTileMM(walking.getClosestTileOnMap(tile.randomize(1, 1)));
+			sleep(100, 300);
+		}
+	}
+	
+	private void checkDoors() {
+		if (Pen == ChickenPenFout) {
+			if (badRoom1.contains(getMyPlayer().getLocation())) {
+				if (room1Door.contains(objects.getNearest(8695).getLocation())) {
+					openDoor(8695, room1DoorT);
+				}
+			} else if (badRoom2.contains(getMyPlayer().getLocation())) {
+				if (room2Door.contains(objects.getNearest(8695).getLocation())) {
+					openDoor(8695, room2DoorT);
+				}
+			}
+		} else if (Pen == ChickenPenNLum) {
+			if (lumroom1.contains(getMyPlayer().getLocation())) {
+				if (lumdoor1.contains(objects.getNearest(45476).getLocation())) {
+					openDoor(45476, lumdoorT);
+				}
+			} else if (!Pen.contains(getMyPlayer().getLocation())) {
+				if (gateAreaN.contains(objects.getNearest(45206).getLocation())) {
+					openDoor(45206, gateTileN);
+				}
+			}
+		} else if (Pen == ChickenPenELum) {
+			if (!Pen.contains(getMyPlayer().getLocation())) {
+				if (gateAreaE.contains(objects.getNearest(45206).getLocation())) {
+					openDoor(45206, gateT);
+				}
+			}
+		} else if (Pen == ChickenPenF) {
+			if (fBadRoom.contains(getMyPlayer().getLocation())) {
+				if (fDoorArea.contains(objects.getNearest(8695).getLocation())) {
+					openDoor(8695, fDoorTile);
+				}
+			}
+		}
+	}
+	
+	private void checkLootDoor(RSTile loott) {
+		if (Pen == ChickenPenFout) {
+			if (badRoom1.contains(loott) || badRoom2.contains(loott)) {
+				if (badRoom1.contains(loott)) {
+					if (room1Door.contains(objects.getNearest(8695).getLocation())) {
+						openDoor(8695, room1DoorT);
+					}
+				} else if (badRoom2.contains(feather().getLocation())) {
+					if (room2Door.contains(objects.getNearest(8695).getLocation())) {
+						openDoor(8695, room2DoorT);
+					}
+				}
+			}
+		} else if (Pen == ChickenPenNLum) {
+			if (lumroom1.contains(loott)) {
+				if (lumdoor1.contains(objects.getNearest(45476).getLocation())) {
+					openDoor(45476, lumdoorT);
+				}
+			}
+		} else if (Pen == ChickenPenF) {
+			if (fBadRoom.contains(loott)) {
+				if (fDoorArea.contains(objects.getNearest(8695).getLocation())) {
+					openDoor(8695, fDoorTile);
+				}
+			}
+		}
+	}
+	
 	private void setCamera() {
 		if (camera.getPitch() < 10) {
 			camera.setPitch(true);
@@ -638,6 +770,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 		
 		switch (getState()) {
 		case ATTACK:
+			checkDoors();
 			if (atPen()) {
 				if (checkAmmo) {
 					checkAmmo = false;
@@ -673,6 +806,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 						if (players.getMyPlayer().isMoving()) {
 							return random(400, 600);
 						}
+						checkLootDoor(chic.getLocation());
 						if (chic.isOnScreen()) {
 							chic.interact("Attack " + chic.getName());
 							return random(1000, 1600);
@@ -686,10 +820,9 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 							return random(1100, 1500);
 						}
 					} else {
-						if (inventory.containsOneOf(drop)) {
+						if (checkDrop()) {
 							status = "Dropping junk";
-							RSItem d = inventory.getItem(drop);
-							d.interact("Drop");
+							doDrop();
 							return random(350, 600);
 						} else if (inventory.isFull()) {
 							while (inventory.contains(bones)) {
@@ -707,11 +840,12 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 								skip = true;
 								while (feather() != null && loot.contains(feathers) && checkLog()) {
 									status = "Looting feathers";
+									checkLootDoor(feather().getLocation());
 									if (feather().isOnScreen()) {
 										feather().interact("Take " + feather().getItem().getName());
 										sleep(800, 1200);
 										totalFeather = inventory.getCount(true, 314) - checkFea;
-										return 1;
+										return 10;
 									} else {
 										walking.walkTileMM(feather().getLocation().randomize(1, 1));
 										return random(1000, 1350);
@@ -719,6 +853,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 								} 
 								while (arrow() != null && loot.contains(arrow) && checkLog()) {
 									status = "Picking up arrows";
+									checkLootDoor(arrow().getLocation());
 									if (arrow().isOnScreen()) {
 										arrow().interact("Take " + arrow().getItem().getName());
 										return random(800, 1200);
@@ -729,6 +864,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 								} 
 								while (bones() != null && loot.contains(bones) && checkLog()) {
 									status = "Looting bones";
+									checkLootDoor(bones().getLocation());
 									if (bones().isOnScreen()) {
 										bones().interact("Take " + bones().getItem().getName());
 										if (newNPC() != null) {
@@ -756,6 +892,7 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 			}
 			break;
 		case BACKTOCHICK:
+			checkDoors();
 			status = "Finding pen";
 			if (!atPen()) {
 				if (!idle() || getMyPlayer().isInCombat()) {
@@ -912,7 +1049,8 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
     	}
 	}
     
-    public void checkEXP() {
+    @SuppressWarnings("deprecation")
+	public void checkEXP() {
     	if (game.getCurrentTab() != 2) {
     		game.openTab(2);
     		sleep(500, 900);
@@ -1373,7 +1511,8 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
 			g.setColor(PercentRed);
 			g.fillRect(6, 320, 508, 16);
 			g.setColor(PercentGreen);
-			g.fillRect(6, 320, skills.getPercentToNextLevel(barStat) * (508/100), 16);
+			final int Bar = (int) (skills.getPercentToNextLevel(barStat) * 5.08);
+			g.fillRect(6, 320, Bar, 16);
 			g.setColor(White);
 			g.setFont(Cam);
 			g.drawString("" + skills.getPercentToNextLevel(barStat) + "% to lvl " + (skills.getCurrentLevel(barStat) + 1) + " " + currentStat, 194, 332);
@@ -1524,10 +1663,14 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
             	InPen = new RSTile(3032, 3286);
     			Pen = ChickenPenFout;
     			penType = "Falador Porch";
-            } else if (chosen.contains("Lumbridge Pen")) {
+            } else if (chosen.contains("Lumbridge E. Pen")) {
             	InPen = new RSTile(3231, 3297);
-            	Pen = ChickenPenLum;
-            	penType = "NorthWest Lum.";
+            	Pen = ChickenPenELum;
+            	penType = "NorthEast Lum.";
+            } else if (chosen.contains("Lumbridge N. Pen")) {
+            	InPen = new RSTile(3188, 3277);
+            	Pen = ChickenPenNLum;
+            	penType = "North Lum.";
             } else if (chosen.contains("Champion's Guild")) {
             	InPen = new RSTile(3197, 3355);
     			Pen = Champion;
@@ -1544,6 +1687,9 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
             	stat = 4;
             } else if (stats.contains("Magic")) {
             	stat = 6;
+            }
+            for (int i = 0; i < dropp.length; i++) {
+            	drop.add(dropp[i]);
             }
             if (waitBox.isSelected()) {
             	waitForLoot = true;
@@ -1562,6 +1708,8 @@ public class AaimistersChickenKiller extends Script implements MessageListener, 
             }
             if (buryBox.isSelected()) {
             	loot.add(bones);
+            } else {
+            	drop.add(bones);
             }
             if (breakBox.isSelected()) {
             	doBreak = true;
