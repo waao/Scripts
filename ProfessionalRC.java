@@ -40,7 +40,7 @@ import org.rsbot.script.wrappers.RSTile;
 @ScriptManifest(
 	authors = "inspercho",
 	name = "professional runecrafting",
-	version = 1,
+	version = 1.1,
 	description = "AIO free to play runecrafting bot.",
 	keywords = {"runecraft", "rc", "aio", "master", "runner", "slave"} )
 public class ProfessionalRC extends Script implements PaintListener, MessageListener, MouseListener, KeyListener {
@@ -92,7 +92,6 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 	private static int craftRune = -1;
 	private static int note = -1;
 	private static int numberToCraft = -1;
-
 
 	public boolean onStart() {
 		prop = new Properties();	
@@ -153,6 +152,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 					stratagies.add(new CraftRunes());
 					break;
 				case MASTER: 
+					numberToCraft = 26;
 					log(locations[locations_index] + " master started.");
 					note = ESSENCE_NOTE_ID;
 					playerTraded = null;
@@ -231,7 +231,8 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 	
 	@Override
 	public void messageReceived(MessageEvent e) {
-		if (e.getID() == MessageEvent.MESSAGE_TRADE_REQ) {
+		//if(e.getID() == MessageEvent.MESSAGE_TRADE_REQ);
+		if (e.getMessage().contains("wishes to trade with ")) {
 			if(type == MASTER) playerTraded = e.getSender();
 		}
 
@@ -1337,8 +1338,8 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 			public boolean accept(RSPlayer t) {
 				if (t != null) {
 					if (t.getName() != null) {
-						return t.getName().replace('\u00A0', ' ')
-								.equalsIgnoreCase(playerTraded.replace('\u00A0', ' '));
+						return t.getName().replace('\u00A0', ' ').toLowerCase()
+								.equals(playerTraded.replace('\u00A0', ' ').toLowerCase());
 					}
 				}
 				return false;
