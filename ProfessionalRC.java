@@ -38,11 +38,12 @@ import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
 @ScriptManifest(
-	authors = "inspercho",
+	authors = "yomama`",
 	name = "professional runecrafting",
-	version = 1.1,
-	description = "AIO free to play runecrafting bot.",
-	keywords = {"runecraft", "rc", "aio", "master", "runner", "slave"} )
+	version = 2,
+	description = "AIO free to play normal/master/runner runecrafting bot.",
+	keywords = {"runecrafting", "runecrafter", "runecraft", "rc", "aio", "master", "runner", "slave"},
+	website = "http://www.powerbot.org/community/topic/435261-master-and-slave-rc/")
 public class ProfessionalRC extends Script implements PaintListener, MessageListener, MouseListener, KeyListener {
 	private static final LinkedList<Strategy> stratagies = new LinkedList<Strategy>();
 	private static String status;
@@ -84,7 +85,8 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 
 	private int type = -1;
 	private static String playerTraded = null;	
-	private static String playerServer = null;		
+	private static String playerServer = null;	
+	private static int playerWorld = -1;		
 	private boolean useMusician = false;
 	private Info location = null;
 
@@ -92,6 +94,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 	private static int craftRune = -1;
 	private static int note = -1;
 	private static int numberToCraft = -1;
+
 
 	public boolean onStart() {
 		prop = new Properties();	
@@ -120,6 +123,13 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 			// if not logged in, wait
 			if(!game.isLoggedIn()) { return 500; }
 			if(init_gui) { return 500; }
+			
+			try {
+				playerWorld = Integer.parseInt(playerServer);
+			} catch (Exception e) {
+				log.severe("failed detecting input world");
+				stopScript();
+			}
 			
 			if(type != MASTER) {
 				FileOutputStream out = null;
@@ -156,11 +166,11 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 					log(locations[locations_index] + " master started.");
 					note = ESSENCE_NOTE_ID;
 					playerTraded = null;
+					stratagies.add(new CraftRunes());
+					stratagies.add(new DropJunk());
 					stratagies.add(new AcceptTrade());
 					stratagies.add(new OfferRunes());
 					stratagies.add(new ConfirmTrade());
-					stratagies.add(new CraftRunes());
-					stratagies.add(new DropJunk());
 					break;
 				case RUNNER:
 					numberToCraft = 26;
@@ -189,10 +199,10 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 			if(!lobby.inLobby()) {
 				return loginAndWait();
 			}
-			if(interfaces.getComponent(910, 11).getText().endsWith(" " + playerServer)) {
+			if(interfaces.getComponent(910, 11).getText().endsWith(" " + playerWorld)) {
 				return loginAndWait();
 			} 
-			if(lobby.switchWorlds(Integer.parseInt(playerServer))) {
+			if(lobby.switchWorlds(playerWorld)) {
 				return loginAndWait();
 			}
 			return 1000;
@@ -254,8 +264,8 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 	private long seconds = 0;
 	private long last = 0;	
 
-    private final RenderingHints antialiasing = new RenderingHints(
-            RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+	private final RenderingHints antialiasing = new RenderingHints(
+			RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 	private final Rectangle normal_button = new Rectangle(18, 381, 133, 19);
 	private final Rectangle master_button = new Rectangle(18, 406, 133, 19);
@@ -274,9 +284,9 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 	private final Ellipse2D hide_button = new Ellipse2D.Float(517, 87, 31, 29);
 	
 	@Override
-    public void onRepaint(Graphics render) {
-        Graphics2D g = (Graphics2D)render;
-        g.setRenderingHints(antialiasing);
+	public void onRepaint(Graphics render) {
+		Graphics2D g = (Graphics2D)render;
+		g.setRenderingHints(antialiasing);
 		
 		// draw oval
 		if(hide_gui) {
@@ -284,27 +294,27 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 			g.fill(hide_button);
 			return;
 		}
-        g.setColor(new Color(102, 255, 0, 105));
-        g.fill(hide_button);
-        g.setColor(new Color(204, 204, 0));
-        g.draw(hide_button);
+		g.setColor(new Color(102, 255, 0, 105));
+		g.fill(hide_button);
+		g.setColor(new Color(204, 204, 0));
+		g.draw(hide_button);
 
 		// draw background
-        g.setColor(new Color(203, 186, 153));
-        g.fillRect(3, 341, 512, 135);
-        g.setColor(Color.black);
-        g.setStroke(new BasicStroke(5));
-        g.drawRect(3, 341, 512, 135);
-        g.drawRect(20, 320, 480, 40);
-        g.setColor(new Color(203, 186, 153));
-        g.fillRect(20, 320, 480, 40);
+		g.setColor(new Color(203, 186, 153));
+		g.fillRect(3, 341, 512, 135);
+		g.setColor(Color.black);
+		g.setStroke(new BasicStroke(5));
+		g.drawRect(3, 341, 512, 135);
+		g.drawRect(20, 320, 480, 40);
+		g.setColor(new Color(203, 186, 153));
+		g.fillRect(20, 320, 480, 40);
 		
 		// put texts
 		g.setColor(Color.black);
-        g.setFont(new Font("Broadway", 1, 30));
-        g.drawString("Professional Runecrafter", 32, 352);
-        g.setFont(new Font("BrowalliaUPC", 1, 23));
-        g.drawString("GUI", 519, 107);
+		g.setFont(new Font("Broadway", 1, 30));
+		g.drawString("Professional Runecrafter", 32, 352);
+		g.setFont(new Font("BrowalliaUPC", 1, 23));
+		g.drawString("GUI", 519, 107);
 		
 		if(init) {
 			// draw seperator
@@ -351,7 +361,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 						for(int l = locations.length - 1; l >= 0; l--) {
 							i -= 15;
 							locations_box[l] = new Rectangle(260, i, 133, 15);
-					        g.setColor(new Color(203, 186, 153));
+							g.setColor(new Color(203, 186, 153));
 							g.fill(locations_box[l]);
 
 							g.setColor(Color.black);
@@ -410,7 +420,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 						for(int l = locations.length - 1; l >= 0; l--) {
 							i -= 15;
 							locations_box[l] = new Rectangle(260, i, 133, 15);
-					        g.setColor(new Color(203, 186, 153));
+							g.setColor(new Color(203, 186, 153));
 							g.fill(locations_box[l]);
 							
 							g.setColor(Color.black);
@@ -490,7 +500,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 			System.currentTimeMillis() - mouse.getPressTime() >= 1000) {
 				g.fillRect(mouse.getLocation().x-(s/2),mouse.getLocation().y-(s/2),s,s);
 		}
-    }
+	}
 	
 
 	public static String formatDuration(long ms) {
@@ -499,15 +509,15 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 		long t = 0;
 		
 		t = ms / 86400000L;
-		strReturn += String.valueOf(t>0?t+":":"");
+		if(t>0) strReturn += String.valueOf(t) + ":";
 		lRest = ms % 86400000L;
 
 		t = lRest / 3600000L;
-		strReturn += (t<9?"0":"") + String.valueOf(t + ":");
+		strReturn += (t<9?"0":"") + String.valueOf(t) + ":";
 		lRest %= 3600000L;
 
 		t = lRest / 60000L;
-		strReturn += (t<9?"0":"") + String.valueOf(t + ":");
+		strReturn += (t<9?"0":"") + String.valueOf(t) + ":";
 		lRest %= 60000L;
 
 		t = lRest / 1000L;
@@ -601,10 +611,10 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 		}
 	}
 
-    private String detectLocation() {
-    	String loc = null;
-    	
-    	// find nearest altar
+	private String detectLocation() {
+		String loc = null;
+		
+		// find nearest altar
 		RSObject altar = objects.getNearest(
 			2478, 2479, 2480, 2481, 2482, 2483
 		);
@@ -627,17 +637,17 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 		return loc;
 	}
 
-    private String detectEssence() {
-    	return Integer.toString(inventory.getCount(true, ESSENCE_NOTE_ID));
-    }
-    
-    private boolean detectInventory() {
-    	return inventory.getCount() > 2;
-    }
-    
-    private Info getLocation(String loc) {
-    	Info l = null;
-    	if(loc.contains("Air Altar")) {
+	private String detectEssence() {
+		return Integer.toString(inventory.getCount(true, ESSENCE_NOTE_ID));
+	}
+	
+	private boolean detectInventory() {
+		return inventory.getCount() > 2;
+	}
+	
+	private Info getLocation(String loc) {
+		Info l = null;
+		if(loc.contains("Air Altar")) {
 			l = new AirInfo();
 		} else if(loc.contains("Body Altar")) {
 			l = new BodyInfo();
@@ -654,45 +664,45 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 				l = new WaterInfo(false);
 			}
 		}
-    	return l;
-    }
-    
+		return l;
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		keylisten[0] = false;
 		keylisten[1] = false;
 		
 		if(location_list) {
-        	for(int i = 0; i < locations_box.length; i++) {
-        		if(locations_box[i].contains(e.getPoint())) {
-        			location = getLocation(locations[i]);
-        			locations_index = i;
-        		}
-        	}
-        	location_list = false;
-        	return;
+			for(int i = 0; i < locations_box.length; i++) {
+				if(locations_box[i].contains(e.getPoint())) {
+					location = getLocation(locations[i]);
+					locations_index = i;
+				}
+			}
+			location_list = false;
+			return;
 		}
 		
 		if(start_button.contains(e.getPoint()) && type != -1) {
 			init_gui = false;
-    	} else if (hide_button.contains(e.getPoint())) {
-    		hide_gui = !hide_gui;
-    	} else if (crafter_box.contains(e.getPoint())) {
-    		keylisten[0] = true;
-    	} else if (server_box.contains(e.getPoint())) {
-    		keylisten[1] = true;
-    	} else if (musician_box.contains(e.getPoint())) {
-    		useMusician = !useMusician;
-    	} else if (location_box.contains(e.getPoint())) {
-    		location_list = true;
-    	} else if (normal_button.contains(e.getPoint())) {
-            type = 0;
-        } else if (master_button.contains(e.getPoint())) {
-            type = 1;
-        } else if (runner_button.contains(e.getPoint())) {
-            type = 2;
-        }
-    }
+		} else if (hide_button.contains(e.getPoint())) {
+			hide_gui = !hide_gui;
+		} else if (crafter_box.contains(e.getPoint())) {
+			keylisten[0] = true;
+		} else if (server_box.contains(e.getPoint())) {
+			keylisten[1] = true;
+		} else if (musician_box.contains(e.getPoint())) {
+			useMusician = !useMusician;
+		} else if (location_box.contains(e.getPoint())) {
+			location_list = true;
+		} else if (normal_button.contains(e.getPoint())) {
+			type = 0;
+		} else if (master_button.contains(e.getPoint())) {
+			type = 1;
+		} else if (runner_button.contains(e.getPoint())) {
+			type = 2;
+		}
+	}
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -705,7 +715,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 		} else if(keylisten[1]) {
 			if(e.getKeyChar() == '\b') {
 				playerServer = playerServer.substring(0, playerServer.length() - 1);
-			} else {
+			} else if(e.getKeyChar() <= '9' && e.getKeyChar() >= '0') {
 				playerServer += e.getKeyChar();
 			}
 		}
@@ -871,7 +881,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 				walk(info.PORTAL_TILE);
 				return random(1000, 1200);
 			}
-			if(game.getCurrentWorld() != info.getWorld()) {
+			if(game.getCurrentWorld() != playerWorld) {
 				changeWorld = true;
 				env.disableRandoms();
 				if(game.logout(true)) 
@@ -1382,10 +1392,6 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 		private RSPlayer getCrafter() {
 			RSPlayer player = players.getNearest(CRAFTER_FILTER);
 			return player;
-		}
-		
-		private int getWorld() {
-			return 102;
 		}
 	}
 	
