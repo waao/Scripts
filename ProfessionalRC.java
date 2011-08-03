@@ -42,7 +42,8 @@ import org.rsbot.script.wrappers.RSTile;
 	name = "professional runecrafting",
 	version = 2,
 	description = "AIO free to play normal/master/runner runecrafting bot.",
-	keywords = {"runecraft", "rc", "aio", "master", "runner", "slave"} )
+	keywords = {"runecrafting", "runecrafter", "runecraft", "rc", "aio", "master", "runner", "slave"},
+	website = "http://www.powerbot.org/community/topic/435261-master-and-slave-rc/")
 public class ProfessionalRC extends Script implements PaintListener, MessageListener, MouseListener, KeyListener {
 	private static final LinkedList<Strategy> stratagies = new LinkedList<Strategy>();
 	private static String status;
@@ -714,7 +715,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 		} else if(keylisten[1]) {
 			if(e.getKeyChar() == '\b') {
 				playerServer = playerServer.substring(0, playerServer.length() - 1);
-			} else if(e.getKeyChar() <= '9' && e.getKeyChar() > '0') {
+			} else if(e.getKeyChar() <= '9' && e.getKeyChar() >= '0') {
 				playerServer += e.getKeyChar();
 			}
 		}
