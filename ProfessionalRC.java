@@ -38,10 +38,10 @@ import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
 @ScriptManifest(
-	authors = "yomama`",
+	authors = "inspercho",
 	name = "professional runecrafting",
-	version = 2,
-	description = "AIO free to play normal/master/runner runecrafting bot.",
+	version = 3,
+	description = "AIO free to play normal or master/runner runecrafting bot.",
 	keywords = {"runecrafting", "runecrafter", "runecraft", "rc", "aio", "master", "runner", "slave"},
 	website = "http://www.powerbot.org/community/topic/435261-master-and-slave-rc/")
 public class ProfessionalRC extends Script implements PaintListener, MessageListener, MouseListener, KeyListener {
@@ -136,7 +136,7 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 				try {
 					out = new FileOutputStream(loc + "rc.p");
 					prop.setProperty("world", "" + playerServer);
-					prop.setProperty("name", playerTraded);
+					prop.setProperty("name", playerTraded.replace("\t", "").replace("\n", ""));
 					prop.setProperty("musician", "" + useMusician);
 					prop.setProperty("location", "" + locations_index);
 	
@@ -166,15 +166,17 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 					log(locations[locations_index] + " master started.");
 					note = ESSENCE_NOTE_ID;
 					playerTraded = null;
+					stratagies.add(new OfferRunes());
+					stratagies.add(new ConfirmTrade());
 					stratagies.add(new CraftRunes());
 					stratagies.add(new DropJunk());
 					stratagies.add(new AcceptTrade());
-					stratagies.add(new OfferRunes());
-					stratagies.add(new ConfirmTrade());
 					break;
 				case RUNNER:
 					numberToCraft = 26;
 					log(locations[locations_index] + " runner started for " + playerTraded + ".");
+					stratagies.add(new OfferRunes());
+					stratagies.add(new ConfirmTrade());
 					stratagies.add(new ExitAltar());
 					stratagies.add(new GoBank());
 					stratagies.add(new DoBank());
@@ -182,8 +184,6 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 					stratagies.add(new GoAltar());
 					stratagies.add(new FindPlayer());
 					stratagies.add(new SendTrade());
-					stratagies.add(new OfferRunes());
-					stratagies.add(new ConfirmTrade());
 					break;
 			}
 			
@@ -1348,8 +1348,8 @@ public class ProfessionalRC extends Script implements PaintListener, MessageList
 			public boolean accept(RSPlayer t) {
 				if (t != null) {
 					if (t.getName() != null) {
-						return t.getName().replace('\u00A0', ' ').toLowerCase()
-								.equals(playerTraded.replace('\u00A0', ' ').toLowerCase());
+						return t.getName().replace('\u00A0', ' ')
+								.equalsIgnoreCase(playerTraded.replace('\u00A0', ' '));
 					}
 				}
 				return false;
