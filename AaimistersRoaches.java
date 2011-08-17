@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.20 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.21 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -75,7 +75,7 @@ import org.rsbot.script.wrappers.RSPath;
 import org.rsbot.script.wrappers.RSPlayer;
 import org.rsbot.script.wrappers.RSTile;
 
-@ScriptManifest(authors = { "Aaimister" }, website = "http://3ff8d067.any.gs", name = "Aaimister's Roach Killer v1.20", keywords = "Combat", version = 1.20, description = ("Kills roaches in Edgville."))
+@ScriptManifest(authors = { "Aaimister" }, website = "http://3ff8d067.any.gs", name = "Aaimister's Roach Killer v1.21", keywords = "Combat", version = 1.21, description = ("Kills roaches in Edgville."))
 public class AaimistersRoaches  extends Script implements PaintListener, MouseListener, MessageListener {
 
 	private static interface AM {
@@ -114,6 +114,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	private String[] lootString;
 	private ArrayList<String> doLoot = new ArrayList<String>(50);
 	
+	Updater u = new Updater();
 	AaimistersGUI g = new AaimistersGUI();
 	public final File settingsFile = new File(getCacheDirectory(), "AaimistersRKillerSettings.txt");
 	public final File glootFile = new File(getCacheDirectory(), "GoodLootList.txt");
@@ -207,7 +208,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	//"Climb-down"
 	int rCount;
 	int rHour;
-	int boo = 26972;
+	int boo = 42217;
 	int idle;
 	int food = 379;
 	int minHealth = 200;
@@ -298,6 +299,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	boolean opened;
 	boolean closed;
 	boolean wLoot;
+	boolean stop;
 	//Paint Buttons
 	boolean xButton;
 	boolean StatAT;;
@@ -350,12 +352,21 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	}
 	
 	public double getVersion() { 
-		return 1.20;
+		return 1.21;
 	}
 	
 	public boolean onStart() {
 		status = "Starting up";
 				
+		//CheckfoUpdate
+		if (getUpdate() > getVersion()) {
+			update();
+			if (closed || stop) {
+	        	log.severe("The GUI window was closed!");
+	        	return false;
+	        }
+		}
+		
 		try {
 			settingsFile.createNewFile();
 			glootFile.createNewFile();
@@ -382,11 +393,37 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 		rgstartEXP = skills.getCurrentExp(4);
 		rgcurrentXP = skills.getExpToNextLevel(4);
 		if (doBreak) {
-			breakingNew();
+			if (AccountManager.isTakingBreaks(account.getName())) {
+					log.severe("Turn Off Bot Breaks!");
+					log.severe("Turning off custom breaker...");
+					doBreak = false;
+			} else {
+				breakingNew();
+			}
 		}
 		
 		return true;
 	}
+	
+	private void update() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            u.Updater.setVisible(true);
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                    	u.Updater.setVisible(true);
+                    }
+                });
+            } catch (InvocationTargetException ite) {
+            } catch (InterruptedException ie) {
+            }
+        }
+        sleep(100);
+        while (u.Updater.isVisible()) {
+            sleep(100);
+        }
+    }
 	
 	private void createAndWaitforGUI() {
         if (SwingUtilities.isEventDispatchThread()) {
@@ -407,6 +444,18 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
             sleep(100);
         }
     }
+	
+	public double getUpdate() {
+	    try {
+	        BufferedReader r = new BufferedReader(new InputStreamReader(new URL("http://aaimister.webs.com/scripts/AaimistersRoachVersion.txt").openStream()));
+	        double d = Double.parseDouble(r.readLine());
+	        r.close();
+	       return d;
+	    } catch(Exception e) {
+	        log("Could not check for update, sorry. =/");
+	    }
+	    return getVersion();
+	}
 	
 	public void openThread(){
 		if (java.awt.Desktop.isDesktopSupported()) {
@@ -921,7 +970,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			}
 			RSObject booth = objects.getNearest(boo);
 			RSNPC bankP = banker();
-			if (AM.bankArea.contains(getMyPlayer().getLocation()) && booth.isOnScreen()) {
+			if (AM.bankArea.contains(getMyPlayer().getLocation()) && booth.isOnScreen() && !inventory.contains(food)) {
 				if (!bank.isOpen()) {
 					idle++;
 					if (!opened) {
@@ -1320,7 +1369,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
    public void drawMouse(final Graphics g) {
 		final Point loc = mouse.getLocation();
 		final long mpt = System.currentTimeMillis() - mouse.getPressTime();
-		if (mouse.getPressTime() == -1 || mpt >= 1000) {
+		if (mouse.getPressTime() == -1 || mpt >= 500) {
 			g.setColor(ThinColor);
 			g.drawLine(0, loc.y, 766, loc.y);
 			g.drawLine(loc.x, 0, loc.x, 505);
@@ -1330,7 +1379,7 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			g.drawLine(loc.x + 1, 0, loc.x + 1, 505);
 			g.drawLine(loc.x - 1, 0, loc.x - 1, 505);
 		}
-		if (mpt < 1000) {
+		if (mpt < 500) {
 			g.setColor(ClickC);
 			g.drawLine(0, loc.y, 766, loc.y);
 			g.drawLine(loc.x, 0, loc.x, 505);
@@ -1707,7 +1756,8 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 				g.setColor(PercentRed);
 				g.fillRect(6, 320, 508, 16);
 				g.setColor(PercentGreen);
-				g.fillRect(6, 320, skills.getPercentToNextLevel(getStat()) * (508/100), 16);
+				final int Bar = (int) (skills.getPercentToNextLevel(getStat()) * 5.08);
+				g.fillRect(6, 320, Bar, 16);
 				g.setColor(White);
 				g.setFont(Cam);
 				g.drawString("" + skills.getPercentToNextLevel(getStat()) + "% to lvl " + (skills.getCurrentLevel(getStat()) + 1) + currentStat, 194, 332);
@@ -1788,6 +1838,44 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 	 }
 	 
 	 public class AaimistersGUI {
+		 private void breakBoxActionPerformed(ActionEvent e) {
+	 			doBreak = breakBox.isSelected();
+	 			randomBreaks = randomBox.isSelected();
+	 			if (!doBreak) {
+	 				randomBox.setEnabled(false);
+	 				randomBox.setSelected(false);
+	 				maxTimeBeBox.setEnabled(false);
+	 				minTimeBeBox.setEnabled(false);
+	 				maxBreakBox.setEnabled(false);
+	 				minBreakBox.setEnabled(false);
+	 			} else {
+	 				randomBox.setEnabled(true);
+	 				if (!randomBreaks) {
+	 					maxTimeBeBox.setEnabled(true);
+	 	 				minTimeBeBox.setEnabled(true);
+	 	 				maxBreakBox.setEnabled(true);
+	 	 				minBreakBox.setEnabled(true);
+	 				}
+	 			}
+	 		}
+	 		
+	 		private void randomBoxActionPerformed(ActionEvent e) {
+	 			doBreak = breakBox.isSelected();
+	 			randomBreaks = randomBox.isSelected();
+	 			if (randomBreaks == true) {
+	 				maxTimeBeBox.setEnabled(false);
+	 				minTimeBeBox.setEnabled(false);
+	 				maxBreakBox.setEnabled(false);
+	 				minBreakBox.setEnabled(false);
+	 			} else {
+	 				if (doBreak) {
+	 					maxTimeBeBox.setEnabled(true);
+	 	 				minTimeBeBox.setEnabled(true);
+	 	 				maxBreakBox.setEnabled(true);
+	 	 				minBreakBox.setEnabled(true);
+	 				}
+	 			}
+	 		}
 		 
 		 private void list1ValueChanged(ListSelectionEvent e) {
 			 String text = (String) noList.getSelectedValue();
@@ -2184,8 +2272,25 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 			tabbedPane.addTab("Breaks", null, panel_1, null);
 			
 			breakBox.setText("Custom Breaks");
+			breakBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					breakBoxActionPerformed(e);
+				}
+			});
 			
 			randomBox.setText("Random Breaks");
+			if (!doBreak) {
+				randomBox.setEnabled(false);
+			} else {
+				randomBox.setEnabled(true);
+			}
+			randomBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					randomBoxActionPerformed(e);
+				}
+			});
 			
 			JLabel lblTimeBetweenBreaks = new JLabel("Time Between Breaks:");
 			lblTimeBetweenBreaks.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
@@ -2489,4 +2594,99 @@ public class AaimistersRoaches  extends Script implements PaintListener, MouseLi
 		private JScrollPane noScroll;
 		private JButton submit;
 	 }
+	 public class Updater {
+			private Updater() {
+				initComponents();
+			}
+			
+			private void threadActionPerformed(ActionEvent e) {
+				openThread();
+				Updater.dispose();
+	 			stop = true;
+	 		}
+			
+			private void noActionPerformed(ActionEvent e) {
+				Updater.dispose();
+	 			stop = true;
+	 		}
+			
+			private void initComponents() {
+				Updater = new JFrame();
+				contentPane = new JPanel();
+				thread = new JButton();
+				no = new JButton();
+				
+				// Listeners
+		        Updater.addWindowListener(new WindowAdapter() {
+		            public void windowClosing(WindowEvent e) {
+		                closed = true;
+		            }
+		        });
+				
+		        Updater.setTitle("Aaimister's Updater");
+		        Updater.setResizable(false);
+		        Updater.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		        Updater.setBounds(100, 100, 420, 123);
+				contentPane = new JPanel();
+				contentPane.setBackground(new Color(0, 0, 0));
+				contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+				Updater.setContentPane(contentPane);
+				
+				thread.setText("Visit Thread");
+				thread.setFont(new Font("Rod", Font.PLAIN, 12));
+				thread.setForeground(new Color(255, 255, 0));
+				thread.setBackground(new Color(0, 0, 0));
+				thread.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						threadActionPerformed(e);
+					}
+				});
+				
+				JLabel lblUpdateAvail = new JLabel("Update Available!  Please Visit The Thread!");
+				lblUpdateAvail.setFont(new Font("Rod", Font.PLAIN, 15));
+				lblUpdateAvail.setHorizontalAlignment(SwingConstants.CENTER);
+				lblUpdateAvail.setForeground(Color.YELLOW);
+				
+				no.setText("No Thanks");
+				no.setForeground(Color.YELLOW);
+				no.setFont(new Font("Rod", Font.PLAIN, 12));
+				no.setBackground(Color.BLACK);
+				no.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						noActionPerformed(e);
+					}
+				});
+				GroupLayout gl_contentPane = new GroupLayout(contentPane);
+				gl_contentPane.setHorizontalGroup(
+					gl_contentPane.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(22)
+							.addComponent(thread, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+							.addComponent(no, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+							.addGap(32))
+						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+							.addGap(5)
+							.addComponent(lblUpdateAvail, GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE))
+				);
+				gl_contentPane.setVerticalGroup(
+					gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(lblUpdateAvail)
+							.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+								.addComponent(thread, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+								.addComponent(no, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap())
+				);
+				contentPane.setLayout(gl_contentPane);
+			}
+			private JFrame Updater;
+			private JPanel contentPane;
+			private JButton thread;
+			private JButton no;
+		}
 }
