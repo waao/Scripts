@@ -1,6 +1,6 @@
 /**
  * @author Aaimister
- * @version 1.41 ©2010-2011 Aaimister, No one except Aaimister has the right to
+ * @version 1.42 ©2010-2011 Aaimister, No one except Aaimister has the right to
  *          modify and/or spread this script without the permission of Aaimister.
  *          I'm not held responsible for any damage that may occur to your
  *          property.
@@ -55,7 +55,7 @@ import org.rsbot.script.ScriptManifest;
 import org.rsbot.script.util.Filter;
 import org.rsbot.script.wrappers.*;
 
-@ScriptManifest(authors = { "Aaimister" }, website = "http://fc4ea3b7.any.gs", name = "Aaimisters Essence Miner v1.41", keywords = "Mining", version = 1.41, description = ("Mines Essence."))
+@ScriptManifest(authors = { "Aaimister" }, website = "http://fc4ea3b7.any.gs", name = "Aaimisters Essence Miner v1.42", keywords = "Mining", version = 1.42, description = ("Mines Essence."))
 public class AaimistersEssenceMiner extends Script implements PaintListener, MessageListener, MouseListener {
 
 	private static interface AM {
@@ -218,26 +218,25 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 			if (AtPerson.contains(getLocation())) {
 				return State.TELE;
 			} else if (objects.getNearest(obs) != null) {
+				RSObject ess = objects.getNearest(essenceID());
 				try {
-					RSObject ess = objects.getNearest(essenceID());
-					RSTile loc = ess.getArea().getNearestTile(getLocation());
-					if (!calc.canReach(loc, true)) {
+					if (portal().isOnScreen() && !calc.canReach(new RSTile(ess.getLocation().getX(), ess.getLocation().getY() - 3), true)) {
+						log("Getting Unstuck.");
 						return State.PORTAL;
-					} else {
-						return State.MINE;
 					}
 				} catch (Exception e) {
 					
 				}
+				return State.MINE;
 			} else {
 				return State.TOMINE;
 			}
 		}
-		return State.ERROR;
+		//return State.ERROR;
 	}
 
 	public double getVersion() { 
-		return 1.41;
+		return 1.42;
 	}
 
 	public boolean onStart() {
@@ -732,7 +731,7 @@ public class AaimistersEssenceMiner extends Script implements PaintListener, Mes
 						if (checkDoor()) {
 							RSObject closed = objects.getNearest(door);
 							if (calc.distanceTo(closed.getLocation()) > 3) {
-								walking.walkTileMM(closed.getLocation().randomize(1, 1));
+								walking.walkTileMM(walking.getClosestTileOnMap(closed.getLocation().randomize(1, 1)));
 								return random(1500, 1800);
 							} else {
 								openDoor();
