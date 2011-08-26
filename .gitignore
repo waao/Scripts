@@ -1,5 +1,1006 @@
-/*.class
-/*.settings/
-/.classpath
-/.project
-/bin/
+/**
+ * @author waao
+ */
+
+//wLRC created by waao for RSBot version 2.x
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.event.*;
+
+import javax.swing.*;
+
+import org.rsbot.event.events.MessageEvent;
+import org.rsbot.event.listeners.MessageListener;
+import org.rsbot.event.listeners.PaintListener;
+import org.rsbot.script.Script;
+import org.rsbot.script.ScriptManifest;
+import org.rsbot.script.methods.Equipment;
+import org.rsbot.script.methods.Prayer;
+import org.rsbot.script.methods.Skills;
+import org.rsbot.script.methods.Summoning.Familiar;
+import org.rsbot.script.wrappers.RSArea;
+import org.rsbot.script.wrappers.RSItem;
+import org.rsbot.script.wrappers.RSNPC;
+import org.rsbot.script.wrappers.RSObject;
+import org.rsbot.script.wrappers.RSTile;
+import org.rsbot.script.wrappers.RSWeb;
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import org.rsbot.script.wrappers.RSComponent;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.util.LinkedList;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+
+@ScriptManifest(authors = { "waao" },version = 1.2, keywords = {
+        "FastXP", "training", "waao", "Moneymaking", "Fishing", "wScripts", "Living rock caverns" }, description = "Fishes rocktails in LRC, by waao.",
+        name = "wLRC")
+public class wLRC extends Script implements PaintListener, MessageListener, MouseListener{
+  
+  ScriptManifest props = getClass().getAnnotation(ScriptManifest.class);
+  
+  private int[] fishingGear = {12069, 15263, 14632, 307, 313, 12531, 20346, 20347, 20348, 20323, 20340, 20341,
+  		20342, 20343, 20328, 20329, 20330, 20334, 20335, 1161, 1965, 1969, 1967, 1895, 1893,
+
+        1891, 1971, 4293, 2142, 4291, 2140, 3228, 9980, 7223, 6297, 6293,
+
+        6295, 6299, 7521, 9988, 7228, 2878, 7568, 2343, 1861, 13433, 315,
+
+        325, 319, 3144, 347, 355, 333, 339, 351, 329, 3381, 361, 10136,
+
+        5003, 379, 365, 373, 7946, 385, 397, 391, 3369, 3371, 3373, 2309,
+
+        2325, 2333, 2327, 2331, 2323, 2335, 7178, 7180, 7188, 7190, 7198,
+
+        7200, 7208, 7210, 7218, 7220, 2003, 2011, 2289, 2291, 2293, 2295,
+
+        2297, 2299, 2301, 2303, 1891, 1893, 1895, 1897, 1899, 1901, 7072,//wLRCOFFICIAL  BY WAAO
+
+        7062, 7078, 7064, 7084, 7082, 7066, 7068, 1942, 6701, 6703, 7054,
+
+        6705, 7056, 7060, 2130, 1985, 1993, 1989, 1978, 5763, 5765, 1913,
+
+        5747, 1905, 5739, 1909, 5743, 1907, 1911, 5745, 2955, 5749, 5751,
+
+        5753, 5755, 5757, 5759, 5761, 2084, 2034, 2048, 2036, 2217, 2213,
+
+        2205, 2209, 2054, 2040, 2080, 2277, 2225, 2255, 2221, 2253, 2219,
+
+        2281, 2227, 2223, 2191, 2233, 2092, 2032, 2074, 2030, 2281, 2235,
+
+        2064, 2028, 2187, 2185, 2229, 12140, 12142, 12144, 12146};
+	
+	private int obeliskID = 5787;
+	private int BropeID = 45078; //bottom rope
+	private int TropeID = 45077; //top rope
+	private int fishSpotID;
+	private int fishID;
+	private int[] fishCape = {9798, 9799};
+	private int[] summPotID = {12140, 12142, 12144, 12146};
+	private final static int rockSpotID = 8842;
+	private final static int caveSpotID = 8841; 
+	private boolean isReady;
+	private int RodID = 307;
+	private int mineralsID = 15263;
+	private int[] bankID = {45079};
+	private int rockTailID = 15272; 
+	private int caveFishID = 15264;
+	private int gLobsterID = 12069;
+	private int IbisID =  12531;
+	private int[] pouchesID = {12069, 12531, 12788};
+	private int excID = 14632;
+	private long startTime;
+private int expGained = 0;
+private int startExp = 0;
+private int Fishfished;
+private int urnsUsed;
+private int FishTillLevel;
+private int TTL;
+public int gpMade;
+public int fishPrice;
+public int gpHour;
+public int GainedLevels;//wLRCOFFICIAL  BY WAAO
+RSArea fishArea;
+public boolean showPaint = true ;
+private int[] fullUrn = {20342, 20348, 20336, 20330, 20324};
+	RSTile spotTile = new RSTile(3643, 5082);
+	RSTile spotTile2 = new RSTile(3629, 5084);
+	RSTile spotTile3 = new RSTile(3618, 5090);
+	RSTile bankTile = new RSTile(3654, 5114);
+	RSTile safeTile = new RSTile(3653, 5116); 
+	RSTile BropeTile = new RSTile(3651, 5122); 
+	RSTile errorTile = new RSTile(3645, 5084);
+	RSTile screenTile = new RSTile(3642, 5084);
+	RSTile halfWayTile = new RSTile(3650, 5091);
+	private RSArea spot1Area = new RSArea(new RSTile(3641, 5085), new RSTile(3647, 5080));
+	private RSArea spot2Area = new RSArea(new RSTile(3625, 5086), new RSTile(3633, 5082));
+	private RSArea spot3Area = new RSArea(new RSTile(3616, 5093), new RSTile(3623, 5087));
+	private RSArea bankArea = new RSArea(new RSTile(3652, 5116), new RSTile(3660, 5111));
+	private int[] foodID = { 1161, 1965, 1969, 1967, 1895, 1893,
+
+        1891, 1971, 4293, 2142, 4291, 2140, 3228, 9980, 7223, 6297, 6293,
+
+        6295, 6299, 7521, 9988, 7228, 2878, 7568, 2343, 1861, 13433, 315,
+
+        325, 319, 3144, 347, 355, 333, 339, 351, 329, 3381, 361, 10136,
+
+        5003, 379, 365, 373, 7946, 385, 397, 391, 3369, 3371, 3373, 2309,
+
+        2325, 2333, 2327, 2331, 2323, 2335, 7178, 7180, 7188, 7190, 7198,
+
+        7200, 7208, 7210, 7218, 7220, 2003, 2011, 2289, 2291, 2293, 2295,
+
+        2297, 2299, 2301, 2303, 1891, 1893, 1895, 1897, 1899, 1901, 7072,
+
+        7062, 7078, 7064, 7084, 7082, 7066, 7068, 1942, 6701, 6703, 7054,
+
+        6705, 7056, 7060, 2130, 1985, 1993, 1989, 1978, 5763, 5765, 1913,
+
+        5747, 1905, 5739, 1909, 5743, 1907, 1911, 5745, 2955, 5749, 5751,
+
+        5753, 5755, 5757, 5759, 5761, 2084, 2034, 2048, 2036, 2217, 2213,
+
+        2205, 2209, 2054, 2040, 2080, 2277, 2225, 2255, 2221, 2253, 2219,
+
+        2281, 2227, 2223, 2191, 2233, 2092, 2032, 2074, 2030, 2281, 2235,
+
+        2064, 2028, 2187, 2185, 2229 };
+	
+	BufferedImage normal = null;
+    BufferedImage clicked = null;
+    
+  private final LinkedList<MousePathPoint> mousePath = new LinkedList<MousePathPoint>();
+
+    @SuppressWarnings("serial")
+  private class MousePathPoint extends Point { 
+    
+    private long finishTime;
+    private double lastingTime;
+
+    private int toColor(double d) {
+      return Math.min(255, Math.max(0, (int) d));
+    }
+
+    public MousePathPoint(int x, int y, int lastingTime) {
+      super(x, y);//wLRCOFFICIAL  BY WAAO
+      this.lastingTime = lastingTime;
+      finishTime = System.currentTimeMillis() + lastingTime;
+    }
+
+    public boolean isUp() {
+      return System.currentTimeMillis() > finishTime;
+    }
+  //wLRCOFFICIAL  BY WAAO
+    public Color getColor() {//wLRCOFFICIAL  BY WAAO
+      return new Color(0,191,255, toColor(256 * ((finishTime - System 
+          .currentTimeMillis()) / lastingTime)));
+    }//wLRCOFFICIAL  BY WAAO
+  }
+  
+   
+  @Override
+  public boolean onStart() {  
+         
+	  try {
+          final URL cursorURL = new URL(
+                  "http://i.imgur.com/w7HhD.png"); // This is the link of your mouse when it isn't clicked
+         
+          normal = ImageIO.read(cursorURL);
+          
+      } catch (MalformedURLException e) {
+          log("Unable to buffer cursor.");
+      } catch (IOException e) {
+          log("Unable to open cursor image.");
+      }
+      
+    SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                wgui gui = new wgui();//wLRCOFFICIAL  BY WAAO
+                gui.setVisible(true);
+            }
+        }//wLRCOFFICIAL  BY WAAO//wLRCOFFICIAL  BY WAAO
+        );
+        while (!isReady) {//wLRCOFFICIAL  BY WAAO
+            sleep(100);//wLRCOFFICIAL  BY WAAO
+        }
+      //wLRCOFFICIAL  BY WAAO
+ 
+ 
+    startExp = skills.getCurrentExp(Skills.FISHING);
+    startTime = System.currentTimeMillis();
+    fishPrice = grandExchange.lookup(rockTailID).getGuidePrice();
+    log(Color.GREEN,"Welcome to wLRC!");//wLRCOFFICIAL  BY WAAO
+    log("Please be patient while GUI and paint loads up!");
+    log("Please fill out GUI according to your desires, then press START.");
+      
+    
+    
+    return true;
+  }//wLRCOFFICIAL  BY WAAO
+  
+  	//
+  	//START LOOP
+  	//
+
+  
+  public int loop() {
+    
+     String returnText = interfaces.get(906)
+         . getComponent(221)
+          .getText().toLowerCase();
+  if (!game.isLoggedIn() || game.isWelcomeScreen() || ( returnText != null && returnText.equals("Logging In - Please Wait")))
+  {
+          sleep(1000,1500);
+          return random(6000,7000);
+  }
+
+RSNPC fishSpot = npcs.getNearest(fishSpotID);
+
+     
+     mouse.setSpeed(random(3, 6));
+
+     offRetaliate();
+     ibisSummon();
+     lobsterSummon();
+     teleUrn();
+     summPot();
+     //capeBoost();
+     
+    // if(!inventory.contains(mineralsID)) {
+    //	 log(Color.RED,"Out of living rock minerals..");
+    //	 log(Color.RED,"Sleeping for 20 sec in case of fail check of minerals");
+    //	 sleep(random(15000, 25000));
+    //	 log(Color.RED,"Confirmed out of minerals, logging out and shutting down..");
+    //	 stopScript(true);
+   //  }
+     
+       if (!getMyPlayer().isInCombat()) {
+         if (!inventory.isFull()) {
+           
+           if(getMyPlayer().getAnimation() == 623) {
+        	   if(random(1, 15) == 5) {
+        		   antiBan();
+        	   }
+           }
+          if(getMyPlayer().getAnimation() == -1) {
+              
+        	  if (random(1, 30) == 16) {
+        	               antiBan();
+        	  }
+        	  
+        	  if(fishSpot == null && bankArea.contains(getMyPlayer().getLocation())) {
+            		walkFish();
+            		sleep(800, 1200);
+            	}
+      if (fishSpot != null) {
+        	 
+        	   if (fishSpot.isOnScreen()) { 
+        		   fishSpot.interact("Bait");
+ 
+                   if (random(1, 30) == 18)
+                       antiBan();
+                            
+                   return random(200, 400);
+        		   
+               }
+      
+             if (!fishSpot.isOnScreen()) {
+            	if(calc.tileOnScreen(screenTile) || spot1Area.contains(getMyPlayer().getLocation()) || 
+            			calc.tileOnScreen(screenTile) && spot1Area.contains(getMyPlayer().getLocation())) {
+            		log("At spot 1 walkign to spot 2");
+            		spot2Walk();
+            		camera.turnTo(fishSpot);
+            		sleep(800, 1200);
+
+            	} 
+            	else if (spot2Area.contains(getMyPlayer().getLocation())) {
+            		log("At spot 2 walkign to spot 3");
+            	spot3Walk();
+            	sleep(800, 1200);
+            	camera.turnTo(fishSpot);
+            	
+            		
+            	}
+            	else if(spot3Area.contains(getMyPlayer().getLocation())) {
+            		log("At spot 3 finding new spot");
+            		spot2Walk();
+            		sleep(800, 1200);
+            		walkFish();
+            		sleep(800, 1200);
+                	camera.turnTo(fishSpot);
+            	}
+            	
+            	
+            	
+             }
+         
+          
+             }
+         }
+       }
+     
+       }
+       
+         if(inventory.isFull()) {
+        	 if(atBank()) {
+        	 excSpec();
+        	 sleep(random(400, 600));
+	   openBox();
+	   doBank();
+   }else {
+	   
+	   halfWalk();
+	   sleep(random(200, 400));
+	   walkBank();
+   
+         }
+         }
+                
+        
+       
+         if(getMyPlayer().isInCombat()) { 
+        	 if(!prayer.isQuickPrayerOn() && prayer.getPrayerLeft() >= 15) {
+        		 prayer.setQuickPrayer(true);
+        		 sleep(random(200, 400));
+        	 }
+        	 walkFish();
+        	 sleep(random(200, 400));
+        		 walkBank();
+        		 sleep(random(600, 800));
+        		 
+        		 if(prayer.isQuickPrayerOn()) {
+        		 prayer.setQuickPrayer(false);
+        		 sleep(random(200, 400));
+        		 }
+         }      
+       
+       
+     if (inventory.getCount(foodID) >= 1) {
+         eat();
+         
+       } else {
+         if (inventory.getCount(foodID) < 1) {
+           if (getMyPlayer().getHPPercent() < 35) {
+             log(Color.RED,"Danger HP, walking to bank and resting til logged out.");
+             walkBank();
+             sleep(random(400, 600));
+             walkSafe();
+             sleep(random(400, 600));
+             walking.rest();
+             sleep(random(25000, 55000));
+             
+            
+           }
+         }
+       }
+     
+    return 500;
+  }
+  
+  
+
+//
+  //END LOOP
+  //
+  
+  @SuppressWarnings({ "deprecation", "static-access" })
+private void capeBoost() {
+	  if(skills.getCurrentLevel(Skills.FISHING) <= skills.getRealLevel(Skills.FISHING)) {
+		  if(equipment.containsOneOf(fishCape)) {
+		  if (game.getCurrentTab() != game.TAB_EQUIPMENT) {
+
+	            game.openTab(game.TAB_EQUIPMENT);
+
+	        }
+
+	        if (game.getCurrentTab() == game.TAB_EQUIPMENT) {
+
+	        	 equipment.getItem(Equipment.CAPE).interact("Boost"); 
+	        	 log("Successfully Boosted fishing with cape");
+	        	 sleep(random(100, 250));
+	        	 
+	            	
+	                }
+	        if (game.getCurrentTab() != game.TAB_INVENTORY)  {
+	        	game.openTab(game.TAB_INVENTORY);
+	        }
+	            }
+	  }
+	  }
+  
+ 
+  //Summonng potion method
+	  private void summPot() {
+	 	if(summoning.getSummoningPoints() < 15 && inventory.containsOneOf(pouchesID)) {
+	 	 RSItem summPot = inventory.getItem(summPotID);
+	 	 summPot.interact("Drink");
+	 	 sleep(random(200, 400));
+	  }return;
+		 
+		 
+	  }
+	  
+	  
+       
+  private void eat() {
+        if (combat.getHealth() <= 35) {
+        while (combat.getHealth() <= 50) {      RSItem food = inventory.getItem(foodID);
+        food.interact("Eat");
+        }
+}
+        return;
+} 
+  
+  private void ibisSummon() {
+    if (inventory.contains(IbisID) && !summoning.isFamiliarSummoned() && skills.getRealLevel(Skills.SUMMONING) >= 56 && summoning.getSummoningPoints() > 20) {
+         RSItem ibis = inventory.getItem(IbisID);
+         ibis.interact("Summon");
+         log("Summoned ibis pouch.");
+    }
+    return;
+  }
+  
+  private void lobsterSummon() {
+     if (inventory.contains(gLobsterID)) {
+         if (!summoning.isFamiliarSummoned() && skills.getRealLevel(Skills.SUMMONING) >= 74 && summoning.getSummoningPoints() > 20) {
+
+             RSItem lobster = inventory.getItem(gLobsterID);
+             lobster.interact("Summon");
+             log("Summoned granite Lobster pouch.");
+         }
+       }
+     return;
+  }
+  
+  
+  private void openBox(){
+    final RSObject bankDepositBox = objects.getNearest(bankID);
+    bankDepositBox.interact("Deposit");
+    sleep(2000);
+  }
+
+
+  private void doBank() {
+    
+        if (bank.isDepositOpen()) {
+                bank.depositAllExcept(fishingGear);
+                sleep(200, 400);
+                bank.close();
+                
+              //wLRCOFFICIAL  BY WAAO
+                  
+                
+        }
+}
+  
+  
+  private void teleUrn(){
+        RSItem urn = inventory.getItem(fullUrn);
+        if(inventory.containsOneOf(fullUrn)){//wLRCOFFICIAL  BY WAAO//wLRCOFFICIAL  BY WAAO//wLRCOFFICIAL  BY WAAO//wLRCOFFICIAL  BY WAAO//wLRCOFFICIAL  BY WAAO
+        	//wLRCOFFICIAL  BY WAAO
+                urn.interact("Teleport urn");
+              //wLRCOFFICIAL  BY WAAO
+        }
+        return;//wLRCOFFICIAL  BY WAAO
+}
+
+  private boolean atBank() {
+      RSObject x = objects.getNearest(bankID);
+      if (x != null && x.isOnScreen()) {
+          return true;
+      }//wLRCOFFICIAL  BY WAAO
+      return false;
+  }
+  
+  private void excSpec() {
+    if(equipment.containsOneOf(excID)) {
+      if (getMyPlayer().getHPPercent() < 50 && combat.getSpecialBarEnergy() >= 100) {
+      combat.setSpecialAttack(true);
+      }//wLRCOFFICIAL  BY WAAO
+    }
+    return;//wLRCOFFICIAL  BY WAAO
+  }
+  
+  public void offRetaliate() {
+    combat.setAutoRetaliate(false);
+  }
+ 
+  private void halfWalk() {
+	     RSWeb walkWeb = web.getWeb(getMyPlayer().getLocation(), halfWayTile);
+	       while (calc.distanceTo(halfWayTile) > 6) {
+	               walkWeb.step();
+	               sleep(200, 800);//wLRCOFFICIAL  BY WAAO
+	       }
+	   }
+  
+  private void spot2Walk() {
+     RSWeb walkWeb = web.getWeb(getMyPlayer().getLocation(), spotTile2);
+       while (calc.distanceTo(spotTile2) > 6) {
+               walkWeb.step();
+               sleep(200, 800);//wLRCOFFICIAL  BY WAAO
+       }
+   }
+  
+  private void spot3Walk() {
+	     RSWeb walkWeb = web.getWeb(getMyPlayer().getLocation(), spotTile3);
+	       while (calc.distanceTo(spotTile3) > 4) {
+	               walkWeb.step();
+	               sleep(200, 800);//wLRCOFFICIAL  BY WAAO
+	       }
+	   }
+  
+   private void walkBank() {
+     RSWeb walkWeb = web.getWeb(getMyPlayer().getLocation(), bankTile);
+       while (calc.distanceTo(bankTile) > 6) {//wLRCOFFICIAL  BY WAAO
+               walkWeb.step();
+               sleep(200, 800);
+       }
+   }
+   
+      private void walkFish() {
+          RSWeb walkWeb = web.getWeb(getMyPlayer().getLocation(), spotTile);
+          while (calc.distanceTo(spotTile) > 6) {
+              walkWeb.step();//wLRCOFFICIAL  BY WAAO
+              sleep(200, 800);
+          }
+      }
+      
+      private void walkSafe() {
+        RSWeb walkWeb = web.getWeb(getMyPlayer().getLocation(), safeTile);
+        while (calc.distanceTo(safeTile) > 6) {
+          walkWeb.step();//wLRCOFFICIAL  BY WAAO
+          sleep(200, 600);
+        }
+      }
+      
+      public void setRun() {
+        
+                if(walking.getEnergy() > 40 && !walking.isRunEnabled())
+                {
+                        walking.setRun(true);
+                        
+                }//wLRCOFFICIAL  BY WAAO
+        }
+      
+      public void rest() {
+        walking.rest();
+      }
+      
+private void antiBan() {
+	  int r = random(0, 15);
+	  switch (r) {
+	     
+      case 3:
+           mouse.move(120, 0);
+           log("antiban activated, mouse moves accross screen.");
+           sleep(random(500, 800));
+      break;
+              
+      case 4:
+          camera.setPitch(random(360, 0));
+          sleep(random(450, 650));
+          log("antiban activated, camera sets random angle.");
+      break;
+          
+      case 5:
+          camera.setPitch(random(0, 280));
+          sleep(random(450, 650));
+          log("antiban activated, camera sets random angle(Between 0 and 280 Degrees.");
+      break;
+		
+      case 7:
+              mouse.moveSlightly();
+              log("antiban activated, mouse moves randomly.");
+       break;
+              
+      case 11:
+      	mouse.moveOffScreen();
+      break;
+      	
+      case 16:
+              camera.setPitch(random(0, 360));
+              sleep(random(450, 650));
+              log("antiban activated, camera sets random angle.");
+       break;
+       
+      case 17:
+          mouse.move(60, 260);
+          log("antiban activated, mouse randomly.");
+          sleep(random(500, 800));
+     break;
+            
+      case 18:
+          mouse.moveRandomly(0, 360);
+          log("antiban activated, mouse randomly.");
+          sleep(random(500, 800));
+     break;
+     
+      case 19:
+    	  skills.doHover(Skills.FISHING);
+    	  sleep(random(1500, 2500));
+    	  log("antiban activated hovering over fishing skill");
+   
+}
+    
+
+}
+  
+  private void drawTile(Graphics render, RSTile tile, Color color,
+	      boolean drawCardinalDirections) {
+	    Point southwest = calc.tileToScreen(tile, 0, 0, 0);
+	    Point southeast = calc.tileToScreen(
+	        new RSTile(tile.getX() + 1, tile.getY()), 0, 0, 0);
+	    Point northwest = calc.tileToScreen(new RSTile(tile.getX(),
+	        tile.getY() + 1), 0, 0, 0);
+	    Point northeast = calc.tileToScreen(
+	        new RSTile(tile.getX() + 1, tile.getY() + 1), 0, 0, 0);
+	 
+	    if (calc.pointOnScreen(southwest) && calc.pointOnScreen(southeast)
+	        && calc.pointOnScreen(northwest)
+	        && calc.pointOnScreen(northeast)) {
+	      render.setColor(Color.GREEN);
+	      render.drawPolygon(new int[] { (int) northwest.getX(),
+    	          (int) northeast.getX(), (int) southeast.getX(),
+    	          (int) southwest.getX() },
+    	          new int[] { (int) northwest.getY(), (int) northeast.getY(),
+    	              (int) southeast.getY(), (int) southwest.getY() }, 4);
+	      if (drawCardinalDirections) {
+	        render.setColor(Color.WHITE);
+	 
+	      }
+	    }
+	  }
+
+
+@Override
+public void onFinish() {
+        env.saveScreenshot(true);
+        log("Thanks for using wRockTails!");
+}
+
+
+public void messageReceived(final MessageEvent e) {
+    String svrmsg = e.getMessage();
+    if (svrmsg.contains("You catch a")) {
+            Fishfished++;
+    }
+            if (svrmsg.contains("teleport")) {
+                urnsUsed++;
+            }
+            if (svrmsg.contains("advanced a")) {
+                GainedLevels++;
+            }
+            if (svrmsg.contains("stystem update")) {
+            	log(Color.RED,"Logged off and shutting down to prevent death...");
+            	log(Color.RED,"System update, wLRC shut down...");
+            }
+}
+
+
+//
+//Paint Stuff
+//
+
+public void mouseClicked(MouseEvent e) {
+    RSComponent inter = interfaces.get(137).getComponent(0);
+    if (inter.getArea().contains(e.getPoint())) {
+        showPaint = !showPaint;
+    } 
+}
+
+
+@Override
+public void mouseEntered(MouseEvent e) {
+
+    
+}
+
+@Override
+public void mouseExited(MouseEvent e) {
+
+    
+}
+
+@Override
+public void mousePressed(MouseEvent e) {
+    
+    
+}
+
+@Override
+public void mouseReleased(MouseEvent e) {
+ 
+    
+}
+
+private final Color color1 = new Color(102, 102, 102, 130);
+private final Color color2 = new Color(0, 0, 0);
+private final Color color3 = new Color(102, 102, 102, 145);
+
+private final BasicStroke stroke1 = new BasicStroke(1);
+private final BasicStroke stroke2 = new BasicStroke(2);
+
+private final Font font1 = new Font("Arial", 0, 12);
+private final Font font2 = new Font("Arial", 0, 20);
+
+private final Image img1 = getImage("http://img190.imageshack.us/img190/1418/spikesz.png");
+private final Image img2 = getImage("http://img11.imageshack.us/img11/7006/unledig.png");
+private final Image img3 = getImage("http://img228.imageshack.us/img228/1010/images2w.png");
+private final Image img4 = getImage("http://img39.imageshack.us/img39/2066/images1q.png");
+
+private final Image img8 = getImage("http://img594.imageshack.us/img594/9318/wlrclogo.png");
+private final Image img9 = getImage("http://img3.imageshack.us/img3/8803/cooltext536086984.png" );
+private Image getImage(String url) {
+try {
+return ImageIO.read(new URL(url));
+} catch(IOException e) {
+return null;
+}
+}
+
+
+public void onRepaint(Graphics g1) {
+	
+	drawTile(g1, getMyPlayer().getLocation(), new Color(0, 0,
+	          200, 70), true);
+	
+	 final Point p = mouse.getLocation();
+     final long mpt = System.currentTimeMillis()- mouse.getPressTime();
+     if (mouse.getPressTime() == -1 || mpt >= 1000) {
+             g1.drawImage(normal, p.x - 8, p.y - 8, null);
+     }
+     if (mpt < 2050) {
+             g1.drawImage(normal, p.x - 8, p.y - 8, null);
+                                           
+     }
+	 expGained = skills.getCurrentExp(Skills.FISHING) - startExp;
+	 while (!mousePath.isEmpty() && mousePath.peek().isUp())
+      mousePath.remove();
+Point clientCursor = mouse.getLocation();
+MousePathPoint mpp = new MousePathPoint(clientCursor.x, clientCursor.y,
+              1000); //1000 = lasting time/MS
+if (mousePath.isEmpty() || !mousePath.getLast().equals(mpp))
+      mousePath.add(mpp);
+MousePathPoint lastPoint = null;
+for (MousePathPoint a : mousePath) {
+      if (lastPoint != null) {
+              g1.setColor(a.getColor());
+              g1.drawLine(a.x, a.y, lastPoint.x, lastPoint.y);
+      }
+      lastPoint = a;
+}
+  long millis = System.currentTimeMillis() - startTime;
+  long hours = millis / (1000 * 60 * 60);
+  millis -= hours * (1000 * 60 * 60);
+  long minutes = millis / (1000 * 60);//wLRCOFFICIAL  BY WAAO
+  millis -= minutes * (1000 * 60);
+  long seconds = millis / 1000;
+
+  float xpsec = 0;
+  if (((minutes > 0) || (hours > 0) || (seconds > 0)) && (expGained > 0)) {
+          xpsec = ((float) expGained)
+                          / (float) (seconds + (minutes * 60) + (hours * 60 * 60));
+  }
+  float xpmin = xpsec * 60;
+  float xphour = xpmin * 60;
+
+  float Fishsec = 0;
+  if (((minutes > 0) || (hours > 0) || (seconds > 0)) && (Fishfished > 0)) {
+          Fishsec = ((float) Fishfished)
+                          / (float) (seconds + (minutes * 60) + (hours * 60 * 60));
+  }
+  float Fishmin = Fishsec * 60;
+  float Fishhour = Fishmin * 60;
+  
+  float urnsUsedsec = 0;
+  if (((minutes > 0) || (hours > 0) || (seconds > 0)) && (urnsUsed > 0)) {
+          urnsUsedsec = ((float) urnsUsed)//wLRCOFFICIAL
+                          / (float) (seconds + (minutes * 60) + (hours * 60 * 60));
+  }
+  float urnsUsedmin = urnsUsedsec * 60;
+  float urnsUsedhour = urnsUsedmin * 60;
+  
+  gpHour = (int) ((gpMade) * 3600000D/ (System.currentTimeMillis() - startTime));
+  
+  FishTillLevel = ((skills.getExpToNextLevel(Skills.FISHING) * 1) / (380));
+  gpMade = fishPrice * Fishfished;
+  final int PercentBar = (int) (skills.getPercentToNextLevel(Skills.FISHING)*4.2);
+ 
+			if (xphour > 0) {//wLRCOFFICIAL  BY WAAO
+				float sTNL = (TTL) / (xphour / 3600);
+				float hTNL = sTNL / (60 * 60);
+				sTNL -= hTNL * (60 * 60);
+				float mTNL = sTNL / 60;
+				sTNL -= mTNL * 60;
+			}
+			
+			
+			
+		
+			
+			  if(showPaint){
+Graphics2D g = (Graphics2D)g1;
+
+
+g.drawImage(img1, 441, 318, null);
+g.drawImage(img1, 77, 319, null);
+g.drawImage(img1, 433, 319, null);
+g.drawImage(img2, 9, 348, null);
+g.setColor(color1);
+g.fillRoundRect(208, 259, 0, 0, 16, 16);
+g.drawImage(img1, 0, 320, null);
+g.drawImage(img3, 438, 236, null);
+g.setColor(color2);
+g.setStroke(stroke1);
+g.drawRect(264, 344, 233, 84);
+g.drawRect(349, 428, 147, 29);
+g.setColor(color3);
+g.setStroke(stroke2);
+g.drawRoundRect(10, 428, 338, 31, 16, 16);
+g.setColor(color1);
+g.fillRoundRect(10, 428, PercentBar, 31, 16, 16);
+g.drawImage(img4, 5, 256, null);
+g.setFont(font1);
+g.setColor(color2);
+g.drawString("Runtime:" + hours + ":" + minutes + ":" + seconds, 270, 360);
+g.drawString("GP Earned:" + gpMade + "     Hour: " + gpHour, 270, 391);
+g.drawString("Exp Gained:" + expGained + "        Exp/h: "
+	     + (int) xphour, 270, 407);
+g.drawString("Fished:" + Fishfished + "   Fish/h: "
+                             + (int) Fishhour, 270, 376);
+g.drawString("Urns used:" + urnsUsed + "   urns/h: "
+    + (int) urnsUsedhour, 270, 421);
+g.drawString("Levels+:" + GainedLevels, 118, 448);
+g.drawString("Fish TNL:" + FishTillLevel, 225, 448);
+g.drawString("Version:" + props.version(), 363, 448);
+g.drawImage(img1, 138, 320, null);
+g.drawImage(img1, 211, 320, null);
+g.drawImage(img1, 285, 320, null);
+g.drawImage(img1, 361, 320, null);
+g.setFont(font2);
+g.drawImage(img8, 19, 349, null);
+g.drawImage(img9, 140, 362, null);
+g.setFont(font1);
+g.drawString("|world 84 or 77| |Please Donate|", 19, 417);
+}
+}
+public class wgui extends javax.swing.JFrame {
+	private static final long serialVersionUID = 1L;
+ public wgui(){
+ initComponents();
+ }
+
+	private void initComponents() {
+		
+		wgui = new JFrame();
+		select = new JComboBox();
+		startBtn = new JButton();
+		checkBox1 = new JCheckBox();
+		checkBox2 = new JCheckBox();
+		checkBox3 = new JCheckBox();
+		label1 = new JLabel();
+		label2 = new JLabel();
+
+		//======== wgui ========
+		{
+			setBackground(Color.darkGray);
+			Container ContentPane = getContentPane();
+			ContentPane.setLayout(null);
+
+			//---- select ----
+			select.setModel(new DefaultComboBoxModel(new String[] {
+				"Rocktails",			
+				
+			}));
+			ContentPane.add(select);
+			select.setBounds(new Rectangle(new Point(30, 45), select.getPreferredSize()));
+
+			//---- startBtn ----
+			startBtn.setText("Start");
+			startBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					startBtnActionPerformed(e);
+				}
+			});
+			ContentPane.add(startBtn);
+			startBtn.setBounds(new Rectangle(new Point(30, 130), startBtn.getPreferredSize()));
+
+			//---- checkBox1 ----
+			checkBox1.setText("Summoning");
+			ContentPane.add(checkBox1);
+			checkBox1.setBounds(new Rectangle(new Point(10, 70), checkBox1.getPreferredSize()));
+			
+			//---- checkBox2 ----
+			checkBox2.setText("Excalibur Healing");
+			ContentPane.add(checkBox2);
+			checkBox2.setBounds(new Rectangle(new Point(10, 90), checkBox2.getPreferredSize()));
+
+			//---- checkBox2 ----
+			checkBox3.setText("Fishing Urns");
+			ContentPane.add(checkBox3);
+			checkBox3.setBounds(new Rectangle(new Point(10, 110), checkBox3.getPreferredSize()));
+			
+			//---- label1 ----
+			label1.setText("Select Fish:");
+			ContentPane.add(label1);
+			label1.setBounds(new Rectangle(new Point(30, 25), label1.getPreferredSize()));
+
+			//---- label2 ----
+			label2.setText("wLRC");//wLRCOFFICIAL  BY WAAO
+			label2.setFont(new Font("Tempus Sans ITC", Font.PLAIN, 16));
+			ContentPane.add(label2);
+			label2.setBounds(new Rectangle(new Point(50, 0), label2.getPreferredSize()));
+
+			{ 
+			
+				Dimension preferredSize = new Dimension();
+				for(int i = 0; i < ContentPane.getComponentCount(); i++) {
+					Rectangle bounds = ContentPane.getComponent(i).getBounds();
+					preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+					preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+				}
+				Insets insets = ContentPane.getInsets();//wLRCOFFICIAL  BY WAAO
+				preferredSize.width += insets.right;
+				preferredSize.height += insets.bottom;
+				ContentPane.setMinimumSize(preferredSize);
+				ContentPane.setPreferredSize(preferredSize);
+			}
+			pack();
+			setLocationRelativeTo(getOwner());
+		}
+		
+	}
+	
+	private void startBtnActionPerformed(ActionEvent e) {
+		String chosen = select.getSelectedItem().toString();
+		if (chosen.equals("Rocktails")) {
+			fishSpotID = rockSpotID;
+			fishID = rockTailID;
+			log(Color.GREEN,"Rocktails selected, now fishing rocktails!");
+			log(Color.GREEN,"Requirements to fish Rocktails: 90 Fishing, Fishing Rod and Living Rock Minerals.");
+		}
+		
+				
+				setVisible(false);
+             isReady = true;
+	}
+
+
+	private JFrame wgui;
+	private JComboBox select;
+	private JButton startBtn;
+	private JCheckBox checkBox1;
+	private JCheckBox checkBox2;
+	private JCheckBox checkBox3;
+	private JLabel label1;
+	private JLabel label2;
+	
+}
+
+}
+
+//Writen by: waao, All copyright to waao powerbot user.
